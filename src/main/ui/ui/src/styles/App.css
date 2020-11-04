@@ -30,6 +30,7 @@
 
 .container form {
   min-width: 300px;
+  max-width: 700px;
   width: 50vw;
   padding: min(4vw, 68px);
   border: 1px solid #333;
@@ -41,7 +42,7 @@
 
 .container input {
   padding: min(1vw, 16px);
-  font-size: calc(10px + 0.5vmin);
+  font-size: min(calc(10px + 3.5vmin), 18px);
 }
 
 .container .btn-form {
