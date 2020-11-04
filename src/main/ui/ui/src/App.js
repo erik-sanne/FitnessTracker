@@ -18,16 +18,18 @@ function App() {
 
     useEffect(() => {
         const exec = async () => {
-            /*const resp = await fetch(`http://localhost:8080/api/test/${1}`, {
-                method: 'GET',
-                headers : {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            });
-            const data = await resp.json();
-
-            */
+            try {
+                const resp = await fetch(`http://localhost:8080/api/test/${1}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await resp.json();
+            } catch (e) {
+                console.error(e)
+            }
 
             // TEMP
             setAuthorised(authorizationStatus.UN_AUTORIZED);
