@@ -41,7 +41,7 @@
 }
 
 .container input {
-  padding: min(1vw, 16px);
+  padding: min(1vw, 10px);
   font-size: min(calc(10px + 3.5vmin), 18px);
 }
 
@@ -50,13 +50,16 @@
   background: #222;
   color: white;
   border-radius: 10px;
-  padding: min(1vw, 16px);
-  font-size: calc(10px + 0.5vmin);
 }
 
 .container a {
+  padding: 5px 0px;
   color: azure;
   text-decoration: none;
+}
+
+.container h3 {
+  margin: 0px 0px 16px 0px;
 }
 
 .App-link {

@@ -1,6 +1,8 @@
 import './styles/App.css';
 import React, {useEffect, useState} from 'react';
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { getCookie, setCookie } from 'react-use-cookie';
+import Base64 from 'base-64';
 import Header from "./components/Header";
 import Menu from "./components/Menu";
 import SectionStart from "./components/SectionStart";
@@ -9,42 +11,61 @@ import Login from "./components/Login";
 
 const authorizationStatus = {
     AUTHORIZED: "authorized",
-    UN_AUTORIZED: "unauthorized",
+    UNAUTHORIZED: "unauthorized",
     PENDING: "pending"
 }
 
 function App() {
+
     const [ authorized, setAuthorised ] = useState(authorizationStatus.PENDING);
 
-    useEffect(() => {
-        const exec = async () => {
-            try {
-                const resp = await fetch(`http://localhost:8080/api/test/${1}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
-                });
-                const data = await resp.json();
-            } catch (e) {
-                console.error(e)
-            }
+    const submitLoginCredentials = async (state) => {
 
-            // TEMP
-            setAuthorised(authorizationStatus.UN_AUTORIZED);
+        const tokenResponse = await fetch(`http://localhost:8080/authenticate`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(state)
+        })
+
+        if (!tokenResponse.ok){
+            return;
         }
 
-        exec();
+        const tokenData = await tokenResponse.json();
 
-    },[])
+        const token = tokenData.token;
+        const auth_header = Base64.encode(token)
+        setCookie('session_token', auth_header);
+        setAuthorised(authorizationStatus.PENDING);
+    }
 
+    useEffect(() => {
+        const token = getCookie('session_token')
+        fetch(`http://localhost:8080/validate`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Basic ${token}`
+            }
+        }).then(response => {
+            if (response.ok)
+                setAuthorised(authorizationStatus.AUTHORIZED);
+            else
+                throw new Error('Unauthorized');
+        }).catch(error => {
+            setAuthorised(authorizationStatus.UNAUTHORIZED);
+        });
+    });
 
     if (authorized === authorizationStatus.PENDING)
         return <Splash />;
 
-    if (authorized === authorizationStatus.UN_AUTORIZED)
-        return <Login />
+    if (authorized === authorizationStatus.UNAUTHORIZED)
+        return <Login submitLoginCredentials={ submitLoginCredentials }/>
 
     return (
       <BrowserRouter>
