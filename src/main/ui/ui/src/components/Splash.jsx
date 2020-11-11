@@ -4,7 +4,7 @@ import Spinner from 'react-bootstrap/Spinner';
 
 const Splash = () => {
     return (
-        <section className={ 'container splash' }>
+        <section className={ 'page-wrapper splash' }>
             <h2>Welcome</h2>
             <Spinner animation="grow" />
         </section>

@@ -4,10 +4,11 @@ import com.ersa.tracker.services.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.constraints.NotNull;
+import java.util.Base64;
 
 @RestController
 public class AuthenticationController {
@@ -32,14 +33,17 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<TokenResponse> createAuthenticationToken(@RequestBody TokenRequest tokenRequest) {
-        if (userManager.authenticate(tokenRequest.getUsername(), tokenRequest.getPassword())) {
+        try {
             final String token = userManager.createToken(tokenRequest.getUsername(), tokenRequest.getPassword());
-            TokenResponse tr = new TokenResponse();
-            tr.setToken(token);
-            return ResponseEntity.ok(tr);
-        }
+            final String encoded_token = Base64.getEncoder().encodeToString(token.getBytes());
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            TokenResponse tr = new TokenResponse();
+            tr.setToken(encoded_token);
+
+            return ResponseEntity.ok(tr);
+        } catch (UsernameNotFoundException e) {
+            throw e;
+        }
     }
 
     private static class TokenRequest {

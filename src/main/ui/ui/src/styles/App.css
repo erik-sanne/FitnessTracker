@@ -17,7 +17,7 @@
   font-size: calc(10px + 2vmin);
 }
 
-.container {
+.page-wrapper {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -28,7 +28,7 @@
   font-size: calc(10px + 0.5vmin);
 }
 
-.container form {
+.page-wrapper form {
   min-width: 300px;
   max-width: 700px;
   width: 50vw;
@@ -40,25 +40,25 @@
   flex-direction: column;
 }
 
-.container input {
+.page-wrapper input {
   padding: min(1vw, 10px);
   font-size: min(calc(10px + 3.5vmin), 18px);
 }
 
-.container .btn-form {
+.page-wrapper .btn-form {
   border: 1px solid #333;
   background: #222;
   color: white;
   border-radius: 10px;
 }
 
-.container a {
+.page-wrapper a {
   padding: 5px 0px;
   color: azure;
   text-decoration: none;
 }
 
-.container h3 {
+.page-wrapper h3 {
   margin: 0px 0px 16px 0px;
 }
 

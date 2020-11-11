@@ -1,4 +1,5 @@
 import React from 'react';
+import {setCookie} from "react-use-cookie";
 
 class Login extends React.Component {
 
@@ -7,7 +8,8 @@ class Login extends React.Component {
         this.submitLoginCredentials = props.submitLoginCredentials;
         this.state = {
             username: '',
-            password: ''
+            password: '',
+            msg: null
         }
     }
 
@@ -15,18 +17,44 @@ class Login extends React.Component {
         this.setState({ [event.target.name]: event.target.value });
     }
 
-    onSubmit = (event) => {
+    onSubmit = async (event) => {
         event.preventDefault();
-        this.submitLoginCredentials( this.state )
+
+        const tokenResponse = await fetch(`http://localhost:8080/authenticate`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: this.state.username,
+                password: this.state.password
+            })
+        })
+
+        if (!tokenResponse.ok) {
+            if (tokenResponse.status === 401) {
+                this.setState({ msg: "Wrong username or password", password: "" });
+            }
+            return;
+        }
+
+        this.setState({ error: null });
+
+        const tokenData = await tokenResponse.json();
+        const token = tokenData.token;
+        setCookie('session_token', token);
+        this.submitLoginCredentials();
     }
 
     render() {
         return (
-            <section className={'container'}>
+            <section className={'page-wrapper'}>
                 <form onSubmit={ this.onSubmit }>
                     <h2>Sign in</h2>
+                    { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
                     <label htmlFor="username">Email</label>
-                    <input name="username" type="email" value={ this.state.username } onChange={ this.onChange }/>
+                    <input name="username" type="email" autofocus="true" value={ this.state.username } onChange={ this.onChange }/>
                     <br/>
                     <label htmlFor="password">Password</label>
                     <input name="password" type="password" value={ this.state.password } onChange={ this.onChange }/>
@@ -37,6 +65,12 @@ class Login extends React.Component {
             </section>
         );
     }
+}
+
+const styleError = {
+    background: '#f16b719e',
+    border: '1px solid #f16b719e',
+    padding: '5px'
 }
 
 export default Login;

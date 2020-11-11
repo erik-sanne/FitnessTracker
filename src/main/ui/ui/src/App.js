@@ -18,31 +18,16 @@ const authorizationStatus = {
 function App() {
 
     const [ authorized, setAuthorised ] = useState(authorizationStatus.PENDING);
+    const [ err, setError ] = useState([]);
 
-    const submitLoginCredentials = async (state) => {
-
-        const tokenResponse = await fetch(`http://localhost:8080/authenticate`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(state)
-        })
-
-        if (!tokenResponse.ok){
-            return;
-        }
-
-        const tokenData = await tokenResponse.json();
-
-        const token = tokenData.token;
-        const auth_header = Base64.encode(token)
-        setCookie('session_token', auth_header);
+    const credentialsSuccessfullySubmitted = () => {
         setAuthorised(authorizationStatus.PENDING);
     }
 
     useEffect(() => {
+        if (authorized !== authorizationStatus.PENDING)
+            return
+
         const token = getCookie('session_token')
         fetch(`http://localhost:8080/validate`, {
             method: 'GET',
@@ -65,13 +50,12 @@ function App() {
         return <Splash />;
 
     if (authorized === authorizationStatus.UNAUTHORIZED)
-        return <Login submitLoginCredentials={ submitLoginCredentials }/>
+        return <Login errors={ err } submitLoginCredentials={ credentialsSuccessfullySubmitted }/>
 
     return (
       <BrowserRouter>
           <Header />
-          <p>{ `authorized: ${authorized}` }</p>
-          <section className={ 'container' }>
+          <section>
               <Switch>
                   <Route path="/history">
                       <h2>History</h2>

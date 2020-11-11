@@ -5,6 +5,8 @@ import com.ersa.tracker.models.UserToken;
 import com.ersa.tracker.repositories.TokenRepository;
 import com.ersa.tracker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,13 +40,27 @@ public class UserManagementService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public boolean authenticate(String username, String password) {
+    public void authenticate(String username, String password) throws AuthenticationException {
         User user = userRepository.findByEmail(username);
-        return pwEncoder.matches(password, user.getPassword());
+        if (user == null)
+            throw new UsernameNotFoundException("Wrong username or password");
+
+        if (!pwEncoder.matches(password, user.getPassword()))
+            throw new BadCredentialsException("Wrong username or password");
     }
 
+    /**
+     * Generates a session token that can be used by client as credentials.
+     * (Should probably use a real token provider with JWS-Tokens or similar if this would be used in production)
+     * @param username
+     * @param password
+     * @return A token string
+     * @throws AuthenticationException if authentication would fail
+     */
     @Transactional
-    public String createToken(String username, String password) {
+    public String createToken(String username, String password) throws AuthenticationException {
+        authenticate(username, password);
+
         User user = userRepository.findByEmail(username);
 
         final String token = pwEncoder.encode(user.getPassword());

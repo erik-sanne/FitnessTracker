@@ -4,16 +4,17 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
 
-@Entity
+@Entity(name = "workouts")
 public class Workout {
 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
-    private Date date;
 
     @ManyToOne
     private User user;
+
+    private Date date;
 
     @OneToMany
     private Collection<WorkoutSet> sets;

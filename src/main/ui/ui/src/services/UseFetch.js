@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { getCookie } from 'react-use-cookie';
-import Base64 from "base-64";
 
 const baseURL = "http://localhost:8080/";
 
@@ -23,7 +22,7 @@ function useFetch(url, method = 'GET') {
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        'Authorization': `Basic ${Base64.encode(token)}`
+                        'Authorization': `Basic ${token}`
                     }
                 });
 
