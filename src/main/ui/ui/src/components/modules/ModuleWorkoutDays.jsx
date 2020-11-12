@@ -1,11 +1,12 @@
 import '../../styles/Module.css';
-import React, {useEffect, useRef} from 'react';
+import 'chartjs-plugin-zoom' //It says that its not used, but it is
+import React, {useEffect, useRef } from 'react';
 import Spinner from "react-bootstrap/Spinner";
 import Chart from 'chart.js'
-import zoom from 'chartjs-plugin-zoom' //It says that its not used, but it is
 import useFetch from "../../services/UseFetch";
-
-const config = {}
+import DisplayValue from "./DisplayValue";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMedal } from '@fortawesome/free-solid-svg-icons'
 
 const createConfig = (data) => {
     data = data.reverse();
@@ -24,7 +25,7 @@ const createConfig = (data) => {
             labels: xLabels,
             datasets: [{
                 label: 'Workouts per week',
-                backgroundColor: 'rgba(54,92,150, 0.5)',
+                backgroundColor: 'rgba(107,166,239,0.35)',
                 data: yValues,
             }]
         },
@@ -46,7 +47,7 @@ const createConfig = (data) => {
                         max: xLabels[xLabels.length],
                         callback: function(value, index, values) {
                             const arr = value.split(" ")
-                            return arr[1] == "1" ? [arr[1], arr[0]] : [arr[1], ''];
+                            return arr[1] === "1" ? [arr[1], arr[0]] : [arr[1], ''];
                         }
                     }
                 }]
@@ -55,7 +56,7 @@ const createConfig = (data) => {
                 zoom: {
                     pan: {
                         enabled: true,
-                        mode: 'x' // is panning about the y axis neccessary for bar charts?
+                        mode: 'x'
                     },
                     zoom: {
                         enabled: false
@@ -66,8 +67,14 @@ const createConfig = (data) => {
     }
 }
 
+const computeAverage = (numDays, data) => {
+    const subarr = data.slice(Math.max(- numDays, 0));
+    const total = subarr.map(e => e.totalWorkouts).reduce((acc, el) => acc + el, 0);
+    return total / numDays;
+}
+
 const ModuleWorkoutDays = () => {
-    const { data, _, loading } = useFetch('api/workoutsPerWeek');
+    const { data, loading } = useFetch('api/workoutsPerWeek');
     const canvasRef = useRef(null);
 
     useEffect(() => {
@@ -79,10 +86,22 @@ const ModuleWorkoutDays = () => {
         }
     }, [data, loading]);
 
+
     return (
             <div className={ 'module' }>
-                <h3>Frequency</h3>
-                {loading ? <Spinner animation="grow" /> : <canvas ref={ canvasRef } />}
+                <h3>Workouts per week
+                    <FontAwesomeIcon icon={ faMedal } style={{ color: "#ffc877", float: 'right', position: 'relative', top:'3px' }}/>
+                </h3>
+                { loading ? <Spinner animation="grow"/> :
+                    <>
+                        <canvas ref={canvasRef} />
+                        <div style={{display: "flex"}}>
+                            <DisplayValue text={'Avg 90 weeks'} value={ computeAverage(90, data).toFixed(1) } />
+                            <DisplayValue text={'Avg 30 weeks'} value={ computeAverage(30, data).toFixed(1) } />
+                            <DisplayValue text={'Avg 10 weeks'} value={ computeAverage(10, data).toFixed(1) } />
+                        </div>
+                    </>
+                }
             </div>
     );
 }

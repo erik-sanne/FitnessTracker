@@ -54,7 +54,7 @@ class Login extends React.Component {
                     <h2>Sign in</h2>
                     { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
                     <label htmlFor="username">Email</label>
-                    <input name="username" type="email" autofocus="true" value={ this.state.username } onChange={ this.onChange }/>
+                    <input name="username" type="email" autoFocus={ true } value={ this.state.username } onChange={ this.onChange }/>
                     <br/>
                     <label htmlFor="password">Password</label>
                     <input name="password" type="password" value={ this.state.password } onChange={ this.onChange }/>

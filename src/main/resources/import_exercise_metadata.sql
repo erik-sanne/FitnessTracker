@@ -66,6 +66,7 @@ INSERT INTO exercise (name) VALUES
 ('PULLDOWN'),
 ('PULLOVER'),
 ('CHINUP'),
+('ROW'),
 ('DIP');
 
 
@@ -80,7 +81,10 @@ INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUE
 ('DEADLIFT', 'HAMSTRINGS'),
 
 ('SQUAT', 'QUADS'),
-('SQUAT', 'GLUTES');
+('SQUAT', 'GLUTES'),
+
+('ROW', 'LATS'),
+('ROW', 'RHOMBOIDS');
 
 
 INSERT INTO exercise_secondary_targets (exercise_name, secondary_targets_name) VALUES
@@ -91,5 +95,7 @@ INSERT INTO exercise_secondary_targets (exercise_name, secondary_targets_name) V
 ('DEADLIFT', 'LATS'),
 
 ('SQUAT', 'SPINAL_ERECTORS'),
-('SQUAT', 'HAMSTRINGS');
+('SQUAT', 'HAMSTRINGS'),
 
+('ROW', 'TRAPS'),
+('ROW', 'BICEPS');

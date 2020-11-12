@@ -1,20 +1,28 @@
 package com.ersa.tracker.services;
 
 import com.ersa.tracker.dto.Week;
-import com.ersa.tracker.models.User;
-import com.ersa.tracker.models.Workout;
+import com.ersa.tracker.models.*;
+import com.ersa.tracker.repositories.TargetRepository;
 import com.ersa.tracker.repositories.WorkoutRepository;
+import com.ersa.tracker.utils.KVPair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkoutsService {
 
+    private static final Sort descDateSort = Sort.by("date").descending();
+
     @Autowired
     private WorkoutRepository workoutRepository;
+
+    @Autowired
+    private TargetRepository targetRepository;
 
     /**
      * @return Iterable of Weeks since first workout until today, containing the number of workouts performed each week
@@ -22,7 +30,7 @@ public class WorkoutsService {
     public Iterable<Week> getWorkoutsPerWeek(User user) {
         final int WEEKS_IN_YEAR = 52;
         List<Week> result = new ArrayList<>();
-        Iterable<Workout> workouts = workoutRepository.findAllByUser(user, Sort.by("date").descending());
+        Iterable<Workout> workouts = workoutRepository.findAllByUser(user, descDateSort);
 
         Calendar cal = Calendar.getInstance();
         int currentWeek = cal.get(Calendar.WEEK_OF_YEAR);
@@ -64,4 +72,83 @@ public class WorkoutsService {
         }
         return result;
     }
+
+    /**
+     * @param user
+     * @return returns relative intensity per body part based on the last 30 workouts (not 30 days)
+     */
+    public List<KVPair<String, Float>> getSetPerBodypart(User user) {
+        Map<String, Float> resultMap = new HashMap<>();
+
+        Iterable<Workout> workouts = workoutRepository.findAllByUser(user, PageRequest.of(0, 30, descDateSort));
+        Iterator<Workout> iterator = workouts.iterator();
+
+        Iterable<Target> targets = targetRepository.findAll();
+        Iterator<Target> targetIterator = targets.iterator();
+
+        Map<String, String> types = new HashMap<>();
+
+        while (targetIterator.hasNext()) {
+            Target target = targetIterator.next();
+            resultMap.put(target.getName(), 0f);
+            types.put(target.getName(), target.getWtypes().stream()
+                    .map(e -> e.getName())
+                    .filter(e -> e.equals("PUSH") || e.equals("PULL") || e.equals("LEGS"))
+                    .reduce("", (acc, e) -> acc + e));
+        }
+
+        while (iterator.hasNext()) {
+            Workout workout = iterator.next();
+
+            Iterator<WorkoutSet> setIterator = workout.getSets().iterator();
+
+            while (setIterator.hasNext()) {
+                WorkoutSet set = setIterator.next();
+
+                Exercise exercise = set.getExercise();
+                exercise.getPrimaryTargets().forEach( target -> {
+                    float prevValue = resultMap.get(target.getName());
+                    resultMap.put(target.getName(), prevValue + 1f);
+                });
+
+                exercise.getSecondaryTargets().forEach( target -> {
+                    float prevValue = resultMap.get(target.getName());
+                    resultMap.put(target.getName(), prevValue + 0.5f);
+                });
+            }
+        }
+
+        List<KVPair<String, Float>> result = resultMap.entrySet().stream()
+                .filter(elem -> !elem.getKey().equals("SPINAL_ERECTORS"))
+                .map(elem -> new KVPair<>(elem.getKey(), elem.getValue()))
+                .sorted(Comparator.comparing(e -> types.get(e.getKey())))
+                .collect(Collectors.toList());
+
+
+        int smoothnessFactor = 2;
+        smooth(result, smoothnessFactor);
+
+        return result;
+    }
+
+    private void smooth (List<KVPair<String, Float>> source, Integer smoothness) {
+        List<Float> values = new ArrayList<>();
+        int size = source.size();
+        for (int i = 0; i < size; i++) {
+
+            float sum = 0f;
+            for (int j = i - smoothness; j < i + smoothness; j++) {
+                int index =  ((j % size + size) % size);
+                sum += source.get(index).getValue();
+            }
+
+            sum = sum / (2f * smoothness + 1f);
+            values.add(sum);
+        }
+
+        for (int i = 0; i < size; i++) {
+            source.get(i).setValue(values.get(i));
+        }
+    }
+
 }

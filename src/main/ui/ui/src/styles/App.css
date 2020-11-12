@@ -1,3 +1,8 @@
+body {
+  background-color: #282c34;
+  color: #ffffff;
+}
+
 .App {
   text-align: center;
 }
@@ -7,10 +12,42 @@
   pointer-events: none;
 }
 
+.menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  text-align: left;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: rgba(0,0,0, 0.95);;
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0px 0px 15px #000;
+  transform: translateX(+100%);
+}
+
+.menu ul {
+  list-style-type: none;
+}
+
+.menu ul a {
+  color: rgba(107,166,239,0.7);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.header {
+  padding: 15px;
+  margin: 0px;
+  background-color: #282c34;
+  box-shadow: 0px 0px 10px #222;
+  border-bottom: 1px solid #333;
+  color: #fff;
 }
 
 .splash {
@@ -18,7 +55,6 @@
 }
 
 .page-wrapper {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

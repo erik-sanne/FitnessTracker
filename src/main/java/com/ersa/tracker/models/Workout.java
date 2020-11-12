@@ -16,7 +16,7 @@ public class Workout {
 
     private Date date;
 
-    @OneToMany
+    @OneToMany(mappedBy = "workout")
     private Collection<WorkoutSet> sets;
 
     public long getId() {

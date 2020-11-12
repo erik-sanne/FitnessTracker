@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity(name = "workoutset")
 public class WorkoutSet {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -13,6 +14,42 @@ public class WorkoutSet {
     @NotNull
     @OneToOne
     private Exercise exercise;
+
+    @ManyToOne
+    @JoinColumn(name = "workout_id")
+    private Workout workout;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Exercise getExercise() {
+        return exercise;
+    }
+
+    public void setExercise(Exercise exercise) {
+        this.exercise = exercise;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public int getReps() {
+        return reps;
+    }
+
+    public void setReps(int reps) {
+        this.reps = reps;
+    }
 
     int weight;
 

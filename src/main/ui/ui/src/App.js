@@ -1,13 +1,9 @@
 import './styles/App.css';
 import React, {useEffect, useState} from 'react';
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { getCookie, setCookie } from 'react-use-cookie';
-import Base64 from 'base-64';
-import Header from "./components/Header";
-import Menu from "./components/Menu";
-import SectionStart from "./components/SectionStart";
+import { getCookie } from 'react-use-cookie';
 import Splash from "./components/Splash";
 import Login from "./components/Login";
+import AppContent from "./AppContent";
 
 const authorizationStatus = {
     AUTHORIZED: "authorized",
@@ -18,7 +14,6 @@ const authorizationStatus = {
 function App() {
 
     const [ authorized, setAuthorised ] = useState(authorizationStatus.PENDING);
-    const [ err, setError ] = useState([]);
 
     const credentialsSuccessfullySubmitted = () => {
         setAuthorised(authorizationStatus.PENDING);
@@ -50,23 +45,10 @@ function App() {
         return <Splash />;
 
     if (authorized === authorizationStatus.UNAUTHORIZED)
-        return <Login errors={ err } submitLoginCredentials={ credentialsSuccessfullySubmitted }/>
+        return <Login submitLoginCredentials={ credentialsSuccessfullySubmitted }/>
 
     return (
-      <BrowserRouter>
-          <Header />
-          <section>
-              <Switch>
-                  <Route path="/history">
-                      <h2>History</h2>
-                  </Route>
-                  <Route path="/">
-                      <SectionStart />
-                  </Route>
-              </Switch>
-          </section>
-          <Menu />
-      </BrowserRouter>
+        <AppContent />
     );
 }
 
