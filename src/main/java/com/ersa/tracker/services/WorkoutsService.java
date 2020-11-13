@@ -125,7 +125,7 @@ public class WorkoutsService {
                 .collect(Collectors.toList());
 
 
-        int smoothnessFactor = 2;
+        int smoothnessFactor = 10;
         smooth(result, smoothnessFactor);
 
         return result;
@@ -139,7 +139,8 @@ public class WorkoutsService {
             float sum = 0f;
             for (int j = i - smoothness; j < i + smoothness; j++) {
                 int index =  ((j % size + size) % size);
-                sum += source.get(index).getValue();
+                float falloff = 1f / (1f + Math.abs(i - j));
+                sum += source.get(index).getValue() * falloff;
             }
 
             sum = sum / (2f * smoothness + 1f);
