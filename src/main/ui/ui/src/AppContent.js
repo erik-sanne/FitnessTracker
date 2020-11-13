@@ -5,7 +5,7 @@ import SectionStart from "./components/SectionStart";
 import Menu from "./components/Menu";
 import Burger from "./components/Burger";
 
-const AppContent = () => {
+const AppContent = ({ logoutCallback }) => {
     const [menuOpen, setMenuOpen] = useState(false)
 
     const burgerClick = () => {
@@ -28,8 +28,8 @@ const AppContent = () => {
                     <Redirect from="/" to="/general" />
                 </Switch>
             </section>
-            <Menu open={ menuOpen }/>
-            <Burger onClick={ burgerClick } open={ menuOpen } />
+            <Menu open={ menuOpen } logoutCallback={ logoutCallback } />
+            <Burger onClick={ burgerClick } open={ menuOpen }/>
         </BrowserRouter>
     );
 }

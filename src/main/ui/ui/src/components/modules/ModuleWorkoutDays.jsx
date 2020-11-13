@@ -1,5 +1,5 @@
 import '../../styles/Module.css';
-import 'chartjs-plugin-zoom' //It says that its not used, but it is
+import 'chartjs-plugin-zoom'
 import React, {useEffect, useRef } from 'react';
 import Spinner from "react-bootstrap/Spinner";
 import Chart from 'chart.js'
@@ -67,10 +67,10 @@ const createConfig = (data) => {
     }
 }
 
-const computeAverage = (numDays, data) => {
-    const subarr = data.slice(Math.max(- numDays, 0));
+const computeAverage = (numWeeks, data) => {
+    const subarr = data.slice(Math.max(- numWeeks, 0));
     const total = subarr.map(e => e.totalWorkouts).reduce((acc, el) => acc + el, 0);
-    return total / numDays;
+    return total / numWeeks;
 }
 
 const ModuleWorkoutDays = () => {

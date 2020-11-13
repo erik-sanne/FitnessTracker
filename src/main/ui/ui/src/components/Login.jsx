@@ -1,5 +1,5 @@
 import React from 'react';
-import {setCookie} from "react-use-cookie";
+import { setCookie } from "react-use-cookie";
 
 class Login extends React.Component {
 

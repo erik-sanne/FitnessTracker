@@ -1,6 +1,6 @@
 import './styles/App.css';
 import React, {useEffect, useState} from 'react';
-import { getCookie } from 'react-use-cookie';
+import { setCookie, getCookie } from 'react-use-cookie';
 import Splash from "./components/Splash";
 import Login from "./components/Login";
 import AppContent from "./AppContent";
@@ -17,6 +17,11 @@ function App() {
 
     const credentialsSuccessfullySubmitted = () => {
         setAuthorised(authorizationStatus.PENDING);
+    }
+
+    const logoutCallback = () => {
+        setCookie('session_token', null)
+        setAuthorised(authorizationStatus.UNAUTHORIZED)
     }
 
     useEffect(() => {
@@ -48,7 +53,7 @@ function App() {
         return <Login submitLoginCredentials={ credentialsSuccessfullySubmitted }/>
 
     return (
-        <AppContent />
+        <AppContent logoutCallback={ logoutCallback } />
     );
 }
 

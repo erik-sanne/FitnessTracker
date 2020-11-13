@@ -5,7 +5,7 @@ const activeClass = {
     color: '#007bff'
 }
 
-const Menu = ({ open }) => {
+const Menu = ({ open, logoutCallback }) => {
     const trans = {
         transform: open ? 'translateX(0)' : 'translateX(+100%)'
     }
@@ -21,6 +21,7 @@ const Menu = ({ open }) => {
                     <NavLink to="/history" activeStyle={activeClass}>History</NavLink>
                 </li>
             </ul>
+            <p onClick={ logoutCallback } style={ {position: 'absolute', right: '45px', bottom: '20px' } } >Logout</p>
         </div>
     )
 }
