@@ -1,14 +1,13 @@
 import '../../styles/Module.css';
 import 'chartjs-plugin-zoom' //It says that its not used, but it is
-import React, {useEffect, useRef } from 'react';
 import Spinner from "react-bootstrap/Spinner";
-import Chart from 'chart.js'
 import useFetch from "../../services/UseFetch";
 import DisplayValue from "./DisplayValue";
+import Graph from "./Graph";
+import {useEffect, useState} from "react";
 
 const createConfig = (data) => {
     const xLabels = data.map( e => e.key.replace('_', ' '))
-
     const yValues = data.map( e => e.value )
 
     return {
@@ -42,29 +41,25 @@ const createConfig = (data) => {
 
 const ModuleSetsBodypart = () => {
     const { data, loading } = useFetch('api/setsPerBodypart');
-    const canvasRef = useRef(null);
+    const [ chartData, setChartData ] = useState(null);
 
     useEffect(() => {
-        if (!loading) {
-            const canvas = canvasRef.current;
-            const ctx = canvas.getContext('2d');
+        if (!loading)
+            setChartData(createConfig(data));
 
-            new Chart(ctx, createConfig(data));
-        }
-    }, [data, loading]);
+    }, [data, loading])
 
     return (
-            <div className={ 'module' }>
-                <h3> Intensity / part </h3>
-                { loading ? <Spinner animation="grow"/> :
-                    <>
-                        <canvas ref={canvasRef} />
-                        <div style={{display: "flex"}}>
-                            <DisplayValue text={"You could focus more on"} value={ "[N/A]" } />
-                        </div>
-                    </>
-                }
-            </div>
+        <>
+            { loading ? <Spinner animation="grow"/> :
+                <>
+                    <Graph data={ chartData } />
+                    <div style={{display: "flex"}}>
+                        <DisplayValue text={"You could focus more on"} value={ "[N/A]" } />
+                    </div>
+                </>
+            }
+        </>
     );
 }
 

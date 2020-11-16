@@ -1,12 +1,12 @@
 import '../../styles/Module.css';
 import 'chartjs-plugin-zoom'
-import React, {useEffect, useRef } from 'react';
 import Spinner from "react-bootstrap/Spinner";
-import Chart from 'chart.js'
 import useFetch from "../../services/UseFetch";
 import DisplayValue from "./DisplayValue";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMedal } from '@fortawesome/free-solid-svg-icons'
+import Graph from "./Graph";
+import React, {useEffect, useState} from "react";
 
 const createConfig = (data) => {
     data = data.reverse();
@@ -75,34 +75,37 @@ const computeAverage = (numWeeks, data) => {
 
 const ModuleWorkoutDays = () => {
     const { data, loading } = useFetch('api/workoutsPerWeek');
-    const canvasRef = useRef(null);
+    const [ chartData, setChartData ] = useState(null);
 
+    // Note to self:
+    // Unfortunately this hook is needed and I am not sure why...
+    // data = createConfig(data) does not ALWAYS work properly.
     useEffect(() => {
-        if (!loading) {
-            const canvas = canvasRef.current;
-            const ctx = canvas.getContext('2d');
-
-            new Chart(ctx, createConfig(data));
-        }
-    }, [data, loading]);
-
+        if (!loading)
+            setChartData(createConfig(data));
+    }, [data, loading])
 
     return (
-            <div className={ 'module' }>
-                <h3>Workouts per week
-                    <FontAwesomeIcon icon={ faMedal } style={{ color: "#ffc877", float: 'right', position: 'relative', top:'3px' }}/>
-                </h3>
-                { loading ? <Spinner animation="grow"/> :
-                    <>
-                        <canvas ref={canvasRef} />
-                        <div style={{display: "flex"}}>
-                            <DisplayValue text={'Avg 90 weeks'} value={ computeAverage(90, data).toFixed(1) } />
-                            <DisplayValue text={'Avg 30 weeks'} value={ computeAverage(30, data).toFixed(1) } />
-                            <DisplayValue text={'Avg 10 weeks'} value={ computeAverage(10, data).toFixed(1) } />
-                        </div>
-                    </>
-                }
-            </div>
+        <>
+            <FontAwesomeIcon icon={ faMedal } style={{
+                color: "#ffc877",
+                position: 'absolute',
+                top:'15px',
+                right: '15px',
+                fontSize: 'min(calc(8px + 3.5vmin), 30px)',
+                }}/>
+
+            { loading ? <Spinner animation="grow"/> :
+                <>
+                    <Graph data={ chartData } />
+                    <div style={{ display: "flex" }}>
+                        <DisplayValue text={'Avg 90 weeks'} value={ computeAverage(90, data).toFixed(1) } />
+                        <DisplayValue text={'Avg 30 weeks'} value={ computeAverage(30, data).toFixed(1) } />
+                        <DisplayValue text={'Avg 10 weeks'} value={ computeAverage(10, data).toFixed(1) } />
+                    </div>
+                </>
+            }
+        </>
     );
 }
 
