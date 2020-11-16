@@ -15,6 +15,11 @@ public class WorkoutSet {
     @OneToOne
     private Exercise exercise;
 
+    int weight;
+
+    @Min(1)
+    int reps;
+
     @ManyToOne
     @JoinColumn(name = "workout_id")
     private Workout workout;
@@ -50,9 +55,4 @@ public class WorkoutSet {
     public void setReps(int reps) {
         this.reps = reps;
     }
-
-    int weight;
-
-    @Min(1)
-    int reps;
 }

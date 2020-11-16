@@ -1,7 +1,7 @@
 import React from 'react'
-import ModuleWorkoutDays from "./modules/ModuleWorkoutDays";
-import ModuleSetsBodypart from "./modules/ModuleSetsBodypart";
-import Module from "./modules/Module";
+import ModuleWorkoutDays from "../modules/ModuleWorkoutDays";
+import ModuleWorkoutDistribution from "../modules/ModuleWorkoutDistribution";
+import Module from "../modules/Module";
 
 const SectionStart = () => {
     return (
@@ -10,7 +10,7 @@ const SectionStart = () => {
                 <ModuleWorkoutDays />
             </Module>
             <Module title="Workout distribution">
-                <ModuleSetsBodypart />
+                <ModuleWorkoutDistribution />
             </Module>
         </div>
     );

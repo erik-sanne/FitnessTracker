@@ -1,6 +1,9 @@
 package com.ersa.tracker.models;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Date;
 
@@ -14,6 +17,8 @@ public class Workout {
     @ManyToOne
     private User user;
 
+    @NotNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date date;
 
     @OneToMany(mappedBy = "workout")

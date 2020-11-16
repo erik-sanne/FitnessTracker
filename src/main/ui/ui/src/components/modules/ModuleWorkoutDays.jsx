@@ -90,8 +90,8 @@ const ModuleWorkoutDays = () => {
             <FontAwesomeIcon icon={ faMedal } style={{
                 color: "#ffc877",
                 position: 'absolute',
-                top:'15px',
-                right: '15px',
+                top:'min(4vw, 68px)',
+                right: 'min(4vw, 68px)',
                 fontSize: 'min(calc(8px + 3.5vmin), 30px)',
                 }}/>
 

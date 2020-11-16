@@ -39,8 +39,21 @@ const createConfig = (data) => {
     }
 }
 
-const ModuleSetsBodypart = () => {
-    const { data, loading } = useFetch('api/setsPerBodypart');
+const bestImprovement = (data) => {
+    let lowest = 99;
+    let str = "";
+    data.forEach( (e) => {
+        if (e.value >= lowest)
+            return;
+
+        lowest = e.value;
+        str = e.key;
+    })
+    return str.split('_')[1] || str.split('_')[0];
+}
+
+const ModuleWorkoutDistribution = () => {
+    const { data, loading } = useFetch('api/distribution');
     const [ chartData, setChartData ] = useState(null);
 
     useEffect(() => {
@@ -54,8 +67,8 @@ const ModuleSetsBodypart = () => {
             { loading ? <Spinner animation="grow"/> :
                 <>
                     <Graph data={ chartData } />
-                    <div style={{display: "flex"}}>
-                        <DisplayValue text={"You could focus more on"} value={ "[N/A]" } />
+                    <div style={{display: "flex", marginTop: "10px"}}>
+                        <DisplayValue text={"You could focus more on"} value={ bestImprovement(data)} />
                     </div>
                 </>
             }
@@ -63,4 +76,4 @@ const ModuleSetsBodypart = () => {
     );
 }
 
-export default ModuleSetsBodypart;
+export default ModuleWorkoutDistribution;

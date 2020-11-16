@@ -33,6 +33,8 @@ body {
 
 .menu ul a {
   color: rgba(107,166,239,0.7);
+  font-size: 24px;
+  padding: 5px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -62,6 +64,7 @@ body {
   justify-content: center;
   color: white;
   font-size: calc(10px + 0.5vmin);
+  position: relative;
 }
 
 .page-wrapper form {
@@ -78,7 +81,7 @@ body {
 
 .page-wrapper input {
   padding: min(1vw, 10px);
-  font-size: min(calc(10px + 3.5vmin), 18px);
+  font-size: min(calc(10px + 3.5vmin), 16px);
 }
 
 .page-wrapper .btn-form {

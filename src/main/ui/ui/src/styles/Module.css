@@ -14,3 +14,29 @@
 .module h3 {
    font-size: min(calc(8px + 3.5vmin), 30px);
 }
+
+.module table {
+  font-size: min(10px + 3.5vmin, 14px);
+}
+
+.module table th {
+  padding: 10px;
+  text-align: right;
+}
+
+.module table tr th:first-child {
+  text-align: left;
+}
+
+.module table td {
+  padding: 10px;
+  text-align: right;
+}
+
+.module table tr td:first-child {
+  text-align: left;
+}
+
+.module table tbody tr:hover {
+  background: rgba(107, 166, 239, 0.7);
+}

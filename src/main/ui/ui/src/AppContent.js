@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import Header from "./components/Header";
 import {Redirect, BrowserRouter, Route, Switch} from "react-router-dom";
-import SectionStart from "./components/SectionStart";
+import SectionStart from "./components/pages/SectionStart";
 import Menu from "./components/Menu";
 import Burger from "./components/Burger";
+import SectionNewWorkout from "./components/pages/SectionNewWorkout";
 
 const AppContent = ({ logoutCallback }) => {
     const [menuOpen, setMenuOpen] = useState(false)
@@ -14,16 +15,21 @@ const AppContent = ({ logoutCallback }) => {
 
     return(
         <BrowserRouter>
-            <Header title={ "General Stats" } onClick={ burgerClick } />
             <section>
                 <Switch>
                     <Route path="/general">
+                        <Header title={ "My Statistics" } onClick={ burgerClick } />
                         <SectionStart />
                     </Route>
                     <Route path="/history">
+                        <Header title={ "History " } onClick={ burgerClick } />
                         <section className={ 'page-wrapper' }>
                             <p> To be created... </p>
                         </section>
+                    </Route>
+                    <Route path="/new">
+                        <Header title={ "New workout" } onClick={ burgerClick } />
+                        <SectionNewWorkout />
                     </Route>
                     <Redirect from="/" to="/general" />
                 </Switch>

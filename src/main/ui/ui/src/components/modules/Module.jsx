@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Module = ({ title, children }) => {
+const Module = ({ title, style, children }) => {
 
     return (
-        <div className={ 'module' }>
+        <div className={ 'module' } style={style}>
             <h3> {title} </h3>
             { children }
         </div>
