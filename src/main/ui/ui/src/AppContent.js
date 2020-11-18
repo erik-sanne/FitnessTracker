@@ -13,9 +13,17 @@ const AppContent = ({ logoutCallback }) => {
         setMenuOpen(!menuOpen);
     }
 
+    const clickOutside = () => {
+        if (menuOpen) setMenuOpen(false)
+    }
+
+    const onNavigate = () => {
+        setMenuOpen(false)
+    }
+
     return(
         <BrowserRouter>
-            <section>
+            <section onClick={ clickOutside } >
                 <Switch>
                     <Route path="/general">
                         <Header title={ "My Statistics" } onClick={ burgerClick } />
@@ -34,7 +42,7 @@ const AppContent = ({ logoutCallback }) => {
                     <Redirect from="/" to="/general" />
                 </Switch>
             </section>
-            <Menu open={ menuOpen } logoutCallback={ logoutCallback } />
+            <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } />
             <Burger onClick={ burgerClick } open={ menuOpen }/>
         </BrowserRouter>
     );

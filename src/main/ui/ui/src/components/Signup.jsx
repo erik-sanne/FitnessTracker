@@ -42,7 +42,7 @@ const Signup = () => {
                 password: userInfo.password
             })
         }).then((response) => {
-            if (response.status == 202) {
+            if (response.status === 202) {
                 response.text().then( (notice) => {
                     setResponse(notice)
                 });

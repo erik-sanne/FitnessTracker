@@ -32,10 +32,27 @@ body {
 }
 
 .menu ul a {
-  color: rgba(107,166,239,0.7);
+  color: #555;
   font-size: 24px;
   padding: 5px;
 }
+
+.menu ul a:hover {
+  color: rgba(107,166,239,0.7);
+}
+
+.menu ul a svg {
+  visibility: hidden;
+}
+
+.menu ul a:hover svg {
+  visibility: visible;
+}
+
+.menu ul a.active svg {
+  visibility: visible;
+}
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

@@ -1,7 +1,7 @@
 import '../../styles/Module.css';
 import 'chartjs-plugin-zoom' //It says that its not used, but it is
 import Spinner from "react-bootstrap/Spinner";
-import useFetch from "../../services/UseFetch";
+import useFetch from "../../services/useFetch";
 import DisplayValue from "./DisplayValue";
 import Graph from "./Graph";
 import {useEffect, useState} from "react";

@@ -1,7 +1,7 @@
 import '../../styles/Module.css';
 import 'chartjs-plugin-zoom'
 import Spinner from "react-bootstrap/Spinner";
-import useFetch from "../../services/UseFetch";
+import useFetch from "../../services/useFetch";
 import DisplayValue from "./DisplayValue";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMedal } from '@fortawesome/free-solid-svg-icons'
@@ -73,13 +73,15 @@ const computeAverage = (numWeeks, data) => {
     return total / numWeeks;
 }
 
+const reachedGoal = (goal, data) => {
+    return data[data.length - 1].totalWorkouts >= goal;
+}
+
 const ModuleWorkoutDays = () => {
     const { data, loading } = useFetch('api/workoutsPerWeek');
     const [ chartData, setChartData ] = useState(null);
+    const [ goal, setGoal ] = useState(3);
 
-    // Note to self:
-    // Unfortunately this hook is needed and I am not sure why...
-    // data = createConfig(data) does not ALWAYS work properly.
     useEffect(() => {
         if (!loading)
             setChartData(createConfig(data));
@@ -88,7 +90,7 @@ const ModuleWorkoutDays = () => {
     return (
         <>
             <FontAwesomeIcon icon={ faMedal } style={{
-                color: "#ffc877",
+                color: !loading && reachedGoal(goal, data) ? "#ffc877" : "rgb(61 65 72)",
                 position: 'absolute',
                 top:'min(4vw, 68px)',
                 right: 'min(4vw, 68px)',

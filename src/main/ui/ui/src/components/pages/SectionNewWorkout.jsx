@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import SetInput from "../modules/SetInput";
-import useFetch from "../../services/UseFetch";
+import useFetch from "../../services/useFetch";
 import Module from "../modules/Module";
 import { getCookie } from "react-use-cookie";
 import { Redirect } from "react-router-dom";
