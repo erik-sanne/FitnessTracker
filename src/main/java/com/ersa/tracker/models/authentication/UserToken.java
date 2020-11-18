@@ -1,4 +1,4 @@
-package com.ersa.tracker.models;
+package com.ersa.tracker.models.authentication;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

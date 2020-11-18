@@ -1,11 +1,17 @@
 package com.ersa.tracker.services;
 
-import com.ersa.tracker.models.User;
-import com.ersa.tracker.models.UserToken;
-import com.ersa.tracker.repositories.TokenRepository;
-import com.ersa.tracker.repositories.UserRepository;
+import com.ersa.tracker.models.authentication.EmailVerificationToken;
+import com.ersa.tracker.models.authentication.User;
+import com.ersa.tracker.models.authentication.UserToken;
+import com.ersa.tracker.repositories.authentication.AuthenticationTokenRepository;
+import com.ersa.tracker.repositories.authentication.EmailVerificationTokenRepository;
+import com.ersa.tracker.repositories.authentication.UserRepository;
+import com.ersa.tracker.security.EmailAlreadyRegisteredException;
+import com.ersa.tracker.security.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,28 +22,32 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 @Service
 public class UserManagementService implements UserDetailsService {
 
+    private final int ONE_DAY_IN_MINUTES = 60 * 24;
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private TokenRepository tokenRepository;
+    private AuthenticationTokenRepository authenticationTokenRepository;
+    @Autowired
+    private EmailVerificationTokenRepository emailVerificationTokenRepoistory;
     @Autowired
     private PasswordEncoder pwEncoder;
 
-    public void register(String username, String password) {
-        User user = new User();
+    public User register(String email, String password) throws EmailAlreadyRegisteredException {
+        if (userRepository.findByEmail(email) != null)
+            throw new EmailAlreadyRegisteredException("An account is already registered with this email");
 
-        user.setEmail(username);
+        User user = new User();
+        user.setEmail(email);
         user.setPassword(pwEncoder.encode(password));
         user.setPermissionLevel(User.Permissions.BASIC);
         userRepository.save(user);
+        return user;
     }
 
     public void authenticate(String username, String password) throws AuthenticationException {
@@ -47,40 +57,64 @@ public class UserManagementService implements UserDetailsService {
 
         if (!pwEncoder.matches(password, user.getPassword()))
             throw new BadCredentialsException("Wrong username or password");
+
+        if (!user.isVerified())
+            throw new DisabledException("Account has not been verified");
     }
 
     /**
-     * Generates a session token that can be used by client as credentials.
-     * (Should probably use a real token provider with JWS-Tokens or similar if this would be used in production)
+     * Generates a "session" token that can be used by client as credentials.
      * @param username
      * @param password
      * @return A token string
      * @throws AuthenticationException if authentication would fail
      */
     @Transactional
-    public String createToken(String username, String password) throws AuthenticationException {
+    public String createAuthenticationToken(String username, String password) throws AuthenticationException {
         authenticate(username, password);
 
         User user = userRepository.findByEmail(username);
 
-        final String token = pwEncoder.encode(user.getPassword());
+        final String token = UUID.randomUUID().toString();
         final String token_hash = pwEncoder.encode(token);
         final String tokenString = String.format("%s:%s", username, token);
 
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, 1);
-        final Date expires = cal.getTime();
+        final Date expires = getExpiry(ONE_DAY_IN_MINUTES);
 
         UserToken sessionToken = new UserToken();
         sessionToken.setToken(token_hash);
         sessionToken.setExpiration(expires);
-        tokenRepository.save(sessionToken);
+        authenticationTokenRepository.save(sessionToken);
 
         user.setToken(sessionToken);
-
         userRepository.save(user);
 
         return tokenString;
+    }
+
+    public void createEmailVerificationToken(User user, final String token){
+        EmailVerificationToken emailVerificationToken = new EmailVerificationToken();
+        final Date expires = getExpiry(ONE_DAY_IN_MINUTES);
+        emailVerificationToken.setUser(user);
+        emailVerificationToken.setToken(token);
+        emailVerificationToken.setExpiryDate(expires);
+        emailVerificationTokenRepoistory.save(emailVerificationToken);
+    }
+
+    public void verifyEmail(final String tokenString) throws AuthenticationException, ResourceNotFoundException {
+        EmailVerificationToken token = emailVerificationTokenRepoistory.findByToken(tokenString);
+        if (token == null)
+            throw new ResourceNotFoundException("Bad token, perhaps it has expired");
+
+        if (new Date().after(token.getExpiryDate()))
+            // CredentialsExpiredEception inherits from AccountStatusException, and an email token is not an account....
+            throw new CredentialsExpiredException("Verification token expired");
+
+        User user = token.getUser();
+        user.setVerified(true);
+        userRepository.save(user);
+
+        emailVerificationTokenRepoistory.delete(token);
     }
 
     @Override
@@ -94,30 +128,32 @@ public class UserManagementService implements UserDetailsService {
 
         final String tokenString = token.getToken();
 
+        boolean credentialsNonExpired = true;
+
         if (new Date().after(token.getExpiration())) {
             user.setToken(null);
             userRepository.save(user);
-            tokenRepository.delete(token);
+            authenticationTokenRepository.delete(token);
 
-            UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                    user.getEmail(),
-                    null,
-                    true,
-                    true,
-                    false,
-                    true,
-                    permissions
-            );
-
-            return userDetails;
+            credentialsNonExpired = false;
         }
 
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 tokenString,
+                user.isVerified(),
+                true,
+                credentialsNonExpired,
+                true,
                 permissions
         );
 
         return userDetails;
+    }
+
+    private Date getExpiry(int minuets) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MINUTE, minuets);
+        return new Date(cal.getTime().getTime());
     }
 }

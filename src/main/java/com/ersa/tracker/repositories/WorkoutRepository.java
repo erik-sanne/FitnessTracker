@@ -1,6 +1,6 @@
 package com.ersa.tracker.repositories;
 
-import com.ersa.tracker.models.User;
+import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.Workout;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

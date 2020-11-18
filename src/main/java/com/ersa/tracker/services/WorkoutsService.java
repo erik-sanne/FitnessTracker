@@ -2,6 +2,7 @@ package com.ersa.tracker.services;
 
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.models.*;
+import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.TargetRepository;
 import com.ersa.tracker.repositories.WorkoutRepository;
 import com.ersa.tracker.utils.KVPair;

@@ -34,7 +34,9 @@ class Login extends React.Component {
 
         if (!tokenResponse.ok) {
             if (tokenResponse.status === 401) {
-                this.setState({ msg: "Wrong username or password", password: "" });
+                tokenResponse.text().then(reason => {
+                    this.setState({ msg: reason, password: "" });
+                })
             }
             return;
         }
@@ -60,7 +62,7 @@ class Login extends React.Component {
                     <input name="password" type="password" value={ this.state.password } onChange={ this.onChange }/>
                     <br/>
                     <input type="submit" value="Log in" className={'btn-form'}/>
-                    <a href="/">New user? Sign up here!</a>
+                    <a href="/register">New user? Sign up here!</a>
                 </form>
             </section>
         );

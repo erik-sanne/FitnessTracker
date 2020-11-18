@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Header from "./components/Header";
 import {Redirect, BrowserRouter, Route, Switch} from "react-router-dom";
-import SectionStart from "./components/pages/SectionStart";
+import SectionStatistics from "./components/pages/SectionStatistics";
 import Menu from "./components/Menu";
 import Burger from "./components/Burger";
 import SectionNewWorkout from "./components/pages/SectionNewWorkout";
@@ -19,7 +19,7 @@ const AppContent = ({ logoutCallback }) => {
                 <Switch>
                     <Route path="/general">
                         <Header title={ "My Statistics" } onClick={ burgerClick } />
-                        <SectionStart />
+                        <SectionStatistics />
                     </Route>
                     <Route path="/history">
                         <Header title={ "History " } onClick={ burgerClick } />

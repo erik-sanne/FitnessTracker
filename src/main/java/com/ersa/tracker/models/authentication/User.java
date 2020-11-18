@@ -1,9 +1,12 @@
-package com.ersa.tracker.models;
+package com.ersa.tracker.models.authentication;
+
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity(name = "users")
 public class User {
@@ -12,12 +15,13 @@ public class User {
     @Id
     private long id;
 
-    @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
+    @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Not a valid email")
     private String email;
 
     @NotNull
-    @NotEmpty
     private String password;
+
+    private boolean verified = false;
 
     @NotNull
     private String permissionLevel = Permissions.BASIC;
@@ -65,7 +69,15 @@ public class User {
         this.password = password;
     }
 
-    public static class Permissions {
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public static final class Permissions {
         public static final String BASIC = "ADMIN";
         public static final String ADMIN = "BASIC";
     }

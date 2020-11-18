@@ -1,8 +1,10 @@
 import './styles/App.css';
 import React, {useEffect, useState} from 'react';
 import { setCookie, getCookie } from 'react-use-cookie';
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Splash from "./components/Splash";
 import Login from "./components/Login";
+import Signup from "./components/Signup";
 import AppContent from "./AppContent";
 
 const authorizationStatus = {
@@ -49,8 +51,23 @@ function App() {
     if (authorized === authorizationStatus.PENDING)
         return <Splash />;
 
-    if (authorized === authorizationStatus.UNAUTHORIZED)
-        return <Login submitLoginCredentials={ credentialsSuccessfullySubmitted }/>
+    if (authorized === authorizationStatus.UNAUTHORIZED) {
+        return (
+            <BrowserRouter>
+                <Switch>
+                    <Route path="/login">
+                        <Login submitLoginCredentials={credentialsSuccessfullySubmitted}/>
+                    </Route>
+                    <Route path="/register">
+                        <Signup/>
+                    </Route>
+                    <Route path="/">
+                        <Redirect to="/login" />
+                    </Route>
+                </Switch>
+            </BrowserRouter>
+        )
+    }
 
     return (
         <AppContent logoutCallback={ logoutCallback } />

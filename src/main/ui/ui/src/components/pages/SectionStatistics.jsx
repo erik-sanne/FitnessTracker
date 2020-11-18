@@ -3,9 +3,9 @@ import ModuleWorkoutDays from "../modules/ModuleWorkoutDays";
 import ModuleWorkoutDistribution from "../modules/ModuleWorkoutDistribution";
 import Module from "../modules/Module";
 
-const SectionStart = () => {
+const SectionStatistics = () => {
     return (
-        <div className={ 'page-wrapper' }>
+        <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
             <Module title = "Weekly workouts">
                 <ModuleWorkoutDays />
             </Module>
@@ -16,4 +16,4 @@ const SectionStart = () => {
     );
 }
 
-export default SectionStart;
+export default SectionStatistics;
