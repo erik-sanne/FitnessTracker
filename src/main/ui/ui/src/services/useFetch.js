@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getCookie } from 'react-use-cookie';
 
-const baseURL = "http://localhost:8080/";
-
 function useFetch(url, method = 'GET') {
     const [ data, setData ] = useState(null);
     const [ error, setError ] = useState(null);
@@ -17,7 +15,7 @@ function useFetch(url, method = 'GET') {
                 if (token == null)
                     throw new Error('Token not provided');
 
-                const response = await fetch(baseURL + url, {
+                const response = await fetch(url, {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json',

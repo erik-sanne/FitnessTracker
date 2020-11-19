@@ -31,7 +31,7 @@ function App() {
             return
 
         const token = getCookie('session_token')
-        fetch(`http://localhost:8080/validate`, {
+        fetch('/validate', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

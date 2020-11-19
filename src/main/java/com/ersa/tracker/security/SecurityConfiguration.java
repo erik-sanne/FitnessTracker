@@ -1,7 +1,9 @@
 package com.ersa.tracker.security;
 
+import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.services.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,7 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers("/authenticate").permitAll()
                     .antMatchers("/confirmEmail/**").permitAll()
                     .antMatchers("/register").permitAll()
-                    .antMatchers("/h2-console/**").permitAll()//.hasAuthority(User.Permissions.ADMIN)
+                    .antMatchers("/h2-console/**").permitAll() //hasAuthority(User.Permissions.ADMIN)
                     .anyRequest().authenticated();
 
         http.logout()
@@ -67,10 +69,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .permitAll();
     }
 
+    @Value("${client.origin}")
+    private String allowedOrigin;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigin));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
         // Needed. Otherwise will fail with 403 Invalid CORS request

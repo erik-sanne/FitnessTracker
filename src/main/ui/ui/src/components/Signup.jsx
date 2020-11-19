@@ -31,7 +31,7 @@ const Signup = () => {
         setResponse(null);
         setLoading(true)
 
-        fetch(`http://localhost:8080/register`, {
+        fetch('/register', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',

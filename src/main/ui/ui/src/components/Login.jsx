@@ -20,7 +20,7 @@ class Login extends React.Component {
     onSubmit = async (event) => {
         event.preventDefault();
 
-        const tokenResponse = await fetch(`http://localhost:8080/authenticate`, {
+        const tokenResponse = await fetch('/authenticate', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
