@@ -53,7 +53,7 @@ const bestImprovement = (data) => {
 }
 
 const ModuleWorkoutDistribution = () => {
-    const { data, loading } = useFetch('api/distribution');
+    const { data, loading } = useFetch('/api/distribution');
     const [ chartData, setChartData ] = useState(null);
 
     useEffect(() => {

@@ -74,11 +74,11 @@ const computeAverage = (numWeeks, data) => {
 }
 
 const reachedGoal = (goal, data) => {
-    return data[data.length - 1].totalWorkouts >= goal;
+    return data && data[data.length - 1].totalWorkouts >= goal;
 }
 
 const ModuleWorkoutDays = () => {
-    const { data, loading } = useFetch('api/workoutsPerWeek');
+    const { data, loading } = useFetch('/api/workoutsPerWeek');
     const [ chartData, setChartData ] = useState(null);
     const [ goal, setGoal ] = useState(3);
 
@@ -101,9 +101,9 @@ const ModuleWorkoutDays = () => {
                 <>
                     <Graph data={ chartData } />
                     <div style={{ display: "flex" }}>
-                        <DisplayValue text={'Avg 90 weeks'} value={ computeAverage(90, data).toFixed(1) } />
-                        <DisplayValue text={'Avg 30 weeks'} value={ computeAverage(30, data).toFixed(1) } />
-                        <DisplayValue text={'Avg 10 weeks'} value={ computeAverage(10, data).toFixed(1) } />
+                        <DisplayValue text={'Avg 90 weeks'} value={ data ? computeAverage(90, data).toFixed(1) : "-" } />
+                        <DisplayValue text={'Avg 30 weeks'} value={ data ? computeAverage(30, data).toFixed(1) : "-" } />
+                        <DisplayValue text={'Avg 10 weeks'} value={ data ? computeAverage(10, data).toFixed(1) : "-" } />
                     </div>
                 </>
             }
