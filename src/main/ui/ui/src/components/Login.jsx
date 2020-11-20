@@ -20,7 +20,7 @@ class Login extends React.Component {
     onSubmit = async (event) => {
         event.preventDefault();
 
-        const tokenResponse = await fetch(`${ process.env.API_BASE }/authenticate`, {
+        const tokenResponse = await fetch(`${ process.env.REACT_APP_API_BASE }/authenticate`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

@@ -31,7 +31,7 @@ function App() {
             return
 
         const token = getCookie('session_token')
-        fetch(`${ process.env.API_BASE }/validate`, {
+        fetch(`${ process.env.REACT_APP_API_BASE }/validate`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
