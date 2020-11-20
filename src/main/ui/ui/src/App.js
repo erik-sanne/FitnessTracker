@@ -43,7 +43,7 @@ function App() {
                 setAuthorised(authorizationStatus.AUTHORIZED);
             else
                 throw new Error('Unauthorized');
-        }).catch(error => {
+        }).catch(_ => {
             setAuthorised(authorizationStatus.UNAUTHORIZED);
         });
     });

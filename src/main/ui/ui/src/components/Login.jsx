@@ -1,5 +1,6 @@
 import React from 'react';
 import { setCookie } from "react-use-cookie";
+import {Spinner} from "react-bootstrap";
 
 class Login extends React.Component {
 
@@ -9,7 +10,8 @@ class Login extends React.Component {
         this.state = {
             username: '',
             password: '',
-            msg: null
+            msg: null,
+            loading: false
         }
     }
 
@@ -17,10 +19,12 @@ class Login extends React.Component {
         this.setState({ [event.target.name]: event.target.value });
     }
 
-    onSubmit = async (event) => {
+    onSubmit = (event) => {
         event.preventDefault();
 
-        const tokenResponse = await fetch(`${ process.env.REACT_APP_API_BASE }/authenticate`, {
+        this.setState({...this.state, loading: true})
+
+        fetch(`${ process.env.REACT_APP_API_BASE }/authenticate`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -30,23 +34,29 @@ class Login extends React.Component {
                 username: this.state.username,
                 password: this.state.password
             })
-        })
+        }).then(response => {
+            if (!response.ok) {
+                if (response.status === 401) {
+                    response.text().then(reason => {
+                        this.setState({ ...this.state, msg: reason, loading: false, password: "" });
+                    });
 
-        if (!tokenResponse.ok) {
-            if (tokenResponse.status === 401) {
-                tokenResponse.text().then(reason => {
-                    this.setState({ msg: reason, password: "" });
-                })
+                    return;
+                } else {
+                    throw Error();
+                }
             }
-            return;
-        }
 
-        this.setState({ error: null });
+            response.json().then(tokenData => {
+                this.setState({ ...this.state,  msg: null, loading: false });
+                const token = tokenData.token;
+                setCookie('session_token', token);
+                this.submitLoginCredentials();
+            })
 
-        const tokenData = await tokenResponse.json();
-        const token = tokenData.token;
-        setCookie('session_token', token);
-        this.submitLoginCredentials();
+        }).catch(_ => {
+            this.setState({  ...this.state, msg: "An error occurred, please try again later.", loading: false, password: "" });
+        });
     }
 
     render() {
@@ -54,6 +64,7 @@ class Login extends React.Component {
             <section className={'page-wrapper'}>
                 <form onSubmit={ this.onSubmit }>
                     <h2>Sign in</h2>
+                    { this.state.loading && <Spinner animation="grow"/>}
                     { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
                     <label htmlFor="username">Email</label>
                     <input name="username" type="email" autoFocus={ true } value={ this.state.username } onChange={ this.onChange }/>

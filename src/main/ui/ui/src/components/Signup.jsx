@@ -59,6 +59,9 @@ const Signup = () => {
                 setErrorMessage(reason)
                 setLoading(false)
             });
+        }).catch((_) => {
+            setErrorMessage("An error occurred, please try again later.")
+            setLoading(false)
         })
     }
 
