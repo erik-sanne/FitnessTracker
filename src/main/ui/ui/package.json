@@ -2,7 +2,6 @@
   "name": "ui",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://trackerrestservice-env.eba-gawqbtpy.eu-north-1.elasticbeanstalk.com",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/react-fontawesome": "^0.1.12",

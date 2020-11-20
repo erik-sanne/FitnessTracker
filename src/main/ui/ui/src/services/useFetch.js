@@ -15,7 +15,7 @@ function useFetch(url, method = 'GET') {
                 if (token == null)
                     throw new Error('Token not provided');
 
-                const response = await fetch(url, {
+                const response = await fetch( process.env.API_BASE + url, {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json',

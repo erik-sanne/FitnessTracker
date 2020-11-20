@@ -31,7 +31,7 @@ const Signup = () => {
         setResponse(null);
         setLoading(true)
 
-        fetch('/register', {
+        fetch(`${ process.env.API_BASE }/register`, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
