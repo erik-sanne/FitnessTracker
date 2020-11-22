@@ -1,4 +1,4 @@
-package com.ersa.tracker.security;
+package com.ersa.tracker.security.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String msg)  {

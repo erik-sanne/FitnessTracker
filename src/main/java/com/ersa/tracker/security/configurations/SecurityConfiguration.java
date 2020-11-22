@@ -1,4 +1,4 @@
-package com.ersa.tracker.security;
+package com.ersa.tracker.security.configurations;
 
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.services.UserManagementService;
@@ -69,7 +69,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .permitAll();
     }
 
-    @Value("${client.origin}")
+    @Value("${CLIENT_ORIGIN}")
     private String allowedOrigin;
 
     @Bean

@@ -11,7 +11,7 @@ const SectionNewWorkout = () => {
 
     const todaysDate = new Date().toISOString().split('T')[0];
 
-    const { data: names, loading } = useFetch('api/exercises');
+    const { data: names, loading } = useFetch('/api/exercises');
     const [ exerciseOptions, setExerciseOptions ] = useState([]);
     const [ date, setDate] = useState(todaysDate);
     const [ sets, setSets ] = useState([]);
@@ -33,7 +33,7 @@ const SectionNewWorkout = () => {
         }
 
         const token = getCookie('session_token')
-        fetch(`http://localhost:8080/api/saveWorkout`, {
+        fetch(`${ process.env.REACT_APP_API_BASE }/api/saveWorkout`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

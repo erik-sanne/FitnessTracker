@@ -78,8 +78,8 @@ public class User {
     }
 
     public static final class Permissions {
-        public static final String BASIC = "ADMIN";
-        public static final String ADMIN = "BASIC";
+        public static final String BASIC = "BASIC";
+        public static final String ADMIN = "ADMIN";
     }
 }
 

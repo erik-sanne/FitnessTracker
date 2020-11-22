@@ -1,4 +1,4 @@
-package com.ersa.tracker.security;
+package com.ersa.tracker.security.exceptions;
 
 public class EmailAlreadyRegisteredException extends RuntimeException {
     public EmailAlreadyRegisteredException(String msg) {

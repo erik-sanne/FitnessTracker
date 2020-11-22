@@ -8,6 +8,14 @@ group = 'com.ersa'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+task dist(type: Zip) {
+	from build
+	from ('.ebextensions/') {
+		into '.ebextensions'
+	}
+	from 'procfile'
+}
+
 repositories {
 	mavenCentral()
 }

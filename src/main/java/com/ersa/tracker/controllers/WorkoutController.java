@@ -6,6 +6,7 @@ import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.repositories.ExerciseRepository;
 import com.ersa.tracker.repositories.authentication.UserRepository;
 import com.ersa.tracker.repositories.WorkoutRepository;
+import com.ersa.tracker.services.AccountService;
 import com.ersa.tracker.services.WorkoutsService;
 import com.ersa.tracker.utils.KVPair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class WorkoutController {
     @Autowired
     private WorkoutsService workoutsService;
 
-    @Autowired //Comment to self: Bypassing service layer, change maybe.
-    private UserRepository userRepository;
+    @Autowired
+    private AccountService accountService;
 
     @Autowired
     private ExerciseRepository exerciseRepository;
@@ -37,13 +38,13 @@ public class WorkoutController {
 
     @GetMapping("api/workoutsPerWeek")
     public Iterable<Week> getWorkoutsPerWeek(Principal principal) {
-        User currentUser = userRepository.findByEmail(principal.getName());
+        User currentUser = accountService.getUserByPrincipal(principal);
         return workoutsService.getWorkoutsPerWeek(currentUser);
     }
 
     @GetMapping("api/distribution")
     public List<KVPair<String, Float>> getSetsPerBodypart(Principal principal) {
-        User currentUser = userRepository.findByEmail(principal.getName());
+        User currentUser = accountService.getUserByPrincipal(principal);
         return workoutsService.getSetPerBodypart(currentUser);
     }
 
@@ -56,9 +57,7 @@ public class WorkoutController {
 
     @PostMapping("api/saveWorkout")
     public ResponseEntity<?> saveWorkout(Principal principal, @RequestBody Workout workout) {
-        User currentUser = userRepository.findByEmail(principal.getName());
-        if (currentUser == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        User currentUser = accountService.getUserByPrincipal(principal);
 
         workout.setUser(currentUser);
         workoutRepository.save(workout);

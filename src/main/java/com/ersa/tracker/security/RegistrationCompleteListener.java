@@ -1,6 +1,7 @@
 package com.ersa.tracker.security;
 
 import com.ersa.tracker.models.authentication.User;
+import com.ersa.tracker.services.EmailVerificationService;
 import com.ersa.tracker.services.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -14,7 +15,7 @@ import java.util.UUID;
 public class RegistrationCompleteListener implements ApplicationListener<OnRegistrationCompleteEvent> {
 
     @Autowired
-    private UserManagementService userManagementService;
+    private EmailVerificationService emailService;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -23,7 +24,7 @@ public class RegistrationCompleteListener implements ApplicationListener<OnRegis
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
         User user = event.getUser();
         final String token = UUID.randomUUID().toString();
-        userManagementService.createEmailVerificationToken(user, token);
+        emailService.createEmailVerificationToken(user, token);
 
         String recipient = user.getEmail();
         String subject = "Confirm email";

@@ -6,8 +6,8 @@ import com.ersa.tracker.models.authentication.UserToken;
 import com.ersa.tracker.repositories.authentication.AuthenticationTokenRepository;
 import com.ersa.tracker.repositories.authentication.EmailVerificationTokenRepository;
 import com.ersa.tracker.repositories.authentication.UserRepository;
-import com.ersa.tracker.security.EmailAlreadyRegisteredException;
-import com.ersa.tracker.security.ResourceNotFoundException;
+import com.ersa.tracker.security.exceptions.EmailAlreadyRegisteredException;
+import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -16,16 +16,16 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.*;
 
 @Service
-public class UserManagementService implements UserDetailsService {
+public class UserManagementService implements AccountService, AuthenticationService, EmailVerificationService {
 
     private final int ONE_DAY_IN_MINUTES = 60 * 24;
 
@@ -34,7 +34,7 @@ public class UserManagementService implements UserDetailsService {
     @Autowired
     private AuthenticationTokenRepository authenticationTokenRepository;
     @Autowired
-    private EmailVerificationTokenRepository emailVerificationTokenRepoistory;
+    private EmailVerificationTokenRepository emailVerificationTokenRepository;
     @Autowired
     private PasswordEncoder pwEncoder;
 
@@ -60,6 +60,14 @@ public class UserManagementService implements UserDetailsService {
 
         if (!user.isVerified())
             throw new DisabledException("Account has not been verified");
+    }
+
+    @Override
+    public User getUserByPrincipal(Principal principal) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(principal.getName());
+        if (user == null)
+            throw new UsernameNotFoundException("Could not find user linked to credentials");
+        return user;
     }
 
     /**
@@ -98,11 +106,11 @@ public class UserManagementService implements UserDetailsService {
         emailVerificationToken.setUser(user);
         emailVerificationToken.setToken(token);
         emailVerificationToken.setExpiryDate(expires);
-        emailVerificationTokenRepoistory.save(emailVerificationToken);
+        emailVerificationTokenRepository.save(emailVerificationToken);
     }
 
     public void verifyEmail(final String tokenString) throws AuthenticationException, ResourceNotFoundException {
-        EmailVerificationToken token = emailVerificationTokenRepoistory.findByToken(tokenString);
+        EmailVerificationToken token = emailVerificationTokenRepository.findByToken(tokenString);
         if (token == null)
             throw new ResourceNotFoundException("Bad token, perhaps it has expired");
 
@@ -114,7 +122,7 @@ public class UserManagementService implements UserDetailsService {
         user.setVerified(true);
         userRepository.save(user);
 
-        emailVerificationTokenRepoistory.delete(token);
+        emailVerificationTokenRepository.delete(token);
     }
 
     @Override

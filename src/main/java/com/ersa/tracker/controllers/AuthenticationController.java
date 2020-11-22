@@ -1,10 +1,12 @@
 package com.ersa.tracker.controllers;
 
 import com.ersa.tracker.models.authentication.User;
-import com.ersa.tracker.security.EmailAlreadyRegisteredException;
+import com.ersa.tracker.security.exceptions.EmailAlreadyRegisteredException;
 import com.ersa.tracker.security.OnRegistrationCompleteEvent;
-import com.ersa.tracker.security.ResourceNotFoundException;
-import com.ersa.tracker.services.UserManagementService;
+import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
+import com.ersa.tracker.services.AccountService;
+import com.ersa.tracker.services.AuthenticationService;
+import com.ersa.tracker.services.EmailVerificationService;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -13,27 +15,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSendException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Base64;
-import java.util.List;
 
 @RestController
 public class AuthenticationController {
 
-    private UserManagementService userManager;
+    private EmailVerificationService emaiLService;
+    private AccountService accountService;
+    private AuthenticationService tokenService;
+
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public AuthenticationController(UserManagementService userManager, ApplicationEventPublisher eventPublisher){
-        this.userManager = userManager;
+    public AuthenticationController(EmailVerificationService emaiLService,
+                                    AccountService accountService,
+                                    AuthenticationService tokenService,
+                                    ApplicationEventPublisher eventPublisher){
+        this.emaiLService = emaiLService;
+        this.accountService = accountService;
+        this.tokenService = tokenService;
         this.eventPublisher = eventPublisher;
     }
 
@@ -45,7 +52,7 @@ public class AuthenticationController {
     @GetMapping("/confirmEmail/{token}")
     public ResponseEntity<?> confirmEmail(@PathVariable String token) {
         try {
-            userManager.verifyEmail(token);
+            emaiLService.verifyEmail(token);
             return ResponseEntity.ok("Verified");
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -62,7 +69,7 @@ public class AuthenticationController {
         }
 
         try {
-            User newUser = userManager.register(signupRequest.getUsername(), signupRequest.getPassword());
+            User newUser = accountService.register(signupRequest.getUsername(), signupRequest.getPassword());
             final String appUrl = request.getContextPath();
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, appUrl));
         } catch (EmailAlreadyRegisteredException e) {
@@ -79,7 +86,7 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody TokenRequest tokenRequest) {
         try {
-            final String token = userManager.createAuthenticationToken(tokenRequest.getUsername(), tokenRequest.getPassword());
+            final String token = tokenService.createAuthenticationToken(tokenRequest.getUsername(), tokenRequest.getPassword());
             final String encoded_token = Base64.getEncoder().encodeToString(token.getBytes());
 
             TokenResponse tr = new TokenResponse();
