@@ -22,7 +22,7 @@ public class Workout {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date date;
 
-    @OneToMany(mappedBy = "workout")
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "workout", cascade=CascadeType.PERSIST)
     private Collection<WorkoutSet> sets;
 
     public long getId() {

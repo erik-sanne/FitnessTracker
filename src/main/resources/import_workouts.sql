@@ -77,3 +77,6 @@ INSERT INTO workoutset (exercise_name, reps, weight, workout_id) VALUES
 ( 'ROW', 8, 70, 30 ),
 ( 'ROW', 8, 70, 30 ),
 ( 'ROW', 6, 70, 30 );
+
+INSERT INTO workoutset (exercise_name, reps, weight, workout_id) VALUES
+( 'BENCH_PRESS', 5, 80, 40 )

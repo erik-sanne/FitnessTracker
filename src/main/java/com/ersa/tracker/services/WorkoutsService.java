@@ -125,7 +125,6 @@ public class WorkoutsService {
                 .sorted(Comparator.comparing(e -> types.get(e.getKey())))
                 .collect(Collectors.toList());
 
-
         int smoothnessFactor = 10;
         smooth(result, smoothnessFactor);
 

@@ -7,6 +7,7 @@ import Graph from "./Graph";
 import {useEffect, useState} from "react";
 
 const createConfig = (data) => {
+
     const xLabels = data.map( e => e.key.replace('_', ' '))
     const yValues = data.map( e => e.value )
 

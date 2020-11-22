@@ -22,7 +22,7 @@ class Login extends React.Component {
     onSubmit = (event) => {
         event.preventDefault();
 
-        this.setState({...this.state, loading: true})
+        this.setState({...this.state, loading: true, msg: null})
 
         fetch(`${ process.env.REACT_APP_API_BASE }/authenticate`, {
             method: 'POST',
