@@ -37,6 +37,7 @@ const createConfig = (data) => {
             scales: {
                 yAxes: [{
                     ticks: {
+                        min: 0,
                         max: 7,
                         stepSize: 1
                     }
