@@ -82,11 +82,12 @@ const createConfig = (data) => {
 const bestImprovement = (data) => {
     let lowest = 99;
     let str = "";
-    Object.entries(data).forEach(([name, value]) => {
+    Object.entries(data).map(([name, value]) => {
         if (value < lowest) {
             lowest = value;
             str = name;
         }
+        return null;
     })
     return str.split('_')[1] || str.split('_')[0];
 }
