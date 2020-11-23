@@ -38,6 +38,12 @@ public class WorkoutController {
         this.apiService = apiService;
     }
 
+    @GetMapping("api/workouts")
+    public List<Workout> getWorkouts(Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        List<Workout> workouts = workoutService.getWorkouts(currentUser);
+        return workouts;
+    }
 
     @GetMapping("api/workoutsPerWeek")
     public Iterable<Week> getWorkoutsPerWeek(Principal principal) {

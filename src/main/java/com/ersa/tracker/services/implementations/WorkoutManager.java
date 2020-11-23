@@ -37,7 +37,9 @@ public class WorkoutManager implements WorkoutService {
 
     @Override
     public List<Workout> getWorkouts(User user) {
-        return workoutRepository.findAllByUser(user, descDateSort);
+        List<Workout> workouts = workoutRepository.findAllByUser(user, descDateSort);
+        workouts.forEach(workout -> workout.setSets(null));
+        return workouts;
     }
 
     @Override

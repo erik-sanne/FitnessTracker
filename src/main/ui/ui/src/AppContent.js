@@ -5,6 +5,7 @@ import SectionStatistics from "./components/pages/SectionStatistics";
 import Menu from "./components/Menu";
 import Burger from "./components/Burger";
 import SectionNewWorkout from "./components/pages/SectionNewWorkout";
+import SectionHistory from "./components/pages/SectionHistory";
 
 const AppContent = ({ logoutCallback }) => {
     const [menuOpen, setMenuOpen] = useState(false)
@@ -30,10 +31,8 @@ const AppContent = ({ logoutCallback }) => {
                         <SectionStatistics />
                     </Route>
                     <Route path="/history">
-                        <Header title={ "History " } onClick={ burgerClick } />
-                        <section className={ 'page-wrapper' }>
-                            <p> To be created... </p>
-                        </section>
+                        <Header title={ "History" } onClick={ burgerClick } />
+                        <SectionHistory />
                     </Route>
                     <Route path="/new">
                         <Header title={ "New workout" } onClick={ burgerClick } />
