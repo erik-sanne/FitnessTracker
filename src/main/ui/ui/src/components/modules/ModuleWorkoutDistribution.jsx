@@ -6,10 +6,48 @@ import DisplayValue from "./DisplayValue";
 import Graph from "./Graph";
 import {useEffect, useState} from "react";
 
+const manualOrderingPass = (data) => {
+    return [
+        { x: "CORE", y: data["CORE"] },
+        { x: "OBLIQUES", y: data["OBLIQUES"] },
+        { x: "GLUTES", y: data["GLUTES"] },
+        { x: "HAMSTRINGS", y: data["HAMSTRINGS"] },
+        { x: "QUADS", y: data["QUADS"] },
+        { x: "CALVES", y: data["CALVES"] },
+        { x: "TRAPS", y: data["TRAPS"] },
+        { x: "RHOMBOIDS", y: data["RHOMBOIDS"] },
+        { x: "LATS", y: data["LATS"] },
+        { x: "REAR DELTS", y: data["REAR_DELTS"] },
+        { x: "BICEPS", y: data["BICEPS"] },
+        { x: "TRICEPS", y: data["TRICEPS"] },
+        { x: "SIDE DELTS", y: data["SIDE_DELTS"] },
+        { x: "FRONT DELTS", y: data["FRONT_DELTS"] },
+        { x: "UPPER CHEST", y: data["UPPER_CHEST"] },
+        { x: "LOWER_CHEST", y: data["LOWER_CHEST"] },
+    ]
+};
+
+const interpolate = (values, factor) => {
+    let result = []
+    const len = values.length;
+    for (let i = 0; i < len; i++) {
+        let sum = 0;
+        for (let j = -factor; j < +factor; j++) {
+            const index = (((i + j) % len) + len) % len;
+            const falloff = 1 / (1 + Math.abs(j));
+            sum += values[index] * falloff;
+        }
+        result[i] = sum;
+    }
+    return result;
+}
+
 const createConfig = (data) => {
 
-    const xLabels = data.map( e => e.key.replace('_', ' '))
-    const yValues = data.map( e => e.value )
+    const sorted = manualOrderingPass(data);
+
+    const xLabels = sorted.map( entry => entry.x)
+    const yValues = interpolate(sorted.map( entry => entry.y), 5);
 
     return {
         type: 'radar',
@@ -19,6 +57,7 @@ const createConfig = (data) => {
                 label: 'Sets per bodypart',
                 backgroundColor: 'rgba(107,166,239,0.35)',
                 data: yValues,
+                lineTension: 0.5,
             }]
         },
         options: {
@@ -43,12 +82,11 @@ const createConfig = (data) => {
 const bestImprovement = (data) => {
     let lowest = 99;
     let str = "";
-    data.forEach( (e) => {
-        if (e.value >= lowest)
-            return;
-
-        lowest = e.value;
-        str = e.key;
+    Object.entries(data).forEach(([name, value]) => {
+        if (value < lowest) {
+            lowest = value;
+            str = name;
+        }
     })
     return str.split('_')[1] || str.split('_')[0];
 }

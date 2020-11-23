@@ -4,9 +4,9 @@ import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.security.exceptions.EmailAlreadyRegisteredException;
 import com.ersa.tracker.security.OnRegistrationCompleteEvent;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
-import com.ersa.tracker.services.AccountService;
-import com.ersa.tracker.services.AuthenticationService;
-import com.ersa.tracker.services.EmailVerificationService;
+import com.ersa.tracker.services.authentication.AccountService;
+import com.ersa.tracker.services.authentication.AuthenticationService;
+import com.ersa.tracker.services.authentication.EmailVerificationService;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -75,7 +75,8 @@ public class AuthenticationController {
         } catch (EmailAlreadyRegisteredException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (MailSendException e) {
-            return ResponseEntity.accepted().body("User created, but verification email could not be sent. Contact system administrator for more info. :-) ");
+            // TODO: Verify that this clause is still relevant
+            return ResponseEntity.accepted().body("User created");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unknown error occurred");
         }

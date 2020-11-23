@@ -1,4 +1,4 @@
-package com.ersa.tracker.services;
+package com.ersa.tracker.services.authentication;
 
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.security.exceptions.EmailAlreadyRegisteredException;

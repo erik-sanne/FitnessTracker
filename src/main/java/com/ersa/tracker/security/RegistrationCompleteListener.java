@@ -1,8 +1,7 @@
 package com.ersa.tracker.security;
 
 import com.ersa.tracker.models.authentication.User;
-import com.ersa.tracker.services.EmailVerificationService;
-import com.ersa.tracker.services.UserManagementService;
+import com.ersa.tracker.services.authentication.EmailVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mail.SimpleMailMessage;

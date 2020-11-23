@@ -24,7 +24,7 @@ const SectionNewWorkout = () => {
 
     const postWorkout = () => {
 
-        const setArray = sets.map((set) => { return {...set, exercise: set.type.replace(' ', '_')}});
+        const setArray = sets.map((set) => { return {...set, exercise: set.type.replace(/ /g, '_')}});
 
         const workout = {
             user: null,
@@ -74,7 +74,7 @@ const SectionNewWorkout = () => {
 
     useEffect(() => {
         if (!loading) {
-            const options = names.map(name => name.replace('_', ' '));
+            const options = names.map(name => name.replace(/_/g, ' '));
             setExerciseOptions(options)
         }
 

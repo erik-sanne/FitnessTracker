@@ -1,4 +1,4 @@
-package com.ersa.tracker.services;
+package com.ersa.tracker.services.authentication;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;

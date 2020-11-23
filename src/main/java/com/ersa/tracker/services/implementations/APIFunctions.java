@@ -1,41 +1,40 @@
-package com.ersa.tracker.services;
+package com.ersa.tracker.services.implementations;
 
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.models.*;
 import com.ersa.tracker.models.authentication.User;
-import com.ersa.tracker.repositories.ExerciseRepository;
 import com.ersa.tracker.repositories.TargetRepository;
-import com.ersa.tracker.repositories.WorkoutRepository;
-import com.ersa.tracker.utils.KVPair;
+import com.ersa.tracker.services.APIService;
+import com.ersa.tracker.services.ExerciseService;
+import com.ersa.tracker.services.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
-public class WorkoutsService {
+public class APIFunctions implements APIService {
 
-    private static final Sort descDateSort = Sort.by("date").descending();
-
-    @Autowired
-    private WorkoutRepository workoutRepository;
-
-    @Autowired
-    private ExerciseRepository exerciseRepository;
-
-    @Autowired
+    private WorkoutService workoutService;
+    private ExerciseService exerciseService;
     private TargetRepository targetRepository;
+
+    @Autowired
+    public APIFunctions(WorkoutService workoutService, ExerciseService exerciseService, TargetRepository targetRepository){
+        this.workoutService = workoutService;
+        this.exerciseService = exerciseService;
+        this.targetRepository = targetRepository;
+    }
+
 
     /**
      * @return Iterable of Weeks since first workout until today, containing the number of workouts performed each week
+     * Always returns at least 7 weeks even if there is not sufficient data.
      */
     public Iterable<Week> getWorkoutsPerWeek(User user) {
         final int WEEKS_IN_YEAR = 52;
         List<Week> result = new ArrayList<>();
-        Iterable<Workout> workouts = workoutRepository.findAllByUser(user, descDateSort);
+        Iterable<Workout> workouts = workoutService.getWorkouts(user);
 
         Calendar cal = Calendar.getInstance();
         int currentWeek = cal.get(Calendar.WEEK_OF_YEAR);
@@ -75,31 +74,37 @@ public class WorkoutsService {
 
             result.add(new Week(next_entry_year, next_entry_week, 1));
         }
+
+        for (int i = result.size(); i < 7; i++) {
+            Week prev = result.get(result.size()-1);
+            int week = prev.getWeekNumber() - 1;
+            int year = prev.getYear();
+            if (week == 0) {
+                year--;
+                week = 52;
+            }
+            result.add(new Week(year, week, 0));
+        }
+
         return result;
     }
 
     /**
      * @param user
-     * @return returns relative intensity per body part based on the last 30 workouts (not 30 days)
+     * @return returns distribution for last 30 workouts (not 30 days)
      */
-    public List<KVPair<String, Float>> getSetPerBodypart(User user) {
+    public Map<String, Float> getSetPerBodypart(User user) {
         Map<String, Float> resultMap = new HashMap<>();
 
-        Iterable<Workout> workouts = workoutRepository.findAllByUser(user, PageRequest.of(0, 30, descDateSort));
+        Iterable<Workout> workouts = workoutService.getWorkouts(user, 30);
         Iterator<Workout> iterator = workouts.iterator();
 
         Iterable<Target> targets = targetRepository.findAll();
         Iterator<Target> targetIterator = targets.iterator();
 
-        Map<String, String> types = new HashMap<>();
-
         while (targetIterator.hasNext()) {
             Target target = targetIterator.next();
             resultMap.put(target.getName(), 0f);
-            types.put(target.getName(), target.getWtypes().stream()
-                    .map(e -> e.getName())
-                    .filter(e -> e.equals("PUSH") || e.equals("PULL") || e.equals("LEGS"))
-                    .reduce("", (acc, e) -> acc + e));
         }
 
         while (iterator.hasNext()) {
@@ -110,7 +115,7 @@ public class WorkoutsService {
             while (setIterator.hasNext()) {
                 WorkoutSet set = setIterator.next();
 
-                Exercise exercise = exerciseRepository.findByName(set.getExercise());
+                Exercise exercise = exerciseService.getExerciseByName(set.getExercise());
                 exercise.getPrimaryTargets().forEach( target -> {
                     float prevValue = resultMap.get(target.getName());
                     resultMap.put(target.getName(), prevValue + 1f);
@@ -123,37 +128,6 @@ public class WorkoutsService {
             }
         }
 
-        List<KVPair<String, Float>> result = resultMap.entrySet().stream()
-                .filter(elem -> !elem.getKey().equals("SPINAL_ERECTORS"))
-                .map(elem -> new KVPair<>(elem.getKey(), elem.getValue()))
-                .sorted(Comparator.comparing(e -> types.get(e.getKey())))
-                .collect(Collectors.toList());
-
-        int smoothnessFactor = 10;
-        smooth(result, smoothnessFactor);
-
-        return result;
+        return resultMap;
     }
-
-    private void smooth (List<KVPair<String, Float>> source, Integer smoothness) {
-        List<Float> values = new ArrayList<>();
-        int size = source.size();
-        for (int i = 0; i < size; i++) {
-
-            float sum = 0f;
-            for (int j = i - smoothness; j < i + smoothness; j++) {
-                int index =  ((j % size + size) % size);
-                float falloff = 1f / (1f + Math.abs(i - j));
-                sum += source.get(index).getValue() * falloff;
-            }
-
-            sum = sum / (2f * smoothness + 1f);
-            values.add(sum);
-        }
-
-        for (int i = 0; i < size; i++) {
-            source.get(i).setValue(values.get(i));
-        }
-    }
-
 }

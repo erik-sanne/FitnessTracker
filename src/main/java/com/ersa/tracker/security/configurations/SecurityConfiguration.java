@@ -1,7 +1,6 @@
 package com.ersa.tracker.security.configurations;
 
-import com.ersa.tracker.models.authentication.User;
-import com.ersa.tracker.services.UserManagementService;
+import com.ersa.tracker.services.authentication.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService); //.passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService);
     }
 
     @Override
@@ -51,10 +50,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        //basic auth
         http.httpBasic();
 
-        // No redirect to login
         http.exceptionHandling().authenticationEntryPoint((request, response, authenticationException) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED));
 
         http.authorizeRequests()
