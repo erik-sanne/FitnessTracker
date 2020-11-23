@@ -23,7 +23,7 @@ const manualOrderingPass = (data) => {
         { x: "SIDE DELTS", y: data["SIDE_DELTS"] },
         { x: "FRONT DELTS", y: data["FRONT_DELTS"] },
         { x: "UPPER CHEST", y: data["UPPER_CHEST"] },
-        { x: "LOWER_CHEST", y: data["LOWER_CHEST"] },
+        { x: "LOWER CHEST", y: data["LOWER_CHEST"] },
     ]
 };
 

@@ -1,4 +1,5 @@
 package com.ersa.tracker.services;
+import com.ersa.tracker.dto.WorkoutSummary;
 import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;

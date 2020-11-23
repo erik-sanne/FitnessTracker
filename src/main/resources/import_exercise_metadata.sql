@@ -71,7 +71,7 @@ INSERT INTO exercise (name) VALUES
 ('DUMBELL_PRESS'),
 ('INCLINED_BENCH_PRESS'),
 ('INCLINED_DUMBELL_PRESS'),
-('CABLE FLIES'),
+('CABLE_FLIES'),
 ('DIP'),
 
 ('MILITARY_PRESS'),
@@ -85,8 +85,8 @@ INSERT INTO exercise (name) VALUES
 ('PULLOVER'),
 ('CHINUP'),
 ('ROW'),
-('FACE PULLS'),
-('HIGH ROW'),
+('FACE_PULLS'),
+('HIGH_ROW'),
 ('SHRUGS'),
 
 ('DUMBELL_CURLS'),
@@ -123,8 +123,8 @@ INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUE
 ('INCLINED_BENCH_PRESS', 'FRONT_DELTS'),
 ('INCLINED_DUMBELL_PRESS', 'UPPER_CHEST'),
 ('INCLINED_DUMBELL_PRESS', 'FRONT_DELTS'),
-('CABLE FLIES', 'LOWER_CHEST'),
-('CABLE FLIES', 'UPPER_CHEST'),
+('CABLE_FLIES', 'LOWER_CHEST'),
+('CABLE_FLIES', 'UPPER_CHEST'),
 ('DIP', 'TRICEPS'),
 ('DIP', 'FRONT_DELTS'),
 
@@ -141,8 +141,8 @@ INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUE
 ('PULLDOWN', 'LATS'),
 ('PULLOVER', 'LATS'),
 ('CHINUP', 'LATS'),
-('FACE PULLS', 'RHOMBOIDS'),
-('FACE PULLS', 'REAR_DELTS'),
+('FACE_PULLS', 'RHOMBOIDS'),
+('FACE_PULLS', 'REAR_DELTS'),
 ('SHRUGS', 'TRAPS'),
 
 ('DUMBELL_CURLS', 'BICEPS'),
@@ -171,7 +171,7 @@ INSERT INTO exercise_secondary_targets (exercise_name, secondary_targets_name) V
 ('INCLINED_BENCH_PRESS', 'LOWER_CHEST'),
 ('INCLINED_DUMBELL_PRESS', 'TRICEPS'),
 ('INCLINED_DUMBELL_PRESS', 'LOWER_CHEST'),
-('CABLE FLIES', 'FRONT_DELTS'),
+('CABLE_FLIES', 'FRONT_DELTS'),
 ('DIP', 'LOWER_CHEST'),
 
 ('REVERSED_FLIES', 'TRAPS'),
@@ -185,7 +185,7 @@ INSERT INTO exercise_secondary_targets (exercise_name, secondary_targets_name) V
 ('PULLDOWN', 'BICEPS'),
 ('PULLOVER', 'BICEPS'),
 ('CHINUP', 'BICEPS'),
-('FACE PULLS', 'TRAPS'),
-('HIGH ROW', 'RHOMBOIDS'),
-('HIGH ROW', 'TRAPS'),
-('HIGH ROW', 'REAR_DELTS');
+('FACE_PULLS', 'TRAPS'),
+('HIGH_ROW', 'RHOMBOIDS'),
+('HIGH_ROW', 'TRAPS'),
+('HIGH_ROW', 'REAR_DELTS');

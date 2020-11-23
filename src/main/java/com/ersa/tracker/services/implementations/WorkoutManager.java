@@ -1,5 +1,6 @@
 package com.ersa.tracker.services.implementations;
 
+import com.ersa.tracker.dto.WorkoutSummary;
 import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
@@ -8,12 +9,10 @@ import com.ersa.tracker.repositories.WorkoutRepository;
 import com.ersa.tracker.services.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,7 +36,8 @@ public class WorkoutManager implements WorkoutService {
 
     @Override
     public List<Workout> getWorkouts(User user) {
-        return workoutRepository.findAllByUser(user, descDateSort);
+        List<Workout> workouts = workoutRepository.findAllByUser(user, descDateSort);
+        return workouts;
     }
 
     @Override

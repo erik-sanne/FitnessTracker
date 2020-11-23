@@ -1,9 +1,11 @@
 package com.ersa.tracker.services.implementations;
 
 import com.ersa.tracker.dto.Week;
+import com.ersa.tracker.dto.WorkoutSummary;
 import com.ersa.tracker.models.*;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.TargetRepository;
+import com.ersa.tracker.repositories.WTypeRepository;
 import com.ersa.tracker.services.APIService;
 import com.ersa.tracker.services.ExerciseService;
 import com.ersa.tracker.services.WorkoutService;
@@ -15,15 +17,20 @@ import java.util.*;
 @Service
 public class APIFunctions implements APIService {
 
-    private WorkoutService workoutService;
-    private ExerciseService exerciseService;
-    private TargetRepository targetRepository;
+    private final WorkoutService workoutService;
+    private final  ExerciseService exerciseService;
+    private final  TargetRepository targetRepository;
+    private final  WTypeRepository wTypeRepository;
 
     @Autowired
-    public APIFunctions(WorkoutService workoutService, ExerciseService exerciseService, TargetRepository targetRepository){
+    public APIFunctions(WorkoutService workoutService,
+                        ExerciseService exerciseService,
+                        TargetRepository targetRepository,
+                        WTypeRepository wTypeRepository){
         this.workoutService = workoutService;
         this.exerciseService = exerciseService;
         this.targetRepository = targetRepository;
+        this.wTypeRepository = wTypeRepository;
     }
 
 
@@ -100,28 +107,22 @@ public class APIFunctions implements APIService {
         Iterator<Workout> iterator = workouts.iterator();
 
         Iterable<Target> targets = targetRepository.findAll();
-        Iterator<Target> targetIterator = targets.iterator();
 
-        while (targetIterator.hasNext()) {
-            Target target = targetIterator.next();
+        for (Target target : targets) {
             resultMap.put(target.getName(), 0f);
         }
 
         while (iterator.hasNext()) {
             Workout workout = iterator.next();
 
-            Iterator<WorkoutSet> setIterator = workout.getSets().iterator();
-
-            while (setIterator.hasNext()) {
-                WorkoutSet set = setIterator.next();
-
+            for (WorkoutSet set : workout.getSets()) {
                 Exercise exercise = exerciseService.getExerciseByName(set.getExercise());
-                exercise.getPrimaryTargets().forEach( target -> {
+                exercise.getPrimaryTargets().forEach(target -> {
                     float prevValue = resultMap.get(target.getName());
                     resultMap.put(target.getName(), prevValue + 1f);
                 });
 
-                exercise.getSecondaryTargets().forEach( target -> {
+                exercise.getSecondaryTargets().forEach(target -> {
                     float prevValue = resultMap.get(target.getName());
                     resultMap.put(target.getName(), prevValue + 0.5f);
                 });
@@ -129,5 +130,51 @@ public class APIFunctions implements APIService {
         }
 
         return resultMap;
+    }
+
+    @Override
+    public List<WorkoutSummary> getWorkoutSummaries(User user) {
+        List<WorkoutSummary> summaries = new ArrayList<>();
+
+        Iterable<WType> types = wTypeRepository.findAll();
+        List<Workout> workouts = workoutService.getWorkouts(user);
+        workouts.forEach(workout -> {
+            Map<WType, Float> setsPerType = new HashMap<>();
+            types.forEach(type -> setsPerType.put(type, 0f));
+
+            workout.getSets().stream().forEach(set -> {
+                Exercise exercise = exerciseService.getExerciseByName(set.getExercise());
+                exercise.getPrimaryTargets().forEach(target -> {
+                    target.getWtypes().forEach(type -> {
+                        Float prevVal = setsPerType.get(type);
+                        setsPerType.put(type, prevVal + 1);
+                    });
+                });
+                exercise.getSecondaryTargets().forEach(target -> {
+                    target.getWtypes().forEach(type -> {
+                        Float prevVal = setsPerType.get(type);
+                        setsPerType.put(type, prevVal + 1);
+                    });
+                });
+            });
+
+            Map.Entry<WType, Float> bestEntry = null;
+            for (Map.Entry<WType, Float> entry : new ArrayList<>(setsPerType.entrySet())) {
+                if (bestEntry == null)
+                    bestEntry = entry;
+                else {
+                    if (entry.getValue() > bestEntry.getValue()) {
+                        bestEntry = entry;
+                    }
+                }
+            }
+
+            WorkoutSummary summary = new WorkoutSummary();
+            summary.setWorkout_id(workout.getId());
+            summary.setDate(workout.getDate());
+            summary.setDescription(bestEntry.getValue() > 0 ? bestEntry.getKey().getName() : "CUSTOM");
+            summaries.add(summary);
+        });
+        return summaries;
     }
 }

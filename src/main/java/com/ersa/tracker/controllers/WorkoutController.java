@@ -1,6 +1,7 @@
 package com.ersa.tracker.controllers;
 
 import com.ersa.tracker.dto.Week;
+import com.ersa.tracker.dto.WorkoutSummary;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.services.APIService;
@@ -38,6 +39,11 @@ public class WorkoutController {
         this.apiService = apiService;
     }
 
+    @GetMapping("api/workouts")
+    public List<WorkoutSummary> getWorkouts(Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return apiService.getWorkoutSummaries(currentUser);
+    }
 
     @GetMapping("api/workoutsPerWeek")
     public Iterable<Week> getWorkoutsPerWeek(Principal principal) {
