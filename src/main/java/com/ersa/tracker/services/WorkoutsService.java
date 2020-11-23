@@ -3,6 +3,7 @@ package com.ersa.tracker.services;
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.models.*;
 import com.ersa.tracker.models.authentication.User;
+import com.ersa.tracker.repositories.ExerciseRepository;
 import com.ersa.tracker.repositories.TargetRepository;
 import com.ersa.tracker.repositories.WorkoutRepository;
 import com.ersa.tracker.utils.KVPair;
@@ -21,6 +22,9 @@ public class WorkoutsService {
 
     @Autowired
     private WorkoutRepository workoutRepository;
+
+    @Autowired
+    private ExerciseRepository exerciseRepository;
 
     @Autowired
     private TargetRepository targetRepository;
@@ -106,7 +110,7 @@ public class WorkoutsService {
             while (setIterator.hasNext()) {
                 WorkoutSet set = setIterator.next();
 
-                Exercise exercise = set.getExercise();
+                Exercise exercise = exerciseRepository.findByName(set.getExercise());
                 exercise.getPrimaryTargets().forEach( target -> {
                     float prevValue = resultMap.get(target.getName());
                     resultMap.put(target.getName(), prevValue + 1f);

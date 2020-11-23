@@ -24,7 +24,7 @@ const SectionNewWorkout = () => {
 
     const postWorkout = () => {
 
-        const setArray = sets.map((set) => { return {...set, type: set.type.replace(' ', '_')}});
+        const setArray = sets.map((set) => { return {...set, exercise: set.type.replace(' ', '_')}});
 
         const workout = {
             user: null,

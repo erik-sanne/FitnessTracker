@@ -58,8 +58,10 @@ public class WorkoutController {
     @PostMapping("api/saveWorkout")
     public ResponseEntity<?> saveWorkout(Principal principal, @RequestBody Workout workout) {
         User currentUser = accountService.getUserByPrincipal(principal);
-
         workout.setUser(currentUser);
+
+        workout.getSets().stream().forEach(set -> set.setWorkout(workout));
+
         workoutRepository.save(workout);
 
         return ResponseEntity.accepted().build();

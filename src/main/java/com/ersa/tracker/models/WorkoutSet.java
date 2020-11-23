@@ -11,9 +11,16 @@ public class WorkoutSet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
-    @OneToOne
-    private Exercise exercise;
+    /*
+        Originally @OneToOne with Exercise
+        However this caused issues when submitting new workouts,
+        as it tried to create new (?) Exercises instead of
+        referencing to the database. Too many hours has now been
+        spent on this, so I have decided to change it to a plain
+        String for now. :-(
+     */
+    @Column(name = "exercise_name")
+    private String exercise;
 
     int weight;
 
@@ -32,11 +39,11 @@ public class WorkoutSet {
         this.id = id;
     }
 
-    public Exercise getExercise() {
+    public String getExercise() {
         return exercise;
     }
 
-    public void setExercise(Exercise exercise) {
+    public void setExercise(String exercise) {
         this.exercise = exercise;
     }
 
@@ -54,5 +61,13 @@ public class WorkoutSet {
 
     public void setReps(int reps) {
         this.reps = reps;
+    }
+
+    public Workout getWorkout() {
+        return workout;
+    }
+
+    public void setWorkout(Workout workout) {
+        this.workout = workout;
     }
 }
