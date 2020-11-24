@@ -8,6 +8,7 @@ import com.ersa.tracker.repositories.authentication.EmailVerificationTokenReposi
 import com.ersa.tracker.repositories.authentication.UserRepository;
 import com.ersa.tracker.security.exceptions.EmailAlreadyRegisteredException;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -22,51 +23,76 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.UUID;
 
 @Service
+@Log4j2
 public class UserManagementService implements AccountService, AuthenticationService, EmailVerificationService {
 
-    private final int ONE_DAY_IN_MINUTES = 60 * 24;
+    private static final int ONE_DAY_IN_MINUTES = 60 * 24;
+
+    private final UserRepository userRepository;
+    private final AuthenticationTokenRepository authenticationTokenRepository;
+    private final EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private final PasswordEncoder pwEncoder;
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private AuthenticationTokenRepository authenticationTokenRepository;
-    @Autowired
-    private EmailVerificationTokenRepository emailVerificationTokenRepository;
-    @Autowired
-    private PasswordEncoder pwEncoder;
+    public UserManagementService(final UserRepository userRepository,
+                                 final AuthenticationTokenRepository authenticationTokenRepository,
+                                 final EmailVerificationTokenRepository emailVerificationTokenRepository,
+                                 final PasswordEncoder pwEncoder) {
+        this.userRepository = userRepository;
+        this.authenticationTokenRepository = authenticationTokenRepository;
+        this.emailVerificationTokenRepository = emailVerificationTokenRepository;
+        this.pwEncoder = pwEncoder;
+    }
 
-    public User register(String email, String password) throws EmailAlreadyRegisteredException {
-        if (userRepository.findByEmail(email) != null)
+
+    public User register(final String email, final String password) throws EmailAlreadyRegisteredException {
+        if (userRepository.findByEmail(email) != null) {
+            log.warn("Unsuccessful user registration for email {}. Email already registered", email);
             throw new EmailAlreadyRegisteredException("An account is already registered with this email");
+        }
 
         User user = new User();
         user.setEmail(email);
         user.setPassword(pwEncoder.encode(password));
         user.setPermissionLevel(User.Permissions.BASIC);
         userRepository.save(user);
+        log.info("User [{}/{}] successfully created!", user.getId(), user.getEmail());
         return user;
     }
 
-    public void authenticate(String username, String password) throws AuthenticationException {
-        User user = userRepository.findByEmail(username);
-        if (user == null)
+    public void authenticate(final String email, final String password) throws AuthenticationException {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            log.warn("Failed authentication attempt. User with email {} not found.", email);
             throw new UsernameNotFoundException("Wrong username or password");
+        }
 
-        if (!pwEncoder.matches(password, user.getPassword()))
+        if (!pwEncoder.matches(password, user.getPassword())) {
+            log.warn("Failed authentication attempt for user id {}. Password mismatch.", user.getId());
             throw new BadCredentialsException("Wrong username or password");
+        }
 
-        if (!user.isVerified())
+        if (!user.isVerified()) {
+            log.warn("Failed authentication attempt for user id {}. User not verified.", user.getId());
             throw new DisabledException("Account has not been verified");
+        }
     }
 
     @Override
-    public User getUserByPrincipal(Principal principal) throws UsernameNotFoundException {
+    public User getUserByPrincipal(final Principal principal) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(principal.getName());
-        if (user == null)
+        if (user == null) {
+            log.warn("Could not retrieve user for associated principal {}. ", principal.getName());
             throw new UsernameNotFoundException("Could not find user linked to credentials");
+        }
+
         return user;
     }
 
@@ -78,46 +104,53 @@ public class UserManagementService implements AccountService, AuthenticationServ
      * @throws AuthenticationException if authentication would fail
      */
     @Transactional
-    public String createAuthenticationToken(String username, String password) throws AuthenticationException {
+    public String createAuthenticationToken(final String username,
+                                            final String password) throws AuthenticationException {
         authenticate(username, password);
 
         User user = userRepository.findByEmail(username);
 
         final String token = UUID.randomUUID().toString();
-        final String token_hash = pwEncoder.encode(token);
+        final String tokenHash = pwEncoder.encode(token);
         final String tokenString = String.format("%s:%s", username, token);
 
         final Date expires = getExpiry(ONE_DAY_IN_MINUTES);
 
         UserToken sessionToken = new UserToken();
-        sessionToken.setToken(token_hash);
+        sessionToken.setToken(tokenHash);
         sessionToken.setExpiration(expires);
         authenticationTokenRepository.save(sessionToken);
 
         user.setToken(sessionToken);
         userRepository.save(user);
 
+        log.info("Authentication token created for user {}.", user.getId());
         return tokenString;
     }
 
-    public void createEmailVerificationToken(User user, final String token){
+    public void createEmailVerificationToken(final User user, final String token) {
         EmailVerificationToken emailVerificationToken = new EmailVerificationToken();
         final Date expires = getExpiry(ONE_DAY_IN_MINUTES);
         emailVerificationToken.setUser(user);
         emailVerificationToken.setToken(token);
         emailVerificationToken.setExpiryDate(expires);
         emailVerificationTokenRepository.save(emailVerificationToken);
+        log.info("Email verification token created for user {}.", user.getId());
     }
 
     public void verifyEmail(final String tokenString) throws AuthenticationException, ResourceNotFoundException {
         EmailVerificationToken token = emailVerificationTokenRepository.findByToken(tokenString);
-        if (token == null)
+        if (token == null) {
+            log.warn("Failed attempt to verify account, no token found in database: {}.", tokenString);
             throw new ResourceNotFoundException("Bad token, perhaps it has expired");
+        }
 
-        if (new Date().after(token.getExpiryDate()))
-            // CredentialsExpiredEception inherits from AccountStatusException, and an email token is not an account....
+        if (new Date().after(token.getExpiryDate())) {
+            log.warn("Failed attempt to verify account, expired token: {}.", tokenString);
+            // CredentialsExpiredException inherits from AccountStatusException,
+            // and an email token is not an account....
             throw new CredentialsExpiredException("Verification token expired");
-
+        }
         User user = token.getUser();
         user.setVerified(true);
         userRepository.save(user);
@@ -127,7 +160,7 @@ public class UserManagementService implements AccountService, AuthenticationServ
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
 
         Collection<GrantedAuthority> permissions = Arrays.asList(new SimpleGrantedAuthority(user.getPermissionLevel()));
@@ -139,6 +172,7 @@ public class UserManagementService implements AccountService, AuthenticationServ
         boolean credentialsNonExpired = true;
 
         if (new Date().after(token.getExpiration())) {
+            log.info("Expired authentication token submitted by user: {}", user.getId());
             user.setToken(null);
             userRepository.save(user);
             authenticationTokenRepository.delete(token);
@@ -146,7 +180,7 @@ public class UserManagementService implements AccountService, AuthenticationServ
             credentialsNonExpired = false;
         }
 
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+        return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 tokenString,
                 user.isVerified(),
@@ -155,11 +189,9 @@ public class UserManagementService implements AccountService, AuthenticationServ
                 true,
                 permissions
         );
-
-        return userDetails;
     }
 
-    private Date getExpiry(int minuets) {
+    private Date getExpiry(final int minuets) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, minuets);
         return new Date(cal.getTime().getTime());

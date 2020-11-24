@@ -2,31 +2,39 @@ package com.ersa.tracker.services.implementations;
 
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
-import com.ersa.tracker.models.*;
+import com.ersa.tracker.models.Exercise;
+import com.ersa.tracker.models.Target;
+import com.ersa.tracker.models.WType;
+import com.ersa.tracker.models.Workout;
+import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.TargetRepository;
 import com.ersa.tracker.repositories.WTypeRepository;
 import com.ersa.tracker.services.APIService;
 import com.ersa.tracker.services.ExerciseService;
 import com.ersa.tracker.services.WorkoutService;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 public class APIFunctions implements APIService {
 
     private final WorkoutService workoutService;
-    private final  ExerciseService exerciseService;
-    private final  TargetRepository targetRepository;
-    private final  WTypeRepository wTypeRepository;
+    private final ExerciseService exerciseService;
+    private final TargetRepository targetRepository;
+    private final WTypeRepository wTypeRepository;
 
     @Autowired
-    public APIFunctions(WorkoutService workoutService,
-                        ExerciseService exerciseService,
-                        TargetRepository targetRepository,
-                        WTypeRepository wTypeRepository){
+    public APIFunctions(final WorkoutService workoutService,
+                        final ExerciseService exerciseService,
+                        final TargetRepository targetRepository,
+                        final WTypeRepository wTypeRepository) {
         this.workoutService = workoutService;
         this.exerciseService = exerciseService;
         this.targetRepository = targetRepository;
@@ -35,11 +43,12 @@ public class APIFunctions implements APIService {
 
 
     /**
-     * @return Iterable of Weeks since first workout until today, containing the number of workouts performed each week
+     * @return Iterable of Weeks since first workout until today, containing
+     * the number of workouts performed each week.
      * Always returns at least 7 weeks even if there is not sufficient data.
      */
-    public Iterable<Week> getWorkoutsPerWeek(User user) {
-        final int WEEKS_IN_YEAR = 52;
+    public Iterable<Week> getWorkoutsPerWeek(final User user) {
+        final int weeksInYear = 52;
         List<Week> result = new ArrayList<>();
         Iterable<Workout> workouts = workoutService.getWorkouts(user);
 
@@ -51,27 +60,27 @@ public class APIFunctions implements APIService {
         for (Workout workout : workouts) {
             cal.setTime(workout.getDate());
 
-            int next_entry_week = cal.get(Calendar.WEEK_OF_YEAR);
-            int next_entry_year = cal.get(Calendar.YEAR);
+            int nextEntryWeek = cal.get(Calendar.WEEK_OF_YEAR);
+            int nextEntryYear = cal.get(Calendar.YEAR);
 
-            Week lastRecord = result.get(result.size()-1);
+            Week lastRecord = result.get(result.size() - 1);
 
-            int differenceInWeeks = (lastRecord.getWeekNumber() - next_entry_week);
-            int differenceInYears = lastRecord.getYear() - next_entry_year;
+            int differenceInWeeks = (lastRecord.getWeekNumber() - nextEntryWeek);
+            int differenceInYears = lastRecord.getYear() - nextEntryYear;
 
-            int weeksDifference = differenceInWeeks + WEEKS_IN_YEAR * differenceInYears;
+            int weeksDifference = differenceInWeeks + weeksInYear * differenceInYears;
 
             if (weeksDifference == 0) {
-                lastRecord.setTotalWorkouts(lastRecord.getTotalWorkouts()+1);
+                lastRecord.setTotalWorkouts(lastRecord.getTotalWorkouts() + 1);
                 continue;
             }
 
             int week = lastRecord.getWeekNumber() - 1;
             int year = lastRecord.getYear();
 
-            while (year > next_entry_year || week != next_entry_week) {
-                if (week == 0){
-                    week = 52;
+            while (year > nextEntryYear || week != nextEntryWeek) {
+                if (week == 0) {
+                    week = weeksInYear;
                     year--;
                 }
 
@@ -79,16 +88,17 @@ public class APIFunctions implements APIService {
                 week--;
             }
 
-            result.add(new Week(next_entry_year, next_entry_week, 1));
+            result.add(new Week(nextEntryYear, nextEntryWeek, 1));
         }
 
-        for (int i = result.size(); i < 7; i++) {
-            Week prev = result.get(result.size()-1);
+        final int minimumWeeks = 7;
+        for (int i = result.size(); i < minimumWeeks; i++) {
+            Week prev = result.get(result.size() - 1);
             int week = prev.getWeekNumber() - 1;
             int year = prev.getYear();
             if (week == 0) {
                 year--;
-                week = 52;
+                week = weeksInYear;
             }
             result.add(new Week(year, week, 0));
         }
@@ -96,14 +106,15 @@ public class APIFunctions implements APIService {
         return result;
     }
 
-    /**
-     * @param user
-     * @return returns distribution for last 30 workouts (not 30 days)
-     */
-    public Map<String, Float> getSetPerBodypart(User user) {
+    public Map<String, Float> getWorkoutDistribution(final User user) {
+        final int limit = 30;
+        return getWorkoutDistribution(user, limit);
+    }
+
+    public Map<String, Float> getWorkoutDistribution(final User user, final int workoutsToConsider) {
         Map<String, Float> resultMap = new HashMap<>();
 
-        Iterable<Workout> workouts = workoutService.getWorkouts(user, 30);
+        Iterable<Workout> workouts = workoutService.getWorkouts(user, workoutsToConsider);
         Iterator<Workout> iterator = workouts.iterator();
 
         Iterable<Target> targets = targetRepository.findAll();
@@ -112,6 +123,8 @@ public class APIFunctions implements APIService {
             resultMap.put(target.getName(), 0f);
         }
 
+        final float primaryWeight = 1f;
+        final float secondaryWeight = 0.5f;
         while (iterator.hasNext()) {
             Workout workout = iterator.next();
 
@@ -119,12 +132,12 @@ public class APIFunctions implements APIService {
                 Exercise exercise = exerciseService.getExerciseByName(set.getExercise());
                 exercise.getPrimaryTargets().forEach(target -> {
                     float prevValue = resultMap.get(target.getName());
-                    resultMap.put(target.getName(), prevValue + 1f);
+                    resultMap.put(target.getName(), prevValue + primaryWeight);
                 });
 
                 exercise.getSecondaryTargets().forEach(target -> {
                     float prevValue = resultMap.get(target.getName());
-                    resultMap.put(target.getName(), prevValue + 0.5f);
+                    resultMap.put(target.getName(), prevValue + secondaryWeight);
                 });
             }
         }
@@ -133,7 +146,7 @@ public class APIFunctions implements APIService {
     }
 
     @Override
-    public List<WorkoutSummary> getWorkoutSummaries(User user) {
+    public List<WorkoutSummary> getWorkoutSummaries(final User user) {
         List<WorkoutSummary> summaries = new ArrayList<>();
 
         Iterable<WType> types = wTypeRepository.findAll();
@@ -170,7 +183,7 @@ public class APIFunctions implements APIService {
             }
 
             WorkoutSummary summary = new WorkoutSummary();
-            summary.setWorkout_id(workout.getId());
+            summary.setWorkoutId(workout.getId());
             summary.setDate(workout.getDate());
             summary.setDescription(bestEntry.getValue() > 0 ? bestEntry.getKey().getName() : "CUSTOM");
             summaries.add(summary);

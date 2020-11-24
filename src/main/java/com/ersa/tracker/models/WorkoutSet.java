@@ -1,11 +1,16 @@
 package com.ersa.tracker.models;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 @Entity(name = "workoutset")
-public class WorkoutSet {
+public final class WorkoutSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +27,10 @@ public class WorkoutSet {
     @Column(name = "exercise_name")
     private String exercise;
 
-    int weight;
+    private int weight;
 
     @Min(1)
-    int reps;
+    private int reps;
 
     @ManyToOne
     @JoinColumn(name = "workout_id")
@@ -35,7 +40,7 @@ public class WorkoutSet {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -43,7 +48,7 @@ public class WorkoutSet {
         return exercise;
     }
 
-    public void setExercise(String exercise) {
+    public void setExercise(final String exercise) {
         this.exercise = exercise;
     }
 
@@ -51,7 +56,7 @@ public class WorkoutSet {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(final int weight) {
         this.weight = weight;
     }
 
@@ -59,7 +64,7 @@ public class WorkoutSet {
         return reps;
     }
 
-    public void setReps(int reps) {
+    public void setReps(final int reps) {
         this.reps = reps;
     }
 
@@ -67,7 +72,7 @@ public class WorkoutSet {
         return workout;
     }
 
-    public void setWorkout(Workout workout) {
+    public void setWorkout(final Workout workout) {
         this.workout = workout;
     }
 }

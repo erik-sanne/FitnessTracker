@@ -7,7 +7,7 @@ import Accordion from "react-bootstrap/cjs/Accordion";
 
 const SectionHistory = () => {
 
-    const { data: summaries, loading, error } = useFetch('/api/workouts');
+    const { data: summaries, loading } = useFetch('/api/workouts');
 
     return (<div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
         <Module title = "Previous workouts">

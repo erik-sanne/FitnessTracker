@@ -3,14 +3,20 @@ package com.ersa.tracker.models;
 import com.ersa.tracker.models.authentication.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Date;
 
 @Entity(name = "workouts")
-public class Workout {
+public final class Workout {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -24,14 +30,14 @@ public class Workout {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date date;
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "workout", cascade=CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "workout", cascade = CascadeType.PERSIST)
     private Collection<WorkoutSet> sets;
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -39,7 +45,7 @@ public class Workout {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(final Date date) {
         this.date = date;
     }
 
@@ -47,7 +53,7 @@ public class Workout {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(final User user) {
         this.user = user;
     }
 
@@ -55,7 +61,7 @@ public class Workout {
         return sets;
     }
 
-    public void setSets(Collection<WorkoutSet> sets) {
+    public void setSets(final Collection<WorkoutSet> sets) {
         this.sets = sets;
     }
 }

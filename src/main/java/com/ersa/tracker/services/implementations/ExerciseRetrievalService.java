@@ -11,10 +11,10 @@ import java.util.List;
 @Service
 public class ExerciseRetrievalService implements ExerciseService {
 
-    private ExerciseRepository exerciseRepository;
+    private final ExerciseRepository exerciseRepository;
 
     @Autowired
-    public ExerciseRetrievalService(ExerciseRepository exerciseRepository) {
+    public ExerciseRetrievalService(final ExerciseRepository exerciseRepository) {
         this.exerciseRepository = exerciseRepository;
     }
 
@@ -26,7 +26,7 @@ public class ExerciseRetrievalService implements ExerciseService {
     }
 
     @Override
-    public Exercise getExerciseByName(String name) {
+    public Exercise getExerciseByName(final String name) {
         return exerciseRepository.findByName(name);
     }
 }

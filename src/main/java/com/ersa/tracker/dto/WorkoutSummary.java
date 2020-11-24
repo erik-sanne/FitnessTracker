@@ -1,26 +1,29 @@
 package com.ersa.tracker.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
-public class WorkoutSummary {
+public final class WorkoutSummary {
 
-    private long workout_id;
+    @JsonProperty("workout_id")
+    private long workoutId;
     private Date date;
     private String description;
 
-    public long getWorkout_id() {
-        return workout_id;
+    public long getWorkoutId() {
+        return workoutId;
     }
 
-    public void setWorkout_id(long workout_id) {
-        this.workout_id = workout_id;
+    public void setWorkoutId(final long workoutId) {
+        this.workoutId = workoutId;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(final Date date) {
         this.date = date;
     }
 
@@ -28,7 +31,7 @@ public class WorkoutSummary {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 

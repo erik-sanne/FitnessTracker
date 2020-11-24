@@ -9,6 +9,6 @@ import java.util.Map;
 
 public interface APIService {
     Iterable<Week> getWorkoutsPerWeek(User user);
-    Map<String, Float> getSetPerBodypart(User user);
+    Map<String, Float> getWorkoutDistribution(User user);
     List<WorkoutSummary> getWorkoutSummaries(User user);
 }

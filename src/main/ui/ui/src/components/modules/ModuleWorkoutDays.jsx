@@ -81,7 +81,7 @@ const reachedGoal = (goal, data) => {
 const ModuleWorkoutDays = () => {
     const { data, loading } = useFetch('/api/workoutsPerWeek');
     const [ chartData, setChartData ] = useState(null);
-    const [ goal, setGoal ] = useState(3);
+    const [ goal, ] = useState(3);
 
     useEffect(() => {
         if (!loading)

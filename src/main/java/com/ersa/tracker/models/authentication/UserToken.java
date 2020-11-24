@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class UserToken {
+public final class UserToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private int id;
@@ -18,15 +18,15 @@ public class UserToken {
         return id;
     }
 
-    public void setId(int ID) {
-        this.id = ID;
+    public void setId(final int id) {
+        this.id = id;
     }
 
     public String getToken() {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setToken(final String token) {
         this.token = token;
     }
 
@@ -34,7 +34,7 @@ public class UserToken {
         return expires;
     }
 
-    public void setExpiration(Date date) {
+    public void setExpiration(final Date date) {
         this.expires = date;
     }
 }

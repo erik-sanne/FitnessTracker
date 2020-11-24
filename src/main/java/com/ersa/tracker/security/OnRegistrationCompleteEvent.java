@@ -3,11 +3,11 @@ package com.ersa.tracker.security;
 import com.ersa.tracker.models.authentication.User;
 import org.springframework.context.ApplicationEvent;
 
-public class OnRegistrationCompleteEvent extends ApplicationEvent {
+public final class OnRegistrationCompleteEvent extends ApplicationEvent {
     private User user;
     private String url;
 
-    public OnRegistrationCompleteEvent(User user, String url) {
+    public OnRegistrationCompleteEvent(final User user, final String url) {
         super(user);
         this.user = user;
         this.url = url;
@@ -17,7 +17,7 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(final User user) {
         this.user = user;
     }
 
@@ -25,7 +25,7 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(final String url) {
         this.url = url;
     }
 }

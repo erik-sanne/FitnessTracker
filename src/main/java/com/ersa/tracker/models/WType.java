@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity(name = "wtype")
-public class WType {
+public final class WType {
 
     @Id
     private String name;
@@ -13,7 +13,7 @@ public class WType {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 }

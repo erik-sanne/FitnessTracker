@@ -6,7 +6,7 @@ import javax.persistence.ManyToMany;
 import java.util.Set;
 
 @Entity
-public class Exercise {
+public final class Exercise {
     @Id
     private String name;
 
@@ -19,7 +19,7 @@ public class Exercise {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -27,7 +27,7 @@ public class Exercise {
         return primaryTargets;
     }
 
-    public void setPrimaryTargets(Set<Target> primaryTargets) {
+    public void setPrimaryTargets(final Set<Target> primaryTargets) {
         this.primaryTargets = primaryTargets;
     }
 
@@ -35,7 +35,7 @@ public class Exercise {
         return secondaryTargets;
     }
 
-    public void setSecondaryTargets(Set<Target> secondaryTargets) {
+    public void setSecondaryTargets(final Set<Target> secondaryTargets) {
         this.secondaryTargets = secondaryTargets;
     }
 }

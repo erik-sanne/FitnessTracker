@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class RegistrationCompleteListener implements ApplicationListener<OnRegistrationCompleteEvent> {
+public final class RegistrationCompleteListener implements ApplicationListener<OnRegistrationCompleteEvent> {
 
     @Autowired
     private EmailVerificationService emailService;
@@ -20,7 +20,7 @@ public class RegistrationCompleteListener implements ApplicationListener<OnRegis
     private JavaMailSender mailSender;
 
     @Override
-    public void onApplicationEvent(OnRegistrationCompleteEvent event) {
+    public void onApplicationEvent(final OnRegistrationCompleteEvent event) {
         User user = event.getUser();
         final String token = UUID.randomUUID().toString();
         emailService.createEmailVerificationToken(user, token);
@@ -30,7 +30,10 @@ public class RegistrationCompleteListener implements ApplicationListener<OnRegis
         String url = String.format("%s/%s?", event.getUrl(), "confirmEmail", token);
 
         //TODO: use message template, take a look at MessageSource
-        String message = String.format("%s/r/n%s/r/n%s", "Hi,", "Nice of you to sign up. To finish your registration, click the link below", url);
+        String message = String.format("%s/r/n%s/r/n%s",
+                "Hi,",
+                "Nice of you to sign up. To finish your registration, click the link below",
+                url);
 
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(recipient);

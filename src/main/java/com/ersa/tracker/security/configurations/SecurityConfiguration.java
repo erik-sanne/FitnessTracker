@@ -1,6 +1,6 @@
 package com.ersa.tracker.security.configurations;
 
-import com.ersa.tracker.services.authentication.UserManagementService;
+import com.ersa.tracker.services.authentication.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -24,27 +22,25 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    public UserManagementService userDetailsService;
+    private final AuthenticationService authenticationService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    @Autowired
+    public SecurityConfiguration(final AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
-    @Bean
     @Override
-    public AuthenticationManager authenticationManager() throws Exception{
+    public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
+    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(authenticationService);
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
         http.cors();
         http.headers().frameOptions().disable(); // debug
         http.csrf().disable();
@@ -52,7 +48,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.httpBasic();
 
-        http.exceptionHandling().authenticationEntryPoint((request, response, authenticationException) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED));
+        http.exceptionHandling().authenticationEntryPoint(
+                (request, response, authenticationException) ->
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED));
 
         http.authorizeRequests()
                     .antMatchers("/authenticate").permitAll()

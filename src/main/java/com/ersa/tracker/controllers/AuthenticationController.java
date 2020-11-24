@@ -15,7 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSendException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -27,17 +32,17 @@ import java.util.Base64;
 @RestController
 public class AuthenticationController {
 
-    private EmailVerificationService emaiLService;
-    private AccountService accountService;
-    private AuthenticationService tokenService;
+    private final EmailVerificationService emaiLService;
+    private final AccountService accountService;
+    private final AuthenticationService tokenService;
 
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public AuthenticationController(EmailVerificationService emaiLService,
-                                    AccountService accountService,
-                                    AuthenticationService tokenService,
-                                    ApplicationEventPublisher eventPublisher){
+    public AuthenticationController(final EmailVerificationService emaiLService,
+                                    final AccountService accountService,
+                                    final AuthenticationService tokenService,
+                                    final ApplicationEventPublisher eventPublisher) {
         this.emaiLService = emaiLService;
         this.accountService = accountService;
         this.tokenService = tokenService;
@@ -50,7 +55,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/confirmEmail/{token}")
-    public ResponseEntity<?> confirmEmail(@PathVariable String token) {
+    public ResponseEntity<?> confirmEmail(@PathVariable final String token) {
         try {
             emaiLService.verifyEmail(token);
             return ResponseEntity.ok("Verified");
@@ -62,7 +67,9 @@ public class AuthenticationController {
     }
 
     @PutMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult binding, HttpServletRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody final SignupRequest signupRequest,
+                                      final BindingResult binding,
+                                      final HttpServletRequest request) {
         if (binding.hasErrors()) {
             String reason = binding.getFieldError().getDefaultMessage();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(reason);
@@ -85,13 +92,14 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody TokenRequest tokenRequest) {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody final TokenRequest tokenRequest) {
         try {
-            final String token = tokenService.createAuthenticationToken(tokenRequest.getUsername(), tokenRequest.getPassword());
-            final String encoded_token = Base64.getEncoder().encodeToString(token.getBytes());
+            final String token = tokenService
+                    .createAuthenticationToken(tokenRequest.getUsername(), tokenRequest.getPassword());
+            final String encodedToken = Base64.getEncoder().encodeToString(token.getBytes());
 
             TokenResponse tr = new TokenResponse();
-            tr.setToken(encoded_token);
+            tr.setToken(encodedToken);
 
             return ResponseEntity.ok(tr);
         } catch (AuthenticationException e) {
@@ -105,6 +113,7 @@ public class AuthenticationController {
         @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Not a valid email")
         private String username;
 
+        @SuppressWarnings("checkstyle:MagicNumber")
         @Length(min = 8, max = 32, message = "Password must be 8-32 characters")
         @Pattern(regexp = "^(?=.*[0-9]).*$", message = "Password must contain a digit")
         @Pattern(regexp = "^(?=.*[a-z]).*$", message = "Password must contain a lower case letter")
@@ -112,7 +121,7 @@ public class AuthenticationController {
         @Pattern(regexp = "^(?=\\S+$).*$", message = "Password must not contain whitespaces")
         private String password;
 
-        public SignupRequest() {
+        SignupRequest() {
 
         }
 
@@ -120,7 +129,7 @@ public class AuthenticationController {
             return username;
         }
 
-        public void setUsername(String username) {
+        public void setUsername(final String username) {
             this.username = username;
         }
 
@@ -128,7 +137,7 @@ public class AuthenticationController {
             return password;
         }
 
-        public void setPassword(String password) {
+        public void setPassword(final String password) {
             this.password = password;
         }
     }
@@ -139,7 +148,7 @@ public class AuthenticationController {
         @NotNull
         private String password;
 
-        public TokenRequest() {
+        TokenRequest() {
 
         }
 
@@ -147,7 +156,7 @@ public class AuthenticationController {
             return username;
         }
 
-        public void setUsername(String username) {
+        public void setUsername(final String username) {
             this.username = username;
         }
 
@@ -155,7 +164,7 @@ public class AuthenticationController {
             return password;
         }
 
-        public void setPassword(String password) {
+        public void setPassword(final String password) {
             this.password = password;
         }
     }
@@ -163,14 +172,14 @@ public class AuthenticationController {
     private static class TokenResponse {
         private String token;
 
-        public TokenResponse(){
+        TokenResponse() {
 
         }
 
         public String getToken() {
             return token;
         }
-        public void setToken(String token) {
+        public void setToken(final String token) {
             this.token = token;
         }
     }

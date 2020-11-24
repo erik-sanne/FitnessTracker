@@ -1,10 +1,13 @@
 package com.ersa.tracker.models;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import java.util.Set;
 
 @Entity(name = "target")
-public class Target {
+public final class Target {
 
     @Id
     private String name;
@@ -17,7 +20,7 @@ public class Target {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -25,7 +28,7 @@ public class Target {
         return wtype;
     }
 
-    public void setWtypes(Set<WType> groups) {
+    public void setWtypes(final Set<WType> groups) {
         this.wtype = groups;
     }
 

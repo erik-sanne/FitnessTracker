@@ -1,11 +1,17 @@
 package com.ersa.tracker.models.authentication;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-public class EmailVerificationToken {
+public final class EmailVerificationToken {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
@@ -25,7 +31,7 @@ public class EmailVerificationToken {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(final Date expiryDate) {
         this.expiryDate = expiryDate;
     }
 
@@ -33,7 +39,7 @@ public class EmailVerificationToken {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -41,7 +47,7 @@ public class EmailVerificationToken {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(final User user) {
         this.user = user;
     }
 
@@ -49,7 +55,7 @@ public class EmailVerificationToken {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setToken(final String token) {
         this.token = token;
     }
 }
