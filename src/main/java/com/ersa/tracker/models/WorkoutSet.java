@@ -27,7 +27,7 @@ public final class WorkoutSet {
     @Column(name = "exercise_name")
     private String exercise;
 
-    private int weight;
+    private float weight;
 
     @Min(1)
     private int reps;
@@ -52,11 +52,11 @@ public final class WorkoutSet {
         this.exercise = exercise;
     }
 
-    public int getWeight() {
+    public float getWeight() {
         return weight;
     }
 
-    public void setWeight(final int weight) {
+    public void setWeight(final float weight) {
         this.weight = weight;
     }
 

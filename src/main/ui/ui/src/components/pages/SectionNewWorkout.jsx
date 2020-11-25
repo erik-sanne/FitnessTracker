@@ -4,6 +4,8 @@ import useFetch from "../../services/useFetch";
 import Module from "../modules/Module";
 import { getCookie } from "react-use-cookie";
 import { Redirect } from "react-router-dom";
+import { faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const SectionNewWorkout = () => {
     const LS_KEY_SETS = "saved_workout_sets"
@@ -52,6 +54,11 @@ const SectionNewWorkout = () => {
         });
     }
 
+    const removeSet = (index) => {
+        const newArray = sets.filter((set, idx) => idx !== index).map((set => ({...set})));
+        setSets(newArray);
+    }
+
     const submitSet = (set) => {
         setSets(sets => [...sets, {...set}])
     }
@@ -97,6 +104,7 @@ const SectionNewWorkout = () => {
                             <th> Exercise</th>
                             <th> Repetitions</th>
                             <th> Weight</th>
+                            <th> </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -104,7 +112,8 @@ const SectionNewWorkout = () => {
                             <tr key={key}>
                                 <td> {set.type} </td>
                                 <td> {set.reps} </td>
-                                <td> {set.weight} </td>
+                                <td> {set.weight !== '' ? set.weight : '-'} </td>
+                                <td> <FontAwesomeIcon icon={ faTrash } style={trashCanStyle} onClick={() => removeSet(key)}/> </td>
                             </tr>)
                         }
                         </tbody>
@@ -129,6 +138,12 @@ const SectionNewWorkout = () => {
         </>
     )
 
+}
+
+const trashCanStyle = {
+    color: '#ad3f3f',
+    fontSize: '24px',
+    cursor: 'pointer'
 }
 
 export default SectionNewWorkout;

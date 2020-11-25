@@ -77,6 +77,7 @@ const SetInput = ({ type, reps, weight, exerciseOptions, onSubmit }) => {
                     <input name="reps"
                            type="number"
                            placeholder={'Reps'}
+                           min={1}
                            value={ exerciseState.reps }
                            onChange={ handleInputChange }
                            style={{ width: '100%',  background: validationErrors.reps ? '#faa' : '' }} />
@@ -86,6 +87,8 @@ const SetInput = ({ type, reps, weight, exerciseOptions, onSubmit }) => {
                     <input name="weight"
                            type="number"
                            placeholder={'Weight'}
+                           min={0}
+                           max={999.99}
                            value={ exerciseState.weight }
                            onChange={ handleInputChange }
                            style={{ width: '100%',  background: validationErrors.weight ? '#faa' : '' }}/>
