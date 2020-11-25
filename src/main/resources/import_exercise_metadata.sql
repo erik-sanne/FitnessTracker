@@ -59,6 +59,8 @@ INSERT INTO targets_wtypes (target_name, wtype_name) VALUES
 ('OBLIQUES', 'CORE');
 
 INSERT INTO exercise (name) VALUES
+('CRUNCHES'),
+('LEG_RAISES'),
 
 ('LEG_PRESS'),
 ('LEG_EXTENSIONS'),
@@ -101,6 +103,9 @@ INSERT INTO exercise (name) VALUES
 
 
 INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUES
+('CRUNCHES', 'CORE'),
+('LEG_RAISES', 'CORE'),
+
 ('LEG_PRESS', 'QUADS'),
 ('LEG_PRESS', 'GLUTES'),
 ('LEG_EXTENSIONS', 'QUADS'),
