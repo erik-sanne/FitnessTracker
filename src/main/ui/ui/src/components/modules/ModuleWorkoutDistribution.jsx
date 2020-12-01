@@ -32,7 +32,7 @@ const interpolate = (values, factor) => {
     const len = values.length;
     for (let i = 0; i < len; i++) {
         let sum = 0;
-        for (let j = -factor; j < +factor; j++) {
+        for (let j = -factor; j <= +factor; j++) {
             const index = (((i + j) % len) + len) % len;
             const falloff = 1 / (1 + Math.abs(j));
             sum += values[index] * falloff;
@@ -47,7 +47,7 @@ const createConfig = (data) => {
     const sorted = manualOrderingPass(data);
 
     const xLabels = sorted.map( entry => entry.x)
-    const yValues = interpolate(sorted.map( entry => entry.y), 5);
+    const yValues = interpolate(sorted.map( entry => entry.y), 0);
 
     return {
         type: 'radar',
