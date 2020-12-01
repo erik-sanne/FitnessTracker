@@ -102,9 +102,9 @@ const ModuleWorkoutDays = () => {
                 <>
                     <Graph data={ chartData } />
                     <div style={{ display: "flex" }}>
-                        <DisplayValue text={'Avg 90 weeks'} value={ data ? computeAverage(90, data).toFixed(1) : "-" } />
                         <DisplayValue text={'Avg 30 weeks'} value={ data ? computeAverage(30, data).toFixed(1) : "-" } />
                         <DisplayValue text={'Avg 10 weeks'} value={ data ? computeAverage(10, data).toFixed(1) : "-" } />
+                        <DisplayValue text={'This week'} value={ data ? data[data.length-1].totalWorkouts.toFixed(0) : "-" } />
                     </div>
                 </>
             }
