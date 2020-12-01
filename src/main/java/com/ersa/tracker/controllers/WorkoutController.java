@@ -2,6 +2,7 @@ package com.ersa.tracker.controllers;
 
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
+import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.services.APIService;
@@ -10,12 +11,10 @@ import com.ersa.tracker.services.WorkoutService;
 import com.ersa.tracker.services.authentication.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +41,12 @@ public class WorkoutController {
     public List<WorkoutSummary> getWorkouts(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         return apiService.getWorkoutSummaries(currentUser);
+    }
+
+    @GetMapping("api/setsForWorkout/{id}")
+    public Collection<WorkoutSet> getSetsForWorkout(@PathVariable long id, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return workoutService.getSetsForWorkout(currentUser, id);
     }
 
     @GetMapping("api/workoutsPerWeek")
