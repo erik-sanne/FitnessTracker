@@ -19,7 +19,6 @@ const Menu = ({ open, logoutCallback, onNavigate }) => {
     return (
         <div style={ trans } className={ 'menu' }>
             <ul>
-                <p> Menu will be styled soon enough... </p>
                 <li>
                     <NavLink to="/general" activeStyle={activeClass} onClick={ onNavigate }>
                         <FontAwesomeIcon icon={ faChartPie } style={{ marginRight: '5px'}}/>
