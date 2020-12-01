@@ -47,19 +47,24 @@ const SectionHistory = () => {
                                         {sets === null ? <Spinner animation="grow"/> :
                                             sets.length === 0 ? <p> No data available </p> :
                                                 <table style={{ width: '100%', fontSize: 'calc(10px + 0.5vmin)'}}>
-                                                    <tr>
-                                                        <th>Exercise</th>
-                                                        <th>Reps</th>
-                                                        <th>Weight</th>
-                                                    </tr>
-                                                    {
-                                                        sets.map(set =>
+                                                    <thead>
                                                         <tr>
+                                                            <th>Exercise</th>
+                                                            <th>Reps</th>
+                                                            <th>Weight</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {
+                                                        sets.map((set, key) =>
+                                                        <tr key={key}>
                                                             <td>{set.exercise.replace(/_/g, ' ')}</td>
                                                             <td>{set.reps}</td>
                                                             <td>{set.weight}</td>
                                                         </tr>)
                                                     }
+
+                                                    </tbody>
                                                 </table>
                                         }
                                     </Card.Body>
