@@ -9,7 +9,7 @@ import {useEffect, useState} from "react";
 const manualOrderingPass = (data) => {
     return [
         { x: "CORE", y: data["CORE"] },
-        { x: "OBLIQUES", y: data["OBLIQUES"] },
+        //{ x: "OBLIQUES", y: data["OBLIQUES"] },
         { x: "GLUTES", y: data["GLUTES"] },
         { x: "HAMSTRINGS", y: data["HAMSTRINGS"] },
         { x: "QUADS", y: data["QUADS"] },
@@ -47,7 +47,7 @@ const createConfig = (data) => {
     const sorted = manualOrderingPass(data);
 
     const xLabels = sorted.map( entry => entry.x)
-    const yValues = interpolate(sorted.map( entry => entry.y), 0);
+    const yValues = interpolate(sorted.map( entry => Math.log(entry.y + 1)), 0);
 
     return {
         type: 'radar',
@@ -80,9 +80,10 @@ const createConfig = (data) => {
 }
 
 const bestImprovement = (data) => {
+    const mapping = manualOrderingPass(data);
     let lowest = 99;
     let str = "";
-    Object.entries(data).map(([name, value]) => {
+    mapping.map(({x: name, y: value}) => {
         if (value < lowest) {
             lowest = value;
             str = name;
