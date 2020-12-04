@@ -2,6 +2,7 @@ import React from 'react'
 import ModuleWorkoutDays from "../modules/ModuleWorkoutDays";
 import ModuleWorkoutDistribution from "../modules/ModuleWorkoutDistribution";
 import Module from "../modules/Module";
+import ModuleSetAverages from "../modules/ModuleSetAverages";
 
 const SectionStatistics = () => {
     return (
@@ -11,6 +12,9 @@ const SectionStatistics = () => {
             </Module>
             <Module title="Workout distribution">
                 <ModuleWorkoutDistribution />
+            </Module>
+            <Module title="Progression">
+                <ModuleSetAverages />
             </Module>
         </div>
     );

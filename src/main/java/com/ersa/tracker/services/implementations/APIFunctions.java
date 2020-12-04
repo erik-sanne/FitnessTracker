@@ -1,5 +1,6 @@
 package com.ersa.tracker.services.implementations;
 
+import com.ersa.tracker.dto.SetAverage;
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
 import com.ersa.tracker.models.Exercise;
@@ -13,12 +14,10 @@ import com.ersa.tracker.repositories.WTypeRepository;
 import com.ersa.tracker.services.APIService;
 import com.ersa.tracker.services.ExerciseService;
 import com.ersa.tracker.services.WorkoutService;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -189,5 +188,34 @@ public class APIFunctions implements APIService {
             summaries.add(summary);
         });
         return summaries;
+    }
+
+    @Override
+    public List<SetAverage> getSetAverages(final User user, final String exercise) {
+        List<Workout> workouts = workoutService.getWorkouts(user);
+        List<SetAverage> result = workouts.stream().map(w -> computeSetAvg(w, exercise)).filter(Objects::nonNull).collect(Collectors.toList());
+        if (result.isEmpty())
+            return result;
+
+        float maxW = (float)result.stream().mapToDouble(SetAverage::getWeight).max().getAsDouble();
+        float maxR = (float)result.stream().mapToDouble(SetAverage::getReps).max().getAsDouble();
+
+        result.forEach(e -> e.setWeight(e.getWeight() / maxW));
+        result.forEach(e -> e.setReps(e.getReps() / maxR));
+
+        return result;
+    }
+
+    private SetAverage computeSetAvg(Workout workout, String exercise) {
+
+        List<WorkoutSet> sets = workout.getSets().stream().filter(set -> set.getExercise().equals(exercise)).collect(Collectors.toList());
+
+        if (sets.size() == 0)
+            return null;
+
+        float weightAvg = (float)sets.stream().mapToDouble(WorkoutSet::getWeight).reduce(0, Double::sum) / sets.size();
+        float repsAvg = (float)sets.stream().mapToInt(WorkoutSet::getReps).reduce(0, Integer::sum) / sets.size();
+
+        return new SetAverage(workout.getDate(), repsAvg, weightAvg);
     }
 }

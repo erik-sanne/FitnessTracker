@@ -57,7 +57,7 @@ const createConfig = (data) => {
                 label: 'Sets per bodypart',
                 backgroundColor: 'rgba(107,166,239,0.35)',
                 data: yValues,
-                lineTension: 0.5,
+                lineTension: 0.1,
             }]
         },
         options: {

@@ -1,7 +1,9 @@
 package com.ersa.tracker.controllers;
 
+import com.ersa.tracker.dto.SetAverage;
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
+import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.Workout;
@@ -64,6 +66,12 @@ public class WorkoutController {
     @GetMapping("api/exercises")
     public List<String> getExercises() {
         return exerciseService.getAllExerciseNames();
+    }
+
+    @GetMapping("api/setAverages/{exercise}")
+    public List<SetAverage> getExercises(@PathVariable String exercise, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return apiService.getSetAverages(currentUser, exercise);
     }
 
     @PostMapping("api/saveWorkout")
