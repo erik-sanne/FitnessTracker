@@ -124,8 +124,7 @@ const SectionNewWorkout = () => {
                 </Module>
                 <Module title={"Add set "} style={{
                     position: 'fixed',
-                    bottom: '0px',
-                    background: '#282c34'
+                    bottom: '0px'
                 }}>
                     <SetInput
                         type={ currentSet.type }
