@@ -6,6 +6,7 @@ import Splash from "./components/Splash";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import AppContent from "./AppContent";
+import './styles/snow.css';
 
 const authorizationStatus = {
     AUTHORIZED: "authorized",
@@ -70,7 +71,41 @@ function App() {
     }
 
     return (
-        <AppContent logoutCallback={ logoutCallback } />
+        <>
+            <div className={ 'background' }>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+                <div className={ 'snow' }/>
+            </div>
+            <AppContent logoutCallback={ logoutCallback } />
+        </>
     );
 }
 

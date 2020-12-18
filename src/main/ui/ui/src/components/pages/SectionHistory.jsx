@@ -37,7 +37,7 @@ const SectionHistory = () => {
                 <>
                     <Accordion>
                         { summaries.map(( summary ) =>
-                            <Card key={ summary.workout_id } style={{ background: '#282c34' }}>
+                            <Card key={ summary.workout_id } style={{ background: '#282c3487' }}>
                                 <Accordion.Toggle as={ Card.Header } style={{ display:'flex' }} eventKey={ summary.workout_id } onClick={ () => onToggle( summary.workout_id ) }>
                                     <span style={{ flex: '1'}}>{ summary.date.split('T')[0] }</span>
                                     <span>{ summary.description }</span>
