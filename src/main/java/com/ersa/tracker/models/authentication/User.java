@@ -1,10 +1,9 @@
 package com.ersa.tracker.models.authentication;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import com.ersa.tracker.models.user.UserProfile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
@@ -17,17 +16,26 @@ public final class User {
     private long id;
 
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Not a valid email")
+    @JsonIgnore
     private String email;
 
     @NotNull
+    @JsonIgnore
     private String password;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserProfile userProfile;
+
+    @JsonIgnore
     private boolean verified = false;
 
     @NotNull
+    @JsonIgnore
     private String permissionLevel = Permissions.BASIC;
 
     @OneToOne
+    @JsonIgnore
     private UserToken token;
 
     public UserToken getToken() {
@@ -68,6 +76,14 @@ public final class User {
 
     public void setPassword(final String password) {
         this.password = password;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
     }
 
     public boolean isVerified() {

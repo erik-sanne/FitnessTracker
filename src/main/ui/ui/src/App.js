@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import AppContent from "./AppContent";
 import './styles/snow.css';
+import Background from "./Background";
 
 const authorizationStatus = {
     AUTHORIZED: "authorized",
@@ -72,38 +73,7 @@ function App() {
 
     return (
         <>
-            <div className={ 'background' }>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-                <div className={ 'snow' }/>
-            </div>
+            <Background />
             <AppContent logoutCallback={ logoutCallback } />
         </>
     );

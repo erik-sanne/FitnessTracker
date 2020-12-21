@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Module from "../modules/Module";
-import useFetch from "../../services/useFetch";
+import Module from "./modules/Module";
+import useFetch from "../services/useFetch";
 import Spinner from "react-bootstrap/cjs/Spinner";
 import Card from "react-bootstrap/cjs/Card";
 import Accordion from "react-bootstrap/cjs/Accordion";

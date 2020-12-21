@@ -1,0 +1,17 @@
+import React from "react";
+import defaultPicture from '../../resources/default_pp.png';
+
+const ProfileDisplay = ({ displayName, profilePicture, userId }) => {
+
+    return (
+        <div style={{ display: 'flex', maxHeight: '48px' }}>
+            <img alt={ "" } src={ profilePicture ? profilePicture : defaultPicture } style={{ width: '48px', height: '48px', borderRadius: '24px' }}/>
+            <div style={{ paddingLeft: '15px', position: 'relative' }}>
+                <h4 style={{ fontSize: '16px', position: 'absolute', top: '7px', whiteSpace: 'nowrap', color: 'white' }}>{ displayName }</h4>
+                <p style={{ position: 'absolute', top: '24px', fontSize: '12px', color: '#ccc', whiteSpace: 'nowrap', lineHeight: 'initial' }}> { userId !== undefined && `#${ userId.toString().padStart(6, '0') }` }</p>
+            </div>
+        </div>
+    );
+}
+
+export default ProfileDisplay;

@@ -1,14 +1,20 @@
-import React, {useState} from 'react';
-import Header from "./components/Header";
-import {Redirect, BrowserRouter, Route, Switch} from "react-router-dom";
-import SectionStatistics from "./components/pages/SectionStatistics";
+import React, {useEffect, useState} from 'react';
+import Header from "./components/ui_components/Header";
+import { Redirect, BrowserRouter, Route, Switch } from "react-router-dom";
+import SectionStatistics from "./components/SectionStatistics";
 import Menu from "./components/Menu";
-import Burger from "./components/Burger";
-import SectionNewWorkout from "./components/pages/SectionNewWorkout";
-import SectionHistory from "./components/pages/SectionHistory";
+import Burger from "./components/ui_components/Burger";
+import SectionNewWorkout from "./components/SectionNewWorkout";
+import SectionHistory from "./components/SectionHistory";
+import useFetch from "./services/useFetch";
+import Splash from "./components/Splash";
+import ModuleEditProfile from "./components/modules/ModuleEditProfile";
+import SectionSettings from "./components/SectionSettins";
 
 const AppContent = ({ logoutCallback }) => {
     const [menuOpen, setMenuOpen] = useState(false)
+    const [currentUserProfile, setCurrentUserProfile] = useState(null)
+    const { data: loadedProfile, loading } = useFetch('/users/profile')
 
     const burgerClick = () => {
         setMenuOpen(!menuOpen);
@@ -21,6 +27,22 @@ const AppContent = ({ logoutCallback }) => {
     const onNavigate = () => {
         setMenuOpen(false)
     }
+
+    const updateUserProfile = (profile) => setCurrentUserProfile(profile);
+
+    useEffect(() => {
+        setCurrentUserProfile(loadedProfile);
+    }, [loadedProfile, loading])
+
+
+    if (loading)
+        return <Splash />
+
+    if (currentUserProfile == null)
+        return ( <section className={"page-wrapper"}>
+                    <ModuleEditProfile required={true} updateUserProfile={ updateUserProfile }/>
+                </section>
+        )
 
     return(
         <BrowserRouter>
@@ -38,10 +60,14 @@ const AppContent = ({ logoutCallback }) => {
                         <Header title={ "New workout" } onClick={ burgerClick } />
                         <SectionNewWorkout />
                     </Route>
+                    <Route path="/settings">
+                        <Header title={ "User settings" } onClick={ burgerClick } />
+                        <SectionSettings userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
+                    </Route>
                     <Redirect from="/" to="/general" />
                 </Switch>
             </section>
-            <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } />
+            <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } userProfile={ currentUserProfile } />
             <Burger onClick={ burgerClick } open={ menuOpen }/>
         </BrowserRouter>
     );
