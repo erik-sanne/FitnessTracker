@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMedal } from '@fortawesome/free-solid-svg-icons'
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
+import Modal from "../ui_components/Modal";
 
 const createConfig = (data) => {
     data = data.reverse();
@@ -79,9 +80,23 @@ const reachedGoal = (goal, data) => {
 }
 
 const ModuleWorkoutDays = () => {
+    const LS_KEY_WEEKLY_GOAL = "weekly_goal"
     const { data, loading } = useFetch('/api/workoutsPerWeek');
     const [ chartData, setChartData ] = useState(null);
-    const [ goal, ] = useState(3);
+    const [ goal, setGoal ] = useState(localStorage.getItem(LS_KEY_WEEKLY_GOAL) || 3);
+    const [ goalErr, setGoalErr ] = useState(false);
+    const [ modalVisible, setModalVisible ] = useState(false)
+
+    const changeGoal = (value) => {
+        value = parseInt(value);
+        if (value < 1 || value > 14) {
+            setGoalErr(true)
+        } else {
+            localStorage.setItem(LS_KEY_WEEKLY_GOAL, value);
+            setGoalErr(false)
+        }
+        setGoal(value)
+    }
 
     useEffect(() => {
         if (!loading)
@@ -96,7 +111,8 @@ const ModuleWorkoutDays = () => {
                 top:'min(4vw, 68px)',
                 right: 'min(4vw, 68px)',
                 fontSize: 'min(calc(8px + 3.5vmin), 30px)',
-                }}/>
+                }}
+                onClick={ () => setModalVisible(true) }/>
 
             { loading ? <Spinner animation="grow"/> :
                 <>
@@ -108,8 +124,16 @@ const ModuleWorkoutDays = () => {
                     </div>
                 </>
             }
+            <Modal visible={ modalVisible } title={ "Weekly goal" } onClose={ () => setModalVisible(false) }>
+                <input type={ "number" } style={ goalErr ? styleError : {} } value={ goal } onChange={ (e) => changeGoal(e.target.value) } onS />
+            </Modal>
         </>
     );
+}
+
+const styleError = {
+    border: '1px solid red',
+    background: 'pink'
 }
 
 export default ModuleWorkoutDays;
