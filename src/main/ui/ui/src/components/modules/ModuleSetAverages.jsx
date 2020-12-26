@@ -127,7 +127,6 @@ const ModuleWorkoutDistribution = () => {
                 <>
                     { chartData && message === "" && <Graph data={ chartData } /> }
                     { message !== "" && <p style={ {...messageStyle, fontSize: 'calc(10px + 1vmin)'} }> {message} </p>}
-                    { message !== "" && <p style={ {...messageStyle, marginTop: '-42px'} }> { "[This is very much a beta feature]" } </p>}
                     <div style={{display: "flex", marginTop: "10px"}}>
                         <DataSelect options={exercises.map(e => e.replace(/_/g, ' '))} onSelect={getExerciseData} style={selectStyle} />
                     </div>

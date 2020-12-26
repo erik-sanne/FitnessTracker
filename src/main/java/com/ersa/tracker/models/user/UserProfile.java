@@ -32,7 +32,7 @@ public class UserProfile {
     @JsonIgnore
     private byte[] profilePicture = null;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "friends")
     private List<UserProfile> friends;
 

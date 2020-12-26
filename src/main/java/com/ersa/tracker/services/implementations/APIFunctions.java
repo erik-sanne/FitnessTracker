@@ -141,6 +141,11 @@ public class APIFunctions implements APIService {
             }
         }
 
+        float maxVal = resultMap.entrySet().stream().max((a, b) -> Float.compare(a.getValue(), b.getValue())).get().getValue();
+        for (Map.Entry<String, Float> entry: resultMap.entrySet()){
+            entry.setValue(entry.getValue() / maxVal);
+        }
+
         return resultMap;
     }
 

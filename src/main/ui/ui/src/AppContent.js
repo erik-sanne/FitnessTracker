@@ -10,10 +10,12 @@ import useFetch from "./services/useFetch";
 import Splash from "./components/Splash";
 import ModuleEditProfile from "./components/modules/ModuleEditProfile";
 import SectionSettings from "./components/SectionSettins";
+import SectionFriends from "./components/SectionFriends";
+import SectionStatisticsWithFriend from "./components/SectionStatisticsWithFriend";
 
 const AppContent = ({ logoutCallback }) => {
-    const [menuOpen, setMenuOpen] = useState(false)
-    const [currentUserProfile, setCurrentUserProfile] = useState(null)
+    const [ menuOpen, setMenuOpen ] = useState(false)
+    const [ currentUserProfile, setCurrentUserProfile ] = useState(null)
     const { data: loadedProfile, loading } = useFetch('/users/profile')
 
     const burgerClick = () => {
@@ -57,12 +59,20 @@ const AppContent = ({ logoutCallback }) => {
                         <SectionHistory />
                     </Route>
                     <Route path="/new">
-                        <Header title={ "New workout" } onClick={ burgerClick } />
+                        <Header title={ "New Workout" } onClick={ burgerClick } />
                         <SectionNewWorkout />
                     </Route>
+                    <Route path="/social">
+                        <Header title={ "Friends" } onClick={ burgerClick } />
+                        <SectionFriends userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
+                    </Route>
                     <Route path="/settings">
-                        <Header title={ "User settings" } onClick={ burgerClick } />
+                        <Header title={ "User Settings" } onClick={ burgerClick } />
                         <SectionSettings userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
+                    </Route>
+                    <Route path="/friend/:friendId">
+                        <Header title={ "Our Statistics" } onClick={ burgerClick } />
+                        <SectionStatisticsWithFriend userProfile={ currentUserProfile } />
                     </Route>
                     <Redirect from="/" to="/general" />
                 </Switch>

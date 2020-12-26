@@ -5,10 +5,10 @@ import com.ersa.tracker.models.user.FriendRequest;
 
 import java.util.Collection;
 
-public interface FriendService {
+public interface FriendRequestService {
 
     Collection<FriendRequest> getFriendRequests(User user);
-    void sendFriendRequest(long toUserId, User currentUser);
+    void sendFriendRequest(final String toUserEmail, User currentUser);
     void acceptFriendRequest(long id, User currentUser);
     void deleteFriendRequest(long id, User currentUser);
 

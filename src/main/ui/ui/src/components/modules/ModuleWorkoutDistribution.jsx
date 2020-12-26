@@ -1,10 +1,9 @@
 import '../../styles/Module.css';
 import 'chartjs-plugin-zoom' //It says that its not used, but it is
 import Spinner from "react-bootstrap/Spinner";
-import useFetch from "../../services/useFetch";
 import DisplayValue from "./DisplayValue";
 import Graph from "./Graph";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 const manualOrderingPass = (data) => {
     return [
@@ -42,23 +41,27 @@ const interpolate = (values, factor) => {
     return result;
 }
 
-const createConfig = (data) => {
+const createConfig = (data=[]) => {
 
-    const sorted = manualOrderingPass(data);
-
+    const sorted = manualOrderingPass(data[0]);
     const xLabels = sorted.map( entry => entry.x)
-    const yValues = interpolate(sorted.map( entry => Math.log(entry.y + 1)), 0);
+
+    const datasets = data.map((set, idx) => {
+        const sorted = manualOrderingPass(set);
+        const yValues = interpolate(sorted.map( entry => Math.log(entry.y + 1)), 0);
+        return {
+            label: 'Sets per bodypart',
+            backgroundColor: idx === 0 ? 'rgba(107,166,239,0.35)' : 'rgba(70,131,58,0.35)',
+            data: yValues,
+            lineTension: 0.1,
+        }
+    })
 
     return {
         type: 'radar',
         data: {
             labels: xLabels,
-            datasets: [{
-                label: 'Sets per bodypart',
-                backgroundColor: 'rgba(107,166,239,0.35)',
-                data: yValues,
-                lineTension: 0.1,
-            }]
+            datasets: datasets
         },
         options: {
             legend: {
@@ -84,32 +87,51 @@ const bestImprovement = (data) => {
     let lowest = 99;
     let str = "";
     mapping.map(({x: name, y: value}) => {
-        if (value < lowest) {
+        if (value <= lowest) {
             lowest = value;
             str = name;
         }
         return null;
     })
-    return str.split('_')[1] || str.split('_')[0];
+    let res = str.split('_')[1] || str.split('_')[0];
+    res = res.toLowerCase();
+    return res.charAt(0).toUpperCase() + res.slice(1)
 }
 
-const ModuleWorkoutDistribution = () => {
-    const { data, loading } = useFetch('/api/distribution');
+const bestImprovementMulti = (data) => {
+    let merged = {};
+    data.forEach(person => {
+        person = manualOrderingPass(person);
+        person.forEach(d => {
+            if (merged[d.x]) {
+                merged[d.x] += d.y;
+            } else
+                merged[d.x] = d.y;
+        })
+    });
+
+    return bestImprovement(merged);
+}
+
+const ModuleWorkoutDistribution = ({ data=[] }) => {
     const [ chartData, setChartData ] = useState(null);
 
     useEffect(() => {
-        if (!loading)
+        if (data.length > 0)
             setChartData(createConfig(data));
-
-    }, [data, loading])
+    }, [data])
 
     return (
         <>
-            { loading ? <Spinner animation="grow"/> :
+            { data.length < 1 ? <Spinner animation="grow"/> :
                 <>
                     <Graph data={ chartData } />
                     <div style={{display: "flex", marginTop: "10px"}}>
-                        <DisplayValue text={"You could focus more on"} value={ bestImprovement(data)} />
+                        { data.length > 1 ?
+                            <DisplayValue text={"You could both focus on"} value={ bestImprovementMulti(data) } />
+                            :
+                            <DisplayValue text={"You could focus more on"} value={ bestImprovement(data[0])} />
+                        }
                     </div>
                 </>
             }

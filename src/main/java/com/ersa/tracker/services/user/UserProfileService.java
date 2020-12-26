@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @Service
 public class UserProfileService implements ProfileService {
@@ -32,11 +33,28 @@ public class UserProfileService implements ProfileService {
 
     @Override
     public UserProfile getProfile(User user) {
-        return user.getUserProfile();
+        UserProfile userProfile = user.getUserProfile();
+        if (userProfile == null)
+            return null;
+
+        if (userProfile.getFriends() != null && userProfile.getFriends().size() > 0)
+            for (UserProfile friend : userProfile.getFriends())
+                friend.setFriends(null);
+        return userProfile;
     }
 
     @Override
-    public void saveProfile(String displayName, String profilePicture, User user) throws IOException {
+    public User getFriend(User me, long userId) {
+        for (UserProfile friendProfile : me.getUserProfile().getFriends()){
+            if (friendProfile.getUser().getId() == userId) {
+                return friendProfile.getUser();
+            }
+        }
+        throw new IllegalArgumentException("User id is not a friend");
+    }
+
+    @Override
+    public void saveProfile(String displayName, String profilePicture, User user) {
         UserProfile profile = user.getUserProfile();
         if (profile == null) {
             profile = new UserProfile();

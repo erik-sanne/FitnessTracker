@@ -8,5 +8,6 @@ import java.io.IOException;
 public interface ProfileService {
     UserProfile getProfile(long userId);
     UserProfile getProfile(User user);
+    User getFriend(User me, long userId);
     void saveProfile(String displayName, String profilePicture, User user) throws IOException;
 }

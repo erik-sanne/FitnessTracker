@@ -3,15 +3,19 @@ import ModuleWorkoutDays from "./modules/ModuleWorkoutDays";
 import ModuleWorkoutDistribution from "./modules/ModuleWorkoutDistribution";
 import Module from "./modules/Module";
 import ModuleSetAverages from "./modules/ModuleSetAverages";
+import useFetch from "../services/useFetch";
 
 const SectionStatistics = () => {
+    const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
+    const { data: selfWorkoutDistribution, loading: loadingDistribution  } = useFetch(`/api/distribution`);
+
     return (
-        <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
+        <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
             <Module title = "Weekly workouts">
-                <ModuleWorkoutDays />
+                <ModuleWorkoutDays data={ !loadingWorkouts ? [ selfWorkoutsPerWeek ] : [] } />
             </Module>
             <Module title="Workout distribution">
-                <ModuleWorkoutDistribution />
+                <ModuleWorkoutDistribution data={ !loadingDistribution ? [ selfWorkoutDistribution ] : [] } />
             </Module>
             <Module title="Progression">
                 <ModuleSetAverages />
