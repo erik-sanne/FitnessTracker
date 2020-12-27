@@ -6,6 +6,7 @@ import { getCookie } from "react-use-cookie";
 import { Redirect } from "react-router-dom";
 import { faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Modal from "./ui_components/Modal";
 
 const SectionNewWorkout = () => {
     const LS_KEY_SETS = "saved_workout_sets"
@@ -17,6 +18,7 @@ const SectionNewWorkout = () => {
     const [ exerciseOptions, setExerciseOptions ] = useState([]);
     const [ date, setDate] = useState(todaysDate);
     const [ sets, setSets ] = useState([]);
+    const [ modalVisible, setModalVisible ] = useState(false)
     const [ submitted, setSubmitted ] = useState(false)
     const [ currentSet, setCurrentSet ] = useState({
         reps: '',
@@ -118,7 +120,7 @@ const SectionNewWorkout = () => {
                         }
                         </tbody>
                     </table>
-                        <input type="submit" value="Create and Save" onClick={ postWorkout }/>
+                        <input type="submit" value="Create and Save" onClick={ () => setModalVisible(true) }/>
                     </>
                 }
                 </Module>
@@ -134,6 +136,13 @@ const SectionNewWorkout = () => {
                         onSubmit={ submitSet } />
                 </Module>
             </div>
+            <Modal visible={ modalVisible } title={ "Submit workout?" } onClose={ () => setModalVisible(false) }>
+                <input type={ 'submit' } value={ 'Yes!' } onClick={ () => {
+                        setModalVisible(false);
+                        postWorkout();
+                    }
+                }/>
+            </Modal>
         </>
     )
 
