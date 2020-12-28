@@ -54,7 +54,7 @@ public class AuthenticationController {
         return ResponseEntity.ok("You are authenticated");
     }
 
-    @GetMapping("/confirmEmail/{token}")
+    @PostMapping("/confirmEmail/{token}")
     public ResponseEntity<?> confirmEmail(@PathVariable final String token) {
         try {
             emaiLService.verifyEmail(token);
@@ -77,7 +77,7 @@ public class AuthenticationController {
 
         try {
             User newUser = accountService.register(signupRequest.getUsername(), signupRequest.getPassword());
-            final String appUrl = request.getContextPath();
+            final String appUrl = request.getServerName();
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, appUrl));
         } catch (EmailAlreadyRegisteredException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());

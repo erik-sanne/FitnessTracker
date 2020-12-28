@@ -8,6 +8,7 @@ import Signup from "./components/Signup";
 import AppContent from "./AppContent";
 import './styles/snow.css';
 import Background from "./Background";
+import Activate from "./components/Activate";
 
 const authorizationStatus = {
     AUTHORIZED: "authorized",
@@ -62,6 +63,9 @@ function App() {
                     </Route>
                     <Route path="/register">
                         <Signup/>
+                    </Route>
+                    <Route path="/activate/:token">
+                        <Activate/>
                     </Route>
                     <Route path="/">
                         <Redirect to="/login" />

@@ -142,7 +142,7 @@ public class UserManagementService implements AccountService, AuthenticationServ
         EmailVerificationToken token = emailVerificationTokenRepository.findByToken(tokenString);
         if (token == null) {
             log.warn("Failed attempt to verify account, no token found in database: {}.", tokenString);
-            throw new ResourceNotFoundException("Bad token, perhaps it has expired");
+            throw new ResourceNotFoundException("Bad token");
         }
 
         if (new Date().after(token.getExpiryDate())) {
