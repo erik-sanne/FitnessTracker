@@ -7,6 +7,7 @@ import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import com.ersa.tracker.services.authentication.AccountService;
 import com.ersa.tracker.services.authentication.AuthenticationService;
 import com.ersa.tracker.services.authentication.EmailVerificationService;
+import lombok.extern.log4j.Log4j2;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -30,6 +31,7 @@ import javax.validation.constraints.Pattern;
 import java.util.Base64;
 
 @RestController
+@Log4j2
 public class AuthenticationController {
 
     private final EmailVerificationService emaiLService;
@@ -83,6 +85,7 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (MailSendException e) {
             // TODO: Verify that this clause is still relevant
+            log.error("Failed to send email, msg: " + e.getMessage());
             return ResponseEntity.accepted().body("User created");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unknown error occurred");

@@ -27,15 +27,15 @@ public final class RegistrationCompleteListener implements ApplicationListener<O
 
         String recipient = user.getEmail();
         String subject = "Confirm email";
-        String url = String.format("https://%s/activate/%s?", event.getUrl(), token);
+        String url = String.format("%s/%s?", "https://tracker.erik-sanne.com/activate", token);
 
         //TODO: use message template, take a look at MessageSource
-        String message = String.format("%s/r/n%s/r/n%s",
-                "Hi,",
-                "Welcome to Tracker! To finish your registration, please click the link below",
+        String message = String.format("%s %s",
+                "Hi! Welcome to Tracker! To finish your registration, please visit the following link:",
                 url);
 
         SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setFrom("no-reply@erik-sanne.com");
         mail.setTo(recipient);
         mail.setSubject(subject);
         mail.setText(message);
