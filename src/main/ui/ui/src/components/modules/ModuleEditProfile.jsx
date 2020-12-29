@@ -3,8 +3,10 @@ import Module from "./Module";
 import {getCookie} from "react-use-cookie";
 import Avatar from "react-avatar-edit";
 import ProfileDisplay from "../ui_components/ProfileDisplay";
+import Compress from "compress.js";
 
 const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) => {
+    const compress = new Compress();
     const [ displayName, setDisplayName ] = useState(userProfile?.displayName);
     const [ profilePic, setProfilePic ] = useState(userProfile?.profilePicture);
     const [ message, setMessage ] = useState("");
@@ -18,13 +20,16 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
         setProfilePic(pic)
     }
 
-    const onBeforeFileLoad = (elem) => {
-        if(elem.target.files[0].size > 71680){
-            setMessage("File is too large");
-            elem.target.value = "";
-        } else {
-            setMessage("");
-        }
+    const onImageLoad = (image) => {
+        compress.compress([image], {
+            size: 2, // MB
+            quality: 1,
+            maxWidth: 512,
+            maxHeight: 512,
+            resize: true
+        }).then( resizedImage => {
+            image = resizedImage[0].data
+        })
     }
 
     const save = () => {
@@ -62,7 +67,7 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
 
     return (
         <Module title={required ? "Welcome on board!" : "Edit profile"}>
-            { required && <p> As this is your first time using this app, we would like you to set a display name for your account. This will be useful for upcoming features. :-) You can also upload a unique profile picture if you so choose. </p>}
+            { required && <p> As this is your first time using this app, we would like you to set a display name for your account. You can also upload a unique profile picture if you so choose. </p>}
             { message && <span style={styleError}>{message}</span> }
             <label htmlFor={"displayName"}>Display name: {required ? "*" : ""}</label>
             <input
@@ -85,7 +90,7 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
                     height={ 256 }
                     onCrop={ onCrop }
                     onClose={ onClose }
-                    onBeforeFileLoad={ onBeforeFileLoad }
+                    onImageLoad={ onImageLoad }
                 />
                 </div>
                 <div style={{ flex: 2, textAlign: 'center', lineHeight: '256px', minWidth: '256px', padding: '20px' }}>
