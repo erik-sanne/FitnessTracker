@@ -23,6 +23,7 @@
 .module table th {
   padding: 10px;
   text-align: right;
+  font-size: calc(10px + 0.5vmin);
 }
 
 .module table tr th:first-child {

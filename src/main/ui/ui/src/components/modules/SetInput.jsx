@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import DataSelect from "../ui_components/DataSelect";
 
 const SetInput = ({ type, reps, weight, exerciseOptions, onSubmit }) => {
     const [ exerciseState, setExerciseState ] = useState({
@@ -44,67 +45,52 @@ const SetInput = ({ type, reps, weight, exerciseOptions, onSubmit }) => {
     },[type, reps, weight])
 
     return (
+        <>
         <div style={{
             display: 'flex',
             flexWrap: 'wrap',
-            alignContent: 'stretch'
+            alignContent: 'stretch',
+            marginBottom: '8px'
         }}>
-            <div style={{
-                display: 'flex',
-                flexWrap: 'nowrap',
-                alignContent: 'stretch',
-                flex: 2,
-                minWidth: '280px'
-            }}>
-                <div style={{...inputWrap, flex: 2}}>
-                    <label>Exercise</label>
-                    <input name={"type"}
-                           list="exercise_types"
-                           placeholder={'Exercise'}
-                           value={ exerciseState.type }
-                           onChange={ handleInputChange }
-                           style={{ width: '100%', background: validationErrors.type ? '#faa' : '' }} />
-                    <datalist id="exercise_types">
-                        {
-                            exerciseOptions.map((name, key) =>
-                                <option key={key} value={ name } />
-                            )
-                        }
-                    </datalist>
-                </div>
-                <div style={inputWrap}>
-                    <label>Reps</label>
-                    <input name="reps"
-                           type="number"
-                           placeholder={'Reps'}
-                           min={1}
-                           value={ exerciseState.reps }
-                           onChange={ handleInputChange }
-                           style={{ width: '100%',  background: validationErrors.reps ? '#faa' : '' }} />
-                </div>
-                <div style={inputWrap}>
-                    <label>Weight</label>
-                    <input name="weight"
-                           type="number"
-                           placeholder={'Weight'}
-                           min={0}
-                           max={999.99}
-                           value={ exerciseState.weight }
-                           onChange={ handleInputChange }
-                           style={{ width: '100%',  background: validationErrors.weight ? '#faa' : '' }}/>
-                </div>
+            <div style={{...inputWrap, flex: 2}}>
+                <label>Exercise</label>
+                <DataSelect
+                    options={ exerciseOptions }
+                    onSelect={ (value) => handleInputChange({ target : { name: 'type', value: value }}) }
+                    placeholder={ 'Select exercise...' }/>
             </div>
-            <div style={{...inputWrap, width: "10%", justifyContent: "flex-end", minWidth: '100px', flex: '0'}}>
-                <input type="submit" value={"Add"} onClick={ Submit }/>
+            <div style={inputWrap}>
+                <label>Reps</label>
+                <input name="reps"
+                       type="number"
+                       placeholder={'Reps'}
+                       min={1}
+                       value={ exerciseState.reps }
+                       onChange={ handleInputChange }
+                       style={{ width: '100%',  background: validationErrors.reps ? '#faa' : '' }} />
+            </div>
+            <div style={{...inputWrap, marginRight: '0px'}}>
+                <label>Weight</label>
+                <input name="weight"
+                       type="number"
+                       placeholder={'Weight'}
+                       min={0}
+                       max={999.99}
+                       value={ exerciseState.weight }
+                       onChange={ handleInputChange }
+                       style={{ width: '100%',  background: validationErrors.weight ? '#faa' : '' }}/>
             </div>
         </div>
+        <input type="submit" value={"Add set"} onClick={ Submit } className={ 'themed' }/>
+        </>
     );
 }
 
 const inputWrap = {
     display: "flex",
     flexDirection: "column",
-    flex: 1
+    flex: 1,
+    marginRight: '8px'
 }
 
 export default SetInput;

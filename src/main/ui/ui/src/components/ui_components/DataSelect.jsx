@@ -1,6 +1,6 @@
 import React, {useState, useRef} from "react";
 
-const DataSelect = ({options, onSelect, placeholder = "Select something...", style}) => {
+const DataSelect = ({options, onSelect, placeholder = "Select something...", style, className}) => {
     const [ intermediateValue, setIntermediateValue] = useState("");
     const ref = useRef(null);
 
@@ -21,6 +21,7 @@ const DataSelect = ({options, onSelect, placeholder = "Select something...", sty
         <>
             <input name={"type"}
                    style={{...style}}
+                   className={ className }
                    list="options"
                    placeholder={placeholder}
                    value={ intermediateValue }

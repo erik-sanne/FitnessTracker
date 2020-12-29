@@ -97,7 +97,7 @@ const SectionNewWorkout = () => {
             <div className={ 'page-wrapper' } style={{ minHeight: '0vh', paddingBottom: '30vh'}}>
                 <Module title={"Workout details"}>
                     <label>Date</label>
-                    <input type={'date'} value={ date } max={ todaysDate } onChange={ e => setDate(e.target.value) } />
+                    <input type={'date'} value={ date } max={ todaysDate } onChange={ e => setDate(e.target.value) } style={{ width: '100%' }}/>
                     {sets.length !== 0 &&
                     <>
                     <table>
@@ -124,9 +124,15 @@ const SectionNewWorkout = () => {
                     </>
                 }
                 </Module>
-                <Module title={"Add set "} style={{
+                <Module title={""} style={{
                     position: 'fixed',
-                    bottom: '0px'
+                    bottom: '0px',
+                    margin: '0px',
+                    width: 'min(100vw, 1000px)',
+                    borderRadius: '0px',
+                    background: '#16171af5',
+                    paddingTop: '0px',
+                    paddingBottom: '12px'
                 }}>
                     <SetInput
                         type={ currentSet.type }

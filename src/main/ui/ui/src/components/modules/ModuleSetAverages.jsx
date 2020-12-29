@@ -142,11 +142,6 @@ const messageStyle = {
 }
 
 const selectStyle = {
-    padding: '12px 24px',
-    background: '#282c3487',
-    color: 'white',
-    border: '1px solid #333',
-    borderRadius: '10px',
     width: '100vw'
 }
 
