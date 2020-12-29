@@ -121,7 +121,7 @@ const ModuleWorkoutDays = ({ data=[] }) => {
     return (
         <>
             { data.length === 1 && <FontAwesomeIcon icon={ faMedal } style={{
-                color: reachedGoal(goal, data) ? "#ffc877" : "rgb(61 65 72)",
+                color: reachedGoal(goal, data[0]) ? "#ffc877" : "rgb(61 65 72)",
                 position: 'absolute',
                 top:'min(4vw, 68px)',
                 right: 'min(4vw, 68px)',
