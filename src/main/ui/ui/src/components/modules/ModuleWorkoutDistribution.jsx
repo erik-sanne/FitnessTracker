@@ -103,10 +103,12 @@ const bestImprovementMulti = (data) => {
     data.forEach(person => {
         person = manualOrderingPass(person);
         person.forEach(d => {
-            if (merged[d.x]) {
-                merged[d.x] += d.y;
-            } else
-                merged[d.x] = d.y;
+            if (!isNaN(d.y)) {
+                if (merged[d.x]) {
+                    merged[d.x] += d.y;
+                } else
+                    merged[d.x] = d.y;
+            }
         })
     });
 
