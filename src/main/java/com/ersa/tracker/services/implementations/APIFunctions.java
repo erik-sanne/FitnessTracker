@@ -81,8 +81,12 @@ public class APIFunctions implements APIService {
 
             while (year > nextEntryYear || week != nextEntryWeek) {
                 if (week == 0) {
-                    week = weeksInYear;
+                    if  (nextEntryWeek == 53)
+                        week = 53;
+                    else
+                        week = weeksInYear;
                     year--;
+                    continue;
                 }
 
                 result.add(new Week(year, week, 0));
