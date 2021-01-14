@@ -33,7 +33,7 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
     }
 
     const save = () => {
-        if (displayName.length <= 4) {
+        if (!displayName || displayName.length <= 4) {
             setMessage("Please use a name with at least 4 characters");
             return;
         }
