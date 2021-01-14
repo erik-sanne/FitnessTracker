@@ -51,13 +51,13 @@ const createConfig = (rawdata=[]) => {
             },
             responsive: true,
             scales: {
-                yAxes: {
+                yAxes: [{
                     ticks: {
                         min: 0,
                         max: 7,
                         stepSize: 1
                     }
-                },
+                }],
                 xAxes: [{
                     ticks: {
                         min: xLabels[xLabels.length - 7],
