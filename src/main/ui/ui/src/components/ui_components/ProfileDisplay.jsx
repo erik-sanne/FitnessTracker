@@ -1,7 +1,7 @@
 import React from "react";
 import defaultPicture from '../../resources/default_pp.png';
 
-const ProfileDisplay = ({ displayName, profilePicture, userId, onClick, style }) => {
+const ProfileDisplay = ({ displayName, profilePicture, userId, permissionLevel, onClick, style }) => {
 
     return (
         <div style={{ ...style, display: displayName ? 'flex' : 'block', maxHeight: '48px' }} onClick={ () => { onClick && onClick()} }>
@@ -22,7 +22,7 @@ const ProfileDisplay = ({ displayName, profilePicture, userId, onClick, style })
                         color: '#ccc',
                         whiteSpace: 'nowrap',
                         lineHeight: 'initial'
-                    }}> {userId !== undefined && `#${userId.toString().padStart(6, '0')}`}</p>
+                    }}> {userId !== undefined && `#${userId.toString().padStart(6, '0')}`} { permissionLevel && permissionLevel !== 'BASIC' && `(${permissionLevel})`}</p>
                 </div>
             }
         </div>

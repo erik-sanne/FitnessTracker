@@ -24,7 +24,7 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
         <div style={ trans } className={ 'menu' }>
             <NavLink to="/settings" onClick={ onNavigate }>
                 <div style={{ paddingLeft: '36px'}}>
-                    <ProfileDisplay profilePicture={ userProfile.profilePicture } displayName={ userProfile.displayName } userId={ userProfile.userId } />
+                    <ProfileDisplay profilePicture={ userProfile.profilePicture } displayName={ userProfile.displayName } userId={ userProfile.userId } permissionLevel={ userProfile.permissionLevel } />
                 </div>
             </NavLink>
             <hr />

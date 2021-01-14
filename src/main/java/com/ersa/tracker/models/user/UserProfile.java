@@ -37,6 +37,10 @@ public class UserProfile {
     private List<UserProfile> friends;
 
     @Transient
+    @JsonProperty( value = "permissionLevel" )
+    private String permissionLevel() { return user.getPermissionLevel(); }
+
+    @Transient
     @JsonProperty( value = "profilePicture" )
     private String profileBase64() {
         return profilePicture == null ? null : new String(profilePicture);

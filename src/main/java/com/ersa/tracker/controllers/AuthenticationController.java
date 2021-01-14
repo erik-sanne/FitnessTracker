@@ -34,18 +34,18 @@ import java.util.Base64;
 @Log4j2
 public class AuthenticationController {
 
-    private final EmailVerificationService emaiLService;
+    private final EmailVerificationService emailService;
     private final AccountService accountService;
     private final AuthenticationService tokenService;
 
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public AuthenticationController(final EmailVerificationService emaiLService,
+    public AuthenticationController(final EmailVerificationService emailService,
                                     final AccountService accountService,
                                     final AuthenticationService tokenService,
                                     final ApplicationEventPublisher eventPublisher) {
-        this.emaiLService = emaiLService;
+        this.emailService = emailService;
         this.accountService = accountService;
         this.tokenService = tokenService;
         this.eventPublisher = eventPublisher;
@@ -59,7 +59,7 @@ public class AuthenticationController {
     @PostMapping("/confirmEmail/{token}")
     public ResponseEntity<?> confirmEmail(@PathVariable final String token) {
         try {
-            emaiLService.verifyEmail(token);
+            emailService.verifyEmail(token);
             return ResponseEntity.ok("Verified");
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

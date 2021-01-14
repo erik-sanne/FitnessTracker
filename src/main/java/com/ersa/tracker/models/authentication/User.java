@@ -82,7 +82,7 @@ public final class User {
         return userProfile;
     }
 
-    public void setUserProfile(UserProfile userProfile) {
+    public void setUserProfile(final UserProfile userProfile) {
         this.userProfile = userProfile;
     }
 
@@ -96,6 +96,7 @@ public final class User {
 
     public static final class Permissions {
         public static final String BASIC = "BASIC";
+        public static final String MODERATOR = "MOD";
         public static final String ADMIN = "ADMIN";
     }
 }
