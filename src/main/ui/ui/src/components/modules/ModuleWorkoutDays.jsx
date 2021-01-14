@@ -1,5 +1,4 @@
 import '../../styles/Module.css';
-import 'chartjs-plugin-zoom'
 import Spinner from "react-bootstrap/Spinner";
 import DisplayValue from "./DisplayValue";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -52,17 +51,19 @@ const createConfig = (rawdata=[]) => {
             },
             responsive: true,
             scales: {
-                yAxes: [{
+                yAxes: datasets.map(() => {
+                    return {
                     ticks: {
                         min: 0,
                         max: 7,
                         stepSize: 1
                     }
-                }],
+                }
+                }),
                 xAxes: [{
                     ticks: {
                         min: xLabels[xLabels.length - 7],
-                        max: xLabels[xLabels.length],
+                        max: xLabels[xLabels.length - 1],
                         callback: function(value, index, values) {
                             const arr = value.split(" ")
                             return arr[1] === "1" ? [arr[1], arr[0]] : [arr[1], ''];
@@ -131,7 +132,7 @@ const ModuleWorkoutDays = ({ data=[] }) => {
 
             { data.length < 1 ? <Spinner animation="grow"/> :
                 <>
-                    <Graph data={ chartData } />
+                    { chartData && <Graph data={ chartData } /> }
                     {data.length < 2 ?
                         <div style={{display: "flex"}}>
                             <DisplayValue text={'Avg 30 weeks'}
