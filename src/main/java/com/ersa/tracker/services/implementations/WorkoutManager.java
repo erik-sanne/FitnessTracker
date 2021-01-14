@@ -5,16 +5,12 @@ import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.WorkoutRepository;
-import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import com.ersa.tracker.services.WorkoutService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-
-import javax.mail.AuthenticationFailedException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +21,7 @@ import java.util.stream.Collectors;
 public class WorkoutManager implements WorkoutService {
     private static final Sort SORT_DESCENDING = Sort.by("date").descending();
 
-    private WorkoutRepository workoutRepository;
+    private final WorkoutRepository workoutRepository;
 
     @Autowired
     public WorkoutManager(final WorkoutRepository workoutRepository) {
@@ -40,15 +36,15 @@ public class WorkoutManager implements WorkoutService {
 
     @Override
     public List<Workout> getWorkouts(final User user) {
-        List<Workout> workouts = workoutRepository.findAllByUser(user, SORT_DESCENDING);
-        return workouts;
+        return workoutRepository.findAllByUser(user, SORT_DESCENDING);
     }
 
     @Override
-    public Collection<WorkoutSet> getSetsForWorkout(User user, long workoutId) {
+    public Collection<WorkoutSet> getSetsForWorkout(final User user, final long workoutId) {
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
         Workout workout = workoutRepository.findById(workoutId).get();
 
-        if (!workout.getUser().equals(user)){
+        if (!workout.getUser().equals(user)) {
             log.warn("user id {} requested workout for user id {}", user.getId(), workout.getUser().getId());
         }
 
@@ -59,7 +55,7 @@ public class WorkoutManager implements WorkoutService {
 
     @Override
     public List<Set<WorkoutSet>> getPartitionedWorkoutSets(final User user, final Exercise exercise) {
-        List<Set<WorkoutSet>> setsForExercise = getWorkouts(user)
+        return getWorkouts(user)
                 .stream()
                 .map(workout -> workout
                         .getSets()
@@ -69,13 +65,13 @@ public class WorkoutManager implements WorkoutService {
                                 .equals(exercise.getName()))
                         .collect(Collectors.toSet()))
                 .collect(Collectors.toList());
-        return setsForExercise;
     }
 
     @Override
     public void saveWorkout(final User user, final Workout workout) {
         workout.setUser(user);
-        workout.getSets().stream().forEach(set -> set.setWorkout(workout));
+        workout.getSets().forEach(set -> set.setWorkout(workout));
         workoutRepository.save(workout);
+        log.info("User with id {} published new workout", user.getId());
     }
 }
