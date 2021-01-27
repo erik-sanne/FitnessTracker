@@ -61,6 +61,7 @@ INSERT INTO targets_wtypes (target_name, wtype_name) VALUES
 INSERT INTO exercise (name) VALUES
 ('CRUNCHES'),
 ('LEG_RAISES'),
+('SITUPS'),
 
 ('LEG_PRESS'),
 ('LEG_EXTENSIONS'),
@@ -75,6 +76,7 @@ INSERT INTO exercise (name) VALUES
 ('INCLINED_DUMBELL_PRESS'),
 ('CABLE_FLIES'),
 ('DIP'),
+('PUSHUP'),
 
 ('MILITARY_PRESS'),
 ('SHOULDER_PRESS'),
@@ -105,6 +107,7 @@ INSERT INTO exercise (name) VALUES
 INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUES
 ('CRUNCHES', 'CORE'),
 ('LEG_RAISES', 'CORE'),
+('SITUPS', 'CORE'),
 
 ('LEG_PRESS', 'QUADS'),
 ('LEG_PRESS', 'GLUTES'),
@@ -132,6 +135,9 @@ INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUE
 ('CABLE_FLIES', 'UPPER_CHEST'),
 ('DIP', 'TRICEPS'),
 ('DIP', 'FRONT_DELTS'),
+('PUSHUP', 'LOWER_CHEST'),
+('PUSHUP', 'UPPER_CHEST'),
+('PUSHUP', 'TRICEPS'),
 
 ('MILITARY_PRESS', 'FRONT_DELTS'),
 ('MILITARY_PRESS', 'SIDE_DELTS'),
@@ -178,6 +184,7 @@ INSERT INTO exercise_secondary_targets (exercise_name, secondary_targets_name) V
 ('INCLINED_DUMBELL_PRESS', 'LOWER_CHEST'),
 ('CABLE_FLIES', 'FRONT_DELTS'),
 ('DIP', 'LOWER_CHEST'),
+('PUSHUP', 'FRONT_DELTS'),
 
 ('REVERSED_FLIES', 'TRAPS'),
 ('UPRIGHT_ROW', 'SIDE_DELTS'),
