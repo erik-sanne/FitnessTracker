@@ -119,7 +119,7 @@ const ModuleWorkoutDistribution = ({ data=[] }) => {
     const [ chartData, setChartData ] = useState(null);
 
     useEffect(() => {
-        if (data.length > 0)
+        if (data.length > 0 && !chartData)
             setChartData(createConfig(data));
     }, [data])
 

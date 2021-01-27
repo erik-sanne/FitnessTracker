@@ -113,7 +113,7 @@ const ModuleWorkoutDays = ({ data=[] }) => {
     }
 
     useEffect(() => {
-        if (data.length > 0)
+        if (data.length > 0 && !chartData)
             setChartData(createConfig(data))
     }, [data])
 
