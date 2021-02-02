@@ -5,14 +5,14 @@ import com.ersa.tracker.services.authentication.AuthenticationService;
 import com.ersa.tracker.services.authentication.EmailVerificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,12 +30,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@AutoConfigureMockMvc
-public class ControllerLayerTests {
-    static {
-        System.setProperty("CLIENT_ORIGIN", "http://localhost:3000");
-    }
+
+public class AuthenticationTests extends TestBase {
 
     private static final int DAY_IN_MS = 1000 * 60 * 60 * 24;
     @Autowired
@@ -52,6 +48,8 @@ public class ControllerLayerTests {
     private static final String TOKEN_RESPONSE = Base64.getEncoder().encodeToString(MOCK_TOKEN.getBytes());
     private static final String MOCK_AUTH_HEADER = "Basic " + TOKEN_RESPONSE;
 
+    @MockBean
+    private JavaMailSender javaMailSender;
     @MockBean
     private AuthenticationService authenticationService;
     @MockBean
@@ -72,7 +70,8 @@ public class ControllerLayerTests {
     }
 
     @Test
-    public void testVerifyInvalidToken() throws Exception {
+    @DisplayName("Invalid token returns 401")
+    void testVerifyInvalidToken() throws Exception {
         final String expiredTokenMock = "<<trash>>";
         this.mockMvc.perform(get("/validate")
                 .header("Authorization", expiredTokenMock).contentType(MediaType.APPLICATION_JSON))
@@ -80,7 +79,8 @@ public class ControllerLayerTests {
     }
 
     @Test
-    public void testAuthenticationWithValidCredentials() throws Exception {
+    @DisplayName("Valid credentials results in 200 and proper auth token")
+    void testAuthenticationWithValidCredentials() throws Exception {
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("username", MOCK_UN);
         requestBody.put("password", MOCK_PW);
@@ -91,7 +91,8 @@ public class ControllerLayerTests {
     }
 
     @Test
-    public void testVerifyValidToken() throws Exception {
+    @DisplayName("Valid token returns 200")
+    void testVerifyValidToken() throws Exception {
         this.mockMvc.perform(get("/validate")
                 .header("Authorization", MOCK_AUTH_HEADER).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
