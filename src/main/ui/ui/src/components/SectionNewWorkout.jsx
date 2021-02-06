@@ -7,8 +7,16 @@ import { Redirect } from "react-router-dom";
 import { faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Modal from "./ui_components/Modal";
+import ModalLoader from "./ui_components/ModalLoader";
 
 const SectionNewWorkout = () => {
+    const SubmitStatus = {
+        NOT_SUBMITTED: "not submitted",
+        ERROR: "submit error",
+        SUBMITTING: "submitting",
+        SUBMITTED: "submitted"
+    }
+
     const LS_KEY_SETS = "saved_workout_sets"
     const LS_KEY_DATE = "saved_workout_date"
 
@@ -19,7 +27,7 @@ const SectionNewWorkout = () => {
     const [ date, setDate] = useState(todaysDate);
     const [ sets, setSets ] = useState([]);
     const [ modalVisible, setModalVisible ] = useState(false)
-    const [ submitted, setSubmitted ] = useState(false)
+    const [ submitStatus, setSubmitStatus ] = useState(SubmitStatus.NOT_SUBMITTED)
     const [ currentSet, setCurrentSet ] = useState({
         reps: '',
         weight: '',
@@ -27,6 +35,7 @@ const SectionNewWorkout = () => {
     });
 
     const postWorkout = () => {
+        setSubmitStatus(SubmitStatus.SUBMITTING)
 
         const setArray = sets.map((set) => { return {...set, exercise: set.type.replace(/ /g, '_')}});
 
@@ -49,10 +58,11 @@ const SectionNewWorkout = () => {
             if (response.ok) {
                 localStorage.removeItem(LS_KEY_SETS);
                 localStorage.removeItem(LS_KEY_DATE);
-                setSubmitted(true);
+                setSubmitStatus(SubmitStatus.SUBMITTED);
             }
         }).catch(error => {
             console.log("error", error)
+            setSubmitStatus(SubmitStatus.ERROR);
         });
     }
 
@@ -89,7 +99,7 @@ const SectionNewWorkout = () => {
 
     }, [names, loading])
 
-    if (submitted)
+    if (submitStatus === SubmitStatus.SUBMITTED)
         return <Redirect to='/' />
 
     return (
@@ -143,12 +153,18 @@ const SectionNewWorkout = () => {
                 </Module>
             </div>
             <Modal visible={ modalVisible } title={ "Submit workout?" } onClose={ () => setModalVisible(false) }>
-                <input type={ 'submit' } value={ 'Yes!' } onClick={ () => {
+                <input type={ 'submit' } value={ 'Yes!' } className={ 'themed' } onClick={ () => {
                         setModalVisible(false);
                         postWorkout();
                     }
                 }/>
             </Modal>
+            <ModalLoader visible={
+                submitStatus === SubmitStatus.SUBMITTING ||
+                submitStatus === SubmitStatus.ERROR
+            } text={ "Saving workout..." } error={ submitStatus === SubmitStatus.ERROR && "An error occurred :(" } onClose={
+                () => setSubmitStatus(SubmitStatus.NOT_SUBMITTED)
+            }/>
         </>
     )
 
