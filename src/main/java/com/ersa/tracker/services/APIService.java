@@ -3,7 +3,6 @@ package com.ersa.tracker.services;
 import com.ersa.tracker.dto.SetAverage;
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
-import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.authentication.User;
 
 import java.util.List;

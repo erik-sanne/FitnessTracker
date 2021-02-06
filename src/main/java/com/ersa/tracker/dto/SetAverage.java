@@ -12,7 +12,7 @@ public class SetAverage {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(final Date date) {
         this.date = date;
     }
 
@@ -20,7 +20,7 @@ public class SetAverage {
         return reps;
     }
 
-    public void setReps(float reps) {
+    public void setReps(final float reps) {
         this.reps = reps;
     }
 
@@ -28,11 +28,11 @@ public class SetAverage {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(final float weight) {
         this.weight = weight;
     }
 
-    public SetAverage(Date date, float reps, float weight){
+    public SetAverage(final Date date, final float reps, final float weight) {
         this.date = date;
         this.reps = reps;
         this.weight = weight;

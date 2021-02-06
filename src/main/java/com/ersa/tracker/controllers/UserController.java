@@ -9,7 +9,11 @@ import com.ersa.tracker.services.user.FriendRequestManager;
 import com.ersa.tracker.services.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -25,7 +29,7 @@ public class UserController {
     @Autowired
     public UserController(final ProfileService profileService,
                           final AccountService accountService,
-                          final FriendRequestManager friendsService){
+                          final FriendRequestManager friendsService) {
         this.profileService = profileService;
         this.accountService = accountService;
         this.friendsService = friendsService;
@@ -39,7 +43,7 @@ public class UserController {
 
     @PostMapping("/users/saveProfile")
     public UserProfile saveProfile(@RequestBody final ProfileEdit profileEdit,
-                            final Principal principal ) throws IOException {
+                            final Principal principal) throws IOException {
         User currentUser = accountService.getUserByPrincipal(principal);
         profileService.saveProfile(profileEdit.getDisplayName(), profileEdit.getProfilePicture(), currentUser);
         currentUser = accountService.getUserByPrincipal(principal);
@@ -47,7 +51,7 @@ public class UserController {
     }
 
     @PostMapping("/users/friendRequest")
-    public ResponseEntity<?> sendFriendRequest(@RequestBody final String email, final Principal principal){
+    public ResponseEntity<?> sendFriendRequest(@RequestBody final String email, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         try {
             friendsService.sendFriendRequest(email, currentUser);
@@ -58,25 +62,24 @@ public class UserController {
     }
 
     @GetMapping("/users/getFriendRequests")
-    public Collection<FriendRequest> incomingFriendRequests(final Principal principal){
+    public Collection<FriendRequest> incomingFriendRequests(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         return friendsService.getFriendRequests(currentUser);
     }
 
     @PostMapping("/users/acceptFriend/{requestId}")
-    public void acceptFriend(@PathVariable final long requestId, final Principal principal){
+    public void acceptFriend(@PathVariable final long requestId, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         friendsService.acceptFriendRequest(requestId, currentUser);
     }
 
     @PostMapping("/users/denyFriend/{requestId}")
-    public void denyFriend(@PathVariable final long requestId, final Principal principal){
+    public void denyFriend(@PathVariable final long requestId, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         friendsService.deleteFriendRequest(requestId, currentUser);
     }
 
-    public static class ProfileEdit
-    {
+    public static class ProfileEdit {
         private String displayName;
         private String profilePicture;
 
@@ -88,7 +91,7 @@ public class UserController {
             return displayName;
         }
 
-        public void setDisplayName(String displayName) {
+        public void setDisplayName(final String displayName) {
             this.displayName = displayName;
         }
 
@@ -96,7 +99,7 @@ public class UserController {
             return profilePicture;
         }
 
-        public void setProfilePicture(String profilePicture) {
+        public void setProfilePicture(final String profilePicture) {
             this.profilePicture = profilePicture;
         }
 

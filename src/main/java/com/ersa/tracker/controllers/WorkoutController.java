@@ -3,11 +3,9 @@ package com.ersa.tracker.controllers;
 import com.ersa.tracker.dto.SetAverage;
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
-import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.Workout;
-import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.services.APIService;
 import com.ersa.tracker.services.ExerciseService;
 import com.ersa.tracker.services.WorkoutService;
@@ -15,7 +13,11 @@ import com.ersa.tracker.services.authentication.AccountService;
 import com.ersa.tracker.services.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.Collection;
@@ -51,7 +53,7 @@ public class WorkoutController {
     }
 
     @GetMapping("api/setsForWorkout/{id}")
-    public Collection<WorkoutSet> getSetsForWorkout(@PathVariable long id, final Principal principal) {
+    public Collection<WorkoutSet> getSetsForWorkout(@PathVariable final long id, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         return workoutService.getSetsForWorkout(currentUser, id);
     }
@@ -83,13 +85,15 @@ public class WorkoutController {
     }
 
     @GetMapping("api/setAverages/{exercise}")
-    public List<SetAverage> getExercises(@PathVariable String exercise, final Principal principal) {
+    public List<SetAverage> getExercises(@PathVariable final String exercise, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         return apiService.getSetAverages(currentUser, exercise);
     }
 
     @GetMapping("api/setAverages/{exercise}/{userId}")
-    public List<SetAverage> getExercises(@PathVariable String exercise, @PathVariable final long userId, final Principal principal) {
+    public List<SetAverage> getExercises(@PathVariable final String exercise,
+                                         @PathVariable final long userId,
+                                         final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         User friend = profileService.getFriend(currentUser, userId);
         return apiService.getSetAverages(friend, exercise);

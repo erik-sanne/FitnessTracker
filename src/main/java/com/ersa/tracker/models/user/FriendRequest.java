@@ -1,9 +1,5 @@
 package com.ersa.tracker.models.user;
 
-import com.ersa.tracker.models.authentication.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -26,7 +22,7 @@ public class FriendRequest {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -34,7 +30,7 @@ public class FriendRequest {
         return from;
     }
 
-    public void setFrom(UserProfile from) {
+    public void setFrom(final UserProfile from) {
         this.from = from;
     }
 
@@ -42,7 +38,7 @@ public class FriendRequest {
         return to;
     }
 
-    public void setTo(UserProfile to) {
+    public void setTo(final UserProfile to) {
         this.to = to;
     }
 }

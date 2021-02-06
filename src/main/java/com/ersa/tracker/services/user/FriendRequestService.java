@@ -8,7 +8,7 @@ import java.util.Collection;
 public interface FriendRequestService {
 
     Collection<FriendRequest> getFriendRequests(User user);
-    void sendFriendRequest(final String toUserEmail, User currentUser);
+    void sendFriendRequest(String toUserEmail, User currentUser);
     void acceptFriendRequest(long id, User currentUser);
     void deleteFriendRequest(long id, User currentUser);
 

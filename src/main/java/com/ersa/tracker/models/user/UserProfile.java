@@ -5,7 +5,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -21,9 +29,12 @@ public class UserProfile {
     private User user;
 
     @Transient
-    @JsonProperty( value = "userId" )
-    private long userId() { return user.getId(); }
+    @JsonProperty(value = "userId")
+    private long userId() {
+        return user.getId();
+    }
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     @NotNull
     @Length(min = 4, max = 16)
     private String displayName;
@@ -37,11 +48,13 @@ public class UserProfile {
     private List<UserProfile> friends;
 
     @Transient
-    @JsonProperty( value = "permissionLevel" )
-    private String permissionLevel() { return user.getPermissionLevel(); }
+    @JsonProperty(value = "permissionLevel")
+    private String permissionLevel() {
+        return user.getPermissionLevel();
+    }
 
     @Transient
-    @JsonProperty( value = "profilePicture" )
+    @JsonProperty(value = "profilePicture")
     private String profileBase64() {
         return profilePicture == null ? null : new String(profilePicture);
     }
@@ -50,7 +63,7 @@ public class UserProfile {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(final User user) {
         this.user = user;
     }
 
@@ -58,7 +71,7 @@ public class UserProfile {
         return displayName;
     }
 
-    public void setDisplayName(String displayName) {
+    public void setDisplayName(final String displayName) {
         this.displayName = displayName;
     }
 
@@ -66,7 +79,7 @@ public class UserProfile {
         return friends;
     }
 
-    public void setFriends(List<UserProfile> friends) {
+    public void setFriends(final List<UserProfile> friends) {
         this.friends = friends;
     }
 
@@ -74,7 +87,7 @@ public class UserProfile {
         return profilePicture;
     }
 
-    public void setProfilePicture(byte[] profilePicture) {
+    public void setProfilePicture(final byte[] profilePicture) {
         this.profilePicture = profilePicture;
     }
 }

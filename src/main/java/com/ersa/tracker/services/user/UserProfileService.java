@@ -8,8 +8,6 @@ import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.stream.Collectors;
 
 @Service
 public class UserProfileService implements ProfileService {
@@ -24,7 +22,7 @@ public class UserProfileService implements ProfileService {
     }
 
     @Override
-    public UserProfile getProfile(long userId) {
+    public UserProfile getProfile(final long userId) {
         User user = userRepository.findById(userId).get();
         if (user == null)
             throw new ResourceNotFoundException("User not found");
@@ -32,7 +30,7 @@ public class UserProfileService implements ProfileService {
     }
 
     @Override
-    public UserProfile getProfile(User user) {
+    public UserProfile getProfile(final User user) {
         UserProfile userProfile = user.getUserProfile();
         if (userProfile == null)
             return null;
@@ -44,8 +42,8 @@ public class UserProfileService implements ProfileService {
     }
 
     @Override
-    public User getFriend(User me, long userId) {
-        for (UserProfile friendProfile : me.getUserProfile().getFriends()){
+    public User getFriend(final User me, final long userId) {
+        for (UserProfile friendProfile : me.getUserProfile().getFriends()) {
             if (friendProfile.getUser().getId() == userId) {
                 return friendProfile.getUser();
             }
@@ -54,7 +52,7 @@ public class UserProfileService implements ProfileService {
     }
 
     @Override
-    public void saveProfile(String displayName, String profilePicture, User user) {
+    public void saveProfile(final String displayName, final String profilePicture, final User user) {
         UserProfile profile = user.getUserProfile();
         if (profile == null) {
             profile = new UserProfile();

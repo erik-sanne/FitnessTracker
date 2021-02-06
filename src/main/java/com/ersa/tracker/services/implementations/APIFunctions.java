@@ -15,7 +15,13 @@ import com.ersa.tracker.services.APIService;
 import com.ersa.tracker.services.ExerciseService;
 import com.ersa.tracker.services.WorkoutService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +29,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class APIFunctions implements APIService {
+
+    private static final int WEEKS_IN_STANDARD_YEAR = 52;
 
     private final WorkoutService workoutService;
     private final ExerciseService exerciseService;
@@ -46,8 +54,8 @@ public class APIFunctions implements APIService {
      * the number of workouts performed each week.
      * Always returns at least 7 weeks even if there is not sufficient data.
      */
+    @SuppressWarnings("checkstyle:MagicNumber")
     public Iterable<Week> getWorkoutsPerWeek(final User user) {
-        final int weeksInYear = 52;
         List<Week> result = new ArrayList<>();
         Iterable<Workout> workouts = workoutService.getWorkouts(user);
 
@@ -69,7 +77,7 @@ public class APIFunctions implements APIService {
             int differenceInWeeks = (lastRecord.getWeekNumber() - nextEntryWeek);
             int differenceInYears = lastRecord.getYear() - nextEntryYear;
 
-            int weeksDifference = differenceInWeeks + weeksInYear * differenceInYears;
+            int weeksDifference = differenceInWeeks + WEEKS_IN_STANDARD_YEAR * differenceInYears;
 
             if (weeksDifference == 0) {
                 lastRecord.setTotalWorkouts(lastRecord.getTotalWorkouts() + 1);
@@ -81,10 +89,10 @@ public class APIFunctions implements APIService {
 
             while (year > nextEntryYear || week != nextEntryWeek) {
                 if (week == 0) {
-                    if  (nextEntryWeek == 53)
-                        week = 53;
+                    if (nextEntryWeek == WEEKS_IN_STANDARD_YEAR + 1)
+                        week = WEEKS_IN_STANDARD_YEAR + 1;
                     else
-                        week = weeksInYear;
+                        week = WEEKS_IN_STANDARD_YEAR;
                     year--;
                     continue;
                 }
@@ -103,7 +111,7 @@ public class APIFunctions implements APIService {
             int year = prev.getYear();
             if (week == 0) {
                 year--;
-                week = weeksInYear;
+                week = WEEKS_IN_STANDARD_YEAR;
             }
             result.add(new Week(year, week, 0));
         }
@@ -147,8 +155,9 @@ public class APIFunctions implements APIService {
             }
         }
 
-        float maxVal = resultMap.entrySet().stream().max((a, b) -> Float.compare(a.getValue(), b.getValue())).get().getValue();
-        for (Map.Entry<String, Float> entry: resultMap.entrySet()){
+        float maxVal = resultMap.entrySet().stream().max((a, b) ->
+                Float.compare(a.getValue(), b.getValue())).get().getValue();
+        for (Map.Entry<String, Float> entry: resultMap.entrySet()) {
             entry.setValue(entry.getValue() / maxVal);
         }
 
@@ -204,12 +213,13 @@ public class APIFunctions implements APIService {
     @Override
     public List<SetAverage> getSetAverages(final User user, final String exercise) {
         List<Workout> workouts = workoutService.getWorkouts(user);
-        List<SetAverage> result = workouts.stream().map(w -> computeSetAvg(w, exercise)).filter(Objects::nonNull).collect(Collectors.toList());
+        List<SetAverage> result = workouts.stream().map(w -> computeSetAvg(w, exercise))
+                .filter(Objects::nonNull).collect(Collectors.toList());
         if (result.isEmpty())
             return result;
 
-        float maxW = (float)result.stream().mapToDouble(SetAverage::getWeight).max().getAsDouble();
-        float maxR = (float)result.stream().mapToDouble(SetAverage::getReps).max().getAsDouble();
+        float maxW = (float) result.stream().mapToDouble(SetAverage::getWeight).max().getAsDouble();
+        float maxR = (float) result.stream().mapToDouble(SetAverage::getReps).max().getAsDouble();
 
         result.forEach(e -> e.setWeight(e.getWeight() / maxW));
         result.forEach(e -> e.setReps(e.getReps() / maxR));
@@ -217,15 +227,16 @@ public class APIFunctions implements APIService {
         return result;
     }
 
-    private SetAverage computeSetAvg(Workout workout, String exercise) {
+    private SetAverage computeSetAvg(final Workout workout, final String exercise) {
 
-        List<WorkoutSet> sets = workout.getSets().stream().filter(set -> set.getExercise().equals(exercise)).collect(Collectors.toList());
+        List<WorkoutSet> sets = workout.getSets().stream().filter(set ->
+                set.getExercise().equals(exercise)).collect(Collectors.toList());
 
         if (sets.size() == 0)
             return null;
 
-        float weightAvg = (float)sets.stream().mapToDouble(WorkoutSet::getWeight).reduce(0, Double::sum) / sets.size();
-        float repsAvg = (float)sets.stream().mapToInt(WorkoutSet::getReps).reduce(0, Integer::sum) / sets.size();
+        float weightAvg = (float) sets.stream().mapToDouble(WorkoutSet::getWeight).reduce(0, Double::sum) / sets.size();
+        float repsAvg = (float) sets.stream().mapToInt(WorkoutSet::getReps).reduce(0, Integer::sum) / sets.size();
 
         return new SetAverage(workout.getDate(), repsAvg, weightAvg);
     }
