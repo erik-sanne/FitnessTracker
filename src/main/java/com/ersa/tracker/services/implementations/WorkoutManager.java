@@ -74,4 +74,10 @@ public class WorkoutManager implements WorkoutService {
         workoutRepository.save(workout);
         log.info("User with id {} published new workout", user.getId());
     }
+
+    @Override
+    public void deleteWorkout(final User user, final long workoutId) {
+        workoutRepository.deleteById(workoutId);
+        log.info("Workout with id {} removed by user with id {}", workoutId, user.getId());
+    }
 }

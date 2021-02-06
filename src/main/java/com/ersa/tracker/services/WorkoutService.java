@@ -15,4 +15,5 @@ public interface WorkoutService {
     Collection<WorkoutSet> getSetsForWorkout(User user, long workoutId);
 
     void saveWorkout(User user, Workout workout);
+    void deleteWorkout(User user, long workoutId);
 }

@@ -10,7 +10,7 @@ const Modal = ({ visible=false, title="", children, onClose }) => {
 
     return (
         <div style={ wrapperStyle } onClick={ (e) => { e.target === e.currentTarget && onClose() } }>
-            <Module title={ title } style={{ width: '0', padding: '20px' }}>
+            <Module title={ title } style={{ padding: '20px' }}>
                 <FontAwesomeIcon
                     icon={ faTimes }
                     style={{ position: 'absolute', right: '24px', top: '24px', fontSize: 'min(calc(8px + 3.5vmin), 30px)' }}
