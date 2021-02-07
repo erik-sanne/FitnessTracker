@@ -73,15 +73,17 @@ const SectionHistory = () => {
                         <Accordion>
                             { summaries.map(( summary ) =>
                                 <Card key={ summary.workout_id } style={{ background: '#282c3487' }}>
-                                    <Accordion.Toggle as={ Card.Header } style={{ display:'flex' }} eventKey={ summary.workout_id } onClick={ () => onToggle( summary.workout_id ) }>
+                                    <Accordion.Toggle as={ Card.Header } style={{ display:'flex' }} eventKey={ summary.workout_id } onClick={ () => {onToggle( summary.workout_id )} }>
                                         <span style={{ flex: '1'}}>{ summary.date.split('T')[0] }</span>
                                         <span>{ summary.description }</span>
+                                        <span style={{ width: '32px', textAlign: 'right' }}>
+                                            <FontAwesomeIcon icon={faTrash} style={trashCanStyle} onClick={ () => setToRemove(summary) } />
+                                        </span>
                                     </Accordion.Toggle>
                                     <Accordion.Collapse eventKey={ summary.workout_id }>
                                         <Card.Body>
                                             {sets === null ? <Spinner animation="grow"/> :
                                                 <>
-                                                    <FontAwesomeIcon icon={faTrash} style={trashCanStyle} onClick={ () => setToRemove(summary) } />
                                                     { sets.length === 0 ? <p> No data available </p> :
                                                             <table style={{ width: '100%', fontSize: 'calc(10px + 0.5vmin)'}}>
                                                                 <thead>
@@ -128,9 +130,7 @@ const SectionHistory = () => {
 const trashCanStyle = {
     color: '#ad3f3f',
     cursor: 'pointer',
-    position: 'absolute',
-    top: '0.9rem',
-    left: '6.5rem'
+    marginLeft: '8px'
 }
 
 export default SectionHistory;
