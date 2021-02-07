@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getCookie } from 'react-use-cookie';
 
-function useFetch(url, method = 'GET') {
+function useFetch(url, method = 'GET', external= false) {
     const [ data, setData ] = useState(null);
     const [ error, setError ] = useState(null);
     const [ loading, setLoading ] = useState(true);
@@ -15,7 +15,7 @@ function useFetch(url, method = 'GET') {
                 if (token == null)
                     throw new Error('Token not provided');
 
-                const response = await fetch( process.env.REACT_APP_API_BASE + url, {
+                const response = await fetch( (!external ? process.env.REACT_APP_API_BASE : '') + url, {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json',

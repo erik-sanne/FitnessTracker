@@ -51,6 +51,21 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                     </li>
                 </ul>
             </div>
+            {
+                userProfile.permissionLevel !== 'BASIC' &&
+                <p style={{
+                    position: 'absolute',
+                    left: '45px',
+                    bottom: '20px',
+                    cursor: "pointer"
+                }}>
+                    <NavLink to="/updates" onClick={ onNavigate } style={{
+                        color: '#fff'
+                    }}>
+                        Version history
+                    </NavLink>
+                </p>
+            }
             <p onClick={ logoutCallback } style={ {position: 'absolute', right: '45px', bottom: '20px', cursor: "pointer" } } >Logout</p>
         </div>
     )

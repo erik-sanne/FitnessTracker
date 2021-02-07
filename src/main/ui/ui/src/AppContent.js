@@ -12,6 +12,7 @@ import ModuleEditProfile from "./components/modules/ModuleEditProfile";
 import SectionSettings from "./components/SectionSettins";
 import SectionFriends from "./components/SectionFriends";
 import SectionStatisticsWithFriend from "./components/SectionStatisticsWithFriend";
+import SectionUpdates from "./components/SectionUpdates";
 
 const AppContent = ({ logoutCallback }) => {
     const [ menuOpen, setMenuOpen ] = useState(false)
@@ -73,6 +74,10 @@ const AppContent = ({ logoutCallback }) => {
                     <Route path="/friend/:friendId">
                         <Header title={ "Our Statistics" } onClick={ burgerClick } />
                         <SectionStatisticsWithFriend userProfile={ currentUserProfile } />
+                    </Route>
+                    <Route path="/updates">
+                        <Header title={ "Version History" } onClick={ burgerClick } />
+                        <SectionUpdates/>
                     </Route>
                     <Redirect from="/" to="/general" />
                 </Switch>

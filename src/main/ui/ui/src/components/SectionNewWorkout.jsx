@@ -138,7 +138,7 @@ const SectionNewWorkout = () => {
                     position: 'fixed',
                     bottom: '0px',
                     margin: '0px',
-                    width: 'min(100vw, 1000px)',
+                    width: 'min(100vw, 1400px)',
                     borderRadius: '0px',
                     background: '#16171af5',
                     paddingBottom: '12px'

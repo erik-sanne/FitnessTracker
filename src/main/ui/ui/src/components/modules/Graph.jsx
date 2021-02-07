@@ -23,10 +23,14 @@ const Graph = ({ data }) => {
     }, [data]);
 
     return (
-        <div>
+        <div style={wrapStyle}>
             <canvas ref={ canvasRef } />
         </div>
     )
+}
+
+const wrapStyle = {
+    marginTop: 'min(4vw, 32px)'
 }
 
 export default Graph;
