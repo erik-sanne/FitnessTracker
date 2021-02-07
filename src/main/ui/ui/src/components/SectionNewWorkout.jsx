@@ -141,7 +141,6 @@ const SectionNewWorkout = () => {
                     width: 'min(100vw, 1000px)',
                     borderRadius: '0px',
                     background: '#16171af5',
-                    paddingTop: '0px',
                     paddingBottom: '12px'
                 }}>
                     <SetInput

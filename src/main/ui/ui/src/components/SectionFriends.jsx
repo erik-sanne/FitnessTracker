@@ -97,8 +97,8 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                 <Module title = "Pending friend requests">
                     <FontAwesomeIcon icon={ faTimes } style={{
                         position: 'absolute',
-                        top:'min(4vw, 68px)',
-                        right: 'min(4vw, 68px)',
+                        top:'min(4vw, 32px)',
+                        right: 'min(4vw, 32px)',
                         fontSize: 'min(calc(8px + 3.5vmin), 30px)',
                     }}
                     onClick={ () => setShowRequests(false) }/>
@@ -123,8 +123,8 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                 <FontAwesomeIcon icon={ faPlusSquare } style={{
                     color: "#376237",
                     position: 'absolute',
-                    top:'min(4vw, 68px)',
-                    right: 'min(4vw, 68px)',
+                    top:'min(4vw, 32px)',
+                    right: 'min(4vw, 32px)',
                     fontSize: 'min(calc(8px + 3.5vmin), 30px)',
                     cursor: "pointer"
                 }}
@@ -135,6 +135,9 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                         setRedirect(`/friend/${profile.userId}`)
                     }} style={{ cursor: 'pointer', margin: '5px 0px' }} />
                 )}
+                {
+                    !userProfile.friends || userProfile.friends.length === 0 && <p>You can add new friends by clicking the plus sign</p>
+                }
             </Module>
 
             <Modal visible={ modVisible } title={ 'Add friend' } onClose={ () => setModVisible(false) }>

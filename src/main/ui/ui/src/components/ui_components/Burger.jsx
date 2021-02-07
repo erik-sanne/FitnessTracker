@@ -5,10 +5,11 @@ import React from "react";
 const Burger = ({ onClick, open }) => {
 
     const styleBurger = {
-        position: open ? 'fixed' : 'absolute',
+        position: 'fixed',
         top: '19px',
         fontSize: '2rem',
         right: '20px',
+        zIndex: 2,
     }
 
     return (

@@ -62,6 +62,7 @@ INSERT INTO exercise (name) VALUES
 ('CRUNCHES'),
 ('LEG_RAISES'),
 ('SITUPS'),
+('ABS_TWIST'),
 
 ('LEG_PRESS'),
 ('LEG_EXTENSIONS'),
@@ -69,6 +70,9 @@ INSERT INTO exercise (name) VALUES
 ('CALF_RAISES'),
 ('SQUAT'),
 ('DEADLIFT'),
+('HIP_ABDUCTION'),
+('HIP_ADDUCTION'),
+('GLUTE_KICKBACKS'),
 
 ('BENCH_PRESS'),
 ('DUMBELL_PRESS'),
@@ -108,6 +112,7 @@ INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUE
 ('CRUNCHES', 'CORE'),
 ('LEG_RAISES', 'CORE'),
 ('SITUPS', 'CORE'),
+('ABS_TWIST', 'CORE'),
 
 ('LEG_PRESS', 'QUADS'),
 ('LEG_PRESS', 'GLUTES'),
@@ -121,7 +126,9 @@ INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUE
 ('DEADLIFT', 'RHOMBOIDS'),
 ('DEADLIFT', 'GLUTES'),
 ('DEADLIFT', 'HAMSTRINGS'),
-
+('HIP_ABDUCTION', 'GLUTES'),
+('HIP_ADDUCTION', 'QUADS'),
+('GLUTE_KICKBACKS', 'GLUTES'),
 
 ('BENCH_PRESS', 'LOWER_CHEST'),
 ('BENCH_PRESS', 'UPPER_CHEST'),
@@ -173,6 +180,7 @@ INSERT INTO exercise_secondary_targets (exercise_name, secondary_targets_name) V
 ('SQUAT', 'HAMSTRINGS'),
 ('DEADLIFT', 'QUADS'),
 ('DEADLIFT', 'LATS'),
+('GLUTE_KICKBACKS', 'HAMSTRINGS'),
 
 ('BENCH_PRESS', 'FRONT_DELTS'),
 ('BENCH_PRESS', 'TRICEPS'),
