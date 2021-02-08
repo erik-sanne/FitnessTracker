@@ -1,5 +1,6 @@
 package com.ersa.tracker.security.configurations;
 
+import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.services.authentication.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers("/authenticate").permitAll()
                     .antMatchers("/confirmEmail/**").permitAll()
                     .antMatchers("/register").permitAll()
-                    .antMatchers("/h2-console/**").permitAll() //hasAuthority(User.Permissions.ADMIN)
+                    .antMatchers("/actuator/**").hasAnyAuthority(User.Permissions.ADMIN, User.Permissions.MODERATOR)
                     .anyRequest().authenticated();
 
         http.logout()

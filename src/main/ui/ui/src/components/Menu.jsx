@@ -5,6 +5,9 @@ import {faChartPie, faHistory, faPlusCircle, faUserFriends} from "@fortawesome/f
 import { useMediaQuery } from 'react-responsive';
 import '../styles/glitch.css';
 import ProfileDisplay from "./ui_components/ProfileDisplay";
+import {faHeartbeat} from "@fortawesome/free-solid-svg-icons/faHeartbeat";
+import {faCodeBranch} from "@fortawesome/free-solid-svg-icons/faCodeBranch";
+import useFetch from "../services/useFetch";
 
 const activeClass = {
     //bac: '#007bff'
@@ -13,6 +16,7 @@ const activeClass = {
 }
 
 const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
+    const { data: version, loading } = useFetch(`https://api.github.com/repos/erik-sanne/FitnessTracker/commits?per_page=1`, 'GET', true);
     const smallScreen = useMediaQuery({ query: '(max-width: 400px)' });
 
     const trans = {
@@ -49,6 +53,16 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                             <FontAwesomeIcon icon={ faUserFriends } style={{ marginRight: '25px'}}/>Friends
                         </NavLink>
                     </li>
+                    { userProfile.permissionLevel !== 'BASIC' && <>
+                        <div style={modmenuStyle}>
+                            <NavLink to="/monitor" activeStyle={ activeClass } onClick={ onNavigate } >
+                                <FontAwesomeIcon icon={ faHeartbeat }/>
+                            </NavLink>
+                            <NavLink to="/updates" activeStyle={ activeClass } onClick={ onNavigate } >
+                                <FontAwesomeIcon icon={ faCodeBranch }/>
+                            </NavLink>
+                        </div>
+                    </> }
                 </ul>
             </div>
             {
@@ -57,18 +71,21 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                     position: 'absolute',
                     left: '45px',
                     bottom: '20px',
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    color: '#555'
                 }}>
-                    <NavLink to="/updates" onClick={ onNavigate } style={{
-                        color: '#fff'
-                    }}>
-                        Version history
-                    </NavLink>
+                    {!loading && `v.${version[0].sha.slice(-10)}`}
                 </p>
             }
             <p onClick={ logoutCallback } style={ {position: 'absolute', right: '45px', bottom: '20px', cursor: "pointer" } } >Logout</p>
         </div>
     )
+}
+
+const modmenuStyle = {
+    paddingTop: '2rem',
+    display: 'flex',
+    textAlign: 'center'
 }
 
 export default Menu;

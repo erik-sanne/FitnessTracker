@@ -13,6 +13,7 @@ import SectionSettings from "./components/SectionSettins";
 import SectionFriends from "./components/SectionFriends";
 import SectionStatisticsWithFriend from "./components/SectionStatisticsWithFriend";
 import SectionUpdates from "./components/SectionUpdates";
+import SectionMonitor from "./components/SectionMonitor";
 
 const AppContent = ({ logoutCallback }) => {
     const [ menuOpen, setMenuOpen ] = useState(false)
@@ -78,6 +79,10 @@ const AppContent = ({ logoutCallback }) => {
                     <Route path="/updates">
                         <Header title={ "Version History" } onClick={ burgerClick } />
                         <SectionUpdates/>
+                    </Route>
+                    <Route path="/monitor">
+                        <Header title={ "Health check" } onClick={ burgerClick } />
+                        <SectionMonitor/>
                     </Route>
                     <Redirect from="/" to="/general" />
                 </Switch>
