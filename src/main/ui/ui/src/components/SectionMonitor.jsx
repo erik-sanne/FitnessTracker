@@ -94,6 +94,7 @@ const createConfig = (cpu, memory) => {
                 display: true
             },
             responsive: true,
+            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
                 duration: 0
             },

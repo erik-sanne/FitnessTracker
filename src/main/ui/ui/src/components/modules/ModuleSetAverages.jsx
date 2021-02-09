@@ -42,6 +42,7 @@ const createConfig = (data) => {
         },
         options: {
             responsive: true,
+            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
             hoverMode: 'index',
             stacked: false,
             title:{

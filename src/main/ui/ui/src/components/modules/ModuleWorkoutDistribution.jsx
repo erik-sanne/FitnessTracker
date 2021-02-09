@@ -23,7 +23,7 @@ const manualOrderingPass = (data) => {
         { x: "FRONT DELTS", y: data["FRONT_DELTS"] },
         { x: "UPPER CHEST", y: data["UPPER_CHEST"] },
         { x: "LOWER CHEST", y: data["LOWER_CHEST"] },
-    ]
+    ].map(it => { it.x = camelCase(it.x); return it;})
 };
 
 const interpolate = (values, factor) => {
@@ -70,9 +70,15 @@ const createConfig = (data=[]) => {
                 display: false
             },
             responsive: true,
+            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
             scale: {
                 ticks: {
                     display: false
+                },
+                pointLabels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
                 }
             },
             elements: {
@@ -82,6 +88,11 @@ const createConfig = (data=[]) => {
             }
         }
     }
+}
+
+const camelCase = (text) => {
+    text = text.toLowerCase();
+    return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
 const bestImprovement = (data) => {
@@ -96,8 +107,7 @@ const bestImprovement = (data) => {
         return null;
     })
     let res = str.split('_')[1] || str.split('_')[0];
-    res = res.toLowerCase();
-    return res.charAt(0).toUpperCase() + res.slice(1)
+    return camelCase(res);
 }
 
 const bestImprovementMulti = (data) => {

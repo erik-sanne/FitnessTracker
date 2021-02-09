@@ -14,7 +14,7 @@ const SectionUpdates = () => {
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
-            <Module title = "Previous updates">
+            <Module title = "Changelog">
                 <span style={{
                     position: 'absolute',
                     right: 'min(4vw, 32px)',
