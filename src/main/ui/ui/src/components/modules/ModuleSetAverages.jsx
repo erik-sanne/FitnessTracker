@@ -25,7 +25,7 @@ const createConfig = (data) => {
                 label: 'Repetitions',
                 yAxisID: 'rep-y-id',
                 fill: false,
-                borderColor: 'rgba(107,166,239,0.35)',
+                borderColor: 'rgba(107,166,239,0.5)',
                 backgroundColor: 'rgba(107,166,239,0.35)',
                 lineTension: 0,
                 data: reps
@@ -34,7 +34,7 @@ const createConfig = (data) => {
                 yAxisID: 'wei-y-id',
                 fill: false,
                 borderDash: [5, 3],
-                borderColor: 'rgba(107,166,239,0.35)',
+                borderColor: 'rgba(107,166,239,0.5)',
                 backgroundColor: 'rgba(107,166,239,0.35)',
                 lineTension: 0,
                 data: weights

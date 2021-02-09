@@ -15,7 +15,9 @@ const createConfig = (rawdata=[]) => {
         const yValues = person.map((week) => week.totalWorkouts );
         return {
             label: 'Workouts per week',
-            backgroundColor: idx === 0 ? 'rgba(107,166,239,0.35)' : 'rgba(70,131,58,0.35)',
+            backgroundColor: idx === 0 ? 'rgba(107,166,239,0.1)' : 'rgba(70,131,58,0.1)',
+            borderColor: idx === 0 ? 'rgba(107,166,239,0.5)' : 'rgba(70,131,58,0.5)',
+            borderWidth: 2,
             data: yValues
         }
     })

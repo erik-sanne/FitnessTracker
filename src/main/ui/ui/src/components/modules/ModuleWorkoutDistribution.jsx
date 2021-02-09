@@ -51,9 +51,11 @@ const createConfig = (data=[]) => {
         const yValues = interpolate(sorted.map( entry => Math.log(entry.y + 1)), 0);
         return {
             label: 'Sets per bodypart',
-            backgroundColor: idx === 0 ? 'rgba(107,166,239,0.35)' : 'rgba(70,131,58,0.35)',
+            backgroundColor: idx === 0 ? 'rgba(107,166,239,0.1)' : 'rgba(70,131,58,0.1)',
+            borderColor: idx === 0 ? 'rgba(107,166,239,0.5)' : 'rgba(70,131,58,0.5)',
             data: yValues,
             lineTension: 0.1,
+            borderWidth: 2
         }
     })
 
