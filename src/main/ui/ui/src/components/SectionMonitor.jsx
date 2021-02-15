@@ -78,6 +78,7 @@ const createConfig = (cpu, memory) => {
             datasets: [{
                 label: 'CPU Usage',
                 yAxisID: 'CPU',
+                borderWidth: 2,
                 backgroundColor: 'rgb(146,20,20)',
                 data: cpu.map((e) => e.value)
             },{
@@ -85,6 +86,7 @@ const createConfig = (cpu, memory) => {
                 yAxisID: 'MEM',
                 fill: false,
                 borderDash: [3],
+                borderWidth: 2,
                 borderColor: 'rgb(112,20,146)',
                 data: memory.map((e) => e.value)
             }]

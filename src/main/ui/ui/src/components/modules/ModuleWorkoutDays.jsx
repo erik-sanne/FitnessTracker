@@ -125,8 +125,8 @@ const ModuleWorkoutDays = ({ data=[] }) => {
             { data.length === 1 && <FontAwesomeIcon icon={ faMedal } style={{
                 color: reachedGoal(goal, data[0]) ? "#ffc877" : "rgb(61 65 72)",
                 position: 'absolute',
-                top:'min(4vw, 32px)',
-                right: 'min(4vw, 32px)',
+                top:'min(4.5vw, 35px)',
+                right: 'min(4.5vw, 35px)',
                 fontSize: 'min(calc(8px + 3.5vmin), 30px)',
                 }}
                 onClick={ () => setModalVisible(true) }/>}
@@ -136,8 +136,8 @@ const ModuleWorkoutDays = ({ data=[] }) => {
                     { chartData && <Graph data={ chartData } /> }
                     {data.length < 2 ?
                         <div style={{display: "flex"}}>
-                            <DisplayValue text={'Avg 30 weeks'}
-                                          value={data ? computeAverage(30, data[0]).toFixed(1) : "-"}/>
+                            <DisplayValue text={'Avg 1 year'}
+                                          value={data ? computeAverage(52, data[0]).toFixed(1) : "-"}/>
                             <DisplayValue text={'Avg 10 weeks'}
                                           value={data ? computeAverage(10, data[0]).toFixed(1) : "-"}/>
                             <DisplayValue text={'This week'}
@@ -145,11 +145,11 @@ const ModuleWorkoutDays = ({ data=[] }) => {
                         </div>
                         :
                         <div style={{display: "flex"}}>
-                            <DisplayValue text={'Avg 30 weeks'}
+                            <DisplayValue text={'Avg 1 year'}
                                           value={
                                               <>
-                                                <span style={{ color: 'rgba(107,166,239,0.35)'}}> { computeAverage(30, data[0]).toFixed(1) }</span>
-                                                <span style={{ color: 'rgba(70,131,58,0.35)'}}> { computeAverage(30, data[1]).toFixed(1) }</span>
+                                                <span style={{ color: 'rgba(107,166,239,0.35)'}}> { computeAverage(52, data[0]).toFixed(1) }</span>
+                                                <span style={{ color: 'rgba(70,131,58,0.35)'}}> { computeAverage(52, data[1]).toFixed(1) }</span>
                                               </>
                                           }/>
                             <DisplayValue text={'Avg 10 weeks'}

@@ -56,7 +56,6 @@ const SectionHistory = () => {
         }).then(response => {
             if (response.ok) {
                 setToRemove(null);
-                setRemoveStatus(RemoveStatus.NONE);
                 window.location.reload(); //There are probably better ways
             }
         }).catch(error => {
@@ -65,6 +64,7 @@ const SectionHistory = () => {
         });
     }
 
+    let setCounter = 0;
     return (
         <>
             <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
@@ -89,17 +89,31 @@ const SectionHistory = () => {
                                                                 <thead>
                                                                     <tr>
                                                                         <th>Exercise</th>
-                                                                        <th>Reps</th>
-                                                                        <th>Weight</th>
+                                                                        <th>Set</th>
+                                                                        <th colSpan={2} style={{ textAlign: 'left' }}>Reps</th>
+                                                                        <th colSpan={2} style={{ textAlign: 'left' }}>Weight</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                 {
-                                                                    sets.map((set, key) =>
-                                                                    <tr key={key}>
-                                                                        <td>{set.exercise.replace(/_/g, ' ')}</td>
-                                                                        <td>{set.reps}</td>
-                                                                        <td>{set.weight}</td>
+                                                                    sets.map((set, index, arr) =>
+                                                                    <tr key={index}>
+                                                                        <td style={{fontWeight: 'bold'}}>{
+                                                                            !arr[index - 1] || set.exercise !== arr[index - 1].exercise ? camelCase(set.exercise.replace(/_/g, ' ')) : ''}
+                                                                        </td>
+                                                                        <td>
+                                                                            #{
+                                                                                !arr[index - 1] || set.exercise !== arr[index - 1].exercise ? setCounter = 1 : ++setCounter
+                                                                            }
+                                                                        </td>
+                                                                        <td style={{width: '1px'}}>{set.reps}</td>
+                                                                        <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
+                                                                            ' (' + (((set.reps / arr[index - 1].reps) - 1) < 0 ? '' : '+') + (((set.reps / arr[index - 1].reps) - 1)*100).toFixed(0) + '%)'
+                                                                        }</td>
+                                                                        <td style={{width: '1px'}}>{set.weight}</td>
+                                                                        <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
+                                                                            ' (' + (((set.weight / arr[index - 1].weight) - 1) < 0 ? '' : '+') + (((set.weight / arr[index - 1].weight) - 1)*100).toFixed(0) + '%)'
+                                                                        }</td>
                                                                     </tr>)
                                                                 }
                                                                 </tbody>
@@ -125,6 +139,11 @@ const SectionHistory = () => {
                     setToRemove(null);
                 }}/>
         </>)
+}
+
+const camelCase = (text) => {
+    text = text.toLowerCase();
+    return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
 const trashCanStyle = {

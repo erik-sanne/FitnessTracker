@@ -5,6 +5,8 @@ import DisplayValue from "./DisplayValue";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 
+const CALVES_SCALE = 1.5;
+
 const manualOrderingPass = (data) => {
     return [
         { x: "CORE", y: data["CORE"] },
@@ -12,7 +14,7 @@ const manualOrderingPass = (data) => {
         { x: "GLUTES", y: data["GLUTES"] },
         { x: "HAMSTRINGS", y: data["HAMSTRINGS"] },
         { x: "QUADS", y: data["QUADS"] },
-        { x: "CALVES", y: data["CALVES"] },
+        { x: "CALVES", y: data["CALVES"] * CALVES_SCALE },
         { x: "TRAPS", y: data["TRAPS"] },
         { x: "RHOMBOIDS", y: data["RHOMBOIDS"] },
         { x: "LATS", y: data["LATS"] },
@@ -113,7 +115,6 @@ const bestImprovement = (data) => {
 const bestImprovementMulti = (data) => {
     let merged = {};
     data.forEach(person => {
-        person = manualOrderingPass(person);
         person.forEach(d => {
             if (!isNaN(d.y)) {
                 if (merged[d.x]) {

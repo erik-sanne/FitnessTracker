@@ -21,7 +21,8 @@ const ProfileDisplay = ({ displayName, profilePicture, userId, permissionLevel, 
                         fontSize: '12px',
                         color: '#ccc',
                         whiteSpace: 'nowrap',
-                        lineHeight: 'initial'
+                        lineHeight: 'initial',
+                        margin: '0px'
                     }}> {userId !== undefined && `#${userId.toString().padStart(6, '0')}`} { permissionLevel && permissionLevel !== 'BASIC' && `(${permissionLevel})`}</p>
                 </div>
             }

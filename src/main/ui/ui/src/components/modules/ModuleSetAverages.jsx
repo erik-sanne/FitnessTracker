@@ -3,11 +3,12 @@ import 'chartjs-plugin-zoom'
 import Spinner from "react-bootstrap/Spinner";
 import useFetch from "../../services/useFetch";
 import Graph from "./Graph";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import DataSelect from "../ui_components/DataSelect";
 import {getCookie} from "react-use-cookie";
+import Switch from '@material-ui/core/Switch';
 
-const createConfig = (data) => {
+const createConfig = (data, fullHistory) => {
     data = data.reverse();
     const xLabels = data.map( e => e.date.split('T')[0]);
     const weights = data.map( e => e.weight);
@@ -15,7 +16,11 @@ const createConfig = (data) => {
 
     const today = new Date();
     const end = today.setDate(today.getDate() + 1);
-    const start = today.setDate(today.getDate() - 30);
+    let start;
+    if (fullHistory)
+        start = today.setDate(xLabels[0]);
+    else
+        start = today.setDate(today.getDate() - 30);
 
     return {
         type: 'line',
@@ -25,17 +30,19 @@ const createConfig = (data) => {
                 label: 'Repetitions',
                 yAxisID: 'rep-y-id',
                 fill: false,
-                borderColor: 'rgba(107,166,239,0.5)',
+                borderDash: [15, 3],
+                borderColor: 'rgba(107,166,239,0.35)',
                 backgroundColor: 'rgba(107,166,239,0.35)',
+                borderWidth: 2,
                 lineTension: 0,
                 data: reps
             }, {
                 label: 'Weights',
                 yAxisID: 'wei-y-id',
                 fill: false,
-                borderDash: [5, 3],
                 borderColor: 'rgba(107,166,239,0.5)',
                 backgroundColor: 'rgba(107,166,239,0.35)',
+                borderWidth: 2,
                 lineTension: 0,
                 data: weights
             }]
@@ -47,6 +54,13 @@ const createConfig = (data) => {
             stacked: false,
             title:{
                 display: false,
+            },
+            legend: {
+                labels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
             },
             scales: {
                 yAxes: [{
@@ -73,7 +87,10 @@ const createConfig = (data) => {
                     },
                     ticks: {
                         min: start,
-                        max: end
+                        max: end,
+                        fontSize: 12,
+                        fontFamily: 'Quicksand',
+                        fontStyle: 'bold'
                     }
                 }]
             },
@@ -85,7 +102,7 @@ const createConfig = (data) => {
             plugins: {
                 zoom: {
                     pan: {
-                        enabled: true,
+                        enabled: !fullHistory,
                         mode: 'x'
                     },
                     zoom: {
@@ -99,8 +116,11 @@ const createConfig = (data) => {
 
 const ModuleWorkoutDistribution = () => {
     const { data: exercises, loading } = useFetch('/api/exercises');
+    const [ srcData, setSrcData ] = useState(null);
     const [ chartData, setChartData ] = useState(null);
+    const [ selectedExercise, setSelectedExercise ] = useState(null);
     const [ message, setMessage ] = useState("Select an exercise to view your progression");
+    const [ showFullHistory, setShowFullHistory ] = useState(true);
 
     const getExerciseData = async (ex) => {
         const token = getCookie('session_token');
@@ -114,22 +134,48 @@ const ModuleWorkoutDistribution = () => {
         });
 
         const data = await response.json();
-        if (data.length > 0) {
-            setChartData(createConfig(data));
-            setMessage("");
-        } else {
-            setMessage("No data available for this exercise ");
-        }
+        setSrcData(data)
     }
+
+    useEffect(() => {
+        if (selectedExercise)
+            getExerciseData(selectedExercise);
+    }, [selectedExercise])
+
+    useEffect(() => {
+        if (!srcData)
+            setMessage("Select an exercise to view your progression");
+        else if (srcData.length > 1) {
+            setChartData(createConfig(srcData, showFullHistory));
+            setMessage("");
+        } else if (srcData.length > 0)
+            setMessage("Not enough data available for this exercise");
+        else
+            setMessage("No data available for this exercise");
+
+    }, [showFullHistory, srcData])
 
     return (
         <>
             { loading ? <Spinner animation="grow"/> :
                 <>
-                    { chartData && message === "" && <Graph data={ chartData } /> }
+                    { chartData && message === "" &&
+                    <>
+                        <div style={{ display: 'flex '}}>
+                            <h2 style={{ fontWeight: 'bold', flex: 1, padding: '9px', fontSize: 'calc(10px + 1vmin)'}}>
+                                { camelCase(selectedExercise) }
+                            </h2>
+                            <p style={{ textAlign: "right", flex: 1}}>
+                                Show full history
+                                <Switch color="primary" checked={showFullHistory} onChange={ (event) => setShowFullHistory(event.target.checked)}/>
+                            </p>
+                        </div>
+                        <Graph data={ chartData }/>
+                    </>
+                    }
                     { message !== "" && <p style={ {...messageStyle, fontSize: 'calc(10px + 1vmin)'} }> {message} </p>}
                     <div style={{display: "flex", marginTop: "10px"}}>
-                        <DataSelect options={exercises.map(e => e.replace(/_/g, ' '))} onSelect={getExerciseData} style={selectStyle} />
+                        <DataSelect options={exercises.map(e => e.replace(/_/g, ' '))} onSelect={ (ex) => setSelectedExercise(ex) } style={selectStyle} />
                     </div>
                 </>
             }
@@ -137,9 +183,15 @@ const ModuleWorkoutDistribution = () => {
     );
 }
 
+const camelCase = (text) => {
+    text = text.toLowerCase();
+    return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
 const messageStyle = {
     textAlign: 'center',
-    padding: '16px'
+    padding: '32px',
+    margin: '0px'
 }
 
 const selectStyle = {

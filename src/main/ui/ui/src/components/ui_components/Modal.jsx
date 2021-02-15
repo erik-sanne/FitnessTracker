@@ -13,7 +13,7 @@ const Modal = ({ visible=false, title="", children, onClose }) => {
             <Module title={ title } style={{ width: 'min(90vw, 1000px)'}} >
                 <FontAwesomeIcon
                     icon={ faTimes }
-                    style={{ position: 'absolute', right: 'min(4vw, 32px)', top: 'min(4vw, 32px)', fontSize: 'min(calc(8px + 3.5vmin), 30px)' }}
+                    style={{ position: 'absolute', right: 'min(4.5vw, 35px)', top: 'min(4.5vw, 35px)', fontSize: 'min(calc(8px + 3.5vmin), 30px)', cursor: "pointer" }}
                     onClick={ onClose }/>
                 { children }
             </Module>
