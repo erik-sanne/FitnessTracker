@@ -41,11 +41,13 @@
 
 .module table tr th:first-child {
   text-align: left;
+  width: 60%;
 }
 
 .module table td {
   padding: 10px;
   text-align: right;
+  font-size: calc(10px + 0.8vmin);
 }
 
 .module table tr td:first-child {
@@ -53,5 +55,4 @@
 }
 
 .module table tbody tr:hover {
-  background: rgba(107, 166, 239, 0.7);
 }

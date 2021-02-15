@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Module from "./modules/Module";
 import useFetch from "../services/useFetch";
 import Spinner from "react-bootstrap/cjs/Spinner";
@@ -22,9 +22,16 @@ const SectionHistory = () => {
     const [ sets, setSets ] = useState(null);
     const [ toRemove, setToRemove ] = useState(null);
     const [ removeStatus, setRemoveStatus ] = useState(RemoveStatus.NONE);
+    const [ loadingStatus, setLoadingStatus ] = useState(-1);
+    const [ currentEventKey, setCurrentEventKey ] = useState(-1);
 
     const onToggle = (eventKey) => {
+        if (currentEventKey === eventKey)
+            return;
+
         setSets(null);
+        setCurrentEventKey(eventKey)
+        setLoadingStatus(eventKey)
 
         const token = getCookie('session_token')
         fetch(`${ process.env.REACT_APP_API_BASE }/api/setsForWorkout/${ eventKey }`, {
@@ -37,8 +44,10 @@ const SectionHistory = () => {
         }).then(response => {
             if (response.ok) {
                 response.json().then(sets => setSets(sets));
+                setLoadingStatus(-1);
             }
         }).catch(error => {
+            setLoadingStatus(-1);
             setSets(null);
         });
     }
@@ -73,22 +82,17 @@ const SectionHistory = () => {
                         <Accordion>
                             { summaries.map(( summary ) =>
                                 <Card key={ summary.workout_id } style={{ background: '#282c3487' }}>
-                                    <Accordion.Toggle as={ Card.Header } style={{ display:'flex' }} eventKey={ summary.workout_id } onClick={ () => {onToggle( summary.workout_id )} }>
-                                        <span style={{ flex: '1'}}>{ summary.date.split('T')[0] }</span>
-                                        <span>{ summary.description }</span>
-                                        <span style={{ width: '32px', textAlign: 'right' }}>
-                                            <FontAwesomeIcon icon={faTrash} style={trashCanStyle} onClick={ () => setToRemove(summary) } />
-                                        </span>
+                                    <Accordion.Toggle as={ Card.Header } style={{ display:'flex' }} eventKey={ summary.workout_id } onClick={ () => { onToggle( summary.workout_id )} }>
+                                        <span style={{ margin: 'auto' }}>{ summary.date.split('T')[0] }</span>
+                                        <span style={{ margin: 'auto', flex: '1'}}>{ loadingStatus === summary.workout_id && <Spinner animation="grow" style={{ width: '16px', height: '16px', marginLeft: '10px'}}/> }</span>
+                                        <span style={{ margin: 'auto' }}>{ summary.description }</span>
                                     </Accordion.Toggle>
                                     <Accordion.Collapse eventKey={ summary.workout_id }>
                                         <Card.Body>
-                                            {sets === null ? <Spinner animation="grow"/> :
-                                                <>
-                                                    { sets.length === 0 ? <p> No data available </p> :
+                                                    { !sets ? <p></p> : sets.length === 0 ? <p> No data available </p> :
                                                             <table style={{ width: '100%', fontSize: 'calc(10px + 0.5vmin)'}}>
                                                                 <thead>
                                                                     <tr>
-                                                                        <th>Exercise</th>
                                                                         <th>Set</th>
                                                                         <th colSpan={2} style={{ textAlign: 'left' }}>Reps</th>
                                                                         <th colSpan={2} style={{ textAlign: 'left' }}>Weight</th>
@@ -97,30 +101,38 @@ const SectionHistory = () => {
                                                                 <tbody>
                                                                 {
                                                                     sets.map((set, index, arr) =>
-                                                                    <tr key={index}>
-                                                                        <td style={{fontWeight: 'bold'}}>{
-                                                                            !arr[index - 1] || set.exercise !== arr[index - 1].exercise ? camelCase(set.exercise.replace(/_/g, ' ')) : ''}
-                                                                        </td>
-                                                                        <td>
-                                                                            #{
-                                                                                !arr[index - 1] || set.exercise !== arr[index - 1].exercise ? setCounter = 1 : ++setCounter
-                                                                            }
-                                                                        </td>
-                                                                        <td style={{width: '1px'}}>{set.reps}</td>
-                                                                        <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
-                                                                            ' (' + (((set.reps / arr[index - 1].reps) - 1) < 0 ? '' : '+') + (((set.reps / arr[index - 1].reps) - 1)*100).toFixed(0) + '%)'
-                                                                        }</td>
-                                                                        <td style={{width: '1px'}}>{set.weight}</td>
-                                                                        <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
-                                                                            ' (' + (((set.weight / arr[index - 1].weight) - 1) < 0 ? '' : '+') + (((set.weight / arr[index - 1].weight) - 1)*100).toFixed(0) + '%)'
-                                                                        }</td>
-                                                                    </tr>)
+                                                                        <>
+                                                                            {!arr[index - 1] || set.exercise !== arr[index - 1].exercise ?
+                                                                                <tr>
+                                                                                    <td colSpan={6} style={{borderBottom: '1px solid #333', fontWeight: 'bold'}}>
+                                                                                        {camelCase(set.exercise.replace(/_/g, ' '))}
+                                                                                    </td>
+                                                                                </tr>
+                                                                            : <></>}
+
+                                                                            <tr key={index}>
+                                                                                <td>
+                                                                                    #{
+                                                                                        !arr[index - 1] || set.exercise !== arr[index - 1].exercise ? setCounter = 1 : ++setCounter
+                                                                                    }
+                                                                                </td>
+                                                                                <td style={{width: '1px'}}>{set.reps}</td>
+                                                                                <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
+                                                                                    ' (' + (((set.reps / arr[index - 1].reps) - 1) < 0 ? '' : '+') + (((set.reps / arr[index - 1].reps) - 1)*100).toFixed(0) + '%)'
+                                                                                }</td>
+                                                                                <td style={{width: '1px'}}>{set.weight}</td>
+                                                                                <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
+                                                                                    ' (' + (((set.weight / arr[index - 1].weight) - 1) < 0 ? '' : '+') + (((set.weight / arr[index - 1].weight) - 1)*100).toFixed(0) + '%)'
+                                                                                }</td>
+                                                                            </tr>
+                                                                        </>)
                                                                 }
                                                                 </tbody>
                                                             </table>
                                                     }
-                                                </>
-                                            }
+                                                    <p style={{ margin: 'auto', padding: '12px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '10px', textAlign: 'center', cursor: 'pointer'}} onClick={ () => setToRemove(summary) } >
+                                                        <FontAwesomeIcon icon={faTrash} style={trashCanStyle}/>
+                                                    </p>
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>
@@ -149,7 +161,7 @@ const camelCase = (text) => {
 const trashCanStyle = {
     color: '#ad3f3f',
     cursor: 'pointer',
-    marginLeft: '8px'
+    fontSize: '16px'
 }
 
 export default SectionHistory;
