@@ -97,8 +97,7 @@ const camelCase = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
-const bestImprovement = (data) => {
-    const mapping = manualOrderingPass(data);
+const calculateImpr = (mapping) => {
     let lowest = 99;
     let str = "";
     mapping.map(({x: name, y: value}) => {
@@ -112,9 +111,15 @@ const bestImprovement = (data) => {
     return camelCase(res);
 }
 
+const bestImprovement = (data) => {
+    const mapping = manualOrderingPass(data);
+    return calculateImpr(mapping);
+}
+
 const bestImprovementMulti = (data) => {
     let merged = {};
     data.forEach(person => {
+        person = manualOrderingPass(data);
         person.forEach(d => {
             if (!isNaN(d.y)) {
                 if (merged[d.x]) {
@@ -125,7 +130,7 @@ const bestImprovementMulti = (data) => {
         })
     });
 
-    return bestImprovement(merged);
+    return calculateImpr(merged);
 }
 
 const ModuleWorkoutDistribution = ({ data=[] }) => {

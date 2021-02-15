@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,7 +51,7 @@ public class WorkoutManager implements WorkoutService {
 
         Collection<WorkoutSet> sets = workout.getSets();
         sets.forEach(s -> s.setWorkout(null));
-        return sets;
+        return sets.stream().sorted(Comparator.comparingLong(WorkoutSet::getId)).collect(Collectors.toList());
     }
 
     @Override
