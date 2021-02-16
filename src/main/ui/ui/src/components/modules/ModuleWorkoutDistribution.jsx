@@ -119,7 +119,7 @@ const bestImprovement = (data) => {
 const bestImprovementMulti = (data) => {
     let merged = {};
     data.forEach(person => {
-        person = manualOrderingPass(data);
+        person = manualOrderingPass(person);
         person.forEach(d => {
             if (!isNaN(d.y)) {
                 if (merged[d.x]) {
