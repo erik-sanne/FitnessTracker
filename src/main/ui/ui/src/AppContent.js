@@ -14,10 +14,14 @@ import SectionFriends from "./components/SectionFriends";
 import SectionStatisticsWithFriend from "./components/SectionStatisticsWithFriend";
 import SectionUpdates from "./components/SectionUpdates";
 import SectionMonitor from "./components/SectionMonitor";
-
+import get from "./services/Get.jsx"
+import Modal from "./components/ui_components/Modal";
+import {faStar} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 const AppContent = ({ logoutCallback }) => {
     const [ menuOpen, setMenuOpen ] = useState(false)
     const [ currentUserProfile, setCurrentUserProfile ] = useState(null)
+    const [ newPRs, setNewPRs ] = useState(null)
     const { data: loadedProfile, loading } = useFetch('/users/profile')
 
     const burgerClick = () => {
@@ -32,7 +36,23 @@ const AppContent = ({ logoutCallback }) => {
         setMenuOpen(false)
     }
 
-    const updateUserProfile = (profile) => setCurrentUserProfile(profile);
+    const updateUserProfile = () => {
+        get('/users/profile').then(profile => {
+
+            const newRecords = profile.personalRecords.filter(newPR => {
+                return !currentUserProfile.personalRecords.some(oldPR => {
+                    return newPR.date === oldPR.date &&
+                    newPR.weight === oldPR.weight &&
+                    newPR.exercise === oldPR.exercise;
+                })
+            });
+
+            if (newRecords.length > 0)
+                setNewPRs(newRecords);
+
+            setCurrentUserProfile(profile)
+        });
+    };
 
     useEffect(() => {
         setCurrentUserProfile(loadedProfile);
@@ -49,6 +69,7 @@ const AppContent = ({ logoutCallback }) => {
         )
 
     return(
+        <>
         <BrowserRouter>
             <section onClick={ clickOutside } >
                 <Switch>
@@ -58,11 +79,11 @@ const AppContent = ({ logoutCallback }) => {
                     </Route>
                     <Route path="/history">
                         <Header title={ "History" } onClick={ burgerClick } />
-                        <SectionHistory />
+                        <SectionHistory userProfile={ currentUserProfile }  />
                     </Route>
                     <Route path="/new">
-                        <Header title={ "New Workout" } onClick={ burgerClick } />
-                        <SectionNewWorkout />
+                        <Header title={ "New Workout" } onClick={ burgerClick }  />
+                        <SectionNewWorkout updateUserProfile={ updateUserProfile }/>
                     </Route>
                     <Route path="/social">
                         <Header title={ "Friends" } onClick={ burgerClick } />
@@ -90,7 +111,22 @@ const AppContent = ({ logoutCallback }) => {
             <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } userProfile={ currentUserProfile } />
             <Burger onClick={ burgerClick } open={ menuOpen }/>
         </BrowserRouter>
+            <Modal visible={ newPRs !== null } title="New Personal Best!" onClose={ () => setNewPRs(null) }>
+                <h2>Congratulations!<FontAwesomeIcon icon={ faStar } style={{ paddingLeft: '12px', color: '#ffc877', width: 'inherit'}}/> </h2>
+                <p>Your hard work is paying off! You just hit a new personal record in {newPRs && newPRs.map((pr, idx, arr) =>
+                    <>
+                        <span>{(idx > 0 ? idx === arr.length-1 ? ' and ' : ', ' : '')}</span>
+                        <strong>{ camelCase(pr.exercise.replace(/_/g, ' '))}</strong>
+                    </>)}
+                </p>
+            </Modal>
+        </>
     );
+}
+
+const camelCase = (text) => {
+    text = text.toLowerCase();
+    return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
 export default AppContent;

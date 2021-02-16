@@ -9,7 +9,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Modal from "./ui_components/Modal";
 import ModalLoader from "./ui_components/ModalLoader";
 
-const SectionNewWorkout = () => {
+const SectionNewWorkout = ({updateUserProfile}) => {
     const SubmitStatus = {
         NOT_SUBMITTED: "not submitted",
         ERROR: "submit error",
@@ -58,6 +58,7 @@ const SectionNewWorkout = () => {
             if (response.ok) {
                 localStorage.removeItem(LS_KEY_SETS);
                 localStorage.removeItem(LS_KEY_DATE);
+                updateUserProfile();
                 setSubmitStatus(SubmitStatus.SUBMITTED);
             }
         }).catch(error => {

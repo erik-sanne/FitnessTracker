@@ -9,8 +9,9 @@ import { faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Modal from "./ui_components/Modal";
 import ModalLoader from "./ui_components/ModalLoader";
+import {faStar} from "@fortawesome/free-solid-svg-icons";
 
-const SectionHistory = () => {
+const SectionHistory = ({ userProfile }) => {
 
     const RemoveStatus = {
         NONE: "none",
@@ -73,6 +74,13 @@ const SectionHistory = () => {
         });
     }
 
+    const isRecord = (profile, summary, set) => {
+        if (!profile.personalRecords || profile.personalRecords.length === 0)
+            return false;
+        const temp = profile.personalRecords.filter(rec => rec.exercise === set.exercise)[0];
+        return temp.date === summary.date && temp.weight === set.weight;
+    }
+
     let setCounter = 0;
     return (
         <>
@@ -115,6 +123,10 @@ const SectionHistory = () => {
                                                                                     #{
                                                                                         !arr[index - 1] || set.exercise !== arr[index - 1].exercise ? setCounter = 1 : ++setCounter
                                                                                     }
+
+                                                                                    {
+                                                                                        isRecord(userProfile, summary, set) ? <FontAwesomeIcon icon={ faStar } style={{ paddingLeft: '12px', color: '#ffc877', width: 'inherit'}}/> : ""
+                                                                                    }
                                                                                 </td>
                                                                                 <td style={{width: '1px'}}>{set.reps}</td>
                                                                                 <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
@@ -130,9 +142,9 @@ const SectionHistory = () => {
                                                                 </tbody>
                                                             </table>
                                                     }
-                                                    <p style={{ margin: 'auto', padding: '12px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '10px', textAlign: 'center', cursor: 'pointer'}} onClick={ () => setToRemove(summary) } >
+                                                    {sets && <p style={{ margin: 'auto', padding: '12px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '10px', textAlign: 'center', cursor: 'pointer'}} onClick={ () => setToRemove(summary) } >
                                                         <FontAwesomeIcon icon={faTrash} style={trashCanStyle}/>
-                                                    </p>
+                                                    </p>}
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>

@@ -5,6 +5,7 @@ import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.WorkoutRepository;
+import com.ersa.tracker.services.PRService;
 import com.ersa.tracker.services.WorkoutService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,12 @@ public class WorkoutManager implements WorkoutService {
     private static final Sort SORT_DESCENDING = Sort.by("date").descending();
 
     private final WorkoutRepository workoutRepository;
+    private final PRService personalRecordService;
 
     @Autowired
-    public WorkoutManager(final WorkoutRepository workoutRepository) {
+    public WorkoutManager(final WorkoutRepository workoutRepository, final PRService personalRecordService) {
         this.workoutRepository = workoutRepository;
+        this.personalRecordService = personalRecordService;
     }
 
 
@@ -73,6 +76,7 @@ public class WorkoutManager implements WorkoutService {
         workout.setUser(user);
         workout.getSets().forEach(set -> set.setWorkout(workout));
         workoutRepository.save(workout);
+        personalRecordService.updatePersonalRecords(user.getUserProfile(), workout);
         log.info("User with id {} published new workout", user.getId());
     }
 

@@ -4,9 +4,9 @@ import Spinner from "react-bootstrap/Spinner";
 import {faUserShield} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Graph from "./modules/Graph";
-import {getCookie} from "react-use-cookie";
 import {faCheckCircle} from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
+import get from "../services/Get.jsx";
 
 const SectionMonitor = () => {
     const [ health, setHealth ] = useState('LOADING')
@@ -152,25 +152,5 @@ const timestamp = () => {
     const now = new Date();
     return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
 }
-
-const get = (endpoint) => new Promise((resolve, reject) => {
-    const auth = getCookie('session_token');
-    fetch(`${ process.env.REACT_APP_API_BASE }${endpoint}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Basic ${auth}`
-        }
-    }).then(response => {
-        if (response.ok) {
-            response.json().then(data => {
-                resolve(data);
-            });
-        }
-    }).catch(error => {
-        reject(error)
-    });
-})
 
 export default SectionMonitor;
