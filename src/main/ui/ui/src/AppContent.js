@@ -75,7 +75,7 @@ const AppContent = ({ logoutCallback }) => {
                 <Switch>
                     <Route path="/general">
                         <Header title={ "My Statistics" } onClick={ burgerClick } />
-                        <SectionStatistics />
+                        <SectionStatistics userProfile={ currentUserProfile } />
                     </Route>
                     <Route path="/history">
                         <Header title={ "History" } onClick={ burgerClick } />

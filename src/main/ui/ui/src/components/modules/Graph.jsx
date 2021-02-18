@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import Chart from "chart.js";
-import zoom from 'chartjs-plugin-zoom'
+import Zoom from 'chartjs-plugin-zoom'
 import "react-hammerjs"
 
 const Graph = ({ data }) => {
@@ -11,7 +11,7 @@ const Graph = ({ data }) => {
         if (!data)
             return;
 
-        Chart.plugins.register(zoom);
+        Chart.plugins.register(Zoom);
 
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
