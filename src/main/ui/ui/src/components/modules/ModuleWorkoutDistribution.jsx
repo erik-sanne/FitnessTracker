@@ -120,17 +120,17 @@ const bestImprovementMulti = (data) => {
     let merged = {};
     data.forEach(person => {
         person = manualOrderingPass(person);
-        person.forEach(d => {
-            if (!isNaN(d.y)) {
-                if (merged[d.x]) {
-                    merged[d.x] += d.y;
+        person.forEach((ex, idx) => {
+            if (!isNaN(ex.y)) {
+                if (merged[idx]) {
+                    merged[idx].y += ex.y;
                 } else
-                    merged[d.x] = d.y;
+                    merged[idx] = ex;
             }
         })
     });
 
-    return calculateImpr(merged);
+    return calculateImpr(Object.values(merged));
 }
 
 const ModuleWorkoutDistribution = ({ data=[] }) => {

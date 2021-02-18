@@ -41,6 +41,10 @@
 
 .module table tr th:first-child {
   text-align: left;
+}
+
+.module table tr th:nth-child(2) {
+  text-align: left;
   width: 60%;
 }
 

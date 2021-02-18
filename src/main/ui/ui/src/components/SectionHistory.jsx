@@ -74,11 +74,20 @@ const SectionHistory = ({ userProfile }) => {
         });
     }
 
+    const added = [];
     const isRecord = (profile, summary, set) => {
         if (!profile.personalRecords || profile.personalRecords.length === 0)
             return false;
         const temp = profile.personalRecords.filter(rec => rec.exercise === set.exercise)[0];
-        return temp.date === summary.date && temp.weight === set.weight;
+        const res = temp &&
+            temp.date === summary.date &&
+            temp.weight === set.weight &&
+            !added.includes(set.exercise);
+        return res;
+    }
+
+    const isNewExercise = (arr, set, index) => {
+        return !arr[index - 1] || set.exercise !== arr[index - 1].exercise
     }
 
     let setCounter = 0;
@@ -101,7 +110,8 @@ const SectionHistory = ({ userProfile }) => {
                                                             <table style={{ width: '100%', fontSize: 'calc(10px + 0.5vmin)'}}>
                                                                 <thead>
                                                                     <tr>
-                                                                        <th>Set</th>
+                                                                        <th colSpan={1}>Set</th>
+                                                                        <th></th>
                                                                         <th colSpan={2} style={{ textAlign: 'left' }}>Reps</th>
                                                                         <th colSpan={2} style={{ textAlign: 'left' }}>Weight</th>
                                                                     </tr>
@@ -110,7 +120,7 @@ const SectionHistory = ({ userProfile }) => {
                                                                 {
                                                                     sets.map((set, index, arr) =>
                                                                         <>
-                                                                            {!arr[index - 1] || set.exercise !== arr[index - 1].exercise ?
+                                                                            {isNewExercise(arr, set, index)?
                                                                                 <tr>
                                                                                     <td colSpan={6} style={{borderBottom: '1px solid #333', fontWeight: 'bold'}}>
                                                                                         {camelCase(set.exercise.replace(/_/g, ' '))}
@@ -119,13 +129,14 @@ const SectionHistory = ({ userProfile }) => {
                                                                             : <></>}
 
                                                                             <tr key={index}>
-                                                                                <td>
+                                                                                <td style={{width: '1px'}}>
                                                                                     #{
-                                                                                        !arr[index - 1] || set.exercise !== arr[index - 1].exercise ? setCounter = 1 : ++setCounter
+                                                                                        isNewExercise(arr, set, index) ? setCounter = 1 : ++setCounter
                                                                                     }
-
+                                                                                </td>
+                                                                                <td style={{textAlign: 'left'}}>
                                                                                     {
-                                                                                        isRecord(userProfile, summary, set) ? <FontAwesomeIcon icon={ faStar } style={{ paddingLeft: '12px', color: '#ffc877', width: 'inherit'}}/> : ""
+                                                                                        isRecord(userProfile, summary, set) ? <FontAwesomeIcon icon={ faStar } style={{ color: '#ffc877', width: 'inherit'}}/> : ""
                                                                                     }
                                                                                 </td>
                                                                                 <td style={{width: '1px'}}>{set.reps}</td>

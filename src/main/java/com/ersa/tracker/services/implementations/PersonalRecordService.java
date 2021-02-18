@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,9 +45,9 @@ public final class PersonalRecordService implements PRService {
     }
 
     public void updatePersonalRecords(final UserProfile profile, final Workout workout) {
-        if (profile.getPersonalRecords().isEmpty()) {
+        if (profile.getPersonalRecords() == null || profile.getPersonalRecords().isEmpty()) {
             log.info("Personal Records not set, initializing...");
-            initPersonalRecord(profile, workout);
+            initPersonalRecord(profile);
             return;
         }
 
@@ -58,18 +59,24 @@ public final class PersonalRecordService implements PRService {
         for (WorkoutSet set : workout.getSets()) {
             PersonalRecord record = getRecord(prs, set.getExercise());
             if (record == null) {
+                log.info("PR record created for {}", set.getExercise());
                 record = createNew(set.getExercise());
                 prs.add(record);
             }
             if (set.getWeight() > record.getWeight()) {
-                updateRecord(record, set.getWeight(), workout.getDate());
+                prs.remove(record);
+                PersonalRecord persistedRecord = updateRecord(record, set.getWeight(), workout.getDate());
+                prs.add(persistedRecord);
             }
         }
         profile.setPersonalRecords(prs);
         profileRepository.save(profile);
     }
 
-    private void initPersonalRecord(final UserProfile profile, final Workout workout) {
+    private void initPersonalRecord(final UserProfile profile) {
+        profile.setPersonalRecords(new ArrayList<>());
+        profileRepository.save(profile);
+
         List<Workout> previousWorkouts = workoutRepository.findAllByUser(profile.getUser());
         for (Workout wout : previousWorkouts) {
             updateRecords(profile, wout);
@@ -94,10 +101,10 @@ public final class PersonalRecordService implements PRService {
         return record;
     }
 
-    private void updateRecord(final PersonalRecord record, final Float newWeight, final Date newDate) {
+    private PersonalRecord updateRecord(final PersonalRecord record, final Float newWeight, final Date newDate) {
         record.setWeight(newWeight);
         record.setDate(newDate);
-        recordRepository.save(record);
-        log.info("PR Updated");
+        log.info("PR updated for {}", record.getExercise().getName());
+        return recordRepository.save(record);
     }
 }
