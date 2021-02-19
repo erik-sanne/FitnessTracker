@@ -18,9 +18,15 @@ const SectionStatistics = ({ userProfile }) => {
             <Module title="Workout distribution">
                 <ModuleWorkoutDistribution data={ !loadingDistribution ? [ selfWorkoutDistribution ] : [] } />
             </Module>
-            <Module title="Powerlift ratios">
-                <ModuleBSD data={ userProfile ? userProfile.personalRecords : [] } />
-            </Module>
+            {
+                userProfile.personalRecords &&
+                userProfile.personalRecords.filter(e => e.exercise === "BENCH_PRESS").length > 0 &&
+                userProfile.personalRecords.filter(e => e.exercise === "SQUAT").length > 0 &&
+                userProfile.personalRecords.filter(e => e.exercise === "DEADLIFT").length > 0 ?
+                <Module title="Powerlift ratios">
+                    <ModuleBSD data={userProfile ? userProfile.personalRecords : []}/>
+                </Module> : <></>
+            }
             <Module title="Progression">
                 <ModuleSetAverages />
             </Module>

@@ -66,7 +66,6 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                 </ul>
             </div>
             {
-                userProfile.permissionLevel !== 'BASIC' &&
                 <p style={{
                     position: 'absolute',
                     left: '45px',

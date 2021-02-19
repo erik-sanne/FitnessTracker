@@ -26,6 +26,8 @@ const createConfig = (bsd, normalratio) => {
         data: yValues
     }]
 
+    const maxVal = Math.max(Math.max.apply(null, yValues) + 1, 6);
+
     return {
         type: 'bar',
         data: {
@@ -46,7 +48,9 @@ const createConfig = (bsd, normalratio) => {
                 yAxes: [{
                     display: true,
                     ticks: {
-                        display: false
+                        display: false,
+                        min: 0,
+                        max: maxVal,
                     },
                     gridLines: {
                         display: false,
