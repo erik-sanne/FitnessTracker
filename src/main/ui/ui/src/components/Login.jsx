@@ -11,7 +11,8 @@ class Login extends React.Component {
             username: '',
             password: '',
             msg: null,
-            loading: false
+            loading: false,
+            reason: new URLSearchParams(window.location.search).get('status')
         }
     }
 
@@ -64,6 +65,7 @@ class Login extends React.Component {
             <section className={'page-wrapper'}>
                 <form onSubmit={ this.onSubmit }>
                     <h2>Sign in</h2>
+                    { this.state.reason && !this.state.msg && <p style={styleStatus}>Your credentials has expired and you need to login again</p>}
                     { this.state.loading && <Spinner animation="grow"/>}
                     { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
                     <label htmlFor="username">Email</label>
@@ -82,6 +84,12 @@ class Login extends React.Component {
 
 const styleError = {
     background: '#f16b719e',
+    border: '1px solid #f16b719e',
+    padding: '5px'
+}
+
+const styleStatus = {
+    background: 'rgba(255,173,2,0.44)',
     border: '1px solid #f16b719e',
     padding: '5px'
 }

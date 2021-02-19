@@ -27,6 +27,8 @@ function useFetch(url, method = 'GET', external= false) {
                 if (response.ok) {
                     const json = await response.json();
                     setData(json);
+                } else if (response.status === 401) {
+                    window.location.replace("login?status=expired");
                 } else {
                     throw response;
                 }
