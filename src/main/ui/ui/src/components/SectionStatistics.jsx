@@ -5,6 +5,7 @@ import Module from "./modules/Module";
 import ModuleSetAverages from "./modules/ModuleSetAverages";
 import useFetch from "../services/useFetch";
 import ModuleBSD from "./modules/ModuleBSD";
+import ModulePRs from "./modules/ModulePRs";
 
 const SectionStatistics = ({ userProfile }) => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
@@ -27,6 +28,9 @@ const SectionStatistics = ({ userProfile }) => {
                     <ModuleBSD data={userProfile ? userProfile.personalRecords : []}/>
                 </Module> : <></>
             }
+            <Module title="Weight records">
+                <ModulePRs data={userProfile ? userProfile.personalRecords : []} />
+            </Module>
             <Module title="Progression">
                 <ModuleSetAverages />
             </Module>
