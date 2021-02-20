@@ -5,11 +5,12 @@ import DisplayValue from "./DisplayValue";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 
-const CALVES_SCALE = 1.5;
+const CALVES_SCALE = 2.0;
+const CORE_SCALE = 1.5;
 
 const manualOrderingPass = (data) => {
     return [
-        { x: "CORE", y: data["CORE"] },
+        { x: "CORE", y: data["CORE"] * CORE_SCALE},
         //{ x: "OBLIQUES", y: data["OBLIQUES"] },
         { x: "GLUTES", y: data["GLUTES"] },
         { x: "HAMSTRINGS", y: data["HAMSTRINGS"] },
