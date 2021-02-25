@@ -53,6 +53,12 @@ public class WorkoutController {
         return apiService.getWorkoutSummaries(currentUser);
     }
 
+    @GetMapping("api/workout/{id}")
+    public Workout getWorkouts(@PathVariable final long id, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return workoutService.getWorkout(currentUser, id);
+    }
+
     @GetMapping("api/setsForWorkout/{id}")
     public Collection<WorkoutSet> getSetsForWorkout(@PathVariable final long id, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
@@ -115,6 +121,13 @@ public class WorkoutController {
     public ResponseEntity<?> saveWorkout(final Principal principal, @RequestBody final Workout workout) {
         User currentUser = accountService.getUserByPrincipal(principal);
         workoutService.saveWorkout(currentUser, workout);
+        return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("api/updateWorkout/{id}")
+    public ResponseEntity<?> updateWorkout(@PathVariable final long id, final Principal principal, @RequestBody final Workout workout) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        workoutService.updateWorkout(currentUser, workout, id);
         return ResponseEntity.accepted().build();
     }
 }

@@ -30,7 +30,7 @@ public final class Workout {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date date;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "workout", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "workout", cascade = CascadeType.ALL)
     private Collection<WorkoutSet> sets;
 
     public long getId() {

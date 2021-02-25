@@ -9,6 +9,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Modal from "./ui_components/Modal";
 import ModalLoader from "./ui_components/ModalLoader";
 import {useParams} from "react-router";
+import get from "../services/Get";
 
 const SectionNewWorkout = ({updateUserProfile}) => {
     const { workoutId } = useParams();
@@ -16,6 +17,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
         NOT_SUBMITTED: "not submitted",
         ERROR: "submit error",
         SUBMITTING: "submitting",
+        FETCHING: "fetching",
         SUBMITTED: "submitted"
     }
 
@@ -49,7 +51,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
         }
 
         const token = getCookie('session_token')
-        fetch(`${ process.env.REACT_APP_API_BASE }/api/saveWorkout`, {
+        fetch(`${ process.env.REACT_APP_API_BASE }/api/${workoutId ? `updateWorkout/${workoutId}` : 'saveWorkout'}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,8 +61,10 @@ const SectionNewWorkout = ({updateUserProfile}) => {
             body: JSON.stringify(workout)
         }).then(response => {
             if (response.ok) {
-                localStorage.removeItem(LS_KEY_SETS);
-                localStorage.removeItem(LS_KEY_DATE);
+                if (!workoutId) {
+                    localStorage.removeItem(LS_KEY_SETS);
+                    localStorage.removeItem(LS_KEY_DATE);
+                }
                 updateUserProfile();
                 setSubmitStatus(SubmitStatus.SUBMITTED);
             }
@@ -110,6 +114,15 @@ const SectionNewWorkout = ({updateUserProfile}) => {
     }
 
     useEffect(() => {
+        if (workoutId) {
+            setSubmitStatus(SubmitStatus.FETCHING);
+            get(`/api/workout/${workoutId}`).then(workout => {
+                setSets(workout.sets.map((set) => { return {...set, type: set.exercise.replace(/_/g, ' ') }}));
+                setDate(workout.date.split('T')[0]);
+                setSubmitStatus(SubmitStatus.NOT_SUBMITTED);
+            }).catch(() => setSubmitStatus(SubmitStatus.ERROR) );
+            return;
+        }
         const saved_sets = JSON.parse(localStorage.getItem(LS_KEY_SETS))
         const saved_date = JSON.parse(localStorage.getItem(LS_KEY_DATE))
         if (saved_sets && saved_sets.length > 0) {
@@ -121,8 +134,10 @@ const SectionNewWorkout = ({updateUserProfile}) => {
     useEffect(() => {
         if (sets.length > 0)
             setCurrentSet({...sets[sets.length - 1]})
-        localStorage.setItem(LS_KEY_SETS, JSON.stringify(sets));
-        localStorage.setItem(LS_KEY_DATE, JSON.stringify(date));
+        if (!workoutId) {
+            localStorage.setItem(LS_KEY_SETS, JSON.stringify(sets));
+            localStorage.setItem(LS_KEY_DATE, JSON.stringify(date));
+        }
     }, [ sets, date ])
 
     useEffect(() => {
@@ -133,11 +148,10 @@ const SectionNewWorkout = ({updateUserProfile}) => {
 
     }, [names, loading])
 
-    if (workoutId)
-        return (<div className={ 'page-wrapper' } style={{ minHeight: '0vh', paddingBottom: '30vh'}}><div>Not yet implemented</div></div>)
-
-    if (submitStatus === SubmitStatus.SUBMITTED)
-        return <Redirect to='/' />
+    if (submitStatus === SubmitStatus.SUBMITTED) {
+        const url = workoutId ? '/history' : '/';
+        return <Redirect to={url}/>
+    }
 
     return (
         <>
@@ -171,7 +185,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                         }
                         </tbody>
                     </table>
-                        <input type="submit" value="Create and Save" onClick={ () => setModalVisible(true) }/>
+                        <input type="submit" value={ workoutId ? "Update" : "Create and Save"} onClick={ () => setModalVisible(true) }/>
                     </>
                 }
                 </Module>
@@ -203,8 +217,11 @@ const SectionNewWorkout = ({updateUserProfile}) => {
             </Modal>
             <ModalLoader visible={
                 submitStatus === SubmitStatus.SUBMITTING ||
+                submitStatus === SubmitStatus.FETCHING ||
                 submitStatus === SubmitStatus.ERROR
-            } text={ "Saving workout..." } error={ submitStatus === SubmitStatus.ERROR && "An error occurred :(" } onClose={
+            } text={ submitStatus === SubmitStatus.SUBMITTING ?
+                "Saving workout..." :
+                "Fetching workout" } error={ submitStatus === SubmitStatus.ERROR && "An error occurred :(" } onClose={
                 () => setSubmitStatus(SubmitStatus.NOT_SUBMITTED)
             }/>
         </>

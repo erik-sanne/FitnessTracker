@@ -45,13 +45,14 @@ public final class PersonalRecordService implements PRService {
     }
 
     public void updatePersonalRecords(final UserProfile profile, final Workout workout) {
-        if (profile.getPersonalRecords() == null || profile.getPersonalRecords().isEmpty()) {
-            log.info("Personal Records not set, initializing...");
-            initPersonalRecord(profile);
-            return;
-        }
+        //if (profile.getPersonalRecords() == null || profile.getPersonalRecords().isEmpty()) {
+        //log.info("Personal Records not set, initializing...");
+        log.info("Computing personal records");
+        initPersonalRecord(profile);
+        //return;
+        //}
 
-        updateRecords(profile, workout);
+        // updateRecords(profile, workout);
     }
 
     private void updateRecords(final UserProfile profile, final Workout workout) {

@@ -12,8 +12,10 @@ public interface WorkoutService {
     List<Set<WorkoutSet>> getPartitionedWorkoutSets(User user, Exercise exercise);
     List<Workout> getWorkouts(User user, int limit);
     List<Workout> getWorkouts(User user);
+    Workout getWorkout(User user, long workoutId);
     Collection<WorkoutSet> getSetsForWorkout(User user, long workoutId);
 
     void saveWorkout(User user, Workout workout);
+    void updateWorkout(User user, Workout workout, long id);
     void deleteWorkout(User user, long workoutId);
 }
