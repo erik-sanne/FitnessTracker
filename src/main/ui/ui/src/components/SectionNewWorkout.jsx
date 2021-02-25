@@ -74,17 +74,18 @@ const SectionNewWorkout = ({updateUserProfile}) => {
         event.stopPropagation();
         const newArray = sets.filter((set, idx) => idx !== index).map((set => ({...set})));
         setSets(newArray);
+        setCurrentEdit(null);
     }
 
     const submitSet = (set) => {
-        if (currentEdit) {
+        if (currentEdit !== null) {
             const newArray = sets.map((s, idx) => {
                 if (idx === currentEdit)
                     return {...set};
                 return {...s};
             })
-            setCurrentEdit(null);
             setSets(newArray);
+            setCurrentEdit(null);
         } else
             setSets(sets => [...sets, {...set}])
     }
