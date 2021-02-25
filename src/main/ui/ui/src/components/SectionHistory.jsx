@@ -10,6 +10,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Modal from "./ui_components/Modal";
 import ModalLoader from "./ui_components/ModalLoader";
 import {faStar} from "@fortawesome/free-solid-svg-icons";
+import {faEdit} from "@fortawesome/free-regular-svg-icons";
+import {Redirect} from "react-router-dom";
 
 const SectionHistory = ({ userProfile }) => {
 
@@ -22,6 +24,7 @@ const SectionHistory = ({ userProfile }) => {
     const { data: summaries, loading } = useFetch('/api/workouts');
     const [ sets, setSets ] = useState(null);
     const [ toRemove, setToRemove ] = useState(null);
+    const [ redirectEdit, setRedirectEdit ] = useState(null);
     const [ removeStatus, setRemoveStatus ] = useState(RemoveStatus.NONE);
     const [ loadingStatus, setLoadingStatus ] = useState(-1);
     const [ currentEventKey, setCurrentEventKey ] = useState(-1);
@@ -90,6 +93,9 @@ const SectionHistory = ({ userProfile }) => {
         return !arr[index - 1] || set.exercise !== arr[index - 1].exercise
     }
 
+    if (redirectEdit)
+        return <Redirect to={`/edit/${redirectEdit}`} />
+
     let setCounter = 0;
     return (
         <>
@@ -153,9 +159,16 @@ const SectionHistory = ({ userProfile }) => {
                                                                 </tbody>
                                                             </table>
                                                     }
-                                                    {sets && <p style={{ margin: 'auto', padding: '12px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '10px', textAlign: 'center', cursor: 'pointer'}} onClick={ () => setToRemove(summary) } >
-                                                        <FontAwesomeIcon icon={faTrash} style={trashCanStyle}/>
-                                                    </p>}
+                                                    { sets &&
+                                                    <div style={{display: 'flex'}}>
+                                                        <p style={{ margin: '5px', flex: 1, padding: '12px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '10px', textAlign: 'center', cursor: 'pointer'}} onClick={ () => setToRemove(summary) } >
+                                                            <FontAwesomeIcon icon={faTrash} style={trashCanStyle}/>
+                                                        </p>
+                                                        <p style={{ margin: '5px', flex: 1, padding: '12px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '10px', textAlign: 'center', cursor: 'pointer'}} onClick={ () => setRedirectEdit(summary.workout_id) } >
+                                                            <FontAwesomeIcon icon={faEdit} style={editStyle}/>
+                                                        </p>
+                                                    </div>
+                                                    }
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>
@@ -183,6 +196,12 @@ const camelCase = (text) => {
 
 const trashCanStyle = {
     color: '#ad3f3f',
+    cursor: 'pointer',
+    fontSize: '16px'
+}
+
+const editStyle = {
+    color: '#ad8e3f',
     cursor: 'pointer',
     fontSize: '16px'
 }

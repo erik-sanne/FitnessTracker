@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import DataSelect from "../ui_components/DataSelect";
 
-const SetInput = ({ type, reps, weight, exerciseOptions, onSubmit }) => {
+const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, onEdit }) => {
     const [ exerciseState, setExerciseState ] = useState({
         type: type,
         reps: reps,
@@ -14,10 +14,14 @@ const SetInput = ({ type, reps, weight, exerciseOptions, onSubmit }) => {
     })
 
     const handleInputChange = (event) => {
-        setExerciseState({
+        onEdit({
             ...exerciseState,
             [event.target.name]: event.target.value
         })
+        setExerciseState({
+            ...exerciseState,
+            [event.target.name]: event.target.value
+        });
     }
 
     const Submit = () => {
@@ -56,6 +60,7 @@ const SetInput = ({ type, reps, weight, exerciseOptions, onSubmit }) => {
                 <label>Exercise</label>
                 <DataSelect
                     options={ exerciseOptions }
+                    value={ exerciseState.type }
                     onSelect={ (value) => handleInputChange({ target : { name: 'type', value: value }}) }
                     placeholder={ 'Select exercise...' }/>
             </div>
@@ -81,7 +86,7 @@ const SetInput = ({ type, reps, weight, exerciseOptions, onSubmit }) => {
                        style={{ width: '100%',  background: validationErrors.weight ? '#faa' : '' }}/>
             </div>
         </div>
-        <input type="submit" value={"Add set"} onClick={ Submit } className={ 'themed' }/>
+        <input type="submit" value={buttonText} onClick={ Submit } className={ 'themed' }/>
         </>
     );
 }

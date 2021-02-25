@@ -1,8 +1,12 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 
-const DataSelect = ({options, onSelect, placeholder = "Select something...", style, className}) => {
-    const [ intermediateValue, setIntermediateValue] = useState("");
+const DataSelect = ({options, value, onSelect, placeholder = "Select something...", style, className}) => {
+    const [ intermediateValue, setIntermediateValue] = useState('');
     const ref = useRef(null);
+
+    useEffect(() => {
+        setIntermediateValue(value);
+    }, [value])
 
     const onChange = (event) => {
         setIntermediateValue(event.target.value);

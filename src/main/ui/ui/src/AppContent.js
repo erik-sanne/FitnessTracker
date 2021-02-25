@@ -85,6 +85,10 @@ const AppContent = ({ logoutCallback }) => {
                         <Header title={ "New Workout" } onClick={ burgerClick }  />
                         <SectionNewWorkout updateUserProfile={ updateUserProfile }/>
                     </Route>
+                    <Route path="/edit/:workoutId">
+                        <Header title={ "Edit Workout" } onClick={ burgerClick }  />
+                        <SectionNewWorkout updateUserProfile={ updateUserProfile }/>
+                    </Route>
                     <Route path="/social">
                         <Header title={ "Friends" } onClick={ burgerClick } />
                         <SectionFriends userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />

@@ -8,8 +8,10 @@ import { faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Modal from "./ui_components/Modal";
 import ModalLoader from "./ui_components/ModalLoader";
+import {useParams} from "react-router";
 
 const SectionNewWorkout = ({updateUserProfile}) => {
+    const { workoutId } = useParams();
     const SubmitStatus = {
         NOT_SUBMITTED: "not submitted",
         ERROR: "submit error",
@@ -26,6 +28,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
     const [ exerciseOptions, setExerciseOptions ] = useState([]);
     const [ date, setDate] = useState(todaysDate);
     const [ sets, setSets ] = useState([]);
+    const [ currentEdit, setCurrentEdit ] = useState(null);
     const [ modalVisible, setModalVisible ] = useState(false)
     const [ submitStatus, setSubmitStatus ] = useState(SubmitStatus.NOT_SUBMITTED)
     const [ currentSet, setCurrentSet ] = useState({
@@ -67,13 +70,42 @@ const SectionNewWorkout = ({updateUserProfile}) => {
         });
     }
 
-    const removeSet = (index) => {
+    const removeSet = (event, index) => {
+        event.stopPropagation();
         const newArray = sets.filter((set, idx) => idx !== index).map((set => ({...set})));
         setSets(newArray);
     }
 
     const submitSet = (set) => {
-        setSets(sets => [...sets, {...set}])
+        if (currentEdit) {
+            const newArray = sets.map((s, idx) => {
+                if (idx === currentEdit)
+                    return {...set};
+                return {...s};
+            })
+            setCurrentEdit(null);
+            setSets(newArray);
+        } else
+            setSets(sets => [...sets, {...set}])
+    }
+
+    const onEditingSet = (set) => {
+        setCurrentSet({...set});
+    }
+
+    const toggleEdit = (key) => {
+        if (currentEdit === null) {
+            setCurrentEdit(key)
+            console.log(sets[key].type);
+            setCurrentSet({...sets[key], type: sets[key].type})
+        } else {
+            setCurrentEdit(null)
+            setCurrentSet({
+                reps: '',
+                weight: '',
+                type: ''
+            });
+        }
     }
 
     useEffect(() => {
@@ -100,6 +132,9 @@ const SectionNewWorkout = ({updateUserProfile}) => {
 
     }, [names, loading])
 
+    if (workoutId)
+        return (<div className={ 'page-wrapper' } style={{ minHeight: '0vh', paddingBottom: '30vh'}}><div>Not yet implemented</div></div>)
+
     if (submitStatus === SubmitStatus.SUBMITTED)
         return <Redirect to='/' />
 
@@ -115,18 +150,22 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                         <thead>
                         <tr>
                             <th> Exercise</th>
-                            <th> Repetitions</th>
+                            <th style={{textAlign: 'right', width: 'auto'}}> Repetitions</th>
                             <th> Weight</th>
                             <th> </th>
                         </tr>
                         </thead>
                         <tbody>
                         {sets.map((set, key) =>
-                            <tr key={key}>
-                                <td> {set.type} </td>
-                                <td> {set.reps} </td>
-                                <td> {set.weight !== '' ? set.weight : '-'} </td>
-                                <td> <FontAwesomeIcon icon={ faTrash } style={trashCanStyle} onClick={() => removeSet(key)}/> </td>
+                            <tr key={key} style={currentEdit === key ? {
+                                background: 'rgba(107,166,239,0.1)',
+                                boxShadow: '0px 0px 2px inset rgb(107 166 239 / 50%)',
+                                cursor: 'pointer'
+                            } : { cursor: 'pointer' }} onClick={ () => toggleEdit(key) }>
+                                <td> {currentEdit === key ? currentSet.type : set.type} </td>
+                                <td> {currentEdit === key ? currentSet.reps : set.reps} </td>
+                                <td> {currentEdit === key ? currentSet.weight : set.weight !== '' ? set.weight : '-'} </td>
+                                <td> <FontAwesomeIcon icon={ faTrash } style={{...trashCanStyle, visibility: currentEdit === key ? 'visible' : 'hidden'}} onClick={(e) => removeSet(e, key)}/> </td>
                             </tr>)
                         }
                         </tbody>
@@ -148,8 +187,10 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                         type={ currentSet.type }
                         reps={ currentSet.reps }
                         weight={ currentSet.weight }
+                        buttonText={ currentEdit !== null ? 'Save changes' : 'Add set' }
                         exerciseOptions={ exerciseOptions }
-                        onSubmit={ submitSet } />
+                        onSubmit={ submitSet }
+                        onEdit={ onEditingSet }/>
                 </Module>
             </div>
             <Modal visible={ modalVisible } title={ "Submit workout?" } onClose={ () => setModalVisible(false) }>
