@@ -40,7 +40,7 @@ public class UserProfile {
     @JoinTable(name = "friends")
     private List<UserProfile> friends;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<PersonalRecord> personalRecords;
 
     @Transient

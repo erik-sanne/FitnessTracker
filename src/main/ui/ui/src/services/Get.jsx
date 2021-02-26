@@ -16,8 +16,10 @@ const get = (endpoint) => new Promise((resolve, reject) => {
             });
         } else if (response.status === 401) {
             window.location.replace("login?status=expired");
+        } else {
+            throw response;
         }
-}).catch(error => {
+    }).catch(error => {
         reject(error)
     });
 })
