@@ -18,7 +18,7 @@ const ModulePRs = ({ data=[] }) => {
         <>
             { !data ? <Spinner animation="grow"/> :
                 <>
-                    <div style={{ height: 'min(65vw, 500px)', overflowY: 'auto' }}>
+                    <div style={{ height: 'min(65vw, 500px)', overflowY: 'auto', padding: '1rem' }}>
                     { viewedExercies.map((pr, idx) =>
                         <div key={idx} style={{display: 'flex', justifyContent: 'space-between', fontSize: 'calc(10px + 1vmin)', padding: '0.5rem 0.2rem'}}>
                             <div style={{textAlign: 'left', width: '1px', whiteSpace: 'nowrap'}}>{camelCase(pr.exercise.replace(/_/g, ' '))}</div>
