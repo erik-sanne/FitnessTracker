@@ -52,7 +52,7 @@ const createConfig = (rawdata=[]) => {
                 display: false
             },
             responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
+            aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
             scales: {
                 yAxes: [{
                     ticks: {

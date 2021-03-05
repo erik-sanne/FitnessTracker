@@ -49,7 +49,7 @@ const createConfig = (data, fullHistory) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
+            aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
             hoverMode: 'index',
             stacked: false,
             title:{

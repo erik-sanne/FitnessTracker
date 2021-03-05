@@ -73,7 +73,7 @@ const createConfig = (data=[]) => {
                 display: false
             },
             responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
+            aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
             scale: {
                 ticks: {
                     display: false

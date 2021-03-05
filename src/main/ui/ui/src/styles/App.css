@@ -38,6 +38,7 @@ body {
   color: white;
   border: 1px solid rgb(51, 51, 51);
   border-radius: 10px;
+  width: 100%;
 }
 
 .mini {
@@ -115,15 +116,44 @@ body {
 }
 
 .page-wrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   color: white;
   font-size: calc(10px + 0.5vmin);
   position: relative;
-  margin-top: 70px;
+  margin: 70px auto;
+
+  display: grid;
+  justify-items: center;
+
+  width: 100%;
+  max-width: min(1920px, 100vw);
+}
+
+@media screen and (min-width: 600px) {
+  .page-wrapper {
+    padding: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    grid-gap: 1rem;
+    grid-auto-flow: dense;
+  }
+}
+
+.bottom-panel {
+  position: fixed !important;
+  bottom: 1rem !important;
+  left: 1rem !important;
+  right: 1rem !important;
+  margin: 0px auto;
+  border-radius: 0px;
+  background: rgba(22, 23, 26, 0.96) !important;
+  height: auto;
+  width: auto !important;
+}
+
+@media screen and (min-width: 600px) {
+  .bottom-panel {
+    left: 1rem;
+    right: 1rem;
+  }
 }
 
 .page-wrapper form {
@@ -146,6 +176,7 @@ body {
   border: 1px solid rgb(51, 51, 51);
   border-radius: 10px;
   margin: 4px 0px;
+  width: 100%;
 }
 
 .page-wrapper .btn-form {

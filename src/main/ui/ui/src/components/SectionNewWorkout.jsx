@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import SetInput from "./modules/SetInput";
 import useFetch from "../services/useFetch";
 import Module from "./modules/Module";
@@ -20,6 +20,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
         FETCHING: "fetching",
         SUBMITTED: "submitted"
     }
+    const bottomRef = useRef();
 
     const LS_KEY_SETS = "saved_workout_sets"
     const LS_KEY_DATE = "saved_workout_date"
@@ -90,8 +91,12 @@ const SectionNewWorkout = ({updateUserProfile}) => {
             })
             setSets(newArray);
             setCurrentEdit(null);
-        } else
+        } else {
             setSets(sets => [...sets, {...set}])
+            bottomRef.current.scrollIntoView({
+                behavior: "smooth"
+            });
+        }
     }
 
     const onEditingSet = (set) => {
@@ -185,19 +190,12 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                         }
                         </tbody>
                     </table>
-                        <input type="submit" value={ workoutId ? "Update" : "Create and Save"} onClick={ () => setModalVisible(true) }/>
+                    <input type="submit" value={ workoutId ? "Update" : "Create and Save"} onClick={ () => setModalVisible(true) }/>
                     </>
                 }
+                    <span ref={bottomRef} />
                 </Module>
-                <Module title={""} style={{
-                    position: 'fixed',
-                    bottom: '0px',
-                    margin: '0px',
-                    width: 'min(100vw, 1400px)',
-                    borderRadius: '0px',
-                    background: '#16171af5',
-                    paddingBottom: '12px'
-                }}>
+                <Module title={""} className={ 'bottom-panel' }>
                     <SetInput
                         type={ currentSet.type }
                         reps={ currentSet.reps }
