@@ -139,9 +139,7 @@ body {
 
 .bottom-panel {
   position: fixed !important;
-  bottom: 1rem !important;
-  left: 1rem !important;
-  right: 1rem !important;
+  bottom: 0rem;
   margin: 0px auto;
   border-radius: 0px;
   background: rgba(22, 23, 26, 0.96) !important;
@@ -151,8 +149,9 @@ body {
 
 @media screen and (min-width: 600px) {
   .bottom-panel {
-    left: 1rem;
-    right: 1rem;
+    left: 1rem !important;
+    right: 1rem !important;
+    bottom: 1rem !important;
   }
 }
 
