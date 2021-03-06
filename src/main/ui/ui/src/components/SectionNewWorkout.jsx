@@ -66,8 +66,8 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                     localStorage.removeItem(LS_KEY_SETS);
                     localStorage.removeItem(LS_KEY_DATE);
                 }
-                updateUserProfile();
                 setSubmitStatus(SubmitStatus.SUBMITTED);
+                updateUserProfile();
             }
         }).catch(error => {
             console.log("error", error)

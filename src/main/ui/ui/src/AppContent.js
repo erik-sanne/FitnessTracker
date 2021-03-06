@@ -6,7 +6,6 @@ import Menu from "./components/Menu";
 import Burger from "./components/ui_components/Burger";
 import SectionNewWorkout from "./components/SectionNewWorkout";
 import SectionHistory from "./components/SectionHistory";
-import useFetch from "./services/useFetch";
 import Splash from "./components/Splash";
 import ModuleEditProfile from "./components/modules/ModuleEditProfile";
 import SectionSettings from "./components/SectionSettins";
@@ -21,8 +20,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 const AppContent = ({ logoutCallback }) => {
     const [ menuOpen, setMenuOpen ] = useState(false)
     const [ currentUserProfile, setCurrentUserProfile ] = useState(null)
-    const [ newPRs, setNewPRs ] = useState(null)
-    const { data: loadedProfile, loading } = useFetch('/users/profile')
+    const [ currentRecords, setCurrentRecords ] = useState(null)
+    const [ newRecords, setNewRecords ] = useState(null)
+    const [ loading, setLoading ] = useState(true)
 
     const burgerClick = () => {
         setMenuOpen(!menuOpen);
@@ -37,26 +37,36 @@ const AppContent = ({ logoutCallback }) => {
     }
 
     const updateUserProfile = () => {
+        setLoading(true);
         get('/users/profile').then(profile => {
-
-            const newRecords = profile.personalRecords.filter(newPR => {
-                return !currentUserProfile.personalRecords.some(oldPR => {
-                    return newPR.date === oldPR.date &&
-                    newPR.weight === oldPR.weight &&
-                    newPR.exercise === oldPR.exercise;
-                })
-            });
-
-            if (newRecords.length > 0)
-                setNewPRs(newRecords);
-
             setCurrentUserProfile(profile)
+            setLoading(false);
+        }).catch(err => {
+            setLoading(false);
         });
+
+        get('/api/records').then(records => {
+            if (currentRecords) {
+                const newRecords = records.filter(newPR => {
+                    return !currentRecords.some(oldPR => {
+                        return newPR.date === oldPR.date &&
+                            newPR.weight === oldPR.weight &&
+                            newPR.exercise === oldPR.exercise;
+                    })
+                });
+
+                if (newRecords.length > 0) {
+                    setNewRecords(newRecords);
+                }
+            }
+
+            setCurrentRecords(records);
+        })
     };
 
     useEffect(() => {
-        setCurrentUserProfile(loadedProfile);
-    }, [loadedProfile, loading])
+        updateUserProfile();
+    }, [])
 
 
     if (loading)
@@ -75,7 +85,7 @@ const AppContent = ({ logoutCallback }) => {
                 <Switch>
                     <Route path="/general">
                         <Header title={ "My Statistics" } onClick={ burgerClick } />
-                        <SectionStatistics userProfile={ currentUserProfile } />
+                        <SectionStatistics />
                     </Route>
                     <Route path="/history">
                         <Header title={ "History" } onClick={ burgerClick } />
@@ -115,9 +125,9 @@ const AppContent = ({ logoutCallback }) => {
             <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } userProfile={ currentUserProfile } />
             <Burger onClick={ burgerClick } open={ menuOpen }/>
         </BrowserRouter>
-            <Modal visible={ newPRs !== null } title="New Personal Best!" onClose={ () => setNewPRs(null) }>
+            <Modal visible={ newRecords } title="New Personal Best!" onClose={ () => setNewRecords(null) }>
                 <h2>Congratulations!<FontAwesomeIcon icon={ faStar } style={{ paddingLeft: '12px', color: '#ffc877', width: 'inherit'}}/> </h2>
-                <p>Your hard work is paying off! You just hit a new personal record in {newPRs && newPRs.map((pr, idx, arr) =>
+                <p>Your hard work is paying off! You just hit a new personal record in {newRecords && newRecords.map((pr, idx, arr) =>
                     <>
                         <span>{(idx > 0 ? idx === arr.length-1 ? ' and ' : ', ' : '')}</span>
                         <strong>{ camelCase(pr.exercise.replace(/_/g, ' '))}</strong>

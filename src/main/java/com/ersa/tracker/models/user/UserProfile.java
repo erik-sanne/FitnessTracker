@@ -1,12 +1,19 @@
 package com.ersa.tracker.models.user;
 
-import com.ersa.tracker.models.PersonalRecord;
 import com.ersa.tracker.models.authentication.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -39,9 +46,6 @@ public class UserProfile {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "friends")
     private List<UserProfile> friends;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<PersonalRecord> personalRecords;
 
     @Transient
     @JsonProperty(value = "permissionLevel")
@@ -85,13 +89,5 @@ public class UserProfile {
 
     public void setProfilePicture(final byte[] profilePicture) {
         this.profilePicture = profilePicture;
-    }
-
-    public List<PersonalRecord> getPersonalRecords() {
-        return personalRecords;
-    }
-
-    public void setPersonalRecords(final List<PersonalRecord> personalRecords) {
-        this.personalRecords = personalRecords;
     }
 }

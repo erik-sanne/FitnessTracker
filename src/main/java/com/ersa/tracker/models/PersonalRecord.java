@@ -1,5 +1,6 @@
 package com.ersa.tracker.models;
 
+import com.ersa.tracker.models.authentication.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -7,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import java.util.Date;
@@ -16,6 +18,7 @@ public final class PersonalRecord {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private long id;
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -23,6 +26,10 @@ public final class PersonalRecord {
     private Exercise exercise;
     private Float weight;
     private Date date;
+
+    @JsonIgnore
+    @ManyToOne
+    private User user;
 
     @Transient
     @JsonProperty(value = "exercise")
@@ -52,5 +59,13 @@ public final class PersonalRecord {
 
     public void setDate(final Date date) {
         this.date = date;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
     }
 }

@@ -4,6 +4,7 @@ import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +16,10 @@ public interface WorkoutService {
     Workout getWorkout(User user, long workoutId);
     Collection<WorkoutSet> getSetsForWorkout(User user, long workoutId);
 
+    @Transactional
     void saveWorkout(User user, Workout workout);
+    @Transactional
     void updateWorkout(User user, Workout workout, long id);
+    @Transactional
     void deleteWorkout(User user, long workoutId);
 }

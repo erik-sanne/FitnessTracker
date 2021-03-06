@@ -3,13 +3,16 @@ package com.ersa.tracker.controllers;
 import com.ersa.tracker.dto.SetAverage;
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
+import com.ersa.tracker.models.PersonalRecord;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.services.APIService;
 import com.ersa.tracker.services.ExerciseService;
+import com.ersa.tracker.services.PRService;
 import com.ersa.tracker.services.WorkoutService;
 import com.ersa.tracker.services.authentication.AccountService;
+import com.ersa.tracker.services.implementations.PersonalRecordService;
 import com.ersa.tracker.services.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,7 @@ public class WorkoutController {
     private final APIService apiService;
     private final AccountService accountService;
     private final WorkoutService workoutService;
+    private final PRService recordService;
     private final ExerciseService exerciseService;
     private final ProfileService profileService;
 
@@ -38,11 +42,13 @@ public class WorkoutController {
     public WorkoutController(final WorkoutService workoutService,
                              final AccountService accountService,
                              final ExerciseService exerciseService,
+                             final PRService recordService,
                              final APIService apiService,
                              final ProfileService profileService) {
         this.workoutService = workoutService;
         this.accountService = accountService;
         this.exerciseService = exerciseService;
+        this.recordService = recordService;
         this.apiService = apiService;
         this.profileService = profileService;
     }
@@ -129,5 +135,18 @@ public class WorkoutController {
         User currentUser = accountService.getUserByPrincipal(principal);
         workoutService.updateWorkout(currentUser, workout, id);
         return ResponseEntity.accepted().build();
+    }
+
+    @GetMapping("api/records")
+    public List<PersonalRecord> getRecords(final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return recordService.getRecords(currentUser);
+    }
+
+    @GetMapping("api/records/{userId}")
+    public List<PersonalRecord> getRecordsForFriend(@PathVariable final long userId, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        User friend = profileService.getFriend(currentUser, userId);
+        return recordService.getRecords(friend);
     }
 }

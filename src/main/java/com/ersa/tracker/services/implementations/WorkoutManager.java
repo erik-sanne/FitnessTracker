@@ -97,7 +97,7 @@ public class WorkoutManager implements WorkoutService {
         workout.setUser(user);
         workout.getSets().forEach(set -> set.setWorkout(workout));
         workoutRepository.save(workout);
-        personalRecordService.updatePersonalRecords(user.getUserProfile(), workout);
+        personalRecordService.updatePersonalRecords(user);
         log.info("User with id {} published new workout", user.getId());
     }
 
@@ -123,13 +123,14 @@ public class WorkoutManager implements WorkoutService {
         persistedWorkout.setSets(submittedWorkout.getSets());
         persistedWorkout.setDate(submittedWorkout.getDate());
         persistedWorkout = workoutRepository.save(persistedWorkout);
-        personalRecordService.updatePersonalRecords(user.getUserProfile(), persistedWorkout);
+        personalRecordService.updatePersonalRecords(user);
         log.info("User with id {} edited workout {}", user.getId(), persistedWorkout.getId());
     }
 
     @Override
     public void deleteWorkout(final User user, final long workoutId) {
         workoutRepository.deleteById(workoutId);
+        personalRecordService.updatePersonalRecords(user);
         log.info("Workout with id {} removed by user with id {}", workoutId, user.getId());
     }
 }

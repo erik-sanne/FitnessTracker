@@ -48,6 +48,7 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
             <Module title="Workout distribution">
                 <ModuleWorkoutDistribution data={ !lsdis && !lfdis ? [selfWorkoutDistribution, friendWorkoutDistribution] : [] } />
             </Module>
+
         </div>
     );
 }
