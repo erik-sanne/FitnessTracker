@@ -167,7 +167,7 @@ const ModuleWorkoutDistribution = () => {
                             </h2>
                             <p style={{ textAlign: "right", flex: 1}}>
                                 Show full history
-                                <Switch color="primary" checked={showFullHistory} onChange={ (event) => setShowFullHistory(event.target.checked)}/>
+                                <Switch color="primary" checked={showFullHistory} onClick={ (event) => setShowFullHistory(event.target.checked)}/>
                             </p>
                         </div>
                         <Graph data={ chartData }/>
