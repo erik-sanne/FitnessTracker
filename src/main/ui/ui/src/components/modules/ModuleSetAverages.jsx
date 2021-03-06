@@ -165,9 +165,11 @@ const ModuleWorkoutDistribution = () => {
                             <h2 style={{ fontWeight: 'bold', flex: 1, padding: '9px', fontSize: 'calc(10px + 1vmin)'}}>
                                 { camelCase(selectedExercise) }
                             </h2>
-                            <p style={{ textAlign: "right", flex: 1}}>
+                            <p style={{ textAlign: "right", flex: 1}} onClick={ () => {
+                                setShowFullHistory(!showFullHistory);
+                            }}>
                                 Show full history
-                                <Switch color="primary" checked={showFullHistory} onClick={ (event) => setShowFullHistory(event.target.checked)}/>
+                                <Switch color="primary" checked={ showFullHistory }/>
                             </p>
                         </div>
                         <Graph data={ chartData }/>
