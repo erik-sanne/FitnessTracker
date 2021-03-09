@@ -7,6 +7,7 @@ import useFetch from "../services/useFetch";
 import ProfileDisplay from "./ui_components/ProfileDisplay";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDumbbell} from "@fortawesome/free-solid-svg-icons";
+import ModuleBSD from "./modules/ModuleBSD";
 
 const SectionStatisticsWithFriend = ({ userProfile }) => {
     const { friendId } = useParams();
@@ -14,6 +15,8 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
     const { data: friendWorkoutsPerWeek, loading: lfwpw } = useFetch(`/api/workoutsPerWeek/${friendId}`);
     const { data: selfWorkoutDistribution, loading: lsdis  } = useFetch(`/api/distribution`);
     const { data: friendWorkoutDistribution, loading: lfdis } = useFetch(`/api/distribution/${friendId}`);
+    const { data: selfRecords, loading: lsrec  } = useFetch(`/api/records`);
+    const { data: friendRecords, loading: lfrec  } = useFetch(`/api/records/${friendId}`);
 
     const friendProfile = userProfile.friends.filter(friend => {
         const temp = friend.userId == friendId
@@ -48,6 +51,18 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
             <Module title="Workout distribution">
                 <ModuleWorkoutDistribution data={ !lsdis && !lfdis ? [selfWorkoutDistribution, friendWorkoutDistribution] : [] } />
             </Module>
+            {
+                !lsrec && !lfrec &&
+                selfRecords.filter(e => e.exercise === "BENCH_PRESS").length > 0 &&
+                selfRecords.filter(e => e.exercise === "SQUAT").length > 0 &&
+                selfRecords.filter(e => e.exercise === "DEADLIFT").length > 0 &&
+                friendRecords.filter(e => e.exercise === "BENCH_PRESS").length > 0 &&
+                friendRecords.filter(e => e.exercise === "SQUAT").length > 0 &&
+                friendRecords.filter(e => e.exercise === "DEADLIFT").length > 0 ?
+                    <Module title="Powerlift ratios">
+                        <ModuleBSD data={lsrec || lfrec  ? [] : [ selfRecords, friendRecords ]}/>
+                    </Module> : <></>
+            }
 
         </div>
     );

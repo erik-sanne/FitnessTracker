@@ -4,10 +4,10 @@ import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 import DisplayValue from "./DisplayValue";
 
-const createConfig = (bsd, normalratio) => {
+const createConfig = (bsds, normalratio) => {
 
-    const xLabels = Object.keys(bsd).map(k => camelCase(k.replace(/_/g, ' ')));
-    const yValues = Object.values(bsd);
+    const xLabels = Object.keys(bsds[0]).map(k => camelCase(k.replace(/_/g, ' ')));
+    const yValues = bsds.map(bsd => Object.values(bsd));
 
     const datasets = [{
         type: 'bar',
@@ -23,10 +23,20 @@ const createConfig = (bsd, normalratio) => {
         borderColor: 'rgba(107,166,239,0.5)',
         borderWidth: 2,
         fill: false,
-        data: yValues
+        data: yValues[0]
     }]
 
-    const maxVal = Math.max(Math.max.apply(null, yValues) + 1, 6);
+    bsds[1] && datasets.push({
+        type: 'line',
+        label: '',
+        backgroundColor: 'rgba(70,131,58,0.1)',
+        borderColor: 'rgba(70,131,58,0.5)',
+        borderWidth: 2,
+        fill: false,
+        data: yValues[1]
+    })
+
+    const maxVal = Math.max(Math.max.apply(null, yValues.flat()) + 1, 6);
 
     return {
         type: 'bar',
@@ -129,10 +139,12 @@ const ModuleBSD = ({ data=[] }) => {
 
     useEffect(() => {
         if (data.length > 0 && !chartData) {
-            const bsd = scale(getBSD(data));
-            setMse(getMse(bsd, normalratio));
-            setChartData(createConfig(bsd, normalratio));
-        }
+            const bsds = data.map(friend => scale(getBSD(friend)));
+            setChartData(createConfig(bsds, normalratio));
+
+            if (data.length === 1)
+                setMse(getMse(bsds[0], normalratio));
+            }
     }, [data])
 
     return (
@@ -140,9 +152,9 @@ const ModuleBSD = ({ data=[] }) => {
             { !chartData ? <Spinner animation="grow"/> :
                 <>
                     { chartData && <Graph data={ chartData } /> }
-                    <div style={{display: "flex", justifyContent: 'space-around'}}>
+                    <div style={{ display: "flex", justifyContent: 'space-around' }}>
                         {
-                            Object.entries(mse).map(([key, value], idx) =>
+                            mse && Object.entries(mse).map(([key, value], idx) =>
                                 <DisplayValue key={idx} text={key} value={value} style={{ textAlign: 'center' }}/>
                             )
                         }

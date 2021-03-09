@@ -26,7 +26,7 @@ const SectionStatistics = () => {
                 selfRecords.filter(e => e.exercise === "SQUAT").length > 0 &&
                 selfRecords.filter(e => e.exercise === "DEADLIFT").length > 0 ?
                 <Module title="Powerlift ratios">
-                    <ModuleBSD data={loadingRecords ? [] : selfRecords}/>
+                    <ModuleBSD data={loadingRecords ? [] : [ selfRecords ]}/>
                 </Module> : <></>
             }
             {
