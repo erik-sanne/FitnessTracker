@@ -60,6 +60,7 @@ public class APIFunctions implements APIService {
         Iterable<Workout> workouts = workoutService.getWorkouts(user);
 
         Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_WEEK, -1);
         // ISO 8601
         cal.setMinimalDaysInFirstWeek(4);
         int currentWeek = cal.get(Calendar.WEEK_OF_YEAR);
@@ -68,6 +69,7 @@ public class APIFunctions implements APIService {
 
         for (Workout workout : workouts) {
             cal.setTime(workout.getDate());
+            cal.add(Calendar.DAY_OF_WEEK, -1);
 
             int nextEntryWeek = cal.get(Calendar.WEEK_OF_YEAR);
             int nextEntryYear = cal.get(Calendar.YEAR);
