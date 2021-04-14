@@ -8,7 +8,7 @@ import DataSelect from "../ui_components/DataSelect";
 import {getCookie} from "react-use-cookie";
 import Switch from '@material-ui/core/Switch';
 
-const createConfig = (data, fullHistory) => {
+const createConfig = (data, fullHistory, margeAxes) => {
     data = data.reverse();
     const xLabels = data.map( e => e.date.split('T')[0]);
     const weights = data.map( e => e.weight);
@@ -22,11 +22,22 @@ const createConfig = (data, fullHistory) => {
     else
         start = today.setDate(today.getDate() - 30);
 
+    const mergedAxes = data.map(e => Math.pow(e.weight, 3) * e.reps);
+
     return {
         type: 'line',
         data: {
             labels: xLabels,
-            datasets: [{
+            datasets: margeAxes ? [{
+                label: 'Work',
+                yAxisID: 'rep-y-id',
+                fill: false,
+                borderColor: 'rgba(107,166,239,0.35)',
+                backgroundColor: 'rgba(107,166,239,0.35)',
+                borderWidth: 2,
+                lineTension: 0,
+                data: mergedAxes
+            }] : [{
                 label: 'Repetitions',
                 yAxisID: 'rep-y-id',
                 fill: false,
@@ -121,6 +132,7 @@ const ModuleWorkoutDistribution = () => {
     const [ selectedExercise, setSelectedExercise ] = useState(null);
     const [ message, setMessage ] = useState("Select an exercise to view your progression");
     const [ showFullHistory, setShowFullHistory ] = useState(true);
+    const [ splitAxes, setSplitAxes ] = useState(false);
 
     const getExerciseData = async (ex) => {
         const token = getCookie('session_token');
@@ -146,14 +158,14 @@ const ModuleWorkoutDistribution = () => {
         if (!srcData)
             setMessage("Select an exercise to view your progression");
         else if (srcData.length > 1) {
-            setChartData(createConfig(srcData, showFullHistory));
+            setChartData(createConfig(srcData, showFullHistory, !splitAxes));
             setMessage("");
         } else if (srcData.length > 0)
             setMessage("Not enough data available for this exercise");
         else
             setMessage("No data available for this exercise");
 
-    }, [showFullHistory, srcData])
+    }, [showFullHistory, splitAxes, srcData])
 
     return (
         <>
@@ -165,12 +177,20 @@ const ModuleWorkoutDistribution = () => {
                             <h2 style={{ fontWeight: 'bold', flex: 1, padding: '9px', fontSize: 'calc(10px + 1vmin)'}}>
                                 { camelCase(selectedExercise) }
                             </h2>
-                            <p style={{ textAlign: "right", flex: 1}} onClick={ () => {
-                                setShowFullHistory(!showFullHistory);
-                            }}>
-                                Show full history
-                                <Switch color="primary" checked={ showFullHistory }/>
-                            </p>
+                            <div style={{ textAlign: "right", flex: 1}}>
+                                <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
+                                    setShowFullHistory(!showFullHistory);
+                                }}>
+                                    Show full history
+                                    <Switch color="primary" checked={ showFullHistory }/>
+                                </p>
+                                <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
+                                    setSplitAxes(!splitAxes);
+                                }}>
+                                    Split axes
+                                    <Switch color="primary" checked={ splitAxes }/>
+                                </p>
+                            </div>
                         </div>
                         <Graph data={ chartData }/>
                     </>
