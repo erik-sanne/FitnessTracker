@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import ModuleWorkoutDays from "./modules/ModuleWorkoutDays";
 import ModuleWorkoutDistribution from "./modules/ModuleWorkoutDistribution";
 import Module from "./modules/Module";
@@ -6,11 +6,27 @@ import ModuleSetAverages from "./modules/ModuleSetAverages";
 import useFetch from "../services/useFetch";
 import ModuleBSD from "./modules/ModuleBSD";
 import ModulePRs from "./modules/ModulePRs";
+import get from "../services/Get";
 
 const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
-    const { data: selfWorkoutDistribution, loading: loadingDistribution  } = useFetch(`/api/distribution`);
+    const [ workoutDistribution, setWorkoutDistribution ] = useState(null);
     const { data: selfRecords, loading: loadingRecords  } = useFetch(`/api/records`);
+
+    useEffect(()=>{
+        let from = new Date();
+        from.setDate(from.getDate() - 30)
+        let to = new Date();
+        updateDistRange(from, to);
+    }, [])
+
+    const updateDistRange = (fromDate, toDate) => {
+        fromDate = fromDate.toISOString().split('T')[0];
+        toDate = toDate.toISOString().split('T')[0];
+        get(`/api/distribution?from=${fromDate}&to=${toDate}`).then((value) => {
+            setWorkoutDistribution(value)
+        });
+    }
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
@@ -18,7 +34,7 @@ const SectionStatistics = () => {
                 <ModuleWorkoutDays data={ !loadingWorkouts ? [ selfWorkoutsPerWeek ] : [] } />
             </Module>
             <Module title="Workout distribution">
-                <ModuleWorkoutDistribution data={ !loadingDistribution ? [ selfWorkoutDistribution ] : [] } />
+                <ModuleWorkoutDistribution data={ workoutDistribution ? [ workoutDistribution ] : [] } rangeCallback={ updateDistRange } />
             </Module>
             {
                 !loadingRecords &&

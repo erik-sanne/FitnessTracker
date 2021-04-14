@@ -17,6 +17,7 @@ import com.ersa.tracker.services.WorkoutService;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -121,15 +122,30 @@ public class APIFunctions implements APIService {
         return result;
     }
 
+    @Override
     public Map<String, Float> getWorkoutDistribution(final User user) {
         final int limit = 30;
         return getWorkoutDistribution(user, limit);
     }
 
+    @Override
     public Map<String, Float> getWorkoutDistribution(final User user, final int workoutsToConsider) {
+        Iterable<Workout> workouts = workoutService.getWorkouts(user, workoutsToConsider);
+        return getWorkoutDistribution(workouts);
+    }
+
+    @Override
+    public Map<String, Float> getWorkoutDistribution(final User user, final Date start, final Date end) {
+        List<Workout> workouts = workoutService.getWorkouts(user);
+        workouts = workouts.stream().filter(workout ->
+            workout.getDate().compareTo(start) >= 0 && workout.getDate().compareTo(end) <= 0
+        ).collect(Collectors.toList());
+        return getWorkoutDistribution(workouts);
+    }
+
+    public Map<String, Float> getWorkoutDistribution(final Iterable<Workout> workouts) {
         Map<String, Float> resultMap = new HashMap<>();
 
-        Iterable<Workout> workouts = workoutService.getWorkouts(user, workoutsToConsider);
         Iterator<Workout> iterator = workouts.iterator();
 
         Iterable<Target> targets = targetRepository.findAll();

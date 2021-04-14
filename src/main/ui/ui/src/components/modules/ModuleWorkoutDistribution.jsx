@@ -4,6 +4,7 @@ import Spinner from "react-bootstrap/Spinner";
 import DisplayValue from "./DisplayValue";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
+import Slider from "@material-ui/core/Slider";
 
 const CALVES_SCALE = 2.0;
 const CORE_SCALE = 1.5;
@@ -45,7 +46,6 @@ const interpolate = (values, factor) => {
 }
 
 const createConfig = (data=[]) => {
-
     const sorted = manualOrderingPass(data[0]);
     const xLabels = sorted.map( entry => entry.x)
 
@@ -134,13 +134,33 @@ const bestImprovementMulti = (data) => {
     return calculateImpr(Object.values(merged));
 }
 
-const ModuleWorkoutDistribution = ({ data=[] }) => {
+const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
     const [ chartData, setChartData ] = useState(null);
+    const [ maxRange, ] = useState(365)
+    const [ range, setRange ] = useState([maxRange-30, maxRange]);
+    const [ timer, setTimer] = useState(null)
 
     useEffect(() => {
-        if (data.length > 0 && !chartData)
+        if (data.length > 0) {
             setChartData(createConfig(data));
+        }
     }, [data])
+
+    const valuetext = (value) => {
+        let date = new Date();
+        date.setDate(date.getDate() - maxRange + value);
+        let parts = date.toISOString().split('T')[0].split("-");
+        let dateString = `${parts[2]}/${parts[1]}`
+        return `${dateString}`;
+    }
+
+    const submitDates = () => {
+        let from = new Date();
+        let to = new Date();
+        from.setDate(from.getDate() - maxRange + range[0]);
+        to.setDate(to.getDate() - maxRange + range[1]);
+        rangeCallback(from, to);
+    }
 
     return (
         <>
@@ -154,6 +174,19 @@ const ModuleWorkoutDistribution = ({ data=[] }) => {
                             <DisplayValue text={"You could focus more on"} value={ bestImprovement(data[0])} />
                         }
                     </div>
+                    {data.length === 1 && <Slider
+                        value={range}
+                        onChange={(event, val) => {
+                            setRange([ val[0], val[1] ]);
+                            if (timer)
+                                clearTimeout(timer);
+                            setTimer(setTimeout(() => { submitDates(); }, 1000));
+                        }}
+                        valueLabelDisplay="auto"
+                        valueLabelFormat={valuetext}
+                        min={0}
+                        max={maxRange}
+                        /> }
                 </>
             }
         </>

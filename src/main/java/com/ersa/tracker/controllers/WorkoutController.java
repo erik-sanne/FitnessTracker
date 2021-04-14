@@ -12,19 +12,21 @@ import com.ersa.tracker.services.ExerciseService;
 import com.ersa.tracker.services.PRService;
 import com.ersa.tracker.services.WorkoutService;
 import com.ersa.tracker.services.authentication.AccountService;
-import com.ersa.tracker.services.implementations.PersonalRecordService;
 import com.ersa.tracker.services.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -91,9 +93,18 @@ public class WorkoutController {
     }
 
     @GetMapping("api/distribution")
-    public Map<String, Float> getSetsPerBodypart(final Principal principal) {
+    public Map<String, Float> getSetsPerBodypart(@RequestParam(name = "from", defaultValue = "")
+                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                 final Date startdate,
+                                                 @RequestParam(name = "to", defaultValue = "")
+                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                 final Date enddate,
+                                                 final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
+        if (startdate != null && enddate != null)
+            return apiService.getWorkoutDistribution(currentUser, startdate, enddate);
         return apiService.getWorkoutDistribution(currentUser);
+
     }
 
     @GetMapping("api/distribution/{userId}")

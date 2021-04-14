@@ -59,3 +59,7 @@
 
 .module table tbody tr:hover {
 }
+
+.MuiSlider-root {
+  color: rgba(107,166,239,0.5) !important;
+}
