@@ -6,11 +6,31 @@ import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 import Slider from "@material-ui/core/Slider";
 import TextButton from "../ui_components/TextButton";
+import Switch from "@material-ui/core/Switch";
 
 const CALVES_SCALE = 2.0;
 const CORE_SCALE = 1.5;
 
-const manualOrderingPass = (data) => {
+const manualOrderingPass = (data, ppl=false) => {
+    if (ppl) {
+        return [
+            { x: "LEGS", y: (data["GLUTES"] +
+                            data["HAMSTRINGS"] +
+                            data["QUADS"] +
+                            data["CALVES"]) / 4 },
+            { x: "PULL", y: (data["TRAPS"] +
+                            data["RHOMBOIDS"]+
+                            data["LATS"]+
+                            data["REAR_DELTS"] +
+                            data["BICEPS"]) / 5 },
+            { x: "PUSH", y: (data["TRICEPS"] +
+                            data["SIDE_DELTS"] +
+                            data["FRONT_DELTS"] +
+                            data["UPPER_CHEST"] +
+                            data["LOWER_CHEST"]) / 5 },
+        ].map(it => { it.x = camelCase(it.x); return it;})
+    }
+
     return [
         { x: "CORE", y: data["CORE"] * CORE_SCALE},
         //{ x: "OBLIQUES", y: data["OBLIQUES"] },
@@ -46,12 +66,12 @@ const interpolate = (values, factor) => {
     return result;
 }
 
-const createConfig = (data=[]) => {
-    const sorted = manualOrderingPass(data[0]);
+const createConfig = (data=[], usePPL= false) => {
+    const sorted = manualOrderingPass(data[0], usePPL);
     const xLabels = sorted.map( entry => entry.x)
 
     const datasets = data.map((set, idx) => {
-        const sorted = manualOrderingPass(set);
+        const sorted = manualOrderingPass(set, usePPL);
         const yValues = interpolate(sorted.map( entry => Math.log(entry.y + 1)), 0);
         return {
             label: 'Sets per bodypart',
@@ -137,13 +157,14 @@ const bestImprovementMulti = (data) => {
 
 const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
     const [ chartData, setChartData ] = useState(null);
+    const [ usePPL, setUsePPL ] = useState(false)
     const [ maxRange, ] = useState(365)
     const [ range, setRange ] = useState([maxRange-30, maxRange]);
     const [ timer, setTimer] = useState(null)
 
     useEffect(() => {
         if (data.length > 0) {
-            setChartData(createConfig(data));
+            setChartData(createConfig(data, usePPL));
         }
     }, [data])
 
@@ -167,12 +188,18 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
         if (timer)
             clearTimeout(timer);
         setTimer(setTimeout(() => { submitDates(); }, 250));
-    }, [range])
+    }, [range, usePPL])
 
     return (
         <>
             { data.length < 1 ? <Spinner animation="grow"/> :
                 <>
+                    <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
+                        setUsePPL(!usePPL);
+                    }}>
+                        Show splits
+                        <Switch color="primary" checked={ usePPL }/>
+                    </p>
                     <Graph data={ chartData } />
                     <div style={{display: "flex", marginTop: "10px"}}>
                         { data.length > 1 ?
