@@ -2,8 +2,6 @@ import React from 'react'
 import Module from "./modules/Module";
 import useFetch from "../services/useFetch";
 import Spinner from "react-bootstrap/Spinner";
-import {faUserShield} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -15,16 +13,6 @@ const SectionUpdates = () => {
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
             <Module title = "Changelog">
-                <span style={{
-                    position: 'absolute',
-                    right: 'min(4vw, 32px)',
-                    top: 'min(3.5vw, 32px)',
-                    fontSize: 'min(calc(8px + 3.5vmin), 30px)',
-                    color: 'rgb(61 65 72)'
-                }}>
-                    Mod <FontAwesomeIcon icon={ faUserShield }/>
-                </span>
-
                 { loading && <Spinner animation={'grow'}/> }
                 { !loading && data.map(obj =>
                         <div style={containerStyle}>

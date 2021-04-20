@@ -66,15 +66,17 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                 </ul>
             </div>
             {
-                <p style={{
-                    position: 'absolute',
-                    left: '45px',
-                    bottom: '20px',
-                    cursor: "pointer",
-                    color: '#555'
-                }}>
-                    {!loading && `v.${version[0].sha.slice(-10)}`}
-                </p>
+                <NavLink to="/updates" activeStyle={ activeClass } onClick={ onNavigate } >
+                    <p style={{
+                        position: 'absolute',
+                        left: '45px',
+                        bottom: '20px',
+                        cursor: "pointer",
+                        color: '#555'
+                    }}>
+                        {!loading && `v.${version[0].sha.slice(-10)}`}
+                    </p>
+                </NavLink>
             }
             <p onClick={ logoutCallback } style={ {position: 'absolute', right: '45px', bottom: '20px', cursor: "pointer" } } >Logout</p>
         </div>
