@@ -5,6 +5,7 @@ import DisplayValue from "./DisplayValue";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 import Slider from "@material-ui/core/Slider";
+import TextButton from "../ui_components/TextButton";
 
 const CALVES_SCALE = 2.0;
 const CORE_SCALE = 1.5;
@@ -174,19 +175,27 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                             <DisplayValue text={"You could focus more on"} value={ bestImprovement(data[0])} />
                         }
                     </div>
-                    {data.length === 1 && <Slider
-                        value={range}
-                        onChange={(event, val) => {
-                            setRange([ val[0], val[1] ]);
-                            if (timer)
-                                clearTimeout(timer);
-                            setTimer(setTimeout(() => { submitDates(); }, 1000));
-                        }}
-                        valueLabelDisplay="auto"
-                        valueLabelFormat={valuetext}
-                        min={0}
-                        max={maxRange}
-                        /> }
+                    {data.length === 1 && <>
+                        <Slider
+                            value={range}
+                            onChange={(event, val) => {
+                                setRange([ val[0], val[1] ]);
+                                if (timer)
+                                    clearTimeout(timer);
+                                setTimer(setTimeout(() => { submitDates(); }, 1000));
+                            }}
+                            valueLabelDisplay="auto"
+                            valueLabelFormat={valuetext}
+                            min={0}
+                            max={maxRange}
+                            />
+                            <div style={{ float: 'right' }}>
+                                <TextButton mini onClick={ () => setRange([maxRange - 180, maxRange])}> 180 days </TextButton>
+                                <TextButton mini onClick={ () => setRange([maxRange - 90, maxRange])}> 90 days </TextButton>
+                                <TextButton mini onClick={ () => setRange([maxRange - 30, maxRange])}> 30 days </TextButton>
+                            </div>
+                        </>
+                    }
                 </>
             }
         </>
