@@ -172,7 +172,9 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                         { data.length > 1 ?
                             <DisplayValue text={"You could both focus on"} value={ bestImprovementMulti(data) } />
                             :
-                            <DisplayValue text={"You could focus more on"} value={ bestImprovement(data[0])} />
+                            bestImprovement(data[0]) ?
+                                <DisplayValue text={"You could focus more on"} value={bestImprovement(data[0])} /> :
+                                <DisplayValue text={"No data for this period"} value={ null } />
                         }
                     </div>
                     {data.length === 1 && <>
