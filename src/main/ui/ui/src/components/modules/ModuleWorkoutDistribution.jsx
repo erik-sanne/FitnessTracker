@@ -163,6 +163,12 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
         rangeCallback(from, to);
     }
 
+    useEffect(() => {
+        if (timer)
+            clearTimeout(timer);
+        setTimer(setTimeout(() => { submitDates(); }, 250));
+    }, [range])
+
     return (
         <>
             { data.length < 1 ? <Spinner animation="grow"/> :
@@ -180,12 +186,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                     {data.length === 1 && <>
                         <Slider
                             value={range}
-                            onChange={(event, val) => {
-                                setRange([ val[0], val[1] ]);
-                                if (timer)
-                                    clearTimeout(timer);
-                                setTimer(setTimeout(() => { submitDates(); }, 1000));
-                            }}
+                            onChange={(event, val) => setRange([ val[0], val[1] ]) }
                             valueLabelDisplay="auto"
                             valueLabelFormat={valuetext}
                             min={0}
