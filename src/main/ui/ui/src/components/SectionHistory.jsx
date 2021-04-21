@@ -2,8 +2,6 @@ import React, {useState} from "react";
 import Module from "./modules/Module";
 import useFetch from "../services/useFetch";
 import Spinner from "react-bootstrap/cjs/Spinner";
-import Card from "react-bootstrap/cjs/Card";
-import Accordion from "react-bootstrap/cjs/Accordion";
 import { getCookie } from "react-use-cookie";
 import { faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -12,6 +10,9 @@ import ModalLoader from "./ui_components/ModalLoader";
 import {faStar} from "@fortawesome/free-solid-svg-icons";
 import {faEdit} from "@fortawesome/free-regular-svg-icons";
 import {Redirect} from "react-router-dom";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Accordion from "@material-ui/core/Accordion";
 
 const SectionHistory = ({ userProfile }) => {
 
@@ -27,15 +28,24 @@ const SectionHistory = ({ userProfile }) => {
     const [ redirectEdit, setRedirectEdit ] = useState(null);
     const [ removeStatus, setRemoveStatus ] = useState(RemoveStatus.NONE);
     const [ loadingStatus, setLoadingStatus ] = useState(-1);
-    const [ currentEventKey, setCurrentEventKey ] = useState(-1);
+    const [ currentEventKey, setCurrentEventKey ] = useState(false);
+    const [ expanded, setExpanded ] = useState(false);
+    const [ timer, setTimer ] = useState(null);
+
+
 
     const onToggle = (eventKey) => {
-        if (currentEventKey === eventKey)
-            return;
+        timer && clearTimeout(timer);
 
+        if (currentEventKey === eventKey) {
+            setExpanded(expanded === eventKey ? false : eventKey);
+            return;
+        }
+
+        setExpanded(false);
         setSets(null);
-        setCurrentEventKey(eventKey)
         setLoadingStatus(eventKey)
+        setCurrentEventKey(eventKey)
 
         const token = getCookie('session_token')
         fetch(`${ process.env.REACT_APP_API_BASE }/api/setsForWorkout/${ eventKey }`, {
@@ -48,7 +58,10 @@ const SectionHistory = ({ userProfile }) => {
         }).then(response => {
             if (response.ok) {
                 response.json().then(sets => setSets(sets));
-                setLoadingStatus(-1);
+                setTimer(setTimeout(() => {
+                    setLoadingStatus(-1);
+                    setExpanded(eventKey)
+                }, 500));
             }
         }).catch(error => {
             setLoadingStatus(-1);
@@ -102,78 +115,76 @@ const SectionHistory = ({ userProfile }) => {
             <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
                 <Module title = "Previous workouts">
                     { loading ? <Spinner animation="grow" /> :
-                        <Accordion>
+                        <>
                             { summaries.map(( summary ) =>
-                                <Card key={ summary.workout_id } style={{ background: '#282c3487' }}>
-                                    <Accordion.Toggle as={ Card.Header } style={{ display:'flex' }} eventKey={ summary.workout_id } onClick={ () => { onToggle( summary.workout_id )} }>
+                                <Accordion square key={summary.workout_id} expanded={ expanded === summary.workout_id } onChange={ () => { onToggle(summary.workout_id) } }  style={{ background: '#282c3400', color: 'inherit', boxShadow: '0px 0px 10px #00000060', border: '1px solid #cccccc10' }}>
+                                    <AccordionSummary aria-controls={`${summary.workout_id}-content`} id={`${summary.workout_id}-header`} style={{ padding: '.75rem 1.25rem' }}>
                                         <span style={{ margin: 'auto' }}>{ summary.date.split('T')[0] }</span>
-                                        <span style={{ margin: 'auto', flex: '1'}}>{ loadingStatus === summary.workout_id && <Spinner animation="grow" style={{ width: '16px', height: '16px', marginLeft: '10px'}}/> }</span>
+                                        <span style={{ margin: 'auto', flex: '1', paddingLeft: '10px'}}>{ loadingStatus === summary.workout_id && <Spinner animation="border" style={{ width: '16px', height: '16px', top: 'calc(50% - 8px)', position: 'absolute'}}/> }</span>
                                         <span style={{ margin: 'auto' }}>{ summary.description }</span>
-                                    </Accordion.Toggle>
-                                    <Accordion.Collapse eventKey={ summary.workout_id }>
-                                        <Card.Body>
-                                                    { !sets ? <p></p> : sets.length === 0 ? <p> No data available </p> :
-                                                            <table style={{ width: '100%', fontSize: 'calc(10px + 0.5vmin)'}}>
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th colSpan={1}>Set</th>
-                                                                        <th></th>
-                                                                        <th colSpan={2} style={{ textAlign: 'left' }}>Reps</th>
-                                                                        <th colSpan={2} style={{ textAlign: 'left' }}>Weight</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                {
-                                                                    sets.map((set, index, arr) =>
-                                                                        <>
-                                                                            {isNewExercise(arr, set, index)?
-                                                                                <tr>
-                                                                                    <td colSpan={6} style={{borderBottom: '1px solid #333', fontWeight: 'bold'}}>
-                                                                                        {camelCase(set.exercise.replace(/_/g, ' '))}
-                                                                                    </td>
-                                                                                </tr>
-                                                                            : <></>}
+                                    </AccordionSummary>
+                                    <AccordionDetails style={{ display: 'block'}}>
+                                        { !sets ? <p></p> : sets.length === 0 ? <p> No data available </p> :
+                                            <table style={{ width: '100%', fontSize: 'calc(10px + 0.5vmin)'}}>
+                                                <thead>
+                                                <tr>
+                                                    <th colSpan={1}>Set</th>
+                                                    <th></th>
+                                                    <th colSpan={2} style={{ textAlign: 'left' }}>Reps</th>
+                                                    <th colSpan={2} style={{ textAlign: 'left' }}>Weight</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {
+                                                    sets.map((set, index, arr) =>
+                                                        <>
+                                                            {isNewExercise(arr, set, index)?
+                                                                <tr>
+                                                                    <td colSpan={6} style={{borderBottom: '1px solid #333', fontWeight: 'bold'}}>
+                                                                        {camelCase(set.exercise.replace(/_/g, ' '))}
+                                                                    </td>
+                                                                </tr>
+                                                                : <></>}
 
-                                                                            <tr key={index}>
-                                                                                <td style={{width: '1px'}}>
-                                                                                    #{
-                                                                                        isNewExercise(arr, set, index) ? setCounter = 1 : ++setCounter
-                                                                                    }
-                                                                                </td>
-                                                                                <td style={{textAlign: 'left'}}>
-                                                                                    {
-                                                                                        isRecord(userProfile, summary, set) ? <FontAwesomeIcon icon={ faStar } style={{ color: '#ffc877', width: 'inherit'}}/> : ""
-                                                                                    }
-                                                                                </td>
-                                                                                <td style={{width: '1px'}}>{set.reps}</td>
-                                                                                <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
-                                                                                    ' (' + (((set.reps / arr[index - 1].reps) - 1) < 0 ? '' : '+') + (((set.reps / arr[index - 1].reps) - 1)*100).toFixed(0) + '%)'
-                                                                                }</td>
-                                                                                <td style={{width: '1px'}}>{set.weight}</td>
-                                                                                <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
-                                                                                    ' (' + (((set.weight / arr[index - 1].weight) - 1) < 0 ? '' : '+') + (((set.weight / arr[index - 1].weight) - 1)*100).toFixed(0) + '%)'
-                                                                                }</td>
-                                                                            </tr>
-                                                                        </>)
+                                                            <tr key={index}>
+                                                                <td style={{width: '1px'}}>
+                                                                    #{
+                                                                    isNewExercise(arr, set, index) ? setCounter = 1 : ++setCounter
                                                                 }
-                                                                </tbody>
-                                                            </table>
-                                                    }
-                                                    { sets &&
-                                                    <div style={{display: 'flex'}}>
-                                                        <p style={{ margin: '5px', flex: 1, padding: '12px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '10px', textAlign: 'center', cursor: 'pointer'}} onClick={ () => setToRemove(summary) } >
-                                                            <FontAwesomeIcon icon={faTrash} style={trashCanStyle}/>
-                                                        </p>
-                                                        <p style={{ margin: '5px', flex: 1, padding: '12px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '10px', textAlign: 'center', cursor: 'pointer'}} onClick={ () => setRedirectEdit(summary.workout_id) } >
-                                                            <FontAwesomeIcon icon={faEdit} style={editStyle}/>
-                                                        </p>
-                                                    </div>
-                                                    }
-                                        </Card.Body>
-                                    </Accordion.Collapse>
-                                </Card>
-                            ) }
-                        </Accordion>
+                                                                </td>
+                                                                <td style={{textAlign: 'left'}}>
+                                                                    {
+                                                                        isRecord(userProfile, summary, set) ? <FontAwesomeIcon icon={ faStar } style={{ color: '#ffc877', width: 'inherit'}}/> : ""
+                                                                    }
+                                                                </td>
+                                                                <td style={{width: '1px'}}>{set.reps}</td>
+                                                                <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
+                                                                    ' (' + (((set.reps / arr[index - 1].reps) - 1) < 0 ? '' : '+') + (((set.reps / arr[index - 1].reps) - 1)*100).toFixed(0) + '%)'
+                                                                }</td>
+                                                                <td style={{width: '1px'}}>{set.weight}</td>
+                                                                <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
+                                                                    ' (' + (((set.weight / arr[index - 1].weight) - 1) < 0 ? '' : '+') + (((set.weight / arr[index - 1].weight) - 1)*100).toFixed(0) + '%)'
+                                                                }</td>
+                                                            </tr>
+                                                        </>)
+                                                }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        { sets &&
+                                        <div style={{display: 'flex'}}>
+                                            <p style={{ margin: '5px', flex: 1, padding: '12px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '10px', textAlign: 'center', cursor: 'pointer'}} onClick={ () => setToRemove(summary) } >
+                                                <FontAwesomeIcon icon={faTrash} style={trashCanStyle}/>
+                                            </p>
+                                            <p style={{ margin: '5px', flex: 1, padding: '12px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '10px', textAlign: 'center', cursor: 'pointer'}} onClick={ () => setRedirectEdit(summary.workout_id) } >
+                                                <FontAwesomeIcon icon={faEdit} style={editStyle}/>
+                                            </p>
+                                        </div>
+                                        }
+                                    </AccordionDetails>
+                                </Accordion>)
+                       }
+                       </>
                     }
                 </Module>
             </div>
