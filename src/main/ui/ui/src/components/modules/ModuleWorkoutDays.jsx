@@ -41,11 +41,30 @@ const createConfig = (rawdata=[]) => {
             dataset.data = new Array(Math.abs(diffLen)).fill(0,0, Math.abs(diffLen)).concat(dataset.data)
     })
 
+    const trends = datasets.map((dataset, idx) => {
+        const periodLen = 5;
+        return {
+            type: 'line',
+            label: 'Trend',
+            fill: false,
+            backgroundColor: idx === 0 ? 'rgba(107,166,239,0.1)' : 'rgba(70,131,58,0.1)',
+            borderColor: idx === 0 ? 'rgba(107,166,239,0.5)' : 'rgba(70,131,58,0.5)',
+            borderWidth: 1,
+            borderDash: [15, 3],
+            data: dataset.data.map((workouts, index, arr) => {
+                let firstindex = Math.max(0, index-periodLen);
+                return arr.slice(firstindex, index).reduce((v1, v2) => v1 + v2, 0) / periodLen;
+            })
+        }
+    });
+
+    const allDatasets = datasets.concat(trends);
+
     return {
         type: 'bar',
         data: {
             labels: xLabels,
-            datasets: datasets
+            datasets: allDatasets
         },
         options: {
             legend: {
@@ -71,6 +90,11 @@ const createConfig = (rawdata=[]) => {
                         }
                     }
                 }]
+            },
+            elements: {
+                point:{
+                    radius: 0
+                }
             },
             plugins: {
                 zoom: {
