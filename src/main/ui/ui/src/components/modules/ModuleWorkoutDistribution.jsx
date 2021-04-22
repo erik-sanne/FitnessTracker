@@ -194,12 +194,12 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
         <>
             { data.length < 1 ? <Spinner animation="grow"/> :
                 <>
-                    <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
+                    { data.length < 2 && <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
                         setUsePPL(!usePPL);
                     }}>
                         Show splits
                         <Switch color="primary" checked={ usePPL }/>
-                    </p>
+                    </p> }
                     <Graph data={ chartData } />
                     <div style={{display: "flex", marginTop: "10px"}}>
                         { data.length > 1 ?
