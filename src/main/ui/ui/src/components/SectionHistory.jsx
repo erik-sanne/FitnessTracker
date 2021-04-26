@@ -106,6 +106,13 @@ const SectionHistory = ({ userProfile }) => {
         return !arr[index - 1] || set.exercise !== arr[index - 1].exercise
     }
 
+    const compPercentageText = (newval, lastval) => {
+        if (lastval === 0)
+            return '';
+        const div = (newval / lastval) - 1;
+        return ' (' + (div < 0 ? '' : div === 0 ? '±' :  '+') + (div*100).toFixed(0) + '%)';
+    }
+
     if (redirectEdit)
         return <Redirect to={`/edit/${redirectEdit}`} />
 
@@ -159,11 +166,11 @@ const SectionHistory = ({ userProfile }) => {
                                                                 </td>
                                                                 <td style={{width: '1px'}}>{set.reps}</td>
                                                                 <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
-                                                                    ' (' + (((set.reps / arr[index - 1].reps) - 1) < 0 ? '' : '+') + (((set.reps / arr[index - 1].reps) - 1)*100).toFixed(0) + '%)'
+                                                                    compPercentageText(set.reps, arr[index - 1].reps)
                                                                 }</td>
-                                                                <td style={{width: '1px'}}>{set.weight}</td>
+                                                                <td style={{width: '1px'}}>{set.weight === 0 ? 'BW' : set.weight}</td>
                                                                 <td style={{paddingLeft: 0, textAlign: "left", color: 'rgba(255, 255, 255, 0.5)'}}>{!arr[index - 1] || set.exercise !== arr[index - 1].exercise ? '' :
-                                                                    ' (' + (((set.weight / arr[index - 1].weight) - 1) < 0 ? '' : '+') + (((set.weight / arr[index - 1].weight) - 1)*100).toFixed(0) + '%)'
+                                                                    compPercentageText(set.weight, arr[index - 1].weight)
                                                                 }</td>
                                                             </tr>
                                                         </>)
