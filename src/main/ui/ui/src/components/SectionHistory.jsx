@@ -23,6 +23,7 @@ const SectionHistory = ({ userProfile }) => {
     }
 
     const { data: summaries, loading } = useFetch('/api/workouts');
+    const { data: personalRecords, loadingPRs } = useFetch(`/api/records`);
     const [ sets, setSets ] = useState(null);
     const [ toRemove, setToRemove ] = useState(null);
     const [ redirectEdit, setRedirectEdit ] = useState(null);
@@ -92,9 +93,9 @@ const SectionHistory = ({ userProfile }) => {
 
     const added = [];
     const isRecord = (profile, summary, set) => {
-        if (!profile.personalRecords || profile.personalRecords.length === 0)
+        if (loadingPRs)
             return false;
-        const temp = profile.personalRecords.filter(rec => rec.exercise === set.exercise)[0];
+        const temp = personalRecords.filter(rec => rec.exercise === set.exercise)[0];
         const res = temp &&
             temp.date === summary.date &&
             temp.weight === set.weight &&
