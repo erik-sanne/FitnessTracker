@@ -155,7 +155,7 @@ const ModuleBSD = ({ data=[] }) => {
                     <div style={{ display: "flex", justifyContent: 'space-around' }}>
                         {
                             mse && Object.entries(mse).map(([key, value], idx) =>
-                                <DisplayValue key={idx} text={key} value={value} style={{ textAlign: 'center' }}/>
+                                <DisplayValue key={idx} text={key} value={value} style={{ textAlign: 'center', width: '215px' }}/>
                             )
                         }
                     </div>
