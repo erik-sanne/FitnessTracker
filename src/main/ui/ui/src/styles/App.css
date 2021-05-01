@@ -113,6 +113,38 @@ body {
 
 .splash {
   font-size: calc(10px + 2vmin);
+  height: 100vh;
+  margin: 0 !important;
+  display: flex !important;
+  justify-content: center;
+  flex-direction: column;
+
+  background-color: rgba(0, 0, 0, 0.25);
+  background-image:
+          linear-gradient(30deg, rgba(40, 44, 52, 0.53) 12%, transparent 12.5%, transparent 87%, rgba(40, 44, 52, 0.53) 87.5%, rgba(40, 44, 52, 0.53)),
+          linear-gradient(150deg, rgba(40, 44, 52, 0.53) 12%, transparent 12.5%, transparent 87%, rgba(40, 44, 52, 0.53) 87.5%, rgba(40, 44, 52, 0.53)),
+          linear-gradient(30deg, rgba(40, 44, 52, 0.53) 12%, transparent 12.5%, transparent 87%, rgba(40, 44, 52, 0.53) 87.5%, rgba(40, 44, 52, 0.53)),
+          linear-gradient(150deg, rgba(40, 44, 52, 0.53) 12%, transparent 12.5%, transparent 87%, rgba(40, 44, 52, 0.53) 87.5%, rgba(40, 44, 52, 0.53)),
+          linear-gradient(60deg, rgba(40, 44, 52, 0.53) 25%, transparent 25.5%, transparent 75%, rgba(40, 44, 52, 0.53) 75%, rgba(40, 44, 52, 0.53)),
+          linear-gradient(60deg, rgba(40, 44, 52, 0.53) 25%, transparent 25.5%, transparent 75%, rgba(40, 44, 52, 0.53) 75%, rgba(40, 44, 52, 0.53));
+  background-size: 40px 70px;
+  background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+}
+
+.splash .content-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.splash .text-wrapper {
+  width: 250px;
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border: 2px solid #fff;
+  border-radius: 130px;
+  box-shadow: 0px 0px 10px #cccccc70;
 }
 
 .page-wrapper {
