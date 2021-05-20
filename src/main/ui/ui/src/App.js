@@ -19,6 +19,7 @@ const authorizationStatus = {
 function App() {
 
     const [ authorized, setAuthorised ] = useState(authorizationStatus.PENDING);
+    const [ showSplash, setShowSplash ] = useState(true);
 
     const credentialsSuccessfullySubmitted = () => {
         setAuthorised(authorizationStatus.PENDING);
@@ -42,10 +43,13 @@ function App() {
                 'Authorization': `Basic ${token}`
             }
         }).then(response => {
-            if (response.ok)
+
+            if (response.ok) {
                 setAuthorised(authorizationStatus.AUTHORIZED);
-            else
+                setShowSplash(false);
+        }else
                 throw new Error('Unauthorized');
+
         }).catch(_ => {
             setAuthorised(authorizationStatus.UNAUTHORIZED);
         });
@@ -79,6 +83,7 @@ function App() {
         <>
             <Background />
             <AppContent logoutCallback={ logoutCallback } />
+            <Splash show={ showSplash } />
         </>
     );
 }

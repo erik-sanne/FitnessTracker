@@ -1,23 +1,22 @@
 import '../styles/App.css';
-import React from 'react';
 
-const Splash = () => {
+const Splash = ({ show = true }) => {
     return (
-        <section className={ 'page-wrapper splash' }>
+        <section className={ `page-wrapper splash ${ !show && 'fade-out-image' }` }>
             <div className={'content-wrapper'} style={{textAlign: 'center'}}>
-                <div className={'text-wrapper'}>
+                <div className={`text-wrapper ${ !show && 'zoom-in' }`}>
                     <h2 className={'glitch'} data-text={"GAINZ TRACKER"}>GAINZ TRACKER</h2>
                 </div>
             </div>
-            <p style={footerText}>© Erik Sänne | 2020 </p>
+            {show && <p style={footerText}>© Erik Sänne | 2020 </p>}
         </section>
     );
 }
 
 const footerText = {
-    position: 'absolute',
+    position: 'fixed',
     bottom: '0px',
-    margin: '5px'
+    right: '15px'
 }
 
 export default Splash;
