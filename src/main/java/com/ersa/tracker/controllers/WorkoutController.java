@@ -1,5 +1,6 @@
 package com.ersa.tracker.controllers;
 
+import com.ersa.tracker.dto.PredictedORM;
 import com.ersa.tracker.dto.SetAverage;
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
@@ -90,6 +91,12 @@ public class WorkoutController {
         User currentUser = accountService.getUserByPrincipal(principal);
         User friend = profileService.getFriend(currentUser, userId);
         return apiService.getWorkoutsPerWeek(friend);
+    }
+
+    @GetMapping("api/predictORM/{exercise}")
+    public PredictedORM getWorkoutsPerWeek(@PathVariable String exercise, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return apiService.getPredictedORM(currentUser, exercise);
     }
 
     @GetMapping("api/distribution")

@@ -7,6 +7,7 @@ import useFetch from "../services/useFetch";
 import ModuleBSD from "./modules/ModuleBSD";
 import ModulePRs from "./modules/ModulePRs";
 import get from "../services/Get";
+import ModuleORM from "./modules/ModuleORM";
 
 const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
@@ -53,6 +54,10 @@ const SectionStatistics = () => {
             }
             <Module title="Progression">
                 <ModuleSetAverages />
+            </Module>
+
+            <Module title="One Repetition Max">
+                <ModuleORM />
             </Module>
         </div>
     );

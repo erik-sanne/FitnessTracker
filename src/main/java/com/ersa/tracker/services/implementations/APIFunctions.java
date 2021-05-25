@@ -1,5 +1,6 @@
 package com.ersa.tracker.services.implementations;
 
+import com.ersa.tracker.dto.PredictedORM;
 import com.ersa.tracker.dto.SetAverage;
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
@@ -15,14 +16,7 @@ import com.ersa.tracker.services.APIService;
 import com.ersa.tracker.services.ExerciseService;
 import com.ersa.tracker.services.WorkoutService;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +31,8 @@ public class APIFunctions implements APIService {
     private final ExerciseService exerciseService;
     private final TargetRepository targetRepository;
     private final WTypeRepository wTypeRepository;
+
+    private final int DEFAULT_WTC = 30;
 
     @Autowired
     public APIFunctions(final WorkoutService workoutService,
@@ -123,9 +119,28 @@ public class APIFunctions implements APIService {
     }
 
     @Override
+    public PredictedORM getPredictedORM(User user, String exercise) {
+        List<Workout> workouts = workoutService.getWorkouts(user, DEFAULT_WTC);
+        List<WorkoutSet> sets = workouts.stream().map(Workout::getSets).flatMap(Collection::stream).filter(set -> set.getExercise().equals(exercise)).collect(Collectors.toList());
+
+        return new PredictedORM(
+                exercise,
+                sets.stream().map(this::epley).reduce(0f, Math::max));
+    }
+
+    private float epley(WorkoutSet set) {
+        int reps = set.getReps();
+        float weight = set.getWeight();
+
+        if (reps == 1)
+            return weight;
+
+        return weight * (1 + reps / 30f);
+    }
+
+    @Override
     public Map<String, Float> getWorkoutDistribution(final User user) {
-        final int limit = 30;
-        return getWorkoutDistribution(user, limit);
+        return getWorkoutDistribution(user, DEFAULT_WTC);
     }
 
     @Override

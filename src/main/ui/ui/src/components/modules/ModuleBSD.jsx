@@ -3,6 +3,8 @@ import Spinner from "react-bootstrap/Spinner";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 import DisplayValue from "./DisplayValue";
+import Switch from "@material-ui/core/Switch";
+import {getCookie} from "react-use-cookie";
 
 const createConfig = (bsds, normalratio) => {
 
@@ -136,26 +138,60 @@ const ModuleBSD = ({ data=[] }) => {
     const normalratio = [3, 4, 5];
     const [ chartData, setChartData ] = useState(null);
     const [ mse, setMse ] = useState(null);
+    const [ usePredictions, setUsePredicions ] = useState(false);
+
+    const getExerciseData = async () => {
+        const token = getCookie('session_token');
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Basic ${token}`
+            }
+        };
+
+        const bench = await fetch( process.env.REACT_APP_API_BASE + `/api/predictORM/BENCH_PRESS`, options);
+        const squat = await fetch( process.env.REACT_APP_API_BASE + `/api/predictORM/SQUAT`, options);
+        const deadlift = await fetch( process.env.REACT_APP_API_BASE + `/api/predictORM/DEADLIFT`, options);
+
+        return [
+            await bench.json(),
+            await squat.json(),
+            await deadlift.json()
+        ]
+    }
 
     useEffect(() => {
-        if (data.length > 0 && !chartData) {
+        if (usePredictions) {
+            setChartData(null);
+            getExerciseData().then(res => {
+                const bsds = [ scale(getBSD(res)) ];
+                setChartData(createConfig(bsds, normalratio));
+                setMse(getMse(bsds[0], normalratio));
+            });
+            return;
+        }
+
+        if (data.length > 0) {
             const bsds = data.map(friend => scale(getBSD(friend)));
             setChartData(createConfig(bsds, normalratio));
 
             if (data.length === 1)
                 setMse(getMse(bsds[0], normalratio));
             }
-    }, [data])
+    }, [data, usePredictions])
 
     return (
         <>
             { !chartData ? <Spinner animation="grow"/> :
                 <>
+                    { data.length < 2 && <p onClick={ () => { setUsePredicions(!usePredictions) }}> Actual <Switch color="primary" checked={ usePredictions } /> Predictions </p>}
                     { chartData && <Graph data={ chartData } /> }
                     <div style={{ display: "flex", justifyContent: 'space-around' }}>
                         {
                             mse && Object.entries(mse).map(([key, value], idx) =>
-                                <DisplayValue key={idx} text={key} value={value} style={{ textAlign: 'center', width: '215px' }}/>
+                                <DisplayValue key={idx} text={key} value={value + `${ usePredictions ? '*' : '' }`} style={{ textAlign: 'center', width: '215px' }}/>
                             )
                         }
                     </div>
