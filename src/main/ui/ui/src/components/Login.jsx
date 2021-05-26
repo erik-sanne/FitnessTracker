@@ -1,6 +1,6 @@
 import React from 'react';
 import { setCookie } from "react-use-cookie";
-import {Spinner} from "react-bootstrap";
+import Loader from "./ui_components/Loader";
 
 class Login extends React.Component {
 
@@ -66,7 +66,7 @@ class Login extends React.Component {
                 <form onSubmit={ this.onSubmit }>
                     <h2>Sign in</h2>
                     { this.state.reason && !this.state.msg && <p style={styleStatus}>Your credentials has expired and you need to login again</p>}
-                    { this.state.loading && <Spinner animation="grow"/>}
+                    { this.state.loading && <Loader/>}
                     { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
                     <label htmlFor="username">Email</label>
                     <input name="username" type="email" autoFocus={ true } value={ this.state.username } onChange={ this.onChange }/>

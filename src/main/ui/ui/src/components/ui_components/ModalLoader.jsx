@@ -1,5 +1,5 @@
 import React from "react";
-import Spinner from "react-bootstrap/Spinner";
+import Spinner from "../ui_components/Loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
 import {faTimesCircle} from "@fortawesome/free-regular-svg-icons";
@@ -21,7 +21,7 @@ const ModalLoader = ({ visible=false, text="", error="", onClose }) => {
 
             { !error &&
                 <>
-                    <Spinner animation="grow"/>
+                    <Spinner />
                     <p>{ text }</p>
                 </>
             }

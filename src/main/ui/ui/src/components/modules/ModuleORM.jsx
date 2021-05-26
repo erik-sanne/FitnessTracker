@@ -1,6 +1,6 @@
 import '../../styles/Module.css';
 import 'chartjs-plugin-zoom'
-import Spinner from "react-bootstrap/Spinner";
+import Spinner from "../ui_components/Loader";
 import useFetch from "../../services/useFetch";
 import React, {useEffect, useState} from "react";
 import DataSelect from "../ui_components/DataSelect";
@@ -34,9 +34,9 @@ const ModuleORM = () => {
 
     return (
         <>
-            { loading ? <Spinner animation="grow"/> :
+            { loading ? <Spinner /> :
                 <>
-                    <div style={{height: 'min(65vw, 500px)'}}>
+                    <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
                         {
                             !result ?
                             <DisplayValue text={"Select an exercise"} value={""}
@@ -44,7 +44,7 @@ const ModuleORM = () => {
                             result.weight === 0 ?
                                 <DisplayValue text={"Insufficient data"} value={""}
                                               style={{textAlign: "center", padding: '32% 0%'}}/> :
-                                <DisplayValue text={`Your predicted One Rep Max for ${ selectedExercise && camelCase(selectedExercise) } is`}
+                                <DisplayValue text={`Your max lift for ${ selectedExercise && camelCase(selectedExercise) } is`}
                                               value={`${result.weight.toFixed(0)}kg`}
                                               style={{textAlign: "center", padding: '32% 0%'}}/>
 

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import Module from "./modules/Module";
-import Spinner from "react-bootstrap/Spinner";
+import Loader from "./ui_components/Loader";
 import {faUserShield} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Graph from "./modules/Graph";
@@ -41,7 +41,7 @@ const SectionMonitor = () => {
                     Mod <FontAwesomeIcon icon={ faUserShield }/>
                 </span>
 
-                { health === 'LOADING' ? <h4>Health Status: <Spinner animation={"grow"}/></h4> :
+                { health === 'LOADING' ? <h4>Health Status: <Loader animation={"grow"}/></h4> :
                     <>
                         <h4>Health Status: { health === 'UP' ? <FontAwesomeIcon icon={faCheckCircle} style={{color: "green" }}/> : <FontAwesomeIcon icon={faExclamationTriangle} style={{color: "orange" }}/> }</h4>
                         <span>Time since last restart: { time && new Date((time * 1000)).toISOString().substr(11, 8) }</span>
@@ -59,7 +59,7 @@ const SectionMonitor = () => {
                     Mod <FontAwesomeIcon icon={ faUserShield }/>
                 </span>
 
-                { health === 'LOADING' ? <h4><Spinner animation={"grow"}/></h4> :
+                { health === 'LOADING' ? <h4><Loader animation={"grow"}/></h4> :
                     <>
                         <Graph data={ createConfig(cpu, memory) }/>
                     </>

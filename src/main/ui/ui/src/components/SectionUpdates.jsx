@@ -1,7 +1,7 @@
 import React from 'react'
 import Module from "./modules/Module";
 import useFetch from "../services/useFetch";
-import Spinner from "react-bootstrap/Spinner";
+import Loader from "./ui_components/Loader";
 
 const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -13,7 +13,7 @@ const SectionUpdates = () => {
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
             <Module title = "Changelog">
-                { loading && <Spinner animation={'grow'}/> }
+                { loading && <Loader animation={'grow'}/> }
                 { !loading && data.map(obj =>
                         <div style={containerStyle}>
                             <p style={dateStyle}>{ obj.commit.author.date.split('T')[0] }</p>

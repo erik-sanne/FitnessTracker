@@ -1,6 +1,6 @@
 import '../../styles/Module.css';
 import 'chartjs-plugin-zoom' //It says that its not used, but it is
-import Spinner from "react-bootstrap/Spinner";
+import Spinner from "../ui_components/Loader";
 import DisplayValue from "./DisplayValue";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
@@ -192,7 +192,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
 
     return (
         <>
-            { data.length < 1 ? <Spinner animation="grow"/> :
+            { data.length < 1 ? <Spinner /> :
                 <>
                     { data.length < 2 && <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
                         setUsePPL(!usePPL);
@@ -200,7 +200,9 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                         Show splits
                         <Switch color="primary" checked={ usePPL }/>
                     </p> }
-                    <Graph data={ chartData } />
+                    <div className={ 'centerC' }>
+                        <Graph data={ chartData } />
+                    </div>
                     <div style={{display: "flex", marginTop: "10px"}}>
                         { data.length > 1 ?
                             <DisplayValue text={"You could both focus on"} value={ bestImprovementMulti(data) } />

@@ -1,6 +1,6 @@
 import '../../styles/Module.css';
 import 'chartjs-plugin-zoom'
-import Spinner from "react-bootstrap/Spinner";
+import Spinner from "../ui_components/Loader";
 import useFetch from "../../services/useFetch";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
@@ -170,9 +170,10 @@ const ModuleProgression = () => {
 
     return (
         <>
-            { loading ? <Spinner animation="grow"/> :
+            { loading ? <Spinner /> :
                 <>
-                    <div style={{height: 'min(65vw, 500px)'}}>
+
+                    <div className={'centerC'}>
                         { chartData && message === "" &&
                         <>
                             <div style={{ display: 'flex '}}>
@@ -194,7 +195,9 @@ const ModuleProgression = () => {
                                     </p>
                                 </div>
                             </div>
-                            <Graph data={ chartData }/>
+                            <div className={'centerC'}>
+                                <Graph data={ chartData }/>
+                            </div>
                         </>
                         }
                         { message !== "" && <DisplayValue text={ message } value={""}

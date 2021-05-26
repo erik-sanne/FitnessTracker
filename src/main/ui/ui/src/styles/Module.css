@@ -6,9 +6,13 @@
   position: relative;
   width: 100%;
   max-width: min(100vw, 1600px);
-  border-radius: 5px;
 }
 
+@media screen and (min-width: 600px) {
+  .module {
+    border-radius: 5px;
+  }
+}
 .module h3 {
   font-size: min(calc(8px + 3.5vmin), 30px);
   margin: max(-4vw, -32px) max(-4vw, -32px) min(4vw, 32px);
@@ -63,4 +67,11 @@
 
 .MuiSlider-root {
   color: rgba(107,166,239,0.5) !important;
+}
+
+.centerC {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }

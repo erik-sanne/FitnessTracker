@@ -141,7 +141,7 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
             </Module>
 
             <Modal visible={ modVisible } title={ 'Add friend' } onClose={ () => setModVisible(false) }>
-                { loadingReq && <Spinner animation={ 'grow' } /> }
+                { loadingReq && <Spinner /> }
                 { error && <p style={styleError}>{error}</p> }
                 { msg && <p style={styleSuccess}>{msg}</p> }
                 <label htmlFor={ 'email' }>Email address:</label>

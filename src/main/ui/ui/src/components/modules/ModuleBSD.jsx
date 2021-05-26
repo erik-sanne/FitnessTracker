@@ -1,5 +1,5 @@
 import '../../styles/Module.css';
-import Spinner from "react-bootstrap/Spinner";
+import Spinner from "../ui_components/Loader";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 import DisplayValue from "./DisplayValue";
@@ -180,22 +180,22 @@ const ModuleBSD = ({ data=[] }) => {
             if (data.length === 1)
                 setMse(getMse(bsds[0], normalratio));
             }
-    }, [data, usePredictions])
+    }, [usePredictions])
 
     return (
         <>
-            { data.length < 2 && <p onClick={ () => { setUsePredicions(!usePredictions) }}> Actual <Switch color="primary" checked={ usePredictions } /> Predictions </p>}
+            { data.length < 2 && <p onClick={ () => { setUsePredicions(!usePredictions) }} style={{ textAlign: 'right' }}> Actual <Switch color="primary" checked={ usePredictions } /> Predictions </p>}
 
-            <div style={{height: 'min(65vw, 400px)'}}>
-                { chartData ? <Graph data={ chartData } style={{ marginTop: '0'}} /> : <Spinner animation="grow"/> }
+            <div className={'centerC'}>
+                { chartData ? <Graph data={ chartData } style={{ marginTop: '0'}} /> : <Spinner /> }
             </div>
-                <div style={{ display: "flex", justifyContent: 'space-around' }}>
-                    {
-                        mse && Object.entries(mse).map(([key, value], idx) =>
-                            <DisplayValue key={idx} text={key} value={value + `${ usePredictions ? '*' : '' }`} style={{ textAlign: 'center', width: '215px' }}/>
-                        )
-                    }
-                </div>
+            <div style={{ display: "flex", justifyContent: 'space-around' }}>
+                {
+                    mse && Object.entries(mse).map(([key, value], idx) =>
+                        <DisplayValue key={idx} text={key} value={value + `${ usePredictions ? '*' : '' }`} style={{ textAlign: 'center', width: '215px' }}/>
+                    )
+                }
+            </div>
         </>
     );
 }

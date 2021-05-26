@@ -122,7 +122,7 @@ const SectionHistory = ({ userProfile }) => {
         <>
             <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
                 <Module title = "Previous workouts">
-                    { loading ? <Spinner animation="grow" /> :
+                    { loading ? <Spinner  /> :
                         <>
                             { summaries.map(( summary ) =>
                                 <Accordion square key={summary.workout_id} expanded={ expanded === summary.workout_id } onChange={ () => { onToggle(summary.workout_id) } }  style={{ background: '#282c3400', color: 'inherit', boxShadow: '0px 0px 10px #00000060', border: '1px solid #cccccc10' }}>

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import Spinner from "react-bootstrap/Spinner";
+import Loader from "./ui_components/Loader";
 
 const Signup = () => {
 
@@ -71,7 +71,7 @@ const Signup = () => {
                 <h2>Sign up</h2>
                 { errorMessage && <span style={ styleError }> { errorMessage } </span>}
                 { responseMessage && <span style={ styleSuccess }> { responseMessage } </span>}
-                { loading && <Spinner animation="grow" />}
+                { loading && <Loader  />}
                 <label htmlFor="email">Email</label>
                 <input name="email" type="email" autoFocus={ true } value={ userInfo.email } onChange={ changeHandler } disabled={ loading ? "disabled" : "" }/>
                 <br/>

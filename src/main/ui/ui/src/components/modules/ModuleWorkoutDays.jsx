@@ -1,5 +1,5 @@
 import '../../styles/Module.css';
-import Spinner from "react-bootstrap/Spinner";
+import Spinner from "../ui_components/Loader";
 import DisplayValue from "./DisplayValue";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMedal } from '@fortawesome/free-solid-svg-icons'
@@ -156,9 +156,11 @@ const ModuleWorkoutDays = ({ data=[] }) => {
                 }}
                 onClick={ () => setModalVisible(true) }/>}
 
-            { data.length < 1 ? <Spinner animation="grow"/> :
+            { data.length < 1 ? <Spinner /> :
                 <>
-                    { chartData && <Graph data={ chartData } /> }
+                    <div className={'centerC'}>
+                        { chartData && <Graph data={ chartData }/> }
+                    </div>
                     {data.length < 2 ?
                         <div style={{display: "flex"}}>
                             <DisplayValue text={'Avg 1 year'}

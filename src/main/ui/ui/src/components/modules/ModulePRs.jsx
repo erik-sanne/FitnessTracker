@@ -1,5 +1,5 @@
 import '../../styles/Module.css';
-import Spinner from "react-bootstrap/Spinner";
+import Spinner from "../ui_components/Loader";
 import React, {useState} from "react";
 
 const ModulePRs = ({ data=[] }) => {
@@ -16,18 +16,20 @@ const ModulePRs = ({ data=[] }) => {
 
     return (
         <>
-            { !data ? <Spinner animation="grow"/> :
+            { !data ? <Spinner /> :
                 <>
-                    <div style={{ height: 'min(65vw, 500px)', overflowY: 'auto' }}>
-                        <table>
-                            { viewedExercies.map((pr, idx) =>
-                                <tr key={idx}>
-                                    <td style={{textAlign: 'left', whiteSpace: 'nowrap'}}>{camelCase(pr.exercise.replace(/_/g, ' '))}</td>
-                                    <td style={{textAlign: 'right', width: '72px' }}>{pr.weight}kg</td>
-                                    <td style={{ width: '140px' }}>{pr.date.split('T')[0]}</td>
-                                </tr>
-                            )}
-                        </table>
+                    <div className={'centerC'}>
+                        <div style={{ height: 'min(65vw, 500px)', overflowY: 'auto' }}>
+                            <table>
+                                { viewedExercies.map((pr, idx) =>
+                                    <tr key={idx}>
+                                        <td style={{textAlign: 'left', whiteSpace: 'nowrap'}}>{camelCase(pr.exercise.replace(/_/g, ' '))}</td>
+                                        <td style={{textAlign: 'right', width: '72px' }}>{pr.weight}kg</td>
+                                        <td style={{ width: '140px' }}>{pr.date.split('T')[0]}</td>
+                                    </tr>
+                                )}
+                            </table>
+                        </div>
                     </div>
                     <input type={'search'} placeholder={ 'Filter...' } onChange={ (e) => onSearch(e) } value={ searchText } style={{ marginTop: '1rem' }}/>
                 </>
