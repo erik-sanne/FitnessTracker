@@ -93,7 +93,7 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
                     onImageLoad={ onImageLoad }
                 />
                 </div>
-                <div style={{ flex: 2, textAlign: 'center', lineHeight: '256px', minWidth: '256px', padding: '20px' }}>
+                <div style={{ flex: 2, textAlign: 'center', lineHeight: '256px', minWidth: '256px', padding: '20px' }} className={ 'centerC' }>
                     <ProfileDisplay displayName={ ( !displayName ) ? defaultName : displayName } profilePicture={ profilePic } userId={ userProfile?.userId || 0 } />
                 </div>
             </div>

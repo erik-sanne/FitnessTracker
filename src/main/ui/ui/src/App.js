@@ -81,7 +81,7 @@ function App() {
 
     return (
         <>
-            <Background />
+            <Background/>
             <AppContent logoutCallback={ logoutCallback } />
             <Splash show={ showSplash } />
         </>

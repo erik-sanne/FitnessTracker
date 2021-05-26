@@ -80,51 +80,51 @@ const AppContent = ({ logoutCallback }) => {
 
     return(
         <>
-        <BrowserRouter>
-            <section onClick={ clickOutside } >
-                <Switch>
-                    <Route path="/general">
-                        <Header title={ "My Statistics" } onClick={ burgerClick } />
-                        <SectionStatistics />
-                    </Route>
-                    <Route path="/history">
-                        <Header title={ "History" } onClick={ burgerClick } />
-                        <SectionHistory userProfile={ currentUserProfile }  />
-                    </Route>
-                    <Route path="/new">
-                        <Header title={ "New Workout" } onClick={ burgerClick }  />
-                        <SectionNewWorkout updateUserProfile={ updateUserProfile }/>
-                    </Route>
-                    <Route path="/edit/:workoutId">
-                        <Header title={ "Edit Workout" } onClick={ burgerClick }  />
-                        <SectionNewWorkout updateUserProfile={ updateUserProfile }/>
-                    </Route>
-                    <Route path="/social">
-                        <Header title={ "Friends" } onClick={ burgerClick } />
-                        <SectionFriends userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
-                    </Route>
-                    <Route path="/settings">
-                        <Header title={ "User Settings" } onClick={ burgerClick } />
-                        <SectionSettings userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
-                    </Route>
-                    <Route path="/friend/:friendId">
-                        <Header title={ "Our Statistics" } onClick={ burgerClick } />
-                        <SectionStatisticsWithFriend userProfile={ currentUserProfile } />
-                    </Route>
-                    <Route path="/updates">
-                        <Header title={ "Version History" } onClick={ burgerClick } />
-                        <SectionUpdates/>
-                    </Route>
-                    <Route path="/monitor">
-                        <Header title={ "Health check" } onClick={ burgerClick } />
-                        <SectionMonitor/>
-                    </Route>
-                    <Redirect from="/" to="/general" />
-                </Switch>
-            </section>
-            <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } userProfile={ currentUserProfile } />
-            <Burger onClick={ burgerClick } open={ menuOpen }/>
-        </BrowserRouter>
+            <BrowserRouter>
+                <section onClick={ clickOutside } >
+                    <Switch>
+                        <Route path="/general">
+                            <Header title={ "My Statistics" } onClick={ burgerClick } />
+                            <SectionStatistics />
+                        </Route>
+                        <Route path="/history">
+                            <Header title={ "History" } onClick={ burgerClick } />
+                            <SectionHistory userProfile={ currentUserProfile }  />
+                        </Route>
+                        <Route path="/new">
+                            <Header title={ "New Workout" } onClick={ burgerClick }  />
+                            <SectionNewWorkout updateUserProfile={ updateUserProfile }/>
+                        </Route>
+                        <Route path="/edit/:workoutId">
+                            <Header title={ "Edit Workout" } onClick={ burgerClick }  />
+                            <SectionNewWorkout updateUserProfile={ updateUserProfile }/>
+                        </Route>
+                        <Route path="/social">
+                            <Header title={ "Friends" } onClick={ burgerClick } />
+                            <SectionFriends userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
+                        </Route>
+                        <Route path="/settings">
+                            <Header title={ "User Settings" } onClick={ burgerClick } />
+                            <SectionSettings userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
+                        </Route>
+                        <Route path="/friend/:friendId">
+                            <Header title={ "Our Statistics" } onClick={ burgerClick } />
+                            <SectionStatisticsWithFriend userProfile={ currentUserProfile } />
+                        </Route>
+                        <Route path="/updates">
+                            <Header title={ "Version History" } onClick={ burgerClick } />
+                            <SectionUpdates/>
+                        </Route>
+                        <Route path="/monitor">
+                            <Header title={ "Health check" } onClick={ burgerClick } />
+                            <SectionMonitor/>
+                        </Route>
+                        <Redirect from="/" to="/general" />
+                    </Switch>
+                </section>
+                <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } userProfile={ currentUserProfile } />
+                <Burger onClick={ burgerClick } open={ menuOpen }/>
+            </BrowserRouter>
             <Modal visible={ newRecords } title="New Personal Best!" onClose={ () => setNewRecords(null) }>
                 <h2>Congratulations!<FontAwesomeIcon icon={ faStar } style={{ paddingLeft: '12px', color: '#ffc877', width: 'inherit'}}/> </h2>
                 <p>Your hard work is paying off! You just hit a new personal record in {newRecords && newRecords.map((pr, idx, arr) =>
