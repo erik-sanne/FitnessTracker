@@ -3,7 +3,7 @@ import Chart from "chart.js";
 import Zoom from 'chartjs-plugin-zoom'
 import "react-hammerjs"
 
-const Graph = ({ data }) => {
+const Graph = ({ data, style}) => {
     const canvasRef = useRef(null);
     const [chart, setChart] = useState(null);
 
@@ -23,7 +23,7 @@ const Graph = ({ data }) => {
     }, [data]);
 
     return (
-        <div style={wrapStyle}>
+        <div style={{...wrapStyle, ...style}}>
             <canvas ref={ canvasRef } />
         </div>
     )

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import ModuleWorkoutDays from "./modules/ModuleWorkoutDays";
 import ModuleWorkoutDistribution from "./modules/ModuleWorkoutDistribution";
 import Module from "./modules/Module";
-import ModuleSetAverages from "./modules/ModuleSetAverages";
+import ModuleSetAverages from "./modules/ModuleProgression";
 import useFetch from "../services/useFetch";
 import ModuleBSD from "./modules/ModuleBSD";
 import ModulePRs from "./modules/ModulePRs";

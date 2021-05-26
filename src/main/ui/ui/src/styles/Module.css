@@ -6,6 +6,7 @@
   position: relative;
   width: 100%;
   max-width: min(100vw, 1600px);
+  border-radius: 5px;
 }
 
 .module h3 {

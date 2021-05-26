@@ -36,21 +36,20 @@ const ModuleORM = () => {
         <>
             { loading ? <Spinner animation="grow"/> :
                 <>
-                    { !result ?
-                        <DisplayValue text={ "Select an exercise" } value={ "" } style={{ textAlign: "center"}} /> :
+                    <div style={{height: 'min(65vw, 500px)'}}>
+                        {
+                            !result ?
+                            <DisplayValue text={"Select an exercise"} value={""}
+                                          style={{textAlign: "center", padding: '32% 0%'}}/> :
+                            result.weight === 0 ?
+                                <DisplayValue text={"Insufficient data"} value={""}
+                                              style={{textAlign: "center", padding: '32% 0%'}}/> :
+                                <DisplayValue text={`Your predicted One Rep Max for ${ selectedExercise && camelCase(selectedExercise) } is`}
+                                              value={`${result.weight.toFixed(0)}kg`}
+                                              style={{textAlign: "center", padding: '32% 0%'}}/>
 
-                        result.weight === 0 ?
-                        <DisplayValue text={ "Insufficient data" } value={ "" } style={{ textAlign: "center"}} /> :
-                        <>
-                            <h2 style={{ fontWeight: 'bold', flex: 1, padding: '9px', fontSize: 'calc(10px + 1vmin)'}}>
-                                { camelCase(selectedExercise) }
-                            </h2>
-
-                            <DisplayValue text={ "Your predicted One Rep Max is" } value={ `${ result.weight.toFixed(0) }kg` } style={{ textAlign: "center", padding: '32% 0%' }} />
-
-                        </>
-                    }
-
+                        }
+                    </div>
                     <div style={{display: "flex", marginTop: "10px"}}>
                         <DataSelect options={exercises.map(e => e.replace(/_/g, ' '))} onSelect={ (ex) => setSelectedExercise(ex) } style={selectStyle} />
                     </div>

@@ -7,6 +7,7 @@ import React, {useEffect, useState} from "react";
 import DataSelect from "../ui_components/DataSelect";
 import {getCookie} from "react-use-cookie";
 import Switch from '@material-ui/core/Switch';
+import DisplayValue from "./DisplayValue";
 
 const createConfig = (data, fullHistory, margeAxes) => {
     data = data.reverse();
@@ -125,7 +126,7 @@ const createConfig = (data, fullHistory, margeAxes) => {
     }
 }
 
-const ModuleWorkoutDistribution = () => {
+const ModuleProgression = () => {
     const { data: exercises, loading } = useFetch('/api/exercises');
     const [ srcData, setSrcData ] = useState(null);
     const [ chartData, setChartData ] = useState(null);
@@ -171,31 +172,34 @@ const ModuleWorkoutDistribution = () => {
         <>
             { loading ? <Spinner animation="grow"/> :
                 <>
-                    { chartData && message === "" &&
-                    <>
-                        <div style={{ display: 'flex '}}>
-                            <h2 style={{ fontWeight: 'bold', flex: 1, padding: '9px', fontSize: 'calc(10px + 1vmin)'}}>
-                                { camelCase(selectedExercise) }
-                            </h2>
-                            <div style={{ textAlign: "right", flex: 1}}>
-                                <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
-                                    setShowFullHistory(!showFullHistory);
-                                }}>
-                                    Show full history
-                                    <Switch color="primary" checked={ showFullHistory }/>
-                                </p>
-                                <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
-                                    setSplitAxes(!splitAxes);
-                                }}>
-                                    Split axes
-                                    <Switch color="primary" checked={ splitAxes }/>
-                                </p>
+                    <div style={{height: 'min(65vw, 500px)'}}>
+                        { chartData && message === "" &&
+                        <>
+                            <div style={{ display: 'flex '}}>
+                                <h2 style={{ fontWeight: 'bold', flex: 1, padding: '9px', fontSize: 'calc(10px + 1vmin)'}}>
+                                    { camelCase(selectedExercise) }
+                                </h2>
+                                <div style={{ textAlign: "right", flex: 1}}>
+                                    <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
+                                        setShowFullHistory(!showFullHistory);
+                                    }}>
+                                        Show full history
+                                        <Switch color="primary" checked={ showFullHistory }/>
+                                    </p>
+                                    <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
+                                        setSplitAxes(!splitAxes);
+                                    }}>
+                                        Split axes
+                                        <Switch color="primary" checked={ splitAxes }/>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        <Graph data={ chartData }/>
-                    </>
-                    }
-                    { message !== "" && <p style={ {...messageStyle, fontSize: 'calc(10px + 1vmin)'} }> {message} </p>}
+                            <Graph data={ chartData }/>
+                        </>
+                        }
+                        { message !== "" && <DisplayValue text={ message } value={""}
+                                                          style={{textAlign: "center", padding: '32% 0%'}}/> }
+                    </div>
                     <div style={{display: "flex", marginTop: "10px"}}>
                         <DataSelect options={exercises.map(e => e.replace(/_/g, ' '))} onSelect={ (ex) => setSelectedExercise(ex) } style={selectStyle} />
                     </div>
@@ -210,14 +214,8 @@ const camelCase = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
-const messageStyle = {
-    textAlign: 'center',
-    padding: '32px',
-    margin: '0px'
-}
-
 const selectStyle = {
     width: '100vw'
 }
 
-export default ModuleWorkoutDistribution;
+export default ModuleProgression;
