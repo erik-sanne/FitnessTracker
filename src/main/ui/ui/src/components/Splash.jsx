@@ -1,7 +1,18 @@
 import '../styles/App.css';
+import {useEffect, useState} from "react";
 
 const Splash = ({ show = true }) => {
+    const [ hidden, setHidden ] = useState(false)
+
+    useEffect(()=>{
+        if (!show)
+            setTimeout(() => {
+                setHidden(true)
+            }, 3000);
+    }, [show])
+
     return (
+        hidden ? null :
         <section className={ `page-wrapper splash ${ !show && 'fade-out-image' }` }>
             <div className={'content-wrapper'} style={{textAlign: 'center'}}>
                 <div className={`text-wrapper ${ !show && 'zoom-in' }`}>

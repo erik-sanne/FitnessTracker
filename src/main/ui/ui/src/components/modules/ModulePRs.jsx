@@ -21,13 +21,15 @@ const ModulePRs = ({ data=[] }) => {
                     <div className={'centerC'}>
                         <div style={{ height: 'min(65vw, 500px)', overflowY: 'auto' }}>
                             <table>
-                                { viewedExercies.map((pr, idx) =>
-                                    <tr key={idx}>
-                                        <td style={{textAlign: 'left', whiteSpace: 'nowrap'}}>{camelCase(pr.exercise.replace(/_/g, ' '))}</td>
-                                        <td style={{textAlign: 'right', width: '72px' }}>{pr.weight}kg</td>
-                                        <td style={{ width: '140px' }}>{pr.date.split('T')[0]}</td>
-                                    </tr>
-                                )}
+                                <tbody>
+                                    { viewedExercies.map((pr, idx) =>
+                                        <tr key={idx}>
+                                            <td style={{textAlign: 'left', whiteSpace: 'nowrap'}}>{camelCase(pr.exercise.replace(/_/g, ' '))}</td>
+                                            <td style={{textAlign: 'right', width: '72px' }}>{pr.weight}kg</td>
+                                            <td style={{ width: '140px' }}>{pr.date.split('T')[0]}</td>
+                                        </tr>
+                                    )}
+                                </tbody>
                             </table>
                         </div>
                     </div>
