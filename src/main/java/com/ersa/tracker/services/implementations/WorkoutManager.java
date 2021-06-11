@@ -97,8 +97,8 @@ public class WorkoutManager implements WorkoutService {
         workout.setUser(user);
         workout.getSets().forEach(set -> set.setWorkout(workout));
         workoutRepository.save(workout);
-        personalRecordService.updatePersonalRecords(user);
         log.info("User with id {} published new workout", user.getId());
+        personalRecordService.updatePersonalRecords(user);
     }
 
     @Override

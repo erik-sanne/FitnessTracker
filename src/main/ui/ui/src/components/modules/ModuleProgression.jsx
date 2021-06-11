@@ -9,11 +9,13 @@ import {getCookie} from "react-use-cookie";
 import Switch from '@material-ui/core/Switch';
 import DisplayValue from "./DisplayValue";
 
-const createConfig = (data, fullHistory, margeAxes) => {
+const createConfig = (data, fullHistory, mergeAxes) => {
     data = data.reverse();
     const xLabels = data.map( e => e.date.split('T')[0]);
     const weights = data.map( e => e.weight);
     const reps = data.map( e => e.reps);
+    const maxCombined = Math.max(...data.map(e => e.combined))
+    const combined = data.map(e => (e.combined / maxCombined) * 100);
 
     const today = new Date();
     const end = today.setDate(today.getDate() + 1);
@@ -23,21 +25,20 @@ const createConfig = (data, fullHistory, margeAxes) => {
     else
         start = today.setDate(today.getDate() - 30);
 
-    const mergedAxes = data.map(e => Math.pow(e.weight, 3) * e.reps);
 
     return {
         type: 'line',
         data: {
             labels: xLabels,
-            datasets: margeAxes ? [{
-                label: 'Work',
-                yAxisID: 'rep-y-id',
+            datasets: mergeAxes ? [{
+                label: 'Effort',
+                yAxisID: 'wei-y-id',
                 fill: false,
                 borderColor: 'rgba(107,166,239,0.35)',
                 backgroundColor: 'rgba(107,166,239,0.35)',
                 borderWidth: 2,
                 lineTension: 0,
-                data: mergedAxes
+                data: combined
             }] : [{
                 label: 'Repetitions',
                 yAxisID: 'rep-y-id',
@@ -77,11 +78,14 @@ const createConfig = (data, fullHistory, margeAxes) => {
             scales: {
                 yAxes: [{
                     type: "linear",
-                    display: true,
+                    display: !mergeAxes,
                     position: "left",
                     id: "rep-y-id",
                     ticks: {
-                        display: false
+                        suggestedMin: 0,
+                        callback: function(value, index, values) {
+                            return value;
+                        }
                     }
                 }, {
                     type: "linear",
@@ -89,7 +93,10 @@ const createConfig = (data, fullHistory, margeAxes) => {
                     position: "right",
                     id: "wei-y-id",
                     ticks: {
-                        display: false
+                        suggestedMin: 0,
+                        callback: function(value, index, values) {
+                            return value + (mergeAxes ? '%' : 'kg');
+                        }
                     }
                 }],
                 xAxes: [{

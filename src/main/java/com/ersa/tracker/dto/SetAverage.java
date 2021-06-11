@@ -7,6 +7,7 @@ public class SetAverage {
     private Date date;
     private float reps;
     private float weight;
+    private float combined;
 
     public Date getDate() {
         return date;
@@ -32,9 +33,18 @@ public class SetAverage {
         this.weight = weight;
     }
 
-    public SetAverage(final Date date, final float reps, final float weight) {
+    public float getCombined() {
+        return combined;
+    }
+
+    public void setCombined(float combined) {
+        this.combined = combined;
+    }
+
+    public SetAverage(final Date date, final float reps, final float weight, final float combined) {
         this.date = date;
         this.reps = reps;
         this.weight = weight;
+        this.combined = combined;
     }
 }

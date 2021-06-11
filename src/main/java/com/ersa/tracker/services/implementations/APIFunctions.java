@@ -246,18 +246,9 @@ public class APIFunctions implements APIService {
     @Override
     public List<SetAverage> getSetAverages(final User user, final String exercise) {
         List<Workout> workouts = workoutService.getWorkouts(user);
-        List<SetAverage> result = workouts.stream().map(w -> computeSetAvg(w, exercise))
+
+        return workouts.stream().map(w -> computeSetAvg(w, exercise))
                 .filter(Objects::nonNull).collect(Collectors.toList());
-        if (result.isEmpty())
-            return result;
-
-        float maxW = (float) result.stream().mapToDouble(SetAverage::getWeight).max().getAsDouble();
-        float maxR = (float) result.stream().mapToDouble(SetAverage::getReps).max().getAsDouble();
-
-        result.forEach(e -> e.setWeight(e.getWeight() / maxW));
-        result.forEach(e -> e.setReps(e.getReps() / maxR));
-
-        return result;
     }
 
     private SetAverage computeSetAvg(final Workout workout, final String exercise) {
@@ -270,7 +261,8 @@ public class APIFunctions implements APIService {
 
         float weightAvg = (float) sets.stream().mapToDouble(WorkoutSet::getWeight).reduce(0, Double::sum) / sets.size();
         float repsAvg = (float) sets.stream().mapToInt(WorkoutSet::getReps).reduce(0, Integer::sum) / sets.size();
+        float combined = sets.stream().map(this::epley).reduce(0f, Float::sum) / sets.size();
 
-        return new SetAverage(workout.getDate(), repsAvg, weightAvg);
+        return new SetAverage(workout.getDate(), repsAvg, weightAvg, combined);
     }
 }
