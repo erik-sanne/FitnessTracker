@@ -21,7 +21,7 @@ public final class PersonalRecord {
     @JsonIgnore
     private long id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private Exercise exercise;
     private Float weight;
