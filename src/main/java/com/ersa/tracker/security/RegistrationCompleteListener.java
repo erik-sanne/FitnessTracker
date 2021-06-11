@@ -2,8 +2,10 @@ package com.ersa.tracker.security;
 
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.services.authentication.EmailVerificationService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
+@Log4j2
 public final class RegistrationCompleteListener implements ApplicationListener<OnRegistrationCompleteEvent> {
 
     @Autowired
@@ -21,6 +24,7 @@ public final class RegistrationCompleteListener implements ApplicationListener<O
 
     @Override
     public void onApplicationEvent(final OnRegistrationCompleteEvent event) {
+        log.info("Preparing email for to activate account for {}", event.getUser().getEmail());
         User user = event.getUser();
         final String token = UUID.randomUUID().toString();
         emailService.createEmailVerificationToken(user, token);
@@ -40,5 +44,6 @@ public final class RegistrationCompleteListener implements ApplicationListener<O
         mail.setSubject(subject);
         mail.setText(message);
         mailSender.send(mail);
+        log.info("Email sent!");
     }
 }
