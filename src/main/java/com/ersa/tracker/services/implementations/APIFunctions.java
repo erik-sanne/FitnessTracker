@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class APIFunctions implements APIService {
-
+    private static final int MAX_YEARS_DISPLAY = 5;
     private static final int WEEKS_IN_STANDARD_YEAR = 52;
 
     private final WorkoutService workoutService;
@@ -67,6 +67,9 @@ public class APIFunctions implements APIService {
         for (Workout workout : workouts) {
             cal.setTime(workout.getDate());
             cal.add(Calendar.DAY_OF_WEEK, -1);
+
+            if (Calendar.getInstance().get(Calendar.YEAR) - cal.get(Calendar.YEAR) > MAX_YEARS_DISPLAY)
+                break;
 
             int nextEntryWeek = cal.get(Calendar.WEEK_OF_YEAR);
             int nextEntryYear = cal.get(Calendar.YEAR);
