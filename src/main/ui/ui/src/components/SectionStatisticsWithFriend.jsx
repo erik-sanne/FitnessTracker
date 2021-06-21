@@ -31,9 +31,9 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
                     <ProfileDisplay profilePicture={ userProfile.profilePicture }/>
                     <p> { userProfile.displayName } </p>
                     </div>
-                    <div>
-                        <p style={{ lineHeight: '56px' }}>
-                            <FontAwesomeIcon icon={ faDumbbell } />
+                    <div className={ 'glitch-wrapper' }>
+                        <p style={{ lineHeight: '56px', fontWeight: 'bold', fontSize: '64px' }} className={ 'glitch' } data-text={ 'VS' }>
+                            VS
                         </p>
                     </div>
                     <div style={{ flex: 1, textAlign: 'right' }}>
