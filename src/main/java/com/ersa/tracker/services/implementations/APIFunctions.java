@@ -264,7 +264,7 @@ public class APIFunctions implements APIService {
 
         float weightAvg = (float) sets.stream().mapToDouble(WorkoutSet::getWeight).reduce(0, Double::sum) / sets.size();
         float repsAvg = (float) sets.stream().mapToInt(WorkoutSet::getReps).reduce(0, Integer::sum) / sets.size();
-        float combined = sets.stream().map(this::epley).reduce(0f, Float::sum) / sets.size();
+        float combined = sets.stream().map(this::epley).reduce(0f, Float::sum) / (float)Math.sqrt(sets.size());
 
         return new SetAverage(workout.getDate(), repsAvg, weightAvg, combined);
     }
