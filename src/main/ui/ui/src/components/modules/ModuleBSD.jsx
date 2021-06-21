@@ -139,6 +139,7 @@ const ModuleBSD = ({ data=[] }) => {
     const [ chartData, setChartData ] = useState(null);
     const [ mse, setMse ] = useState(null);
     const [ usePredictions, setUsePredicions ] = useState(false);
+    const [ predictedMaxes, setPredictedMaxes ] = useState(null);
 
     const getExerciseData = async () => {
         const token = getCookie('session_token');
@@ -163,13 +164,15 @@ const ModuleBSD = ({ data=[] }) => {
     }
 
     useEffect(() => {
-        if (usePredictions) {
+        getExerciseData().then( res => setPredictedMaxes(res));
+    },[])
+
+    useEffect(() => {
+        if (usePredictions && predictedMaxes) {
             setChartData(null);
-            getExerciseData().then(res => {
-                const bsds = [ scale(getBSD(res)) ];
-                setChartData(createConfig(bsds, normalratio));
-                setMse(getMse(bsds[0], normalratio));
-            });
+            const bsds = [ scale(getBSD(predictedMaxes)) ];
+            setChartData(createConfig(bsds, normalratio));
+            setMse(getMse(bsds[0], normalratio));
             return;
         }
 
@@ -180,7 +183,7 @@ const ModuleBSD = ({ data=[] }) => {
             if (data.length === 1)
                 setMse(getMse(bsds[0], normalratio));
             }
-    }, [usePredictions])
+    }, [usePredictions, predictedMaxes])
 
     return (
         <>
