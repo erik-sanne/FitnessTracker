@@ -5,8 +5,6 @@ import Module from "./modules/Module";
 import {useParams} from "react-router";
 import useFetch from "../services/useFetch";
 import ProfileDisplay from "./ui_components/ProfileDisplay";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faDumbbell} from "@fortawesome/free-solid-svg-icons";
 import ModuleBSD from "./modules/ModuleBSD";
 
 const SectionStatisticsWithFriend = ({ userProfile }) => {
