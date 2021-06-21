@@ -26,11 +26,11 @@ const ModulePreferences = () => {
     return (
         <Module title={"Preferences"}>
             <div className={'centerC'} style={{ justifyContent: 'start' }}>
-                <div onClick={ () => { setHighContrast(!highContrast) }}>
+                <div>
                     <label style={{ cursor: 'pointer' }}>
                         Enable high contrast
                     </label>
-                    <Switch color="primary" checked={ highContrast }/>
+                    <Switch color="primary" checked={ highContrast } disabled={ true }/>
                 </div>
             </div>
             <div style={buttonWrapperStyle}>
