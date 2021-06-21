@@ -77,7 +77,9 @@ const createConfig = (rawdata=[]) => {
                     ticks: {
                         min: 0,
                         max: 7,
-                        stepSize: 1
+                        stepSize: 1,
+                        fontFamily: 'Quicksand',
+                        fontStyle: 'bold'
                     }
                 }],
                 xAxes: [{
@@ -87,7 +89,9 @@ const createConfig = (rawdata=[]) => {
                         callback: function(value, index, values) {
                             const arr = value.split(" ")
                             return arr[1] === "1" ? [arr[1], arr[0]] : [arr[1], ''];
-                        }
+                        },
+                        fontFamily: 'Quicksand',
+                        fontStyle: 'bold'
                     }
                 }]
             },
