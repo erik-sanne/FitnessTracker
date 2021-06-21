@@ -41,6 +41,16 @@ public class PersonalRecordService implements PRService {
     }
 
     @Override
+    public List<PersonalRecord> getRecordsObfuscated(User user) {
+        List<PersonalRecord> personalRecords = recordRepository.findAllByUser(user);
+        float max = personalRecords.stream().map(PersonalRecord::getWeight).reduce(0f, Math::max);
+        return personalRecords.stream().map( record -> {
+            record.setWeight(record.getWeight() / max);
+            return record;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public void updatePersonalRecords(final User user) {
         log.info("Computing personal records");

@@ -165,6 +165,6 @@ public class WorkoutController {
     public List<PersonalRecord> getRecordsForFriend(@PathVariable final long userId, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         User friend = profileService.getFriend(currentUser, userId);
-        return recordService.getRecords(friend);
+        return recordService.getRecordsObfuscated(friend);
     }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface PRService {
     List<PersonalRecord> getRecords(User user);
+    List<PersonalRecord> getRecordsObfuscated(User user);
 
     @Transactional
     void updatePersonalRecords(User user);
