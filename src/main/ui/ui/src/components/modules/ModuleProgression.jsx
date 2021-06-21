@@ -85,7 +85,9 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                         suggestedMin: 0,
                         callback: function(value, index, values) {
                             return value;
-                        }
+                        },
+                        fontFamily: 'Quicksand',
+                        fontStyle: 'bold'
                     }
                 }, {
                     type: "linear",
@@ -96,7 +98,9 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                         suggestedMin: 0,
                         callback: function(value, index, values) {
                             return value + (mergeAxes ? '%' : 'kg');
-                        }
+                        },
+                        fontFamily: 'Quicksand',
+                        fontStyle: 'bold'
                     }
                 }],
                 xAxes: [{
