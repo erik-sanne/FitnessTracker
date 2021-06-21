@@ -194,9 +194,14 @@ const ModuleBSD = ({ data=[] }) => {
             </div>
             <div style={{ display: "flex", justifyContent: 'space-around' }}>
                 {
-                    mse && Object.entries(mse).map(([key, value], idx) =>
+                    mse ? Object.entries(mse).map(([key, value], idx) =>
                         <DisplayValue key={idx} text={key} value={value + `${ usePredictions ? '*' : '' }`} style={{ textAlign: 'center', width: '215px' }}/>
-                    )
+                    ) :
+                        <>
+                            <DisplayValue key={ 1 } text={ "Bench Press" } value={''} style={{ textAlign: 'center', width: '215px' }}/>
+                            <DisplayValue key={ 2 } text={ "Squat" } value={''} style={{ textAlign: 'center', width: '215px' }}/>
+                            <DisplayValue key={ 3 } text={ "Deadlift" } value={''} style={{ textAlign: 'center', width: '215px' }}/>
+                        </>
                 }
             </div>
         </>
