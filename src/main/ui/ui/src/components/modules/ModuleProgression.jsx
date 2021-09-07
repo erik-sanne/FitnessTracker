@@ -8,14 +8,23 @@ import DataSelect from "../ui_components/DataSelect";
 import {getCookie} from "react-use-cookie";
 import Switch from '@material-ui/core/Switch';
 import DisplayValue from "./DisplayValue";
+import regression from 'regression';
 
 const createConfig = (data, fullHistory, mergeAxes) => {
-    data = data.reverse();
+    data.sort(function(a,b){
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(a.date) - new Date(b.date);
+    });
     const xLabels = data.map( e => e.date.split('T')[0]);
     const weights = data.map( e => e.weight);
     const reps = data.map( e => e.reps);
     const maxCombined = Math.max(...data.map(e => e.combined))
-    const combined = data.map(e => (e.combined / maxCombined) * 100);
+    const combined = data.map(e => Math.round((e.combined / maxCombined) * 100));
+
+    const zip = (a, b) => a.map((k, i, arr) => [Math.round((new Date(k).getTime() - new Date(arr[0]).getTime())  / (1000 * 60 * 60 * 24)), b[i]]);
+    const pts = zip(xLabels, combined);
+    const func = regression.polynomial(pts, { order: 2, precision: 100 });
 
     const today = new Date();
     const end = today.setDate(today.getDate() + 1);
@@ -25,7 +34,9 @@ const createConfig = (data, fullHistory, mergeAxes) => {
     else
         start = today.setDate(today.getDate() - 30);
 
-
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    xLabels.push(tomorrow.toISOString().split('T')[0]);
     return {
         type: 'line',
         data: {
@@ -39,6 +50,17 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                 borderWidth: 2,
                 lineTension: 0,
                 data: combined
+            }, {
+                label: 'Trend',
+                yAxisID: 'wei-y-id',
+                borderDash: [15, 3],
+                fill: false,
+                borderColor: 'rgb(239,169,107)',
+                backgroundColor: 'rgb(239,164,107)',
+                borderWidth: 2,
+                lineTension: 0,
+                function: function (x) { return func.predict(x)[1]; },
+                data: []
             }] : [{
                 label: 'Repetitions',
                 yAxisID: 'rep-y-id',
