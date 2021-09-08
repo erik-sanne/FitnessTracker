@@ -10,6 +10,20 @@ import Switch from '@material-ui/core/Switch';
 import DisplayValue from "./DisplayValue";
 import regression from 'regression';
 
+const getDates = (startDate, stopDate) => {
+    let dateArray = [];
+    let currentDate = startDate;
+    while (currentDate <= stopDate) {
+        dateArray.push(new Date (currentDate));
+        currentDate.setDate(currentDate.getDate()+1)
+    }
+    return dateArray;
+}
+
+const getMagicNumberFromDate = (date, firstDate) => {
+    return Math.round((new Date(date).getTime() - new Date(firstDate).getTime())  / (1000 * 60 * 60 * 24))
+}
+
 const createConfig = (data, fullHistory, mergeAxes) => {
     data.sort(function(a,b){
         // Turn your strings into dates, and then subtract them
@@ -22,9 +36,11 @@ const createConfig = (data, fullHistory, mergeAxes) => {
     const maxCombined = Math.max(...data.map(e => e.combined))
     const combined = data.map(e => Math.round((e.combined / maxCombined) * 100));
 
-    const zip = (a, b) => a.map((k, i, arr) => [Math.round((new Date(k).getTime() - new Date(arr[0]).getTime())  / (1000 * 60 * 60 * 24)), b[i]]);
+    const zip = (a, b) => a.map((k, i, arr) => [getMagicNumberFromDate(k, arr[0]), b[i]]);
     const pts = zip(xLabels, combined);
     const func = regression.polynomial(pts, { order: 2, precision: 100 });
+
+    const plot = getDates(new Date(xLabels[0]), new Date()).map(d => (d.toISOString().split('T')[0])).map((d, i, arr) => ({ x: d, y: func.predict(getMagicNumberFromDate(d, arr[0]))[1] }));
 
     const today = new Date();
     const end = today.setDate(today.getDate() + 1);
@@ -33,6 +49,8 @@ const createConfig = (data, fullHistory, mergeAxes) => {
         start = today.setDate(xLabels[0]);
     else
         start = today.setDate(today.getDate() - 30);
+
+
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -59,8 +77,8 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                 backgroundColor: 'rgb(239,164,107)',
                 borderWidth: 2,
                 lineTension: 0,
-                function: function (x) { return func.predict(x)[1]; },
-                data: []
+                //function: function (x) { return func.predict(x)[1]; },
+                data: plot
             }] : [{
                 label: 'Repetitions',
                 yAxisID: 'rep-y-id',
