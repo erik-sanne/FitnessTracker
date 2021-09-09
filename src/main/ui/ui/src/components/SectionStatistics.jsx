@@ -11,7 +11,7 @@ import ModuleORM from "./modules/ModuleORM";
 
 const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
-    const [ workoutDistribution, setWorkoutDistribution ] = useState(null);
+    const [ workoutDistribution, setWorkoutDistribution ] = useState([]);
     const { data: selfRecords, loading: loadingRecords  } = useFetch(`/api/records`);
 
     useEffect(()=>{
@@ -25,7 +25,7 @@ const SectionStatistics = () => {
         fromDate = fromDate.toISOString().split('T')[0];
         toDate = toDate.toISOString().split('T')[0];
         get(`/api/distribution?from=${fromDate}&to=${toDate}`).then((value) => {
-            setWorkoutDistribution(value)
+            setWorkoutDistribution([value])
         });
     }
 
@@ -35,7 +35,7 @@ const SectionStatistics = () => {
                 <ModuleWorkoutDays data={ !loadingWorkouts ? [ selfWorkoutsPerWeek ] : [] } />
             </Module>
             <Module title="Workout distribution">
-                <ModuleWorkoutDistribution data={ workoutDistribution ? [ workoutDistribution ] : [] } rangeCallback={ updateDistRange } />
+                <ModuleWorkoutDistribution data={ workoutDistribution} rangeCallback={ updateDistRange } />
             </Module>
             {
                 !loadingRecords &&

@@ -12,8 +12,7 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
     const { friendId } = useParams();
     const { data: selfWorkoutsPerWeek, loading: lswpw } = useFetch(`/api/workoutsPerWeek`);
     const { data: friendWorkoutsPerWeek, loading: lfwpw } = useFetch(`/api/workoutsPerWeek/${friendId}`);
-    const [ selfWorkoutDistribution, setSelfWorkoutDistribution ] = useState(null);
-    const [ friendWorkoutDistribution, setFriendWorkoutDistribution ] = useState(null);
+    const [ workoutDistribution, setWorkoutDistribution ] = useState([]);
 
     const { data: selfRecords, loading: lsrec  } = useFetch(`/api/records`);
     const { data: friendRecords, loading: lfrec  } = useFetch(`/api/records/${friendId}`);
@@ -33,11 +32,10 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
     const updateDistRange = (fromDate, toDate) => {
         fromDate = fromDate.toISOString().split('T')[0];
         toDate = toDate.toISOString().split('T')[0];
-        get(`/api/distribution?from=${fromDate}&to=${toDate}`).then((value) => {
-            setSelfWorkoutDistribution(value)
-        });
-        get(`/api/distribution/${friendId}?from=${fromDate}&to=${toDate}`).then((value) => {
-            setFriendWorkoutDistribution(value)
+        get(`/api/distribution?from=${fromDate}&to=${toDate}`).then((self) => {
+            get(`/api/distribution/${friendId}?from=${fromDate}&to=${toDate}`).then((friend) => {
+                setWorkoutDistribution([self, friend])
+            });
         });
     }
 
@@ -67,7 +65,7 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
                 <ModuleWorkoutDays data={ !lswpw && !lfwpw ? [selfWorkoutsPerWeek, friendWorkoutsPerWeek] : [] } />
             </Module>
             <Module title="Workout distribution">
-                <ModuleWorkoutDistribution data={ selfWorkoutDistribution && friendWorkoutDistribution ? [selfWorkoutDistribution, friendWorkoutDistribution] : [] } rangeCallback={ updateDistRange } />
+                <ModuleWorkoutDistribution data={ workoutDistribution } rangeCallback={ updateDistRange } />
             </Module>
             {
                 !lsrec && !lfrec &&
