@@ -80,6 +80,8 @@ INSERT INTO exercise (name) VALUES
 ('INCLINED_DUMBELL_PRESS'),
 ('CABLE_FLIES'),
 ('DIP'),
+('SEATED_DIP'),
+('DIP'),
 ('PUSHUP'),
 
 ('MILITARY_PRESS'),
@@ -142,6 +144,8 @@ INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUE
 ('CABLE_FLIES', 'UPPER_CHEST'),
 ('DIP', 'TRICEPS'),
 ('DIP', 'FRONT_DELTS'),
+('SEATED_DIP', 'TRICEPS'),
+('SEATED_DIP', 'FRONT_DELTS'),
 ('PUSHUP', 'LOWER_CHEST'),
 ('PUSHUP', 'UPPER_CHEST'),
 ('PUSHUP', 'TRICEPS'),
@@ -192,6 +196,7 @@ INSERT INTO exercise_secondary_targets (exercise_name, secondary_targets_name) V
 ('INCLINED_DUMBELL_PRESS', 'LOWER_CHEST'),
 ('CABLE_FLIES', 'FRONT_DELTS'),
 ('DIP', 'LOWER_CHEST'),
+('SEATED_DIP', 'LOWER_CHEST'),
 ('PUSHUP', 'FRONT_DELTS'),
 
 ('REVERSED_FLIES', 'TRAPS'),
