@@ -81,7 +81,6 @@ INSERT INTO exercise (name) VALUES
 ('CABLE_FLIES'),
 ('DIP'),
 ('SEATED_DIP'),
-('DIP'),
 ('PUSHUP'),
 
 ('MILITARY_PRESS'),
