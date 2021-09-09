@@ -29,6 +29,7 @@ const DataSelect = ({options, value, onSelect, placeholder = "Select something..
                    list="options"
                    placeholder={placeholder}
                    value={ intermediateValue }
+                   autoComplete={ "off" }
                    ref={ ref }
                    onChange={ onChange }
                    onFocus={ onFocus } />
