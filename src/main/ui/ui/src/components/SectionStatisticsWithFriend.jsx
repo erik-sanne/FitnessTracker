@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import ModuleWorkoutDays from "./modules/ModuleWorkoutDays";
 import ModuleWorkoutDistribution from "./modules/ModuleWorkoutDistribution";
 import Module from "./modules/Module";
@@ -6,13 +6,15 @@ import {useParams} from "react-router";
 import useFetch from "../services/useFetch";
 import ProfileDisplay from "./ui_components/ProfileDisplay";
 import ModuleBSD from "./modules/ModuleBSD";
+import get from "../services/Get";
 
 const SectionStatisticsWithFriend = ({ userProfile }) => {
     const { friendId } = useParams();
     const { data: selfWorkoutsPerWeek, loading: lswpw } = useFetch(`/api/workoutsPerWeek`);
     const { data: friendWorkoutsPerWeek, loading: lfwpw } = useFetch(`/api/workoutsPerWeek/${friendId}`);
-    const { data: selfWorkoutDistribution, loading: lsdis  } = useFetch(`/api/distribution`);
-    const { data: friendWorkoutDistribution, loading: lfdis } = useFetch(`/api/distribution/${friendId}`);
+    const [ selfWorkoutDistribution, setSelfWorkoutDistribution ] = useState(null);
+    const [ friendWorkoutDistribution, setFriendWorkoutDistribution ] = useState(null);
+
     const { data: selfRecords, loading: lsrec  } = useFetch(`/api/records`);
     const { data: friendRecords, loading: lfrec  } = useFetch(`/api/records/${friendId}`);
 
@@ -20,6 +22,24 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
         const temp = friend.userId == friendId
         return temp;
     })[0];
+
+    useEffect(()=>{
+        let from = new Date();
+        from.setDate(from.getDate() - 30)
+        let to = new Date();
+        updateDistRange(from, to);
+    }, [])
+
+    const updateDistRange = (fromDate, toDate) => {
+        fromDate = fromDate.toISOString().split('T')[0];
+        toDate = toDate.toISOString().split('T')[0];
+        get(`/api/distribution?from=${fromDate}&to=${toDate}`).then((value) => {
+            setSelfWorkoutDistribution(value)
+        });
+        get(`/api/distribution/${friendId}?from=${fromDate}&to=${toDate}`).then((value) => {
+            setFriendWorkoutDistribution(value)
+        });
+    }
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
@@ -47,7 +67,7 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
                 <ModuleWorkoutDays data={ !lswpw && !lfwpw ? [selfWorkoutsPerWeek, friendWorkoutsPerWeek] : [] } />
             </Module>
             <Module title="Workout distribution">
-                <ModuleWorkoutDistribution data={ !lsdis && !lfdis ? [selfWorkoutDistribution, friendWorkoutDistribution] : [] } />
+                <ModuleWorkoutDistribution data={ selfWorkoutDistribution && friendWorkoutDistribution ? [selfWorkoutDistribution, friendWorkoutDistribution] : [] } rangeCallback={ updateDistRange } />
             </Module>
             {
                 !lsrec && !lfrec &&

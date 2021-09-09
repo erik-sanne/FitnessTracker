@@ -115,9 +115,18 @@ public class WorkoutController {
     }
 
     @GetMapping("api/distribution/{userId}")
-    public Map<String, Float> getSetsPerBodypart(@PathVariable final long userId, final Principal principal) {
+    public Map<String, Float> getSetsPerBodypart(@PathVariable final long userId,
+                                                 @RequestParam(name = "from", defaultValue = "")
+                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                 final Date startdate,
+                                                 @RequestParam(name = "to", defaultValue = "")
+                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                 final Date enddate,
+                                                 final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         User friend = profileService.getFriend(currentUser, userId);
+        if (startdate != null && enddate != null)
+            return apiService.getWorkoutDistribution(friend, startdate, enddate);
         return apiService.getWorkoutDistribution(friend);
     }
 

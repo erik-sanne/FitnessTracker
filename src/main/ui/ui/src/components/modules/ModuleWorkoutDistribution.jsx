@@ -212,7 +212,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                                 <DisplayValue text={"No data for this period"} value={ null } />
                         }
                     </div>
-                    {data.length === 1 && <>
+                    {data.length > 0 && <>
                         <Slider
                             value={range}
                             onChange={(event, val) => setRange([ val[0], val[1] ]) }
