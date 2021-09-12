@@ -36,7 +36,7 @@ const SectionStatistics = () => {
                 <ModuleWorkoutDays data={ !loadingWorkouts ? [ selfWorkoutsPerWeek ] : [] } />
             </Module>
             <Module title="Workout distribution">
-                <ModuleWorkoutDistribution data={ workoutDistribution} rangeCallback={ updateDistRange } />
+                <ModuleWorkoutDistribution data={ workoutDistribution } rangeCallback={ updateDistRange } />
             </Module>
             {
                 !loadingRecords &&

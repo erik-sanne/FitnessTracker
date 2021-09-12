@@ -7,6 +7,7 @@ import React, {useEffect, useState} from "react";
 import Slider from "@material-ui/core/Slider";
 import TextButton from "../ui_components/TextButton";
 import Switch from "@material-ui/core/Switch";
+import body from "../../resources/bodyparts/body.png";
 
 const CALVES_SCALE = 2.0;
 const CORE_SCALE = 1.5;
@@ -66,7 +67,7 @@ const interpolate = (values, factor) => {
     return result;
 }
 
-const createConfig = (data=[], usePPL= false) => {
+const createConfig = (data=[], usePPL = false, useBody = false) => {
     const sorted = manualOrderingPass(data[0], usePPL);
     const xLabels = sorted.map( entry => entry.x)
 
@@ -79,7 +80,7 @@ const createConfig = (data=[], usePPL= false) => {
             borderColor: idx === 0 ? 'rgba(107,166,239,0.5)' : 'rgba(70,131,58,0.5)',
             data: yValues,
             lineTension: 0.1,
-            borderWidth: 2
+            borderWidth: useBody ? 1 : 2
         }
     })
 
@@ -158,13 +159,17 @@ const bestImprovementMulti = (data) => {
 const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
     const [ chartData, setChartData ] = useState(null);
     const [ usePPL, setUsePPL ] = useState(false)
+    const [ useBody, setUseBody ] = useState(true)
     const [ maxRange, ] = useState(365)
     const [ range, setRange ] = useState([maxRange-30, maxRange]);
     const [ timer, setTimer] = useState(null)
 
     useEffect(() => {
+        if (data.length > 1)
+            setUseBody(false);
+
         if (data.length > 0) {
-            setChartData(createConfig(data, usePPL));
+            setChartData(createConfig(data, usePPL, useBody));
         }
     }, [data])
 
@@ -188,20 +193,60 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
         if (timer)
             clearTimeout(timer);
         setTimer(setTimeout(() => { submitDates(); }, 250));
-    }, [range, usePPL])
+    }, [range])
+
+    useEffect(() => {
+        if (useBody)
+            setUsePPL(false);
+
+        if (data.length > 0) {
+            setChartData(createConfig(data, usePPL, useBody));
+        }
+    }, [usePPL, useBody])
 
     return (
         <>
-            { data.length < 1 ? <Spinner /> :
+            { data.length < 1 || !chartData ? <Spinner /> :
                 <>
-                    <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
-                        setUsePPL(!usePPL);
-                    }}>
-                        Show splits
-                        <Switch color="primary" checked={ usePPL }/>
-                    </p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        {
+                            data.length < 2 && <p style={{textAlign: "left", margin: '-5px'}} onClick={() => {
+                                setUseBody(!useBody);
+                            }}>
+                                Display manikin
+                                <Switch color="primary" checked={useBody}/>
+                            </p>
+                        }
+                        {
+                        !useBody && <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
+                            setUsePPL(!usePPL);
+                        }}>
+                            Muscle groups
+                            <Switch color="primary" checked={ usePPL }/>
+                            Splits
+                        </p>
+                        }
+                    </div>
                     <div className={ 'centerC' }>
-                        <Graph data={ chartData } />
+                        { (!useBody || data.length > 1) && <Graph data={ chartData } /> }
+                        { useBody &&
+                            <div style={getWrapperStyle()}>
+                                <div style={{position: 'relative' }}>
+                                    {
+                                        chartData.data.datasets[0].data.map((val, idx) => {
+                                            return <img src={getImage(chartData.data.labels[idx])} style={{
+                                                filter: `opacity(${val * val})`,
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: 0
+                                            }}/>
+                                        })
+                                    }
+                                    <img src={body} style={ imgStyle } />
+                                </div>
+                                <Graph data={chartData} />
+                            </div>
+                        }
                     </div>
                     <div style={{display: "flex", marginTop: "10px"}}>
                         { data.length > 1 ?
@@ -232,6 +277,28 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
             }
         </>
     );
+}
+
+const getImage = (name) => {
+    try {
+        const img = require(`../../resources/bodyparts/${name.toUpperCase().replace(" ", "_")}.png`);
+        return img.default
+    } catch (e) {
+        return '';
+    }
+}
+
+const getWrapperStyle = () => {
+    return {
+        justifyContent: 'space-around',
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: window.innerWidth < 600 ? 'column' : 'row'
+    }
+}
+
+const imgStyle = {
+    filter: 'invert(1) drop-shadow(0px 0px 5px black)'
 }
 
 export default ModuleWorkoutDistribution;
