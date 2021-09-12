@@ -55,6 +55,27 @@ const ModuleExerciseInfo = () => {
                 }
 
                 <div style={ wrapperStyle }>
+                    {
+                        selectedExercise &&
+                        <div style={{ paddingTop: '1rem'}}>
+                            <p> <strong> Name: </strong> <br />{ camelCase(selectedExercise.name.replace(/_/g, ' ')) } </p>
+                            <p> <strong> Primarily targets: </strong> <br />{ selectedExercise.primaryTargets.map(muscle =>
+                                camelCase(muscle.name.replace(/_/g, ' '))
+                            ).join(", ") } </p>
+                            {
+                                selectedExercise.secondaryTargets.length > 0 &&
+                                <p><strong> Also targets: </strong> <br />{selectedExercise.secondaryTargets.map(muscle =>
+                                camelCase(muscle.name.replace(/_/g, ' '))
+                                ).join(", ")} </p>
+                            }
+                            {
+                                <p><strong> Associated splits: </strong> <br />{ [...new Set([ ...selectedExercise.primaryTargets, ...selectedExercise.secondaryTargets].flatMap(muscle =>
+                                    muscle.wtypes.map((type) => camelCase(type.name.replace(/_/g, ' ')) )
+                                ))].join(", ")}
+                                </p>
+                            }
+                        </div>
+                    }
                     <div style={{ position: 'relative' }}>
                         {
                             selectedExercise && selectedExercise.secondaryTargets.map(muscle => {
@@ -77,6 +98,11 @@ const ModuleExerciseInfo = () => {
             <DataSelect value={ selectedExercise ? selectedExercise.name.replace(/_/g, ' ') : null } onSelect={ (ex) => ex && getExercise(ex) } options={ exercises.map(e => e.replace(/_/g, ' ')) } />
         </>
     );
+}
+
+const camelCase = (text) => {
+    text = text.toLowerCase();
+    return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
 const wrapperStyle = {
