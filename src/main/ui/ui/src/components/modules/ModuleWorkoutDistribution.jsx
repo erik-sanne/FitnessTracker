@@ -157,12 +157,22 @@ const bestImprovementMulti = (data) => {
 }
 
 const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
+    const LS_KEY_UP = "user_preferences"
+
     const [ chartData, setChartData ] = useState(null);
     const [ usePPL, setUsePPL ] = useState(false)
     const [ useBody, setUseBody ] = useState(true)
     const [ maxRange, ] = useState(365)
     const [ range, setRange ] = useState([maxRange-30, maxRange]);
     const [ timer, setTimer] = useState(null)
+    const [ fullColorManikin, setFullColorManikin ] = useState(false);
+
+    useEffect(() => {
+        const userPreferences = JSON.parse(localStorage.getItem(LS_KEY_UP));
+        if (userPreferences) {
+            setFullColorManikin(userPreferences.fullColorManikin);
+        }
+    })
 
     useEffect(() => {
         if (data.length > 1)
@@ -172,6 +182,21 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
             setChartData(createConfig(data, usePPL, useBody));
         }
     }, [data])
+
+    useEffect(() => {
+        if (timer)
+            clearTimeout(timer);
+        setTimer(setTimeout(() => { submitDates(); }, 250));
+    }, [range])
+
+    useEffect(() => {
+        if (useBody)
+            setUsePPL(false);
+
+        if (data.length > 0) {
+            setChartData(createConfig(data, usePPL, useBody));
+        }
+    }, [usePPL, useBody])
 
     const valuetext = (value) => {
         let date = new Date();
@@ -189,20 +214,22 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
         rangeCallback(from, to);
     }
 
-    useEffect(() => {
-        if (timer)
-            clearTimeout(timer);
-        setTimer(setTimeout(() => { submitDates(); }, 250));
-    }, [range])
-
-    useEffect(() => {
-        if (useBody)
-            setUsePPL(false);
-
-        if (data.length > 0) {
-            setChartData(createConfig(data, usePPL, useBody));
+    const getImgCss = (val) => {
+        if (fullColorManikin) {
+            return {
+                filter: `hue-rotate(${(1-val)*90}deg) brightness(3) saturate(${(val)*0.5 + 0.5}) drop-shadow(black 0px 0px 1px)`,
+                position: 'absolute',
+                top: 0,
+                left: 0
+            }
         }
-    }, [usePPL, useBody])
+        return {
+            filter: `opacity(${val}) drop-shadow(black 0px 0px 1px) `,
+            position: 'absolute',
+            top: 0,
+            left: 0
+        }
+    }
 
     return (
         <>
@@ -234,12 +261,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                                 <div style={{position: 'relative' }}>
                                     {
                                         chartData.data.datasets[0].data.map((val, idx) => {
-                                            return <img src={getImage(chartData.data.labels[idx])} style={{
-                                                filter: `opacity(${val * val})`,
-                                                position: 'absolute',
-                                                top: 0,
-                                                left: 0
-                                            }}/>
+                                            return <img src={getImage(chartData.data.labels[idx])} style={getImgCss(val)}/>
                                         })
                                     }
                                     <img src={body} style={ imgStyle } />
@@ -288,6 +310,7 @@ const getImage = (name) => {
     }
 }
 
+
 const getWrapperStyle = () => {
     return {
         justifyContent: 'space-around',
@@ -298,7 +321,7 @@ const getWrapperStyle = () => {
 }
 
 const imgStyle = {
-    filter: 'invert(1) drop-shadow(0px 0px 5px black)'
+    filter: 'invert(1) drop-shadow(0px 0px 2px black)'
 }
 
 export default ModuleWorkoutDistribution;

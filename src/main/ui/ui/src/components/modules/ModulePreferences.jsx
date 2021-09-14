@@ -7,6 +7,7 @@ const ModulePreferences = () => {
 
     const [ highContrast, setHighContrast ] = useState(false);
     const [ collapseSets, setCollapseSets ] = useState(false);
+    const [ fullColorManikin, setFullColorManikin ] = useState(false);
 
     useEffect(() => {
         const userPreferences = JSON.parse(localStorage.getItem(LS_KEY_UP));
@@ -15,13 +16,15 @@ const ModulePreferences = () => {
 
         setHighContrast(userPreferences.highContrast);
         setCollapseSets(userPreferences.collapseSets);
+        setFullColorManikin(userPreferences.fullColorManikin)
     }, [])
 
 
     const save = () => {
         localStorage.setItem(LS_KEY_UP, JSON.stringify({
             highContrast: highContrast,
-            collapseSets: collapseSets
+            collapseSets: collapseSets,
+            fullColorManikin: fullColorManikin
         }));
         window.location.reload();
     }
@@ -37,6 +40,13 @@ const ModulePreferences = () => {
                     </label>
                 </div>
                 <br />
+                <p>Statistics</p>
+                <div onClick={ () => setFullColorManikin(!fullColorManikin) }>
+                    <Switch color="primary" checked={ fullColorManikin }/>
+                    <label style={{ cursor: 'pointer' }}>
+                        Full color manikin
+                    </label>
+                </div>
                 <p>New workout</p>
                 <div onClick={ () => setCollapseSets(!collapseSets) }>
                     <Switch color="primary" checked={ collapseSets }/>
