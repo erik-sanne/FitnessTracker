@@ -6,6 +6,7 @@ const ModulePreferences = () => {
     const LS_KEY_UP = "user_preferences"
 
     const [ highContrast, setHighContrast ] = useState(false);
+    const [ collapseSets, setCollapseSets ] = useState(false);
 
     useEffect(() => {
         const userPreferences = JSON.parse(localStorage.getItem(LS_KEY_UP));
@@ -13,12 +14,14 @@ const ModulePreferences = () => {
             return;
 
         setHighContrast(userPreferences.highContrast);
+        setCollapseSets(userPreferences.collapseSets);
     }, [])
 
 
     const save = () => {
         localStorage.setItem(LS_KEY_UP, JSON.stringify({
-            highContrast: highContrast
+            highContrast: highContrast,
+            collapseSets: collapseSets
         }));
         window.location.reload();
     }
@@ -26,12 +29,22 @@ const ModulePreferences = () => {
     return (
         <Module title={"Preferences"}>
             <div className={'centerC'} style={{ justifyContent: 'start' }}>
+                <p>General UI</p>
                 <div>
+                    <Switch color="primary" checked={ highContrast } disabled={ true }/>
                     <label style={{ cursor: 'pointer' }}>
                         Enable high contrast
                     </label>
-                    <Switch color="primary" checked={ highContrast } disabled={ true }/>
                 </div>
+                <br />
+                <p>New workout</p>
+                <div onClick={ () => setCollapseSets(!collapseSets) }>
+                    <Switch color="primary" checked={ collapseSets }/>
+                    <label style={{ cursor: 'pointer' }}>
+                        Collapse consecutive sets
+                    </label>
+                </div>
+
             </div>
             <div style={buttonWrapperStyle}>
                 <input
