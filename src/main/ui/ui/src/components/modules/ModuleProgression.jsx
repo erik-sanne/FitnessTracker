@@ -60,13 +60,15 @@ const createConfig = (data, fullHistory, mergeAxes) => {
         data: {
             labels: xLabels,
             datasets: mergeAxes ? [{
-                label: 'Effort',
+                label: 'Relative effort',
                 yAxisID: 'wei-y-id',
                 fill: false,
                 borderColor: 'rgba(107,166,239,0.35)',
                 backgroundColor: 'rgba(107,166,239,0.35)',
                 borderWidth: 2,
                 lineTension: 0,
+                pointRadius: 3,
+                showLine: false,
                 data: combined
             }, {
                 label: 'Trend',
