@@ -244,14 +244,14 @@ const ModuleProgression = () => {
                                     <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
                                         setShowFullHistory(!showFullHistory);
                                     }}>
-                                        Show full history
+                                        Fit history
                                         <Switch color="primary" checked={ showFullHistory }/>
                                     </p>
                                     <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
                                         setSplitAxes(!splitAxes);
                                     }}>
-                                        Split axes
-                                        <Switch color="primary" checked={ splitAxes }/>
+                                        Progression curve
+                                        <Switch color="primary" checked={ !splitAxes }/>
                                     </p>
                                 </div>
                             </div>
