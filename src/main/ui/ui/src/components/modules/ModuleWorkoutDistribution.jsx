@@ -224,7 +224,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
             }
         }
         return {
-            filter: `opacity(${val}) drop-shadow(black 0px 0px 1px) `,
+            filter: `opacity(${val}) invert(1) hue-rotate(50deg) drop-shadow(black 0px 0px 1px) `,
             position: 'absolute',
             top: 0,
             left: 0
