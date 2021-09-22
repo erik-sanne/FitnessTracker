@@ -43,6 +43,15 @@ INSERT INTO workouts (user_id, date) VALUES
 (@UsrId, '2020-11-03 17:08:58.0'),
 (@UsrId, '2020-11-04 17:08:58.0'),
 (@UsrId, '2020-11-07 17:08:58.0'),
+(@UsrId, '2020-11-07 17:08:58.0'),
+(@UsrId, '2020-11-07 17:08:58.0'),
+(@UsrId, '2020-11-07 17:08:58.0'),
+(@UsrId, '2020-11-07 17:08:58.0'),
+(@UsrId, '2020-11-07 17:08:58.0'),
+(@UsrId, '2020-11-07 17:08:58.0'),
+(@UsrId, '2020-11-07 17:08:58.0'),
+(@UsrId, '2020-11-07 17:08:58.0'),
+(@UsrId, '2020-11-07 17:08:58.0'),
 (@UsrId, '2020-11-10 17:08:58.0');
 
 INSERT INTO workouts (user_id, date) VALUES
@@ -79,4 +88,13 @@ INSERT INTO workoutset (exercise_name, reps, weight, workout_id) VALUES
 ( 'ROW', 6, 70, 30 );
 
 INSERT INTO workoutset (exercise_name, reps, weight, workout_id) VALUES
-( 'BENCH_PRESS', 5, 80, 40 )
+( 'BENCH_PRESS', 5, 80, 40 );
+
+INSERT INTO workoutset (exercise_name, reps, weight, workout_id) VALUES
+( 'DEADLIFT', 5, 80, 45 );
+
+INSERT INTO workoutset (exercise_name, reps, weight, workout_id) VALUES
+( 'DEADLIFT', 7, 80, 46 );
+
+INSERT INTO workoutset (exercise_name, reps, weight, workout_id) VALUES
+( 'DEADLIFT', 3, 90, 47 );

@@ -38,6 +38,9 @@ const SectionStatistics = () => {
             <Module title="Workout distribution">
                 <ModuleWorkoutDistribution data={ workoutDistribution } rangeCallback={ updateDistRange } />
             </Module>
+            <Module title="Progression">
+                <ModuleSetAverages />
+            </Module>
             {
                 !loadingRecords &&
                 selfRecords.filter(e => e.exercise === "BENCH_PRESS").length > 0 &&
@@ -53,9 +56,6 @@ const SectionStatistics = () => {
                     <ModulePRs data={loadingRecords ? [] : selfRecords}/>
                 </Module> : <></>
             }
-            <Module title="Progression">
-                <ModuleSetAverages />
-            </Module>
 
             <Module title="One Repetition Max">
                 <ModuleORM />

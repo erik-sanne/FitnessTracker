@@ -1,11 +1,11 @@
 import React, {useState, useRef, useEffect} from "react";
 
 const DataSelect = ({options, value, onSelect, placeholder = "Select something...", style, className}) => {
-    const [ intermediateValue, setIntermediateValue] = useState('');
+    const [ intermediateValue, setIntermediateValue] = useState("");
     const ref = useRef(null);
 
     useEffect(() => {
-        setIntermediateValue(value);
+        setIntermediateValue(value ? value : "");
     }, [value])
 
     const onChange = (event) => {
@@ -21,22 +21,26 @@ const DataSelect = ({options, value, onSelect, placeholder = "Select something..
         setIntermediateValue("");
     }
 
+    const id = Math.floor(Math.random() * 9999999);
+
     return (
         <>
             <input name={"type"}
+                   type={"text"}
+                   list={"options" + id}
+                   autoComplete={ "off" }
+                   aria-autocomplete={ "none" }
                    style={{...style}}
                    className={ className }
-                   list="options"
                    placeholder={placeholder}
                    value={ intermediateValue }
-                   autoComplete={ "off" }
                    ref={ ref }
                    onChange={ onChange }
                    onFocus={ onFocus } />
-            <datalist id="options">
+            <datalist id={"options"+id}>
                 {
                     options.map((name, key) =>
-                        <option key={key} value={ name } />
+                        <option key={ key } value={ name } />
                     )
                 }
             </datalist>

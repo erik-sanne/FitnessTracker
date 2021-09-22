@@ -9,6 +9,7 @@ import {getCookie} from "react-use-cookie";
 import Switch from '@material-ui/core/Switch';
 import DisplayValue from "./DisplayValue";
 import regression from 'regression';
+import LocalStorage from "../../services/LocalStorage";
 
 const getDates = (startDate, stopDate) => {
     let dateArray = [];
@@ -183,7 +184,7 @@ const ModuleProgression = () => {
     const { data: exercises, loading } = useFetch('/api/exercises');
     const [ srcData, setSrcData ] = useState(null);
     const [ chartData, setChartData ] = useState(null);
-    const [ selectedExercise, setSelectedExercise ] = useState(null);
+    const [ selectedExercise, setSelectedExercise ] = useState("");
     const [ message, setMessage ] = useState("Select an exercise to view your progression");
     const [ showFullHistory, setShowFullHistory ] = useState(true);
     const [ splitAxes, setSplitAxes ] = useState(false);
@@ -204,15 +205,21 @@ const ModuleProgression = () => {
     }
 
     useEffect(() => {
+        setSelectedExercise(LocalStorage.get("progression_saved_exercise", null));
+    }, [])
+
+    useEffect(() => {
         if (selectedExercise)
             getExerciseData(selectedExercise);
     }, [selectedExercise])
+
 
     useEffect(() => {
         if (!srcData)
             setMessage("Select an exercise to view your progression");
         else if (srcData.length > 1) {
             setChartData(createConfig(srcData, showFullHistory, !splitAxes));
+            LocalStorage.set("progression_saved_exercise", selectedExercise);
             setMessage("");
         } else if (srcData.length > 0)
             setMessage("Not enough data available for this exercise");
@@ -256,9 +263,8 @@ const ModuleProgression = () => {
                         { message !== "" && <DisplayValue text={ message } value={""}
                                                           style={{textAlign: "center", padding: '32% 0%'}}/> }
                     </div>
-                    <div style={{display: "flex", marginTop: "10px"}}>
-                        <DataSelect options={exercises.map(e => e.replace(/_/g, ' '))} onSelect={ (ex) => setSelectedExercise(ex) } style={selectStyle} />
-                    </div>
+                    <DataSelect value={ selectedExercise } onSelect={ (ex) => setSelectedExercise(ex) } options={ exercises.map(e => e.replace(/_/g, ' ')) } />
+                    <DataSelect value={ selectedExercise } onSelect={ (ex) => setSelectedExercise(ex) } options={ exercises.map(e => e.replace(/_/g, ' ')) } style={{display: 'none'}}  />
                 </>
             }
         </>
@@ -268,10 +274,6 @@ const ModuleProgression = () => {
 const camelCase = (text) => {
     text = text.toLowerCase();
     return text.charAt(0).toUpperCase() + text.slice(1)
-}
-
-const selectStyle = {
-    width: '100vw'
 }
 
 export default ModuleProgression;

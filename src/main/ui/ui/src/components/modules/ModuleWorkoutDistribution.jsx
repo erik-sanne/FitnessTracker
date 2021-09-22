@@ -261,7 +261,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                                 <div style={{position: 'relative' }}>
                                     {
                                         chartData.data.datasets[0].data.map((val, idx) => {
-                                            return <img src={getImage(chartData.data.labels[idx])} style={getImgCss(val)}/>
+                                            return <img key={idx} src={getImage(chartData.data.labels[idx])} style={getImgCss(val)}/>
                                         })
                                     }
                                     <img src={body} style={ imgStyle } />
