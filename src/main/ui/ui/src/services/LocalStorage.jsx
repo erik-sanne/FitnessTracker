@@ -1,9 +1,11 @@
 
 const LocalStorage = class {
 
-    static get = (key, orElse = null) => {
+    static get = (key, subKey=null, orElse = null) => {
         const object = JSON.parse(localStorage.getItem(key));
-        return object ? object : orElse;
+        if (!subKey)
+            return object ? object : orElse;
+        return object ? object[subKey] ? object [subKey] : orElse : orElse;
 
     }
 

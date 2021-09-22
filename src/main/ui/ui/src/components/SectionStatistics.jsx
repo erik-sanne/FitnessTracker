@@ -9,6 +9,10 @@ import ModulePRs from "./modules/ModulePRs";
 import get from "../services/Get";
 import ModuleORM from "./modules/ModuleORM";
 import ModuleExerciseInfo from "./modules/ModuleExerciseInfo";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {NavLink} from "react-router-dom";
+import LocalStorage from "../services/LocalStorage";
 
 const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
@@ -64,8 +68,43 @@ const SectionStatistics = () => {
             <Module title="Exercise information">
                 <ModuleExerciseInfo />
             </Module>
+
+            { !LocalStorage.get("user_preferences", 'noQuickNew', false) &&
+                <NavLink to="/new">
+                    <div style={addWrapStyle}>
+                            <FontAwesomeIcon icon={ faPlus } style={addInnerStyle}/>
+                    </div>
+                </NavLink>
+            }
         </div>
     );
+}
+
+const addWrapStyle = {
+    backgroundColor: 'rgb(39 69 107 / 88%)',
+    border: '1px solid rgba(107,166,239,0.5)',
+    fontSize: 'min(12vw, 3rem)',
+    borderRadius: '10rem',
+    textAlign: 'center',
+    width: 'min(24vw, 6rem)',
+    height: 'min(24vw, 6rem)',
+    right: 'min(5vw, 2rem)',
+    bottom: 'min(5vw, 2rem)',
+    position: 'fixed',
+    cursor: 'pointer',
+    filter: 'drop-shadow(0px 0px 5px black)',
+    "&:hover": {
+        width: 'min(30vw, 10rem)',
+        height: 'min(30vw, 10rem)'
+    },
+}
+
+const addInnerStyle = {
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        WebkitTransform: 'translate(-50%, -50%)',
+        transform: 'translate(-50%, -50%)'
 }
 
 export default SectionStatistics;

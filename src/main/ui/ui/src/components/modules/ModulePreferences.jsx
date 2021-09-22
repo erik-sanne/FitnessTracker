@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import Module from "./Module";
 import {Switch} from "@material-ui/core";
+import LocalStorage from "../../services/LocalStorage";
 
 const ModulePreferences = () => {
     const LS_KEY_UP = "user_preferences"
@@ -8,24 +9,27 @@ const ModulePreferences = () => {
     const [ highContrast, setHighContrast ] = useState(false);
     const [ collapseSets, setCollapseSets ] = useState(false);
     const [ fullColorManikin, setFullColorManikin ] = useState(false);
+    const [ noQuickNew, setNoQuickNew ] = useState(false);
 
     useEffect(() => {
-        const userPreferences = JSON.parse(localStorage.getItem(LS_KEY_UP));
+        const userPreferences = LocalStorage.get(LS_KEY_UP);
         if (!userPreferences)
             return;
 
         setHighContrast(userPreferences.highContrast);
         setCollapseSets(userPreferences.collapseSets);
-        setFullColorManikin(userPreferences.fullColorManikin)
+        setFullColorManikin(userPreferences.fullColorManikin);
+        setNoQuickNew(userPreferences.noQuickNew);
     }, [])
 
 
     const save = () => {
-        localStorage.setItem(LS_KEY_UP, JSON.stringify({
+        LocalStorage.set(LS_KEY_UP, {
             highContrast: highContrast,
             collapseSets: collapseSets,
-            fullColorManikin: fullColorManikin
-        }));
+            fullColorManikin: fullColorManikin,
+            noQuickNew: noQuickNew
+        });
         window.location.reload();
     }
 
@@ -45,6 +49,12 @@ const ModulePreferences = () => {
                     <Switch color="primary" checked={ fullColorManikin }/>
                     <label style={{ cursor: 'pointer' }}>
                         Full color manikin
+                    </label>
+                </div>
+                <div onClick={ () => setNoQuickNew(!noQuickNew) }>
+                    <Switch color="primary" checked={ noQuickNew }/>
+                    <label style={{ cursor: 'pointer' }}>
+                        Hide quick-button for new workout
                     </label>
                 </div>
                 <p>New workout</p>
