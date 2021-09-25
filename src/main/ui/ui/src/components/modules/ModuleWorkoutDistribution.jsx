@@ -266,7 +266,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                                     }
                                     <img src={body} style={ imgStyle } />
                                 </div>
-                                <Graph data={chartData} />
+                                <Graph data={chartData} style={{ marginTop: '0px'}}/>
                             </div>
                         }
                     </div>

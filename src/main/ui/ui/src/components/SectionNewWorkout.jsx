@@ -201,43 +201,45 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                             </tbody>
                         </table> :
                             <>
+                                <div style={{margin: '1em 0em'}}>
                                 { sets.map((set, key, array) => (key === 0 || array.indexOf(array.filter(e => e.type === set.type)[0]) === key) &&
-                                <Accordion square key={set.type} style={collapseStyle}>
-                                    <AccordionSummary aria-controls={`${set.type}-content`}  id={`${set.type}-header`}>
-                                        <span style={{margin: 'auto'}}>{set.type}</span>
-                                        <span style={{
-                                            margin: 'auto',
-                                            flex: '1',
-                                            paddingLeft: '10px'
-                                        }}>{"x" + array.filter((s) => s.type === set.type).length}</span>
-                                    </AccordionSummary>
-                                    <AccordionDetails style={{display: 'block'}}>
-                                        <table>
-                                            <thead>
-                                            <tr>
-                                                <th> Set</th>
-                                                <th style={{textAlign: 'right', width: 'auto'}}> Repetitions</th>
-                                                <th> Weight</th>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            { array.map((s, k) =>
-                                                s.type === set.type && <tr key={k} style={currentEdit === k ? editStyle : {cursor: 'pointer'}} onClick={() => toggleEdit(k)} id={k}>
-                                                    <td> #{ 1 } </td>
-                                                    <td> {currentEdit === k ? set.reps : s.reps} </td>
-                                                    <td> {currentEdit === k ? set.weight : s.weight !== '' ? s.weight : '-'} </td>
-                                                    <td><FontAwesomeIcon icon={faTrash} style={{
-                                                        ...trashCanStyle,
-                                                        visibility: currentEdit === k ? 'visible' : 'hidden'
-                                                    }} onClick={(e) => removeSet(e, k)}/></td>
+                                    <Accordion square key={set.type} style={collapseStyle}>
+                                        <AccordionSummary aria-controls={`${set.type}-content`}  id={`${set.type}-header`}>
+                                            <span style={{margin: 'auto'}}>{set.type}</span>
+                                            <span style={{
+                                                margin: 'auto',
+                                                flex: '1',
+                                                paddingLeft: '10px'
+                                            }}>{"× " + array.filter((s) => s.type === set.type).length}</span>
+                                        </AccordionSummary>
+                                        <AccordionDetails style={{display: 'block'}}>
+                                            <table>
+                                                <thead>
+                                                <tr>
+                                                    <th> Set</th>
+                                                    <th style={{textAlign: 'right', width: 'auto'}}> Repetitions</th>
+                                                    <th> Weight</th>
+                                                    <th></th>
                                                 </tr>
-                                            )}
-                                            </tbody>
-                                        </table>
-                                    </AccordionDetails>
-                                </Accordion> )
-                            }
+                                                </thead>
+                                                <tbody>
+                                                { array.map((s, k) =>
+                                                    s.type === set.type && <tr key={k} style={currentEdit === k ? editStyle : {cursor: 'pointer'}} onClick={() => toggleEdit(k)} id={k}>
+                                                        <td> #{ 1 } </td>
+                                                        <td> {currentEdit === k ? set.reps : s.reps} </td>
+                                                        <td> {currentEdit === k ? set.weight : s.weight !== '' ? s.weight : '-'} </td>
+                                                        <td><FontAwesomeIcon icon={faTrash} style={{
+                                                            ...trashCanStyle,
+                                                            visibility: currentEdit === k ? 'visible' : 'hidden'
+                                                        }} onClick={(e) => removeSet(e, k)}/></td>
+                                                    </tr>
+                                                )}
+                                                </tbody>
+                                            </table>
+                                        </AccordionDetails>
+                                    </Accordion> )
+                                    }
+                                </div>
                             </>
                         }
                     <input type="submit" value={ workoutId ? "Update" : "Create and Save"} onClick={ () => setModalVisible(true) }/>

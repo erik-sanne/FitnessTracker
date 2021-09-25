@@ -13,6 +13,7 @@ import {Redirect} from "react-router-dom";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Accordion from "@material-ui/core/Accordion";
+import Loader from "./ui_components/Loader";
 
 const SectionHistory = ({ userProfile }) => {
 
@@ -122,7 +123,7 @@ const SectionHistory = ({ userProfile }) => {
         <>
             <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
                 <Module title = "Previous workouts">
-                    { loading ? <Spinner  /> :
+                    { loading ? <Loader /> :
                         <>
                             { summaries.map(( summary ) =>
                                 <Accordion square key={summary.workout_id} expanded={ expanded === summary.workout_id } onChange={ () => { onToggle(summary.workout_id) } }  style={{ background: '#282c3400', color: 'inherit', boxShadow: '0px 0px 10px #00000060', border: '1px solid #cccccc10' }}>
