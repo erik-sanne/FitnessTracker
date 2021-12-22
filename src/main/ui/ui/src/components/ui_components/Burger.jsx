@@ -11,7 +11,7 @@ const Burger = ({ onClick, open }) => {
         top: '19px',
         fontSize: '2rem',
         right: '20px',
-        zIndex: 2,
+        zIndex: 20,
     }
 
     return (

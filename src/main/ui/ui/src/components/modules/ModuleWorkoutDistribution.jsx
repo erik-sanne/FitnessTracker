@@ -6,8 +6,9 @@ import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 import Slider from "@material-ui/core/Slider";
 import TextButton from "../ui_components/TextButton";
-import Switch from "@material-ui/core/Switch";
-import body from "../../resources/bodyparts/body.png";
+import body from "../../resources/bodyparts/svg/body.svg";
+import SwiperWrapper from "../ui_components/swiper/SwiperWrapper";
+import { SwiperSlide } from "swiper/react";
 
 const CALVES_SCALE = 2.0;
 const CORE_SCALE = 1.5;
@@ -216,15 +217,18 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
 
     const getImgCss = (val) => {
         if (fullColorManikin) {
-            return {
-                filter: `hue-rotate(${(1-val)*90}deg) brightness(3) saturate(${(val)*0.5 + 0.5}) drop-shadow(black 0px 0px 1px)`,
+            const css = {
+                //filter: `hue-rotate(${(1-val)*90}deg) brightness(3) saturate(${(val)*0.5 + 0.5}) drop-shadow(black 0px 0px 1px)`,
+                filter: `invert(0.5) sepia(1) contrast(5) hue-rotate(${(val)*120 - 50}deg)  opacity(0.9) drop-shadow(black 0px 0px 1px)`,
                 position: 'absolute',
                 top: 0,
                 left: 0
             }
+            return css;
         }
         return {
-            filter: `opacity(${val}) invert(1) hue-rotate(50deg) drop-shadow(black 0px 0px 1px) `,
+            //filter: `opacity(${val}) invert(1) hue-rotate(50deg) drop-shadow(black 0px 0px 1px) `,
+            filter: `invert(0.5) sepia(1) contrast(2) hue-rotate(160deg) opacity(${(val)}) drop-shadow(black 0px 0px 1px)`,
             position: 'absolute',
             top: 0,
             left: 0
@@ -235,30 +239,10 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
         <>
             { data.length < 1 || !chartData ? <Spinner /> :
                 <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        {
-                            data.length < 2 && <p style={{textAlign: "left", margin: '-5px'}} onClick={() => {
-                                setUseBody(!useBody);
-                            }}>
-                                Display manikin
-                                <Switch color="primary" checked={useBody}/>
-                            </p>
-                        }
-                        {
-                        !useBody && <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
-                            setUsePPL(!usePPL);
-                        }}>
-                            Muscle groups
-                            <Switch color="primary" checked={ usePPL }/>
-                            Splits
-                        </p>
-                        }
-                    </div>
                     <div className={ 'centerC' }>
-                        { (!useBody || data.length > 1) && <Graph data={ chartData } /> }
-                        { useBody &&
-                            <div style={getWrapperStyle()}>
-                                <div style={{position: 'relative' }}>
+                        <SwiperWrapper>
+                            <SwiperSlide>
+                                <div style={{position: 'relative', height: '100%' }}>
                                     {
                                         chartData.data.datasets[0].data.map((val, idx) => {
                                             return <img key={idx} src={getImage(chartData.data.labels[idx])} style={getImgCss(val)}/>
@@ -266,9 +250,11 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                                     }
                                     <img src={body} style={ imgStyle } />
                                 </div>
-                                <Graph data={chartData} style={{ marginTop: '0px'}}/>
-                            </div>
-                        }
+                            </SwiperSlide>
+                            <SwiperSlide>
+                                <Graph data={chartData} style={{ marginTop: '0px', width: '100%'}}/>
+                            </SwiperSlide>
+                        </SwiperWrapper>
                     </div>
                     <div style={{display: "flex", marginTop: "10px"}}>
                         { data.length > 1 ?
@@ -303,25 +289,15 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
 
 const getImage = (name) => {
     try {
-        const img = require(`../../resources/bodyparts/${name.toUpperCase().replace(" ", "_")}.png`);
-        return img.default
+        const img = require(`../../resources/bodyparts/svg/${name.toUpperCase().replace(" ", "_")}.svg`);
+        return img
     } catch (e) {
         return '';
     }
 }
 
-
-const getWrapperStyle = () => {
-    return {
-        justifyContent: 'space-around',
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: window.innerWidth < 600 ? 'column' : 'row'
-    }
-}
-
 const imgStyle = {
-    filter: 'invert(1) drop-shadow(0px 0px 2px black)'
+    filter: 'invert(1) contrast(0.5) drop-shadow(0px 0px 2px black)'
 }
 
 export default ModuleWorkoutDistribution;
