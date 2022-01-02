@@ -16,13 +16,17 @@ import com.ersa.tracker.services.APIService;
 import com.ersa.tracker.services.ExerciseService;
 import com.ersa.tracker.services.WorkoutService;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@Log4j2
 public class APIFunctions implements APIService {
     private static final int MAX_YEARS_DISPLAY = 5;
     private static final int WEEKS_IN_STANDARD_YEAR = 52;
@@ -60,8 +64,21 @@ public class APIFunctions implements APIService {
         cal.add(Calendar.DAY_OF_WEEK, -1);
         // ISO 8601
         cal.setMinimalDaysInFirstWeek(4);
+
         int currentWeek = cal.get(Calendar.WEEK_OF_YEAR);
         int currentYear = cal.get(Calendar.YEAR);
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy ww", Locale.GERMANY);
+        try {
+            Date date = df.parse(String.format("%d %d", currentYear, currentWeek));
+            if (date.after(cal.getTime())) {
+                log.info("week {} of year {} ahead of time. Subtracting one year", currentWeek, currentYear);
+                currentYear--;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         result.add(new Week(currentYear, currentWeek, 0));
 
         for (Workout workout : workouts) {
