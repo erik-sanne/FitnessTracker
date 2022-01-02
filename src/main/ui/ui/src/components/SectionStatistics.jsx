@@ -93,6 +93,7 @@ const addWrapStyle = {
     position: 'fixed',
     cursor: 'pointer',
     filter: 'drop-shadow(0px 0px 5px black)',
+    zIndex: 8,
     "&:hover": {
         width: 'min(30vw, 10rem)',
         height: 'min(30vw, 10rem)'
