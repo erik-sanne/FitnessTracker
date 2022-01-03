@@ -31,6 +31,8 @@ public class APIFunctions implements APIService {
     private static final int MAX_YEARS_DISPLAY = 5;
     private static final int WEEKS_IN_STANDARD_YEAR = 52;
 
+    private static Locale LOCALE_SWE = new Locale("sv","SE");
+
     private final WorkoutService workoutService;
     private final ExerciseService exerciseService;
     private final TargetRepository targetRepository;
@@ -64,7 +66,7 @@ public class APIFunctions implements APIService {
         // ISO 8601
         cal.setMinimalDaysInFirstWeek(4);
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyyww", Locale.GERMANY);
+        SimpleDateFormat df = new SimpleDateFormat("YYYYww", LOCALE_SWE);
         String yyyyww = df.format(cal.getTime());
         int currentWeek = Integer.parseInt(yyyyww.substring(4));
         int currentYear = Integer.parseInt(yyyyww.substring(0,4));
