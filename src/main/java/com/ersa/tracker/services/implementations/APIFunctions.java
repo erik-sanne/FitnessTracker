@@ -61,78 +61,56 @@ public class APIFunctions implements APIService {
         Iterable<Workout> workouts = workoutService.getWorkouts(user);
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_WEEK, -1);
         // ISO 8601
         cal.setMinimalDaysInFirstWeek(4);
 
-        int currentWeek = cal.get(Calendar.WEEK_OF_YEAR);
-        int currentYear = cal.get(Calendar.YEAR);
-
-        SimpleDateFormat df = new SimpleDateFormat("yyyy ww", Locale.GERMANY);
-        try {
-            Date date = df.parse(String.format("%d %d", currentYear, currentWeek));
-            if (date.after(cal.getTime())) {
-                log.info("week {} of year {} ahead of time. Subtracting one year", currentWeek, currentYear);
-                currentYear--;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        SimpleDateFormat df = new SimpleDateFormat("yyyyww", Locale.GERMANY);
+        String yyyyww = df.format(cal.getTime());
+        int currentWeek = Integer.parseInt(yyyyww.substring(4));
+        int currentYear = Integer.parseInt(yyyyww.substring(0,4));
 
         result.add(new Week(currentYear, currentWeek, 0));
 
         for (Workout workout : workouts) {
-            cal.setTime(workout.getDate());
-            cal.add(Calendar.DAY_OF_WEEK, -1);
 
-            if (Calendar.getInstance().get(Calendar.YEAR) - cal.get(Calendar.YEAR) > MAX_YEARS_DISPLAY)
+            Date nextEntryDate = workout.getDate();
+
+            if (Calendar.getInstance().getTimeInMillis() - nextEntryDate.getTime() > MAX_YEARS_DISPLAY * 31556952000L)
                 break;
 
-            int nextEntryWeek = cal.get(Calendar.WEEK_OF_YEAR);
-            int nextEntryYear = cal.get(Calendar.YEAR);
+            yyyyww = df.format(nextEntryDate);
+            int nextEntryWeek = Integer.parseInt(yyyyww.substring(4));
+            int nextEntryYear = Integer.parseInt(yyyyww.substring(0,4));
 
-            Week lastRecord = result.get(result.size() - 1);
-
-            int differenceInWeeks = (lastRecord.getWeekNumber() - nextEntryWeek);
-            int differenceInYears = lastRecord.getYear() - nextEntryYear;
-
-            int weeksDifference = differenceInWeeks + WEEKS_IN_STANDARD_YEAR * differenceInYears;
-
-            if (weeksDifference == 0) {
-                lastRecord.setTotalWorkouts(lastRecord.getTotalWorkouts() + 1);
+            Week prevEntry = result.get(result.size()-1);
+            if (prevEntry.getWeekNumber() == nextEntryWeek && prevEntry.getYear() == nextEntryYear) {
+                prevEntry.setTotalWorkouts(prevEntry.getTotalWorkouts()+1);
                 continue;
             }
 
-            int week = lastRecord.getWeekNumber() - 1;
-            int year = lastRecord.getYear();
-
-            while (year > nextEntryYear || week != nextEntryWeek) {
-                if (week == 0) {
-                    if (nextEntryWeek == WEEKS_IN_STANDARD_YEAR + 1)
-                        week = WEEKS_IN_STANDARD_YEAR + 1;
-                    else
-                        week = WEEKS_IN_STANDARD_YEAR;
-                    year--;
-                    continue;
-                }
-
-                result.add(new Week(year, week, 0));
-                week--;
+            int emptyEntryWeek = -1;
+            int emptyEntryYear = -1;
+            while (true) {
+                cal.add(Calendar.WEEK_OF_YEAR, -1);
+                yyyyww = df.format(cal.getTime());
+                emptyEntryWeek = Integer.parseInt(yyyyww.substring(4));
+                emptyEntryYear = Integer.parseInt(yyyyww.substring(0,4));
+                if (emptyEntryWeek == nextEntryWeek && emptyEntryYear == nextEntryYear)
+                    break;
+                else
+                    result.add(new Week(emptyEntryYear, emptyEntryWeek, 0));
             }
-
+            cal.setTime(nextEntryDate);
             result.add(new Week(nextEntryYear, nextEntryWeek, 1));
         }
 
         final int minimumWeeks = 7;
         for (int i = result.size(); i < minimumWeeks; i++) {
-            Week prev = result.get(result.size() - 1);
-            int week = prev.getWeekNumber() - 1;
-            int year = prev.getYear();
-            if (week == 0) {
-                year--;
-                week = WEEKS_IN_STANDARD_YEAR;
-            }
-            result.add(new Week(year, week, 0));
+            cal.add(Calendar.WEEK_OF_YEAR, -1);
+            yyyyww = df.format(cal.getTime());
+            int emptyEntryWeek = Integer.parseInt(yyyyww.substring(4));
+            int emptyEntryYear = Integer.parseInt(yyyyww.substring(0,4));
+            result.add(new Week(emptyEntryYear, emptyEntryWeek, 0));
         }
 
         return result;
