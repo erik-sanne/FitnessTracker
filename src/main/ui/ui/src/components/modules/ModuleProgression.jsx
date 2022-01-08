@@ -255,7 +255,6 @@ const ModuleProgression = () => {
         <>
             { loading ? <Spinner /> :
                 <>
-
                     <div className={'centerC'}>
                         { chartData && message === "" &&
                         <>
@@ -263,29 +262,32 @@ const ModuleProgression = () => {
                                 <h2 style={{ fontWeight: 'bold', flex: 1, padding: '9px', fontSize: 'calc(10px + 1vmin)'}}>
                                     { camelCase(selectedExercise) }
                                 </h2>
-                                <div style={{ textAlign: "right", flex: 1}}>
-                                    <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
-                                        setShowFullHistory(!showFullHistory);
-                                    }}>
-                                        Fit history
-                                        <Switch color="primary" checked={ showFullHistory }/>
-                                    </p>
-                                    <p style={{ textAlign: "right", margin: '-5px'}} onClick={ () => {
-                                        setSplitAxes(!splitAxes);
-                                    }}>
-                                        Progression curve
-                                        <Switch color="primary" checked={ !splitAxes }/>
-                                    </p>
-                                </div>
                             </div>
                             <div className={'centerC'}>
                                 <Graph data={ chartData }/>
+                                <div style={{textAlign: "right", display: "inline-flex", justifyContent: "space-around", paddingTop: "20px" }}>
+                                    <div style={{ textAlign: "center", flex: 1}} onClick={ () => {
+                                        setShowFullHistory(!showFullHistory);
+                                    }}>
+                                        <b><p style={{ margin: "0" }}>Fit history onto graph</p></b>
+                                        <span><Switch color="primary" checked={ showFullHistory }/></span>
+                                    </div>
+                                    <div style={{ textAlign: "center", flex: 1}} onClick={ () => {
+                                        setSplitAxes(!splitAxes);
+                                    }}>
+                                        <b><p style={{ margin: "0" }}>Progression curve</p></b>
+                                        <span><Switch color="primary" checked={ !splitAxes }/></span>
+                                    </div>
+                                </div>
                             </div>
                         </>
                         }
                         { message !== "" && <DisplayValue text={ message } value={""}
                                                           style={{textAlign: "center", padding: '32% 0%'}}/> }
+
+
                     </div>
+
                     <DataSelect value={ selectedExercise } onSelect={ (ex) => setSelectedExercise(ex) } options={ exercises.map(e => e.replace(/_/g, ' ')) } />
                     <DataSelect value={ selectedExercise } onSelect={ (ex) => setSelectedExercise(ex) } options={ exercises.map(e => e.replace(/_/g, ' ')) } style={{display: 'none'}}  />
                 </>

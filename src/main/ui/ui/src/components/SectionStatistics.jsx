@@ -36,13 +36,13 @@ const SectionStatistics = () => {
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
-            <Module title = "Weekly workouts">
+            <Module title = "Weekly workouts" className={ "weekly" }>
                 <ModuleWorkoutDays data={ !loadingWorkouts ? [ selfWorkoutsPerWeek ] : [] } />
             </Module>
-            <Module title="Workout distribution">
+            <Module title="Workout distribution" className={ "distribution" }>
                 <ModuleWorkoutDistribution data={ workoutDistribution } rangeCallback={ updateDistRange } />
             </Module>
-            <Module title="Progression">
+            <Module title="Progression" className={ "progression" }>
                 <ModuleSetAverages />
             </Module>
             {
@@ -50,22 +50,22 @@ const SectionStatistics = () => {
                 selfRecords.filter(e => e.exercise === "BENCH_PRESS").length > 0 &&
                 selfRecords.filter(e => e.exercise === "SQUAT").length > 0 &&
                 selfRecords.filter(e => e.exercise === "DEADLIFT").length > 0 ?
-                <Module title="Powerlift ratios">
+                <Module title="Powerlift ratios" className={ "ratios" }>
                     <ModuleBSD data={loadingRecords ? [] : [ selfRecords ]}/>
                 </Module> : <></>
             }
             {
                 !loadingRecords && selfRecords.length > 0 ?
-                <Module title="Weight records">
+                <Module title="Weight records" className={ "records" }>
                     <ModulePRs data={loadingRecords ? [] : selfRecords}/>
                 </Module> : <></>
             }
 
-            <Module title="One Repetition Max">
+            <Module title="One Repetition Max" className={ "orm" }>
                 <ModuleORM />
             </Module>
 
-            <Module title="Exercise information">
+            <Module title="Exercise information" className={ "info" }>
                 <ModuleExerciseInfo />
             </Module>
 

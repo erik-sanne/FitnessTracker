@@ -75,3 +75,20 @@
   justify-content: center;
   flex-direction: column;
 }
+
+@media screen and (min-width: 1920px) {
+  .module.progression {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 2;
+  }
+
+  .module.distribution {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .module.weekly {
+    grid-column: 3;
+    grid-row: 2;
+  }
+}
