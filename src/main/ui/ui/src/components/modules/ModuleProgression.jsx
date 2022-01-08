@@ -38,8 +38,31 @@ const createConfig = (data, fullHistory, mergeAxes) => {
     const combined = data.map(e => Math.round((e.combined / maxCombined) * 100));
 
     const zip = (a, b) => a.map((k, i, arr) => [getMagicNumberFromDate(k, arr[0]), b[i]]);
-    const pts = zip(xLabels, combined);
+    let pts = zip(xLabels, combined);
+    /** Outlier removal **/
+    const funcPre = regression.polynomial(pts, { order: 2, precision: 100 });
+    let errors = pts.map(point => {
+        let x = point[0];
+        let y = point[1];
+        let y_pred = funcPre.predict(x)[1];
+        let mse = Math.abs(Math.pow(y_pred, 2) - Math.pow(y, 2));
+        return { x: x, mse: mse };
+    });
+    let n_elem_to_remove = errors.length * 0.2;
+    for (let i = 0; i < n_elem_to_remove; i++) {
+        let largest = { mse: -1 };
+        errors.forEach(e => {
+            if (e.mse > largest.mse) {
+                largest = e;
+            }
+        });
+        errors = errors.filter(e => e !== largest);
+    }
+    const x_to_keep = errors.map(e => e.x);
+    pts = pts.filter(e => x_to_keep.includes(e[0]));
+    /** Done: Outlier removal **/
     const func = regression.polynomial(pts, { order: 2, precision: 100 });
+
 
     const plot = getDates(new Date(xLabels[0]), new Date()).map(d => (d.toISOString().split('T')[0])).map((d, i, arr) => ({ x: d, y: func.predict(getMagicNumberFromDate(d, arr[0]))[1] }));
 
