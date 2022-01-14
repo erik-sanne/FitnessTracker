@@ -64,7 +64,7 @@ const createConfig = (data, fullHistory, mergeAxes) => {
     const func = regression.polynomial(pts, { order: 2, precision: 100 });
 
 
-    const plot = getDates(new Date(xLabels[0]), new Date()).map(d => (d.toISOString().split('T')[0])).map((d, i, arr) => ({ x: d, y: func.predict(getMagicNumberFromDate(d, arr[0]))[1] }));
+    let plot = getDates(new Date(xLabels[0]), new Date()).map(d => (d.toISOString().split('T')[0])).map((d, i, arr) => ({ x: d, y: Math.max(func.predict(getMagicNumberFromDate(d, arr[0]))[1], 0) }));
 
     const today = new Date();
     const end = today.setDate(today.getDate() + 1);
@@ -84,7 +84,7 @@ const createConfig = (data, fullHistory, mergeAxes) => {
         data: {
             labels: xLabels,
             datasets: mergeAxes ? [{
-                label: 'Relative effort',
+                label: 'Volume / max',
                 yAxisID: 'wei-y-id',
                 fill: false,
                 borderColor: 'rgba(107,166,239,0.35)',
@@ -92,16 +92,18 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                 borderWidth: 2,
                 lineTension: 0,
                 pointRadius: 3,
+                pointHoverRadius: 5,
                 showLine: false,
                 data: combined
             }, {
-                label: 'Trend',
+                label: 'Progression',
                 yAxisID: 'wei-y-id',
                 borderDash: [15, 3],
                 fill: false,
                 borderColor: 'rgb(239,169,107)',
                 backgroundColor: 'rgb(239,164,107)',
-                borderWidth: 2,
+                borderWidth: 1,
+                pointHoverRadius: 0,
                 lineTension: 0,
                 //function: function (x) { return func.predict(x)[1]; },
                 data: plot
@@ -196,6 +198,28 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                     },
                     zoom: {
                         enabled: false
+                    }
+                }
+            },
+            tooltips: {
+                mode: 'index',
+                filter: function (tooltipItem) {
+                    return tooltipItem.datasetIndex === 0;
+                },
+                callbacks: {
+                    footer: function (context) {
+                        let pointInfo = context[0];
+                        if (!pointInfo || pointInfo.datasetIndex !== 0)
+                            return '';
+
+
+                        return data[pointInfo.index].sets.map(({id, reps, weight}, index) => `Set ${index + 1}: ${reps} × ${weight > 0 ? weight + 'kg' : 'bw'}`);
+                    },
+                    label: function (context) {
+                        let label = context.yLabel || '';
+                        if (label === 100)
+                            return " Best workout to date"
+                        return " " + label + "% relative to best workout";
                     }
                 }
             }
