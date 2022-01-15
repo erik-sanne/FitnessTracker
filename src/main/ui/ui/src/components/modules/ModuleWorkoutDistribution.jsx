@@ -10,9 +10,6 @@ import body from "../../resources/bodyparts/svg/body.svg";
 import SwiperWrapper from "../ui_components/swiper/SwiperWrapper";
 import { SwiperSlide } from "swiper/react";
 
-const CALVES_SCALE = 2.0;
-const CORE_SCALE = 1.5;
-
 const manualOrderingPass = (data, ppl=false) => {
     if (ppl) {
         return [
@@ -34,12 +31,12 @@ const manualOrderingPass = (data, ppl=false) => {
     }
 
     return [
-        { x: "CORE", y: data["CORE"] * CORE_SCALE},
+        { x: "CORE", y: data["CORE"]},
         //{ x: "OBLIQUES", y: data["OBLIQUES"] },
         { x: "GLUTES", y: data["GLUTES"] },
         { x: "HAMSTRINGS", y: data["HAMSTRINGS"] },
         { x: "QUADS", y: data["QUADS"] },
-        { x: "CALVES", y: data["CALVES"] * CALVES_SCALE },
+        { x: "CALVES", y: data["CALVES"]},
         { x: "TRAPS", y: data["TRAPS"] },
         { x: "RHOMBOIDS", y: data["RHOMBOIDS"] },
         { x: "LATS", y: data["LATS"] },
@@ -53,28 +50,16 @@ const manualOrderingPass = (data, ppl=false) => {
     ].map(it => { it.x = camelCase(it.x); return it;})
 };
 
-const interpolate = (values, factor) => {
-    let result = []
-    const len = values.length;
-    for (let i = 0; i < len; i++) {
-        let sum = 0;
-        for (let j = -factor; j <= +factor; j++) {
-            const index = (((i + j) % len) + len) % len;
-            const falloff = 1 / (1 + Math.abs(j));
-            sum += values[index] * falloff;
-        }
-        result[i] = sum;
-    }
-    return result;
-}
-
 const createConfig = (data=[], usePPL = false, useBody = false) => {
     const sorted = manualOrderingPass(data[0], usePPL);
     const xLabels = sorted.map( entry => entry.x)
 
     const datasets = data.map((set, idx) => {
         const sorted = manualOrderingPass(set, usePPL);
-        const yValues = interpolate(sorted.map( entry => Math.log(entry.y + 1)), 0);
+
+        let maxval = 0;
+        sorted.forEach(e => { maxval = e.y > maxval ? e.y : maxval });
+        const yValues = sorted.map( entry => entry.y / maxval);
         return {
             label: 'Sets per bodypart',
             backgroundColor: idx === 0 ? 'rgba(107,166,239,0.1)' : 'rgba(70,131,58,0.1)',

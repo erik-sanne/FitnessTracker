@@ -188,12 +188,6 @@ public class APIFunctions implements APIService {
             }
         }
 
-        float maxVal = resultMap.entrySet().stream().max((a, b) ->
-                Float.compare(a.getValue(), b.getValue())).get().getValue();
-        for (Map.Entry<String, Float> entry: resultMap.entrySet()) {
-            entry.setValue(entry.getValue() / maxVal);
-        }
-
         return resultMap;
     }
 
@@ -207,7 +201,7 @@ public class APIFunctions implements APIService {
             Map<WType, Float> setsPerType = new HashMap<>();
             types.forEach(type -> setsPerType.put(type, 0f));
 
-            workout.getSets().stream().forEach(set -> {
+            workout.getSets().forEach(set -> {
                 Exercise exercise = exerciseService.getExerciseByName(set.getExercise());
                 exercise.getPrimaryTargets().forEach(target -> {
                     target.getWtypes().forEach(type -> {
