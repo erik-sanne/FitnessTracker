@@ -74,6 +74,8 @@ INSERT INTO exercise (name) VALUES
 ('HIP_ADDUCTION'),
 ('GLUTE_KICKBACKS'),
 ('HIP_THRUST'),
+('RACK_PULLS'),
+('LUNGES'),
 
 ('BENCH_PRESS'),
 ('DUMBELL_PRESS'),
@@ -132,6 +134,11 @@ INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUE
 ('HIP_ADDUCTION', 'QUADS'),
 ('GLUTE_KICKBACKS', 'GLUTES'),
 ('HIP_THRUST', 'GLUTES'),
+('RACK_PULLS', 'GLUTES'),
+('RACK_PULLS', 'HAMSTRINGS'),
+('LUNGES', 'HAMSTRINGS'),
+('LUNGES', 'GLUTES'),
+('LUNGES', 'QUADS'),
 
 ('BENCH_PRESS', 'LOWER_CHEST'),
 ('BENCH_PRESS', 'UPPER_CHEST'),
