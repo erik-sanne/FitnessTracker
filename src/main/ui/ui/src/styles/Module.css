@@ -76,7 +76,7 @@
   flex-direction: column;
 }
 
-@media screen and (min-width: 1920px) {
+@media screen and (min-width: 2000px) {
   .module.progression {
     grid-column: 1 / span 2;
     grid-row: 1 / span 2;
