@@ -1,4 +1,4 @@
-package com.ersa.tracker.services;
+package com.ersa.tracker.services.general;
 import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
@@ -11,6 +11,7 @@ import java.util.Set;
 
 public interface WorkoutService {
     List<Set<WorkoutSet>> getPartitionedWorkoutSets(User user, Exercise exercise);
+    List<Set<WorkoutSet>> getPartitionedWorkoutSets(User user, String exercise);
     List<Workout> getWorkouts(User user, int limit);
     List<Workout> getWorkouts(User user);
     Workout getWorkout(User user, long workoutId);

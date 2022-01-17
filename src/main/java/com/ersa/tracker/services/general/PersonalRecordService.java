@@ -1,4 +1,4 @@
-package com.ersa.tracker.services.implementations;
+package com.ersa.tracker.services.general;
 
 import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.PersonalRecord;
@@ -8,7 +8,6 @@ import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.ExerciseRepository;
 import com.ersa.tracker.repositories.PersonalRecordRepository;
 import com.ersa.tracker.repositories.WorkoutRepository;
-import com.ersa.tracker.services.PRService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

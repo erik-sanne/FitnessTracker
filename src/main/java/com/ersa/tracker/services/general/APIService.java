@@ -1,4 +1,4 @@
-package com.ersa.tracker.services;
+package com.ersa.tracker.services.general;
 
 import com.ersa.tracker.dto.PredictedORM;
 import com.ersa.tracker.dto.SetAverage;

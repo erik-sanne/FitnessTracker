@@ -1,7 +1,6 @@
-package com.ersa.tracker.services.implementations;
+package com.ersa.tracker.services.general;
 import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.repositories.ExerciseRepository;
-import com.ersa.tracker.services.ExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,18 +1,16 @@
 package com.ersa.tracker.controllers;
 
-import com.ersa.tracker.dto.PredictedORM;
-import com.ersa.tracker.dto.SetAverage;
-import com.ersa.tracker.dto.Week;
-import com.ersa.tracker.dto.WorkoutSummary;
+import com.ersa.tracker.dto.*;
 import com.ersa.tracker.models.PersonalRecord;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.Workout;
-import com.ersa.tracker.services.APIService;
-import com.ersa.tracker.services.ExerciseService;
-import com.ersa.tracker.services.PRService;
-import com.ersa.tracker.services.WorkoutService;
+import com.ersa.tracker.services.general.APIService;
+import com.ersa.tracker.services.general.ExerciseService;
+import com.ersa.tracker.services.general.PRService;
+import com.ersa.tracker.services.general.WorkoutService;
 import com.ersa.tracker.services.authentication.AccountService;
+import com.ersa.tracker.services.general.achivements.AchievementService;
 import com.ersa.tracker.services.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,6 +38,7 @@ public class WorkoutController {
     private final PRService recordService;
     private final ExerciseService exerciseService;
     private final ProfileService profileService;
+    private final AchievementService achievementService;
 
     @Autowired
     public WorkoutController(final WorkoutService workoutService,
@@ -47,13 +46,15 @@ public class WorkoutController {
                              final ExerciseService exerciseService,
                              final PRService recordService,
                              final APIService apiService,
-                             final ProfileService profileService) {
+                             final ProfileService profileService,
+                             final AchievementService achievementService) {
         this.workoutService = workoutService;
         this.accountService = accountService;
         this.exerciseService = exerciseService;
         this.recordService = recordService;
         this.apiService = apiService;
         this.profileService = profileService;
+        this.achievementService = achievementService;
     }
 
     @GetMapping("api/workouts")
@@ -175,5 +176,11 @@ public class WorkoutController {
         User currentUser = accountService.getUserByPrincipal(principal);
         User friend = profileService.getFriend(currentUser, userId);
         return recordService.getRecordsObfuscated(friend);
+    }
+
+    @GetMapping("api/achievements")
+    public List<Achievement> getAchievements(final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return achievementService.getAchivements(currentUser);
     }
 }

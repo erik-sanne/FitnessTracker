@@ -1,4 +1,4 @@
-package com.ersa.tracker.services.implementations;
+package com.ersa.tracker.services.general;
 
 import com.ersa.tracker.dto.PredictedORM;
 import com.ersa.tracker.dto.SetAverage;
@@ -12,11 +12,7 @@ import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.TargetRepository;
 import com.ersa.tracker.repositories.WTypeRepository;
-import com.ersa.tracker.services.APIService;
-import com.ersa.tracker.services.ExerciseService;
-import com.ersa.tracker.services.WorkoutService;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;

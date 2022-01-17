@@ -1,4 +1,4 @@
-package com.ersa.tracker.services.implementations;
+package com.ersa.tracker.services.general;
 
 import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.Workout;
@@ -7,8 +7,6 @@ import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.WorkoutRepository;
 import com.ersa.tracker.repositories.WorkoutSetRepository;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
-import com.ersa.tracker.services.PRService;
-import com.ersa.tracker.services.WorkoutService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -80,6 +78,11 @@ public class WorkoutManager implements WorkoutService {
 
     @Override
     public List<Set<WorkoutSet>> getPartitionedWorkoutSets(final User user, final Exercise exercise) {
+        return getPartitionedWorkoutSets(user, exercise.getName());
+    }
+
+    @Override
+    public List<Set<WorkoutSet>> getPartitionedWorkoutSets(User user, String exercise) {
         return getWorkouts(user)
                 .stream()
                 .map(workout -> workout
@@ -87,7 +90,7 @@ public class WorkoutManager implements WorkoutService {
                         .stream()
                         .filter(set -> set
                                 .getExercise()
-                                .equals(exercise.getName()))
+                                .equals(exercise))
                         .collect(Collectors.toSet()))
                 .collect(Collectors.toList());
     }

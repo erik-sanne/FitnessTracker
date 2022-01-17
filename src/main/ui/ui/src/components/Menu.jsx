@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faChartPie, faHistory, faPlusCircle, faUserFriends} from "@fortawesome/free-solid-svg-icons";
+import {faChartPie, faHistory, faPlusCircle, faTrophy, faUserFriends} from "@fortawesome/free-solid-svg-icons";
 import { useMediaQuery } from 'react-responsive';
 import '../styles/glitch.css';
 import ProfileDisplay from "./ui_components/ProfileDisplay";
@@ -51,6 +51,11 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                     <li>
                         <NavLink to="/social" activeStyle={ activeClass } onClick={ onNavigate } >
                             <FontAwesomeIcon icon={ faUserFriends } style={{ marginRight: '25px'}}/>Friends
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/achievements" activeStyle={ activeClass } onClick={ onNavigate } >
+                            <FontAwesomeIcon icon={ faTrophy } style={{ marginRight: '25px'}}/>My Achievements
                         </NavLink>
                     </li>
                     { userProfile.permissionLevel !== 'BASIC' && <>

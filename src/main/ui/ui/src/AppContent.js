@@ -17,6 +17,7 @@ import get from "./services/Get.jsx"
 import Modal from "./components/ui_components/Modal";
 import {faStar} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import SectionAchievements from "./components/SectionAchievements";
 const AppContent = ({ logoutCallback }) => {
     const [ menuOpen, setMenuOpen ] = useState(false)
     const [ currentUserProfile, setCurrentUserProfile ] = useState(null)
@@ -61,7 +62,7 @@ const AppContent = ({ logoutCallback }) => {
             }
 
             setCurrentRecords(records);
-        })
+        });
     };
 
     useEffect(() => {
@@ -110,6 +111,10 @@ const AppContent = ({ logoutCallback }) => {
                         <Route path="/friend/:friendId">
                             <Header title={ "Our Statistics" } onClick={ burgerClick } />
                             <SectionStatisticsWithFriend userProfile={ currentUserProfile } />
+                        </Route>
+                        <Route path="/achievements">
+                            <Header title={ "My Achievements" } onClick={ burgerClick } />
+                            <SectionAchievements />
                         </Route>
                         <Route path="/updates">
                             <Header title={ "Version History" } onClick={ burgerClick } />
