@@ -4,6 +4,7 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Accordion from "@material-ui/core/Accordion";
 import get from "../services/Get";
 import Module from "./modules/Module";
+import Loader from "./ui_components/Loader";
 
 const SectionAchievements = () => {
     const [achieved, setAchieved] = useState([]);
@@ -23,7 +24,7 @@ const SectionAchievements = () => {
     }, []);
 
     if (achieved.length === 0 || nonAchieved.length === 0 )
-        return <></>
+        return <Loader />
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
