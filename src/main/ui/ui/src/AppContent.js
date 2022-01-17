@@ -114,7 +114,7 @@ const AppContent = ({ logoutCallback }) => {
                         </Route>
                         <Route path="/achievements">
                             <Header title={ "My Achievements" } onClick={ burgerClick } />
-                            <SectionAchievements />
+                            <SectionAchievements userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile }/>
                         </Route>
                         <Route path="/updates">
                             <Header title={ "Version History" } onClick={ burgerClick } />

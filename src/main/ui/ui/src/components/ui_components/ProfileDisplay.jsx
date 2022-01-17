@@ -1,7 +1,7 @@
 import React from "react";
 import defaultPicture from '../../resources/default_pp.png';
 
-const ProfileDisplay = ({ displayName, profilePicture, userId, permissionLevel, onClick, style }) => {
+const ProfileDisplay = ({ displayName, title, profilePicture, userId, permissionLevel, onClick, style }) => {
 
     return (
         <div style={{ ...style, display: displayName ? 'flex' : 'block', maxHeight: '48px' }} onClick={ () => { onClick && onClick()} }>
@@ -15,9 +15,20 @@ const ProfileDisplay = ({ displayName, profilePicture, userId, permissionLevel, 
                         whiteSpace: 'nowrap',
                         color: 'white'
                     }}>{displayName}</h4>
+                    {
+                        title && <p style={{
+                            position: 'absolute',
+                            top: '23px',
+                            fontSize: '12px',
+                            color: '#ccc',
+                            whiteSpace: 'nowrap',
+                            lineHeight: 'initial',
+                            margin: '0px'
+                        }}>{ title }</p>
+                    }
                     <p style={{
                         position: 'absolute',
-                        top: '24px',
+                        top: title ? '36px' : '24px',
                         fontSize: '12px',
                         color: '#ccc',
                         whiteSpace: 'nowrap',

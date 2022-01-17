@@ -5,15 +5,12 @@ import com.ersa.tracker.models.user.FriendRequest;
 import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import com.ersa.tracker.services.authentication.AccountService;
+import com.ersa.tracker.services.general.achivements.AchievementService;
 import com.ersa.tracker.services.user.FriendRequestManager;
 import com.ersa.tracker.services.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -25,14 +22,17 @@ public class UserController {
     private ProfileService profileService;
     private AccountService accountService;
     private FriendRequestManager friendsService;
+    private AchievementService achievementService;
 
     @Autowired
     public UserController(final ProfileService profileService,
                           final AccountService accountService,
-                          final FriendRequestManager friendsService) {
+                          final FriendRequestManager friendsService,
+                          final AchievementService achievementService) {
         this.profileService = profileService;
         this.accountService = accountService;
         this.friendsService = friendsService;
+        this.achievementService = achievementService;
     }
 
     @GetMapping("/users/profile")
@@ -77,6 +77,12 @@ public class UserController {
     public void denyFriend(@PathVariable final long requestId, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         friendsService.deleteFriendRequest(requestId, currentUser);
+    }
+
+    @PostMapping("/users/setTitle")
+    public void incomingFriendRequests(@RequestBody final String title, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        achievementService.setActive(currentUser, title);
     }
 
     public static class ProfileEdit {

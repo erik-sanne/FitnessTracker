@@ -1,5 +1,6 @@
 package com.ersa.tracker.models.user;
 
+import com.ersa.tracker.models.Achievement;
 import com.ersa.tracker.models.authentication.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,6 +40,10 @@ public class UserProfile {
     @Length(min = 4, max = 16)
     private String displayName;
 
+    @OneToOne
+    @JsonIgnore
+    private Achievement title;
+
     @Lob
     @JsonIgnore
     private byte[] profilePicture = null;
@@ -59,6 +64,12 @@ public class UserProfile {
         return profilePicture == null ? null : new String(profilePicture);
     }
 
+    @Transient
+    @JsonProperty(value = "title")
+    private String achievementName() {
+        return title == null ? null : title.getName();
+    }
+
     public User getUser() {
         return user;
     }
@@ -73,6 +84,14 @@ public class UserProfile {
 
     public void setDisplayName(final String displayName) {
         this.displayName = displayName;
+    }
+
+    public Achievement getTitle() {
+        return title;
+    }
+
+    public void setTitle(Achievement title) {
+        this.title = title;
     }
 
     public List<UserProfile> getFriends() {

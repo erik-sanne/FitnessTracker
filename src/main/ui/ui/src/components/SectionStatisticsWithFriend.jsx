@@ -44,7 +44,7 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
             <Module title={ "Parties" } style={{ background: 'linear-gradient(135deg, rgba(107,166,239,1), rgba(70,131,58,1))' }} headerStyle={{ backgroundImage: 'none' }}>
                 <div style={{ display: 'flex' }}>
                     <div style={{ flex: 1 }}>
-                    <ProfileDisplay profilePicture={ userProfile.profilePicture }/>
+                    <ProfileDisplay profilePicture={ userProfile.profilePicture } title={ userProfile.title }/>
                     <p> { userProfile.displayName } </p>
                     </div>
                     <div className={ 'glitch-wrapper' }>
@@ -55,7 +55,7 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
                     <div style={{ flex: 1, textAlign: 'right' }}>
                     { friendProfile &&
                         <>
-                            <ProfileDisplay profilePicture={ friendProfile.profilePicture } />
+                            <ProfileDisplay profilePicture={ friendProfile.profilePicture } title={ friendProfile.title } />
                             <p> { friendProfile.displayName } </p>
                         </> }
                     </div>

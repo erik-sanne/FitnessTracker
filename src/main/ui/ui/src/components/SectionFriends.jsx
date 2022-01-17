@@ -131,7 +131,7 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                 onClick={ () => setModVisible(true) }/>
 
                 { userProfile.friends && userProfile.friends.length > 0 && userProfile.friends.map((profile, key) =>
-                    <ProfileDisplay key={key} displayName={profile.displayName} userId={ profile.userId } profilePicture={ profile.profilePicture } permissionLevel={ profile.permissionLevel } onClick={() => {
+                    <ProfileDisplay key={key} displayName={profile.displayName} title={ profile.title } userId={ profile.userId } profilePicture={ profile.profilePicture } permissionLevel={ profile.permissionLevel } onClick={() => {
                         setRedirect(`/friend/${profile.userId}`)
                     }} style={{ cursor: 'pointer', margin: '5px 0px' }} />
                 )}

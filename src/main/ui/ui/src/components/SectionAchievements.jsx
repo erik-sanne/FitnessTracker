@@ -5,8 +5,10 @@ import Accordion from "@material-ui/core/Accordion";
 import get from "../services/Get";
 import Module from "./modules/Module";
 import Loader from "./ui_components/Loader";
+import TextButton from "./ui_components/TextButton";
+import {getCookie} from "react-use-cookie";
 
-const SectionAchievements = () => {
+const SectionAchievements = ({userProfile, updateUserProfile}) => {
     const [achieved, setAchieved] = useState([]);
     const [nonAchieved, setNonAchieved] = useState([]);
 
@@ -23,8 +25,30 @@ const SectionAchievements = () => {
         })
     }, []);
 
+    const setTitle = (title) => {
+
+        const token = getCookie('session_token')
+        fetch(`${process.env.REACT_APP_API_BASE}/users/setTitle`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Basic ${token}`
+            },
+            body: title
+        }).then(() => {
+            updateUserProfile();
+        });
+    }
+
     if (achieved.length === 0 || nonAchieved.length === 0 )
-        return <Loader />
+        return (
+            <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
+                    <Module title = "Achievements">
+                        <Loader />
+                    </Module>
+            </div>
+        );
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
@@ -39,6 +63,7 @@ const SectionAchievements = () => {
                         </AccordionSummary>
                         <AccordionDetails style={{ display: 'block'}}>
                             <p>{ achievement.description }</p>
+                            { <TextButton mini onClick={ () => setTitle(achievement.name) } disabled={ userProfile.title === achievement.name }>{ userProfile.title !== achievement.name ? "Set as display title" : "Current display title" }</TextButton>}
                         </AccordionDetails>
                     </Accordion>
                 )}
