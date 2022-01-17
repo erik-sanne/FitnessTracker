@@ -19,16 +19,16 @@ public class CappedCaptainAchievement extends AchievementProviderBase {
 
     @Override
     public String getDescription() {
-        return "Equipped with death star deltoids, Captain Capped has targeted all three heads of the deltoids 100 times each";
+        return "Equipped with death star deltoids, Captain Capped has targeted all three heads of the deltoids 250 times each";
     }
 
     @Override
     public boolean evaluate(User user) {
         boolean front =
                 workoutService.getPartitionedWorkoutSets(user, "MILITARY_PRESS").size() +
-                workoutService.getPartitionedWorkoutSets(user, "SHOULDER_PRESS").size() > 100;
-        boolean side = workoutService.getPartitionedWorkoutSets(user, "LATERAL_RAISES").size() > 100;
-        boolean rear = workoutService.getPartitionedWorkoutSets(user, "REVERSED_FLIES").size() > 100;
+                workoutService.getPartitionedWorkoutSets(user, "SHOULDER_PRESS").size() > 250;
+        boolean side = workoutService.getPartitionedWorkoutSets(user, "LATERAL_RAISES").size() > 250;
+        boolean rear = workoutService.getPartitionedWorkoutSets(user, "REVERSED_FLIES").size() > 250;
 
         return front && side && rear;
     }

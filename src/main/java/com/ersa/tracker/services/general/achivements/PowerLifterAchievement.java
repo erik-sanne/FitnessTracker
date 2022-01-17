@@ -19,14 +19,14 @@ public class PowerLifterAchievement extends AchievementProviderBase {
 
     @Override
     public String getDescription() {
-        return "Has performed 100 sets of deadlift, bench press and squat each";
+        return "Has performed 250 sets of deadlift, bench press and squat each";
     }
 
     @Override
     public boolean evaluate(User user) {
-        boolean bench = workoutService.getPartitionedWorkoutSets(user, "BENCH_PRESS").size() > 100;
-        boolean deadlift = workoutService.getPartitionedWorkoutSets(user, "DEADLIFT").size() > 100;
-        boolean squat = workoutService.getPartitionedWorkoutSets(user, "SQUAT").size() > 100;
+        boolean bench = workoutService.getPartitionedWorkoutSets(user, "BENCH_PRESS").size() > 250;
+        boolean deadlift = workoutService.getPartitionedWorkoutSets(user, "DEADLIFT").size() > 250;
+        boolean squat = workoutService.getPartitionedWorkoutSets(user, "SQUAT").size() > 250;
 
         return bench && deadlift && squat;
     }
