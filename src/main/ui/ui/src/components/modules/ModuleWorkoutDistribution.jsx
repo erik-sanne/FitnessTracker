@@ -202,26 +202,6 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
         rangeCallback(from, to);
     }
 
-    const getImgCss = (val) => {
-        if (fullColorManikin) {
-            const css = {
-                //filter: `hue-rotate(${(1-val)*90}deg) brightness(3) saturate(${(val)*0.5 + 0.5}) drop-shadow(black 0px 0px 1px)`,
-                filter: `invert(0.5) sepia(1) contrast(5) hue-rotate(${(val)*120 - 50}deg)  opacity(0.9) drop-shadow(black 0px 0px 1px)`,
-                position: 'absolute',
-                top: 0,
-                left: 0
-            }
-            return css;
-        }
-        return {
-            //filter: `opacity(${val}) invert(1) hue-rotate(50deg) drop-shadow(black 0px 0px 1px) `,
-            filter: `invert(0.5) sepia(1) contrast(2) hue-rotate(160deg) opacity(${(val)}) drop-shadow(black 0px 0px 1px)`,
-            position: 'absolute',
-            top: 0,
-            left: 0
-        }
-    }
-
     return (
         <>
             { data.length < 1 || !chartData ? <Spinner /> :
@@ -229,14 +209,16 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                     <div className={ 'centerC' }>
                         <SwiperWrapper>
                             <SwiperSlide>
-                                <div style={{position: 'relative', height: '100%' }}>
-                                    {
-                                        chartData.data.datasets[0].data.map((val, idx) => {
-                                            return <img key={idx} src={getImage(chartData.data.labels[idx])} style={getImgCss(val)}/>
-                                        })
-                                    }
-                                    <img src={body} style={ imgStyle } />
-                                </div>
+                                { chartData.data.datasets.map((dataset, index) =>
+                                    <div style={{ position: 'relative', height: '100%' }}>
+                                        {
+                                            dataset.data.map((val, idx) => {
+                                                return <img key={idx} src={getImage(chartData.data.labels[idx])} style={ getImgCss(val, index, fullColorManikin && chartData.data.datasets.length < 2) }/>
+                                            })
+                                        }
+                                        <img src={body} style={imgStyle} />
+                                    </div>
+                                )}
                             </SwiperSlide>
                             <SwiperSlide>
                                 <Graph data={chartData} style={{ marginTop: '0px', width: '100%'}}/>
@@ -272,6 +254,25 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
             }
         </>
     );
+}
+
+const getImgCss = (val, idx, fullColor) => {
+    if (fullColor) {
+        return {
+            //filter: `hue-rotate(${(1-val)*90}deg) brightness(3) saturate(${(val)*0.5 + 0.5}) drop-shadow(black 0px 0px 1px)`,
+            filter: `invert(0.5) sepia(1) contrast(5) hue-rotate(${(val)*120 - 50}deg)  opacity(0.9) drop-shadow(black 0px 0px 1px)`,
+            position: 'absolute',
+            top: 0,
+            left: 0
+        }
+    }
+    return {
+        //filter: `opacity(${val}) invert(1) hue-rotate(50deg) drop-shadow(black 0px 0px 1px) `,
+        filter: `invert(0.5) sepia(1) contrast(2) hue-rotate(${ idx === 0 ? '160deg' : '80deg'}) opacity(${(val)}) drop-shadow(black 0px 0px 1px)`,
+        position: 'absolute',
+        top: 0,
+        left: 0
+    }
 }
 
 const getImage = (name) => {
