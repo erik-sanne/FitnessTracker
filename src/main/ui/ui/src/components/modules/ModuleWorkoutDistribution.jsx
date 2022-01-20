@@ -84,7 +84,9 @@ const createConfig = (data=[], usePPL = false, useBody = false) => {
             aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
             scale: {
                 ticks: {
-                    display: false
+                    display: false,
+                    max: 1,
+                    min: 0
                 },
                 pointLabels: {
                     fontSize: 12,
