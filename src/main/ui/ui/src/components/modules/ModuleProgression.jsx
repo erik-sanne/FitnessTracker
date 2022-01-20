@@ -25,20 +25,7 @@ const getMagicNumberFromDate = (date, firstDate) => {
     return Math.round((new Date(date).getTime() - new Date(firstDate).getTime())  / (1000 * 60 * 60 * 24))
 }
 
-const createConfig = (data, fullHistory, mergeAxes) => {
-    data.sort(function(a,b){
-        // Turn your strings into dates, and then subtract them
-        // to get a value that is either negative, positive, or zero.
-        return new Date(a.date) - new Date(b.date);
-    });
-    const xLabels = data.map( e => e.date.split('T')[0]);
-    const weights = data.map( e => e.weight);
-    const reps = data.map( e => e.reps);
-    const maxCombined = Math.max(...data.map(e => e.combined))
-    const combined = data.map(e => Math.round((e.combined / maxCombined) * 100));
-
-    const zip = (a, b) => a.map((k, i, arr) => [getMagicNumberFromDate(k, arr[0]), b[i]]);
-    let pts = zip(xLabels, combined);
+const getPolyfitLinePlot = (xLabels, pts) => {
     /** Outlier removal **/
     const funcPre = regression.polynomial(pts, { order: 2, precision: 100 });
     let errors = pts.map(point => {
@@ -64,7 +51,28 @@ const createConfig = (data, fullHistory, mergeAxes) => {
     const func = regression.polynomial(pts, { order: 2, precision: 100 });
 
 
-    let plot = getDates(new Date(xLabels[0]), new Date()).map(d => (d.toISOString().split('T')[0])).map((d, i, arr) => ({ x: d, y: Math.max(func.predict(getMagicNumberFromDate(d, arr[0]))[1], 0) }));
+    return getDates(new Date(xLabels[0]), new Date()).map(d => (d.toISOString().split('T')[0])).map((d, i, arr) => ({ x: d, y: Math.max(func.predict(getMagicNumberFromDate(d, arr[0]))[1], 0) }));
+}
+
+const createConfig = (data, fullHistory, mergeAxes) => {
+    data.sort(function(a,b){
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(a.date) - new Date(b.date);
+    });
+    const xLabels = data.map( e => e.date.split('T')[0]);
+    const weights = data.map( e => e.weight);
+    const reps = data.map( e => e.reps);
+    const maxCombined = Math.max(...data.map(e => e.combined))
+    const maxWeight = Math.max(...data.map(e => e.weight))
+    const combined = data.map(e => Math.round((e.combined / maxCombined) * 100));
+    const weightScaled = data.map(e => Math.round((e.weight / maxWeight) * 100));
+
+    const zip = (a, b) => a.map((k, i, arr) => [getMagicNumberFromDate(k, arr[0]), b[i]]);
+    const ptsComb = zip(xLabels, combined);
+    const ptsWeight = zip(xLabels, weightScaled);
+    const progressionPts = getPolyfitLinePlot(xLabels, ptsComb);
+    const weightProgPts = getPolyfitLinePlot(xLabels, ptsWeight);
 
     const today = new Date();
     const end = today.setDate(today.getDate() + 1);
@@ -96,7 +104,7 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                 showLine: false,
                 data: combined
             }, {
-                label: 'Progression',
+                label: 'Total Progression',
                 yAxisID: 'wei-y-id',
                 borderDash: [15, 3],
                 fill: false,
@@ -106,7 +114,20 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                 pointHoverRadius: 0,
                 lineTension: 0,
                 //function: function (x) { return func.predict(x)[1]; },
-                data: plot
+                data: progressionPts
+            }, {
+                label: 'Weight progression',
+                yAxisID: 'wei-y-id',
+                borderDash: [15, 3],
+                fill: false,
+                borderColor: 'rgb(239,107,107)',
+                backgroundColor: 'rgb(239,107,107)',
+                borderWidth: 1,
+                pointHoverRadius: 0,
+                lineTension: 0,
+                hidden: true,
+                //function: function (x) { return func.predict(x)[1]; },
+                data: weightProgPts
             }] : [{
                 label: 'Repetitions',
                 yAxisID: 'rep-y-id',
