@@ -36,8 +36,7 @@ const ModuleExerciseInfo = () => {
 
     const getImage = (name) => {
         try {
-            const img = require(`../../resources/bodyparts/${name}.png`);
-            return img.default
+            return require(`../../resources/bodyparts/${name}.png`);
         } catch (e) {
             return '';
         }
