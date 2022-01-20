@@ -91,8 +91,8 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                 backgroundColor: 'rgba(107,166,239,0.35)',
                 borderWidth: 2,
                 lineTension: 0,
-                pointRadius: 3,
-                pointHoverRadius: 5,
+                pointRadius: 5,
+                pointHoverRadius: 8,
                 showLine: false,
                 data: combined
             }, {
