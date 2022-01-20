@@ -114,13 +114,13 @@ const SectionNewWorkout = ({updateUserProfile}) => {
             console.log(sets[key].type);
             setCurrentSet({...sets[key], type: sets[key].type})
         } else {
-            setCurrentEdit(null)
-            setCurrentSet({
-                reps: '',
-                weight: '',
-                type: ''
-            });
+            deSelect();
         }
+    }
+
+    const deSelect = () => {
+        setCurrentEdit(null)
+        setCurrentSet({...sets[sets.length - 1]});
     }
 
     useEffect(() => {
@@ -203,7 +203,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                             <>
                                 <div style={{margin: '1em 0em'}}>
                                 { sets.map((set, key, array) => (key === 0 || array.indexOf(array.filter(e => e.type === set.type)[0]) === key) &&
-                                    <Accordion square key={set.type} style={collapseStyle}>
+                                    <Accordion square key={set.type} style={collapseStyle} onChange={ deSelect }>
                                         <AccordionSummary aria-controls={`${set.type}-content`}  id={`${set.type}-header`}>
                                             <span style={{margin: 'auto'}}>{set.type}</span>
                                             <span style={{
