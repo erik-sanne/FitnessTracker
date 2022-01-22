@@ -7,10 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Date;
 import java.util.List;
 
 public interface WorkoutRepository extends CrudRepository<Workout, Long> {
     List<Workout> findAllByUser(User user);
     List<Workout> findAllByUser(User user, Sort sort);
     Page<Workout> findAllByUser(User user, Pageable page);
+    int countByUser(User user);
+    Workout findFirstByUserOrderByDate(User user);
 }

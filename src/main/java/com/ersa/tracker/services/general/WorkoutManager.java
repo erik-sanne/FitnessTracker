@@ -1,9 +1,11 @@
 package com.ersa.tracker.services.general;
 
+import com.ersa.tracker.dto.StatsDto;
 import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
+import com.ersa.tracker.repositories.ExerciseRepository;
 import com.ersa.tracker.repositories.WorkoutRepository;
 import com.ersa.tracker.repositories.WorkoutSetRepository;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
@@ -14,11 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,15 +26,18 @@ public class WorkoutManager implements WorkoutService {
 
     private final WorkoutRepository workoutRepository;
     private final WorkoutSetRepository workoutSetRepository;
+    private final ExerciseRepository exerciseRepository;
     private final PRService personalRecordService;
 
     @Autowired
     public WorkoutManager(final WorkoutRepository workoutRepository,
                           final PRService personalRecordService,
-                          final WorkoutSetRepository workoutSetRepository) {
+                          final WorkoutSetRepository workoutSetRepository,
+                          final ExerciseRepository exerciseRepository) {
         this.workoutRepository = workoutRepository;
         this.personalRecordService = personalRecordService;
         this.workoutSetRepository = workoutSetRepository;
+        this.exerciseRepository = exerciseRepository;
     }
 
     @Override
@@ -135,5 +136,20 @@ public class WorkoutManager implements WorkoutService {
         workoutRepository.deleteById(workoutId);
         personalRecordService.updatePersonalRecords(user);
         log.info("Workout with id {} removed by user with id {}", workoutId, user.getId());
+    }
+
+    @Override
+    public StatsDto getStats(User user) {
+        StatsDto dto = new StatsDto();
+        dto.setWorkouts(workoutRepository.countByUser(user));
+        dto.setSets(workoutSetRepository.countByWorkoutUser(user));
+        dto.setSetTypes(new HashMap<>());
+        List<String> exercises = new ArrayList<>();
+        exerciseRepository.findAll().forEach(e -> exercises.add(e.getName()));
+        for (String exercise : exercises) {
+            dto.getSetTypes().put(exercise, workoutSetRepository.countByWorkoutUserAndExercise(user, exercise));
+        }
+        dto.setFirstWorkout(workoutRepository.findFirstByUserOrderByDate(user).getDate());
+        return dto;
     }
 }

@@ -5,7 +5,6 @@ import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.repositories.AchievementRepository;
 import com.ersa.tracker.repositories.UserProfileRepository;
-import com.ersa.tracker.services.user.UserProfileService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

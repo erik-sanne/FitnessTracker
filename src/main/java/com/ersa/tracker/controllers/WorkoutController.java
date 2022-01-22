@@ -5,6 +5,7 @@ import com.ersa.tracker.models.PersonalRecord;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.Workout;
+import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.services.general.APIService;
 import com.ersa.tracker.services.general.ExerciseService;
 import com.ersa.tracker.services.general.PRService;
@@ -182,5 +183,11 @@ public class WorkoutController {
     public List<Achievement> getAchievements(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         return achievementService.getAchivements(currentUser);
+    }
+
+    @GetMapping("api/stats")
+    public StatsDto getMyProfile(final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return workoutService.getStats(currentUser);
     }
 }

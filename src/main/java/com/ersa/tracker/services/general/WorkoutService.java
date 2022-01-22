@@ -1,4 +1,5 @@
 package com.ersa.tracker.services.general;
+import com.ersa.tracker.dto.StatsDto;
 import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
@@ -8,6 +9,7 @@ import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public interface WorkoutService {
     List<Set<WorkoutSet>> getPartitionedWorkoutSets(User user, Exercise exercise);
@@ -16,6 +18,7 @@ public interface WorkoutService {
     List<Workout> getWorkouts(User user);
     Workout getWorkout(User user, long workoutId);
     Collection<WorkoutSet> getSetsForWorkout(User user, long workoutId);
+    StatsDto getStats(User user);
 
     @Transactional
     void saveWorkout(User user, Workout workout);
