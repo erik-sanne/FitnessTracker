@@ -92,8 +92,8 @@ const createConfig = (data, mergeAxes) => {
                 backgroundColor: 'rgba(107,166,239,0.35)',
                 borderWidth: 2,
                 lineTension: 0,
-                pointRadius: 3,
-                pointHoverRadius: 6,
+                pointRadius: 4,
+                pointHoverRadius: 8,
                 showLine: false,
                 data: combined
             }, {
@@ -113,8 +113,8 @@ const createConfig = (data, mergeAxes) => {
                 yAxisID: 'wei-y-id',
                 borderDash: [15, 3],
                 fill: false,
-                borderColor: 'rgb(239,107,107)',
-                backgroundColor: 'rgb(239,107,107)',
+                borderColor: 'rgb(159,102,53)',
+                backgroundColor: 'rgb(152,97,55)',
                 borderWidth: 1,
                 pointHoverRadius: 0,
                 lineTension: 0,
