@@ -1,6 +1,5 @@
 import '../../styles/Module.css';
 import 'chartjs-plugin-zoom'
-import Spinner from "../ui_components/Loader";
 import useFetch from "../../services/useFetch";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
@@ -10,6 +9,7 @@ import Switch from '@material-ui/core/Switch';
 import DisplayValue from "./DisplayValue";
 import regression from 'regression';
 import LocalStorage from "../../services/LocalStorage";
+import Loader from "../ui_components/Loader";
 
 const getDates = (startDate, stopDate) => {
     let dateArray = [];
@@ -74,9 +74,6 @@ const createConfig = (data, mergeAxes) => {
     const progressionPts = getPolyfitLinePlot(xLabels, ptsComb);
     const weightProgPts = getPolyfitLinePlot(xLabels, ptsWeight);
 
-    const today = new Date();
-    const end = today.setDate(today.getDate() + 1);
-
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     xLabels.push(tomorrow.toISOString().split('T')[0]);
@@ -92,8 +89,8 @@ const createConfig = (data, mergeAxes) => {
                 backgroundColor: 'rgba(107,166,239,0.35)',
                 borderWidth: 2,
                 lineTension: 0,
-                pointRadius: 3,
-                pointHoverRadius: 6,
+                pointRadius: 4,
+                pointHoverRadius: 8,
                 showLine: false,
                 data: combined
             }, {
@@ -113,8 +110,8 @@ const createConfig = (data, mergeAxes) => {
                 yAxisID: 'wei-y-id',
                 borderDash: [15, 3],
                 fill: false,
-                borderColor: 'rgb(239,107,107)',
-                backgroundColor: 'rgb(239,107,107)',
+                borderColor: 'rgb(159,102,53)',
+                backgroundColor: 'rgb(152,97,55)',
                 borderWidth: 1,
                 pointHoverRadius: 0,
                 lineTension: 0,
@@ -191,7 +188,6 @@ const createConfig = (data, mergeAxes) => {
                         unit: 'day'
                     },
                     ticks: {
-                        max: end,
                         fontSize: 12,
                         fontFamily: 'Quicksand',
                         fontStyle: 'bold'
@@ -242,14 +238,16 @@ const createConfig = (data, mergeAxes) => {
 }
 
 const ModuleProgression = () => {
-    const { data: exercises, loading } = useFetch('/api/exercises');
+    const { data: exercises, loading: loadingExercises } = useFetch('/api/exercises');
     const [ srcData, setSrcData ] = useState(null);
     const [ chartData, setChartData ] = useState(null);
     const [ selectedExercise, setSelectedExercise ] = useState("");
     const [ message, setMessage ] = useState("Select an exercise to view your progression");
     const [ splitAxes, setSplitAxes ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
 
     const getExerciseData = async (ex) => {
+        setLoading(true);
         const token = getCookie('session_token');
         const response = await fetch( process.env.REACT_APP_API_BASE + `/api/setAverages/${ex.replace(/ /g, '_')}`, {
             method: 'GET',
@@ -261,6 +259,7 @@ const ModuleProgression = () => {
         });
 
         const data = await response.json();
+        setLoading(false);
         setSrcData(data)
     }
 
@@ -290,10 +289,10 @@ const ModuleProgression = () => {
 
     return (
         <>
-            { loading ? <Spinner /> :
+            { loadingExercises ? <Loader /> :
                 <>
                     <div className={'centerC'}>
-                        { chartData && message === "" &&
+                        { !loading && chartData && message === "" &&
                         <>
                             <div style={{ display: 'flex '}}>
                                 <h2 style={{ fontWeight: 'bold', flex: 1, padding: '9px', fontSize: 'calc(10px + 1vmin)'}}>
@@ -312,7 +311,8 @@ const ModuleProgression = () => {
                             </div>
                         </>
                         }
-                        { message !== "" && <DisplayValue text={ message } value={""}
+                        { loading && <div style={{textAlign: "center", padding: '32% 0%'}}> <Loader /> </div> }
+                        { !loading && message !== "" && <DisplayValue text={ message } value={""}
                                                           style={{textAlign: "center", padding: '32% 0%'}}/> }
 
 

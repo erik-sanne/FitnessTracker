@@ -59,7 +59,7 @@ const createConfig = (data=[], usePPL = false, useBody = false) => {
 
         let maxval = 0;
         sorted.forEach(e => { maxval = e.y > maxval ? e.y : maxval });
-        const yValues = sorted.map( entry => entry.y / maxval);
+        const yValues = sorted.map( entry => maxval === 0 ? 0 : entry.y / maxval);
         return {
             label: 'Sets per bodypart',
             backgroundColor: idx === 0 ? 'rgba(107,166,239,0.1)' : 'rgba(70,131,58,0.1)',
@@ -210,7 +210,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                         <SwiperWrapper>
                             <SwiperSlide>
                                 { chartData.data.datasets.map((dataset, index) =>
-                                    <div style={{ position: 'relative', height: '100%' }}>
+                                    <div key={index} style={{ position: 'relative', height: '100%' }}>
                                         {
                                             dataset.data.map((val, idx) => {
                                                 return <img key={idx} src={getImage(chartData.data.labels[idx])} style={ getImgCss(val, index, fullColorManikin && chartData.data.datasets.length < 2) }/>
