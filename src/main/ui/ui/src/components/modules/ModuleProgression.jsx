@@ -54,7 +54,7 @@ const getPolyfitLinePlot = (xLabels, pts) => {
     return getDates(new Date(xLabels[0]), new Date()).map(d => (d.toISOString().split('T')[0])).map((d, i, arr) => ({ x: d, y: Math.max(func.predict(getMagicNumberFromDate(d, arr[0]))[1], 0) }));
 }
 
-const createConfig = (data, fullHistory, mergeAxes) => {
+const createConfig = (data, mergeAxes) => {
     data.sort(function(a,b){
         // Turn your strings into dates, and then subtract them
         // to get a value that is either negative, positive, or zero.
@@ -76,13 +76,6 @@ const createConfig = (data, fullHistory, mergeAxes) => {
 
     const today = new Date();
     const end = today.setDate(today.getDate() + 1);
-    let start;
-    if (fullHistory)
-        start = today.setDate(xLabels[0]);
-    else
-        start = today.setDate(today.getDate() - 30);
-
-
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -99,8 +92,8 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                 backgroundColor: 'rgba(107,166,239,0.35)',
                 borderWidth: 2,
                 lineTension: 0,
-                pointRadius: 5,
-                pointHoverRadius: 8,
+                pointRadius: 3,
+                pointHoverRadius: 6,
                 showLine: false,
                 data: combined
             }, {
@@ -198,7 +191,6 @@ const createConfig = (data, fullHistory, mergeAxes) => {
                         unit: 'day'
                     },
                     ticks: {
-                        min: start,
                         max: end,
                         fontSize: 12,
                         fontFamily: 'Quicksand',
@@ -214,11 +206,12 @@ const createConfig = (data, fullHistory, mergeAxes) => {
             plugins: {
                 zoom: {
                     pan: {
-                        enabled: !fullHistory,
+                        enabled: true,
                         mode: 'x'
                     },
                     zoom: {
-                        enabled: false
+                        enabled: true,
+                        mode: 'x'
                     }
                 }
             },
@@ -254,7 +247,6 @@ const ModuleProgression = () => {
     const [ chartData, setChartData ] = useState(null);
     const [ selectedExercise, setSelectedExercise ] = useState("");
     const [ message, setMessage ] = useState("Select an exercise to view your progression");
-    const [ showFullHistory, setShowFullHistory ] = useState(true);
     const [ splitAxes, setSplitAxes ] = useState(false);
 
     const getExerciseData = async (ex) => {
@@ -286,7 +278,7 @@ const ModuleProgression = () => {
         if (!srcData)
             setMessage("Select an exercise to view your progression");
         else if (srcData.length > 1) {
-            setChartData(createConfig(srcData, showFullHistory, !splitAxes));
+            setChartData(createConfig(srcData, !splitAxes));
             LocalStorage.set("progression_saved_exercise", selectedExercise);
             setMessage("");
         } else if (srcData.length > 0)
@@ -294,7 +286,7 @@ const ModuleProgression = () => {
         else
             setMessage("No data available for this exercise");
 
-    }, [showFullHistory, splitAxes, srcData])
+    }, [splitAxes, srcData])
 
     return (
         <>
@@ -311,17 +303,10 @@ const ModuleProgression = () => {
                             <div className={'centerC'}>
                                 <Graph data={ chartData }/>
                                 <div style={{textAlign: "right", display: "inline-flex", justifyContent: "space-around", paddingTop: "20px" }}>
-                                    <div style={{ textAlign: "center", flex: 1}} onClick={ () => {
-                                        setShowFullHistory(!showFullHistory);
-                                    }}>
-                                        <b><p style={{ margin: "0" }}>Fit history onto graph</p></b>
-                                        <span><Switch color="primary" checked={ showFullHistory }/></span>
-                                    </div>
-                                    <div style={{ textAlign: "center", flex: 1}} onClick={ () => {
+                                    <div style={{ textAlign: "center", flex: 1, color: 'rgba(107, 166, 239, 0.7)', marginBottom: '1em'}} onClick={ () => {
                                         setSplitAxes(!splitAxes);
                                     }}>
-                                        <b><p style={{ margin: "0" }}>Progression curve</p></b>
-                                        <span><Switch color="primary" checked={ !splitAxes }/></span>
+                                        <span><Switch color="primary" checked={ !splitAxes }/> Mode: { splitAxes ? "Weight & reps" : "Progression"}</span>
                                     </div>
                                 </div>
                             </div>
