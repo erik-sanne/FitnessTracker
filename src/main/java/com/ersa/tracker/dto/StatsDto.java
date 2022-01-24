@@ -7,6 +7,7 @@ public class StatsDto {
     private int workouts;
     private int sets;
     private Map<String, Integer> setTypes;
+    private Map<String, Integer> setWorkouts;
     private Date firstWorkout;
 
     public int getWorkouts() {
@@ -39,5 +40,13 @@ public class StatsDto {
 
     public void setFirstWorkout(Date firstWorkout) {
         this.firstWorkout = firstWorkout;
+    }
+
+    public Map<String, Integer> getSetWorkouts() {
+        return setWorkouts;
+    }
+
+    public void setSetWorkouts(Map<String, Integer> setWorkouts) {
+        this.setWorkouts = setWorkouts;
     }
 }

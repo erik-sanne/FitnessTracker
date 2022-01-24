@@ -186,7 +186,7 @@ public class WorkoutController {
     }
 
     @GetMapping("api/stats")
-    public StatsDto getMyProfile(final Principal principal) {
+    public StatsDto getHardStats(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         return workoutService.getStats(currentUser);
     }

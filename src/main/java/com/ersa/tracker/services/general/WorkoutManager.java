@@ -146,10 +146,20 @@ public class WorkoutManager implements WorkoutService {
         dto.setSetTypes(new HashMap<>());
         List<String> exercises = new ArrayList<>();
         exerciseRepository.findAll().forEach(e -> exercises.add(e.getName()));
+
         for (String exercise : exercises) {
             dto.getSetTypes().put(exercise, workoutSetRepository.countByWorkoutUserAndExercise(user, exercise));
         }
         dto.setFirstWorkout(workoutRepository.findFirstByUserOrderByDate(user).getDate());
+
+        Map<String, Set<Long>> workouts = new HashMap<>();
+        for (String exercise : exercises) {
+            if (!workouts.containsKey(exercise))
+                workouts.put(exercise, new HashSet<>());
+            workouts.get(exercise).addAll(workoutSetRepository.findByWorkoutUserAndExercise(user, exercise).stream().map(WorkoutSet::getWorkout).map(Workout::getId).collect(Collectors.toSet()));
+        }
+        dto.setSetWorkouts(new HashMap<>());
+        workouts.forEach((key, value) -> dto.getSetWorkouts().put(key, value.size()));
         return dto;
     }
 }

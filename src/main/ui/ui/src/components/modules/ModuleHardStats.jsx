@@ -11,6 +11,10 @@ const ModuleHardStats = () => {
     if (loading)
         return <Loader />
 
+    const setdata = Object.keys(data.setTypes).map(key =>  {
+        return { exercise: key, sets: data.setTypes[key], workouts: data.setWorkouts[key] }
+    });
+
     return  <Module title={ "General statistics" }>
                 <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
                     <p> You registered your first workout on {data.firstWorkout.split("T")[0]}. Since then you've achieved the following:</p>
@@ -18,7 +22,14 @@ const ModuleHardStats = () => {
                     <p>Total number of registered sets: <b>{data.sets}</b></p>
                     <div style={{ paddingLeft: '1rem' }}>
                         {
-                            Object.keys(data.setTypes).sort().map((key) => data.setTypes[key] !== 0 && <><span key={key}>{format(key)}: <b>{data.setTypes[key]}</b> sets</span><br/></>)
+                            setdata
+                                .sort((a, b) => a.exercise.localeCompare(b.exercise))
+                                .map(({exercise, sets, workouts}) => sets !== 0 &&
+                                    <>
+                                        <span key={exercise}>
+                                            {format(exercise)}: <b>{sets}</b> sets (<b>{workouts}</b> workouts)
+                                        </span> <br/>
+                                    </>)
                         }
                     </div>
                 </div>
