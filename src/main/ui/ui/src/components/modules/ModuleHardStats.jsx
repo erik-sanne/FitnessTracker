@@ -15,7 +15,7 @@ const ModuleHardStats = () => {
         return { exercise: key, sets: data.setTypes[key], workouts: data.setWorkouts[key] }
     });
 
-    return  <Module title={ "General statistics" }>
+    return  <Module title={ "General statistics" } style={{ gridRow: '2' }}>
                 <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
                     <p> You registered your first workout on {data.firstWorkout.split("T")[0]}. Since then you've achieved the following:</p>
                     <p>Total number of registered workouts: <b>{data.workouts}</b></p>
