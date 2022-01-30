@@ -7,7 +7,7 @@ const ProfileDisplay = ({ displayName, title, profilePicture, userId, permission
         <div style={{ ...style, display: displayName ? 'flex' : 'block', maxHeight: '48px' }} onClick={ () => { onClick && onClick()} }>
             <img alt={ "" } src={ profilePicture ? profilePicture : defaultPicture } style={{ width: '48px', height: '48px', borderRadius: '24px' }}/>
             { displayName &&
-                <div style={{paddingLeft: '15px', position: 'relative'}}>
+                <div style={{paddingLeft: '15px', position: 'relative', marginTop: title ? '-5px' : '0px'}}>
                     <h4 style={{
                         fontSize: '16px',
                         position: 'absolute',
