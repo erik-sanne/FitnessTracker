@@ -225,9 +225,9 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                                                 <tbody>
                                                 { array.map((s, k) =>
                                                     s.type === set.type && <tr key={k} style={currentEdit === k ? editStyle : {cursor: 'pointer'}} onClick={() => toggleEdit(k)} id={k}>
-                                                        <td> #{ 1 } </td>
-                                                        <td> {currentEdit === k ? set.reps : s.reps} </td>
-                                                        <td> {currentEdit === k ? set.weight : s.weight !== '' ? s.weight : '-'} </td>
+                                                        <td> #{ k+1 } </td>
+                                                        <td> {currentEdit === k ? currentSet.reps : s.reps} </td>
+                                                        <td> {currentEdit === k ? currentSet.weight : s.weight !== '' ? s.weight : '-'} </td>
                                                         <td><FontAwesomeIcon icon={faTrash} style={{
                                                             ...trashCanStyle,
                                                             visibility: currentEdit === k ? 'visible' : 'hidden'
