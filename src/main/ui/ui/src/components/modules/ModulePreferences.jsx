@@ -3,9 +3,10 @@ import Module from "./Module";
 import {Switch} from "@material-ui/core";
 import LocalStorage from "../../services/LocalStorage";
 
-const ModulePreferences = () => {
+const ModulePreferences = ({ userProfile }) => {
     const LS_KEY_UP = "user_preferences"
 
+    const [ useBackground, setUseBackground ] = useState(false);
     const [ highContrast, setHighContrast ] = useState(false);
     const [ collapseSets, setCollapseSets ] = useState(false);
     const [ fullColorManikin, setFullColorManikin ] = useState(false);
@@ -16,6 +17,7 @@ const ModulePreferences = () => {
         if (!userPreferences)
             return;
 
+        setUseBackground(userPreferences.useBackground);
         setHighContrast(userPreferences.highContrast);
         setCollapseSets(userPreferences.collapseSets);
         setFullColorManikin(userPreferences.fullColorManikin);
@@ -25,6 +27,7 @@ const ModulePreferences = () => {
 
     const save = () => {
         LocalStorage.set(LS_KEY_UP, {
+            useBackground: useBackground,
             highContrast: highContrast,
             collapseSets: collapseSets,
             fullColorManikin: fullColorManikin,
@@ -43,6 +46,12 @@ const ModulePreferences = () => {
                         Enable high contrast
                     </label>
                 </div>
+                { userProfile && userProfile.permissionLevel === 'ADMIN' && <div onClick={ () => setUseBackground(!useBackground) }>
+                    <Switch color="primary" checked={ useBackground } />
+                    <label style={{ cursor: 'pointer' }}>
+                        Use background image
+                    </label>
+                </div> }
                 <br />
                 <p>Statistics</p>
                 <div onClick={ () => setFullColorManikin(!fullColorManikin) }>

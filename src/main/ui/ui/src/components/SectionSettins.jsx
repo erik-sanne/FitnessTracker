@@ -20,7 +20,7 @@ const SectionSettings = ({ userProfile, updateUserProfile }) => {
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
             <ModuleEditProfile userProfile={ userProfile } updateUserProfile={ saveInterceptor } />
-            <ModulePreferences/>
+            <ModulePreferences userProfile={ userProfile }/>
             <ModuleHardStats title="General stats" className={ "genstats" } />
         </div>)
 }
