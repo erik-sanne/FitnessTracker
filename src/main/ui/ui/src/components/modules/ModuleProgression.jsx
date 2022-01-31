@@ -212,7 +212,7 @@ const createConfig = (data, mergeAxes) => {
                 }
             },
             tooltips: {
-                mode: 'index',
+                mode: 'nearest',
                 filter: function (tooltipItem) {
                     return tooltipItem.datasetIndex === 0;
                 },
