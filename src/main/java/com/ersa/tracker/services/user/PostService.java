@@ -16,4 +16,5 @@ public interface PostService {
     Post createPost(User user, Date date, String title, String message, boolean manual);
     Post createPost(User user, String title, String message);
     Post replyToPost(long id, User user, String title, String message);
+    void toggleLike(long id, User user);
 }

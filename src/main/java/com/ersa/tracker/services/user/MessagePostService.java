@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -60,6 +63,26 @@ public class MessagePostService implements PostService {
         post.setAutoCreated(false);
         post.setReplyTo(op.get());
         return postRepository.save(post);
+    }
+
+    @Override
+    public void toggleLike(long id, User user) {
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isEmpty()) {
+            log.warn("post no longer exists");
+            return;
+        }
+        Post p = post.get();
+        boolean hasliked = p.getHasLiked().contains(user);
+        List<User> likedPost;
+        if (hasliked) {
+            likedPost = p.getHasLiked().stream().filter(usr -> !usr.equals(user)).collect(Collectors.toList());
+        } else {
+            likedPost = p.getHasLiked();
+            likedPost.add(user);
+        }
+        p.setHasLiked(likedPost);
+        postRepository.save(p);
     }
 
 }

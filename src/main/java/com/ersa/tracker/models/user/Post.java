@@ -1,5 +1,6 @@
 package com.ersa.tracker.models.user;
 
+import com.ersa.tracker.models.authentication.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,6 +22,9 @@ public class Post {
 
     @OneToMany(mappedBy = "replyTo")
     List<Post> replies;
+
+    @ManyToMany
+    private List<User> hasLiked;
 
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -101,5 +105,13 @@ public class Post {
 
     public long getId() {
         return id;
+    }
+
+    public List<User> getHasLiked() {
+        return hasLiked;
+    }
+
+    public void setHasLiked(List<User> hasLiked) {
+        this.hasLiked = hasLiked;
     }
 }

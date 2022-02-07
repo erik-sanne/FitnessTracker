@@ -338,7 +338,28 @@ body {
 .post .reply .profile-display p {
   font-size: 10px !important;
 }
-.post .reply > p {
+.post .reply > div > p {
    padding: 1em 1em 0em 0em;
     margin: 0em;
+}
+
+.reply > div {
+  position: relative;
+}
+
+.like {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  cursor: pointer;
+}
+
+.like .counter {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 9px;
+  border-radius: 19px;
+  position: absolute;
+  left: 13px;
+  bottom: -8px;
+  font-size: 12px;
 }

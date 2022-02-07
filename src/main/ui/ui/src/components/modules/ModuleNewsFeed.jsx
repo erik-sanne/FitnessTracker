@@ -18,17 +18,22 @@ const ModuleNewsFeed = ({ profile }) => {
 
     const getComments = () => {
         get('/posts/feed').then(resp => {
-            if (resp.length != posts.length)
-                setPosts(resp)
+            setPosts(resp)
             if (loading)
                 setLoading(false);
         })
     }
 
     const postComment = (id, message) => {
-        setLoading(true);
         post(`/posts/reply/${id}`, message
         ).then(() => {
+            getComments();
+        })
+    }
+
+    const toggleLike = (id) => {
+        post(`/posts/like/${id}`)
+        .then(() => {
             getComments();
         })
     }
@@ -38,7 +43,8 @@ const ModuleNewsFeed = ({ profile }) => {
                     <PostCard key={idx}
                               myprofile={ profile }
                               post={post}
-                              postCallback={postComment}
+                              postCallback={ postComment }
+                              likeCallback={ toggleLike }
                     />)}
             </Module>
 

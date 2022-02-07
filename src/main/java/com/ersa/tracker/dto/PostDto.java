@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class PostDto {
     final long postId;
     final long authorId;
+    final int likes;
     final String date;
     final String authorName;
     final String title;
@@ -24,6 +25,7 @@ public class PostDto {
         title = post.getTitle();
         message = post.getMessage().replaceAll(PostService.DISPLAY_NAME, authorName);
         replies = post.getReplies().stream().map(PostDto::new).collect(Collectors.toList());
+        likes = post.getHasLiked().size();
     }
 
     public long getPostId() {
@@ -52,5 +54,9 @@ public class PostDto {
 
     public List<PostDto> getReplies() {
         return replies;
+    }
+
+    public int getLikes() {
+        return likes;
     }
 }

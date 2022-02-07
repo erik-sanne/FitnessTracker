@@ -49,4 +49,10 @@ public class PostController {
         User currentUser = accountService.getUserByPrincipal(principal);
         postService.replyToPost(replyTo, currentUser, "", message);
     }
+
+    @PostMapping("/posts/like/{postId}")
+    public void postPost(@PathVariable final long postId, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        postService.toggleLike(postId, currentUser);
+    }
 }
