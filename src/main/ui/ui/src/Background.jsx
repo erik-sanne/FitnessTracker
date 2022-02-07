@@ -20,7 +20,7 @@ const Background = ( style ) => {
     {
         backgroundImage: `url(${ alt ? image2 : image})`,
         filter: 'grayscale(0.8) contrast(4.5) brightness(0.2)',
-        backgroundPositionY: '2cm'
+        backgroundPositionY: '2rem'
     } : {}
 
 
