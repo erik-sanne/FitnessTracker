@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Post {
@@ -17,6 +15,12 @@ public class Post {
     @Id
     @GeneratedValue
     private long id;
+
+    @ManyToOne
+    private Post replyTo = null;
+
+    @OneToMany(mappedBy = "replyTo")
+    List<Post> replies;
 
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -77,5 +81,25 @@ public class Post {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Post getReplyTo() {
+        return replyTo;
+    }
+
+    public void setReplyTo(Post replyTo) {
+        this.replyTo = replyTo;
+    }
+
+    public List<Post> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<Post> replies) {
+        this.replies = replies;
+    }
+
+    public long getId() {
+        return id;
     }
 }

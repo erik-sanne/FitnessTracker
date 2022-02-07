@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.ersa.tracker.utils.DateUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,8 +63,7 @@ public class APIFunctions implements APIService {
         // ISO 8601
         cal.setMinimalDaysInFirstWeek(4);
 
-        SimpleDateFormat df = new SimpleDateFormat("YYYYww", LOCALE_SWE);
-        String yyyyww = df.format(cal.getTime());
+        String yyyyww = DateUtils.FORMAT_YYYYww.format(cal.getTime());
         int currentWeek = Integer.parseInt(yyyyww.substring(4));
         int currentYear = Integer.parseInt(yyyyww.substring(0,4));
 
@@ -76,7 +76,7 @@ public class APIFunctions implements APIService {
             if (Calendar.getInstance().getTimeInMillis() - nextEntryDate.getTime() > MAX_YEARS_DISPLAY * 31556952000L)
                 break;
 
-            yyyyww = df.format(nextEntryDate);
+            yyyyww = DateUtils.FORMAT_YYYYww.format(nextEntryDate);
             int nextEntryWeek = Integer.parseInt(yyyyww.substring(4));
             int nextEntryYear = Integer.parseInt(yyyyww.substring(0,4));
 
@@ -90,7 +90,7 @@ public class APIFunctions implements APIService {
             int emptyEntryYear = -1;
             while (true) {
                 cal.add(Calendar.WEEK_OF_YEAR, -1);
-                yyyyww = df.format(cal.getTime());
+                yyyyww = DateUtils.FORMAT_YYYYww.format(cal.getTime());
                 emptyEntryWeek = Integer.parseInt(yyyyww.substring(4));
                 emptyEntryYear = Integer.parseInt(yyyyww.substring(0,4));
                 if (emptyEntryWeek == nextEntryWeek && emptyEntryYear == nextEntryYear)
@@ -105,7 +105,7 @@ public class APIFunctions implements APIService {
         final int minimumWeeks = 7;
         for (int i = result.size(); i < minimumWeeks; i++) {
             cal.add(Calendar.WEEK_OF_YEAR, -1);
-            yyyyww = df.format(cal.getTime());
+            yyyyww = DateUtils.FORMAT_YYYYww.format(cal.getTime());
             int emptyEntryWeek = Integer.parseInt(yyyyww.substring(4));
             int emptyEntryYear = Integer.parseInt(yyyyww.substring(0,4));
             result.add(new Week(emptyEntryYear, emptyEntryWeek, 0));

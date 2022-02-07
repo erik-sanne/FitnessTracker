@@ -12,7 +12,7 @@ const Background = ( style ) => {
          const userPreferences = JSON.parse(localStorage.getItem(LS_KEY_UP));
          if (userPreferences) {
              setUseImage(userPreferences.useBackground);
-             setAlt(Math.random() < 0.5);
+             setAlt(Math.random() > 0.5);
          }
     }, [])
 

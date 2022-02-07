@@ -310,3 +310,35 @@ body {
   padding: 1em;
   margin: 0.5em;
 }
+
+.post .text-area {
+  border-top: 1px solid rgba(204, 204, 204, 0.063);
+  padding: 1em;
+  margin: 1em -1em -1em -1em;
+}
+
+.post .text-area img {
+  width: 32px !important;
+  height: 32px !important;
+  margin-right: 1em;
+}
+
+.post .text-area input {
+  padding: 0em 1em;
+  margin: 0em 0em;
+}
+
+.post .reply .profile-display div {
+  padding: 0px !important;
+}
+.post .reply .profile-display h4 {
+  font-size: 12px !important;
+}
+
+.post .reply .profile-display p {
+  font-size: 10px !important;
+}
+.post .reply > p {
+   padding: 1em 1em 0em 0em;
+    margin: 0em;
+}

@@ -33,7 +33,7 @@ public abstract class AchievementProviderBase implements AchievementProvider {
             achievement.setDate(new Date());
             achievement.setUser(user);
             achievementRepository.save(achievement);
-            postService.createPost(user, "New Achievement", String.format("%s unlocked the achievement %s", user.getUserProfile().getDisplayName(), getName()));
+            postService.createPost(user, "New Achievement", String.format("%s unlocked the achievement %s", PostService.DISPLAY_NAME, getName()));
         }
 
         return new com.ersa.tracker.dto.Achievement(getName(), getDescription(), achievement != null ? achievement.getDate() : null);

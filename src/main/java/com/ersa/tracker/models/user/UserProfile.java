@@ -45,8 +45,9 @@ public class UserProfile {
     private List<UserProfile> friends;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonIgnore
     @OrderBy("date")
-    private List<Post> news;
+    private List<Post> posts;
 
     @Transient
     @JsonProperty(value = "permissionLevel")
@@ -106,11 +107,11 @@ public class UserProfile {
         this.profilePicture = profilePicture;
     }
 
-    public List<Post> getNews() {
-        return news;
+    public List<Post> getPosts() {
+        return posts;
     }
 
-    public void setNews(List<Post> news) {
-        this.news = news;
+    public void setPosts(List<Post> news) {
+        this.posts = news;
     }
 }

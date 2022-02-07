@@ -96,7 +96,7 @@ public class PersonalRecordService implements PRService {
                             record.getDate(),
                             "New Personal Record",
                             String.format("%s got a new pr in %s",
-                                    user.getUserProfile().getDisplayName(),
+                                    PostService.DISPLAY_NAME,
                                     record.getExercise().getName().replace("_", " ")));
                 }
             }
