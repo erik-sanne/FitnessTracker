@@ -46,6 +46,8 @@ const AppContent = ({ logoutCallback }) => {
             setLoading(false);
         });
 
+        get('/api/achievements').then(() => {});
+
         get('/api/records').then(records => {
             if (currentRecords) {
                 const newRecords = records.filter(newPR => {

@@ -92,3 +92,24 @@
     grid-row: 2;
   }
 }
+
+@media screen and (max-width: 1900px) {
+  .module.news-feed {
+    grid-row: 2;
+  }
+
+  .module.friends-list {
+    grid-row: 1;
+  }
+}
+
+@media screen and (min-width: 1900px) {
+  .module.news-feed {
+    grid-column: 1 / span 2;
+  }
+
+  .module.friends-list {
+    grid-row: 1;
+    grid-column: 3;
+  }
+}

@@ -8,6 +8,7 @@ import {faCheckCircle, faPlusSquare, faTimes, faTimesCircle} from "@fortawesome/
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ProfileDisplay from "./ui_components/ProfileDisplay";
 import {Redirect} from "react-router-dom";
+import ModuleNewsFeed from "./modules/ModuleNewsFeed";
 
 const SectionFriends = ({ userProfile, updateUserProfile }) => {
     const [ modVisible, setModVisible ] = useState(false);
@@ -119,7 +120,7 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                 </Module>
             }
 
-            <Module title = "Friends list">
+            <Module title = "Friends list" className={ "friends-list" }>
                 <FontAwesomeIcon icon={ faPlusSquare } style={{
                     color: "#376237",
                     position: 'absolute',
@@ -139,6 +140,8 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                     !userProfile.friends || userProfile.friends.length === 0 && <p style={{margin: '0px'}}>You can add new friends by clicking the plus sign</p>
                 }
             </Module>
+
+            <ModuleNewsFeed profile={ userProfile }/>
 
             <Modal visible={ modVisible } title={ 'Add friend' } onClose={ () => setModVisible(false) }>
                 { loadingReq && <Spinner /> }

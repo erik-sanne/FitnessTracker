@@ -301,3 +301,12 @@ body {
 .MuiSwitch-colorPrimary {
   color: rgba(107,166,239,0.5) !important;
 }
+
+.post {
+  background: rgba(40, 44, 52, 0);
+  color: inherit;
+  box-shadow: rgb(0 0 0 / 38%) 0px 0px 10px;
+  border: 1px solid rgba(204, 204, 204, 0.063);
+  padding: 1em;
+  margin: 0.5em;
+}

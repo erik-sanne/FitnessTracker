@@ -8,6 +8,7 @@ import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.ExerciseRepository;
 import com.ersa.tracker.repositories.PersonalRecordRepository;
 import com.ersa.tracker.repositories.WorkoutRepository;
+import com.ersa.tracker.services.user.PostService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,17 @@ public class PersonalRecordService implements PRService {
     private PersonalRecordRepository recordRepository;
     private ExerciseRepository exerciseRepository;
     private WorkoutRepository workoutRepository;
+    private PostService postService;
 
     @Autowired
     public PersonalRecordService(final PersonalRecordRepository personalRecordRepository,
-                                  final ExerciseRepository exerciseRepository,
-                                  final WorkoutRepository workoutRepository) {
+                                 final ExerciseRepository exerciseRepository,
+                                 final WorkoutRepository workoutRepository,
+                                 final PostService postService) {
         this.recordRepository = personalRecordRepository;
         this.exerciseRepository = exerciseRepository;
         this.workoutRepository = workoutRepository;
+        this.postService = postService;
     }
 
     @Override
@@ -53,7 +57,7 @@ public class PersonalRecordService implements PRService {
     @Transactional
     public void updatePersonalRecords(final User user) {
         log.info("Computing personal records");
-        recordRepository.deleteAllByUser(user);
+        List<PersonalRecord> previousRecords = recordRepository.findAllByUser(user);
 
         List<PersonalRecord> records = new ArrayList<>();
         List<Workout> workouts = workoutRepository.findAllByUser(user);
@@ -83,6 +87,22 @@ public class PersonalRecordService implements PRService {
             }
         }
 
+        for (PersonalRecord record : records) {
+            for (PersonalRecord prev : previousRecords) {
+                if (record.getExercise().getName().equals(prev.getExercise().getName()) &&
+                        record.getUser() == prev.getUser() &&
+                        !record.getWeight().equals(prev.getWeight())) {
+                    postService.createPost(user,
+                            record.getDate(),
+                            "New Personal Record",
+                            String.format("%s got a new pr in %s",
+                                    user.getUserProfile().getDisplayName(),
+                                    record.getExercise().getName().replace("_", " ")));
+                }
+            }
+        }
+
+        recordRepository.deleteAllByUser(user);
         recordRepository.saveAll(records);
     }
 }

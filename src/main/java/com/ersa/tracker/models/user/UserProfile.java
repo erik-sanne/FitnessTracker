@@ -6,15 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -51,6 +43,10 @@ public class UserProfile {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "friends")
     private List<UserProfile> friends;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade = CascadeType.ALL)
+    @OrderBy("date")
+    private List<Post> news;
 
     @Transient
     @JsonProperty(value = "permissionLevel")
@@ -108,5 +104,13 @@ public class UserProfile {
 
     public void setProfilePicture(final byte[] profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public List<Post> getNews() {
+        return news;
+    }
+
+    public void setNews(List<Post> news) {
+        this.news = news;
     }
 }

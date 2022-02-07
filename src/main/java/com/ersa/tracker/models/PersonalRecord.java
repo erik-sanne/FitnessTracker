@@ -9,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import java.util.Date;
 
@@ -67,5 +66,15 @@ public final class PersonalRecord {
 
     public void setUser(final User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || this.getClass() != o.getClass()){
+            return false;
+        }
+
+        PersonalRecord other = (PersonalRecord)o;
+        return this.getWeight().equals(other.getWeight()) && this.getExercise().equals(other.getExercise()) && this.getDate() == other.getDate() && this.getUser() == other.getUser();
     }
 }
