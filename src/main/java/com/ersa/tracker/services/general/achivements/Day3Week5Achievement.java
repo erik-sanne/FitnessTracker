@@ -39,7 +39,7 @@ public class Day3Week5Achievement extends AchievementProviderBase {
                 i = 0;
             }
 
-            if (i == 3) {
+            if (i == 5) {
                 return true;
             }
 
