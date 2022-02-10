@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class PostController {
     @PostMapping("/posts/post")
     public void postPost(@RequestBody final String message, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
-        postService.createPost(currentUser, "", message);
+        postService.createPost(currentUser, new Date(), "", message, true);
     }
 
     @PostMapping("/posts/reply/{replyTo}")

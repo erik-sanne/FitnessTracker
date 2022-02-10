@@ -119,6 +119,7 @@
   }
 
   .module.friends-list > div {
+    height: inherit !important;
     position: sticky;
     top: calc(70px + 1rem);
   }

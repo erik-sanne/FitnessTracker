@@ -6,7 +6,9 @@ const PostCard = ({ myprofile, post, postCallback, likeCallback }) => {
 
     const onKeyPress = (e) => {
         if (e.key === 'Enter') {
-            postCallback(post.postId, e.target.value);
+            const val = e.target.value;
+            e.target.value = "";
+            postCallback(post.postId, val);
         }
     }
 
@@ -16,7 +18,7 @@ const PostCard = ({ myprofile, post, postCallback, likeCallback }) => {
                 <div style={{ display: 'flex', justifyContent: "space-between", paddingBottom: "1em" }}>
                     <ProfileDisplay displayName={ post.authorName } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ post.date } />
                 </div>
-                { post.isAutoCreated ?
+                { post.autoPosted ?
                     <i>{ post.message }</i>:
                     <p>{ post.message }</p>
                 }

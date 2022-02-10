@@ -120,7 +120,7 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                 </Module>
             }
 
-            <Module title = "Friends list" style={{ height: 'inherit !important' }} className={ "friends-list" }>
+            <Module title = "Friends list" className={ "friends-list" }>
                 { userProfile.friends && userProfile.friends.length > 0 && userProfile.friends.map((profile, key) =>
                     <ProfileDisplay key={key} displayName={profile.displayName} title={ profile.title } userId={ profile.userId } profilePicture={ profile.profilePicture } permissionLevel={ profile.permissionLevel } onClick={() => {
                         setRedirect(`/friend/${profile.userId}`)
