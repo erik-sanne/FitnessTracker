@@ -348,9 +348,6 @@ body {
 }
 
 .like {
-  position: absolute;
-  right: 0px;
-  top: 0px;
   cursor: pointer;
 }
 
@@ -366,4 +363,31 @@ body {
 
 .like .flex-icon {
   font-size: 1.5em;
+}
+
+.text-area.reply {
+  border-radius: 10px;
+  border: 1px solid hsla(0,0%,80%,.063);
+  margin: 15px -5px;
+}
+
+.text-area.divider {
+  border-radius: 10px;
+  border: 1px solid hsla(0,0%,80%,.063);
+  margin: 15px -5px;
+
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1em;
+}
+
+.text-area.reply .like {
+  position: absolute;
+  right: 0.5em;
+  bottom: -2em;
+  border: 1px solid rgba(40, 44, 52, 0);
+  border-radius: 5em;
+  padding: 0 0.5em;
+  background: rgba(40, 44, 52, 0.4);
+
 }

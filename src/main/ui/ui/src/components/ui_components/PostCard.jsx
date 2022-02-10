@@ -1,8 +1,11 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import ProfileDisplay from "./ProfileDisplay";
 import LikeButton from "./LikeButton";
 
 const PostCard = ({ myprofile, post, postCallback, likeCallback }) => {
+
+    const [showAllComments, setShowAllComments] = useState(false);
+    const [replies, setReplies] = useState([]);
 
     const onKeyPress = (e) => {
         if (e.key === 'Enter') {
@@ -11,6 +14,10 @@ const PostCard = ({ myprofile, post, postCallback, likeCallback }) => {
             postCallback(post.postId, val);
         }
     }
+
+    useEffect(() => {
+        setReplies(showAllComments ? post.replies : post.replies.map(a => a).splice(-2))
+    }, [showAllComments, post])
 
     return (
         <div className={"post"}>
@@ -22,11 +29,14 @@ const PostCard = ({ myprofile, post, postCallback, likeCallback }) => {
                     <i>{ post.message }</i>:
                     <p>{ post.message }</p>
                 }
+            </div>
+            <div className={"text-area divider"} style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <LikeButton count={ post.likes } onClick={ () => { likeCallback(post.postId) } } />
+                <span style={{ margin: 'auto 0', cursor: 'pointer'}} onClick={ () => setShowAllComments(!showAllComments)}>{ post.replies.length <= 2 ? '' : !showAllComments ? `Show all ${post.replies.length} replies` : 'Hide replies' }</span>
             </div>
             <div>
-                {post.replies.map((reply, idx) =>
-                <div className={"text-area reply"} key={idx}>
+                {replies.map((reply, idx) =>
+                 <div className={"text-area reply"} key={idx}>
                     <div>
                         <ProfileDisplay
                             profilePicture={ myprofile.userId === reply.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === reply.authorId)[0] && myprofile.friends.filter(f => f.userId === reply.authorId)[0].profilePicture }
