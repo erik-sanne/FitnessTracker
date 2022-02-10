@@ -11,6 +11,7 @@ public class PostDto {
     final long postId;
     final long authorId;
     final int likes;
+    final boolean isAutoPosted;
     final String date;
     final String authorName;
     final String title;
@@ -26,6 +27,7 @@ public class PostDto {
         message = post.getMessage().replaceAll(PostService.DISPLAY_NAME, authorName);
         replies = post.getReplies().stream().map(PostDto::new).collect(Collectors.toList());
         likes = post.getHasLiked().size();
+        isAutoPosted = post.isAutoCreated();
     }
 
     public long getPostId() {
@@ -58,5 +60,9 @@ public class PostDto {
 
     public int getLikes() {
         return likes;
+    }
+
+    public boolean isAutoPosted() {
+        return isAutoPosted;
     }
 }

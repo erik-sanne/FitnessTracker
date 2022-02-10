@@ -76,6 +76,11 @@
   flex-direction: column;
 }
 
+.module.parties {
+  grid-column: 1 / -1;
+  max-width: 100%;
+}
+
 @media screen and (min-width: 2000px) {
   .module.progression {
     grid-column: 1 / span 2;
@@ -111,5 +116,10 @@
   .module.friends-list {
     grid-row: 1;
     grid-column: 3;
+  }
+
+  .module.friends-list > div {
+    position: sticky;
+    top: calc(70px + 1rem);
   }
 }

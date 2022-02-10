@@ -41,7 +41,7 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
-            <Module title={ "Parties" } style={{ background: 'linear-gradient(135deg, rgba(107,166,239,1), rgba(70,131,58,1))' }} headerStyle={{ backgroundImage: 'none' }}>
+            <Module title={ "Parties" } className={ 'parties' } style={{ background: 'linear-gradient(135deg, rgba(107,166,239,1), rgba(70,131,58,1))' }} headerStyle={{ backgroundImage: 'none' }}>
                 <div style={{ display: 'flex' }}>
                     <div style={{ flex: 1 }}>
                     <ProfileDisplay profilePicture={ userProfile.profilePicture } title={ userProfile.title }/>

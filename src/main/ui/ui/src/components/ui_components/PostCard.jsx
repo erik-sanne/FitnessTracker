@@ -16,7 +16,10 @@ const PostCard = ({ myprofile, post, postCallback, likeCallback }) => {
                 <div style={{ display: 'flex', justifyContent: "space-between", paddingBottom: "1em" }}>
                     <ProfileDisplay displayName={ post.authorName } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ post.date } />
                 </div>
-                <p>{ post.message }</p>
+                { post.isAutoCreated ?
+                    <i>{ post.message }</i>:
+                    <p>{ post.message }</p>
+                }
                 <LikeButton count={ post.likes } onClick={ () => { likeCallback(post.postId) } } />
             </div>
             <div>

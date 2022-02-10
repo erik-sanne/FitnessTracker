@@ -26,9 +26,6 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class APIFunctions implements APIService {
     private static final int MAX_YEARS_DISPLAY = 5;
-    private static final int WEEKS_IN_STANDARD_YEAR = 52;
-
-    private static Locale LOCALE_SWE = new Locale("sv","SE");
 
     private final WorkoutService workoutService;
     private final ExerciseService exerciseService;

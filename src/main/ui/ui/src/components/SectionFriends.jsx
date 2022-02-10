@@ -4,7 +4,7 @@ import useFetch from "../services/useFetch";
 import Modal from "./ui_components/Modal";
 import Spinner from 'react-bootstrap/Spinner';
 import {getCookie} from "react-use-cookie";
-import {faCheckCircle, faPlusSquare, faTimes, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
+import {faCheckCircle, faPlusCircle, faTimes, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ProfileDisplay from "./ui_components/ProfileDisplay";
 import {Redirect} from "react-router-dom";
@@ -120,17 +120,7 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                 </Module>
             }
 
-            <Module title = "Friends list" className={ "friends-list" }>
-                <FontAwesomeIcon icon={ faPlusSquare } style={{
-                    color: "#376237",
-                    position: 'absolute',
-                    top:'min(4.5vw, 35px)',
-                    right: 'min(4.5vw, 35px)',
-                    fontSize: 'min(calc(8px + 3.5vmin), 30px)',
-                    cursor: "pointer"
-                }}
-                onClick={ () => setModVisible(true) }/>
-
+            <Module title = "Friends list" style={{ height: 'inherit !important' }} className={ "friends-list" }>
                 { userProfile.friends && userProfile.friends.length > 0 && userProfile.friends.map((profile, key) =>
                     <ProfileDisplay key={key} displayName={profile.displayName} title={ profile.title } userId={ profile.userId } profilePicture={ profile.profilePicture } permissionLevel={ profile.permissionLevel } onClick={() => {
                         setRedirect(`/friend/${profile.userId}`)
@@ -139,6 +129,14 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                 {
                     !userProfile.friends || userProfile.friends.length === 0 && <p style={{margin: '0px'}}>You can add new friends by clicking the plus sign</p>
                 }
+                <FontAwesomeIcon icon={ faPlusCircle } style={{
+                    color: 'rgb(55, 98, 55)',
+                    fontSize: '48px',
+                    cursor: 'pointer',
+                    width: '48px',
+                    height: '48px',
+                    margin: '5px 0px'
+                }} onClick={ () => setModVisible(true) }/>
             </Module>
 
             <ModuleNewsFeed profile={ userProfile }/>
