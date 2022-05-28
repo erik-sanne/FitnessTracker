@@ -29,7 +29,6 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("/posts/feed")
     public List<PostDto> getNewsFeed(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         List<Post> posts = currentUser.getUserProfile().getFriends().stream().flatMap(f -> f.getPosts().stream()).collect(Collectors.toList());
@@ -37,6 +36,12 @@ public class PostController {
         posts = posts.stream().filter(p -> p.getReplyTo() == null).sorted(Comparator.comparing(Post::getDate)).collect(Collectors.toList());
         Collections.reverse(posts);
         return posts.stream().map(PostDto::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/posts/feed")
+    public List<PostDto> getNewsFeedInterval(final Principal principal, @RequestParam(name = "from") Integer from, @RequestParam(name = "to") Integer to) {
+        List<PostDto> feed = getNewsFeed(principal);
+        return feed.subList(from, Math.min(to, feed.size()));
     }
 
     @PostMapping("/posts/post")
