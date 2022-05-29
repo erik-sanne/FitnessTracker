@@ -309,6 +309,7 @@ body {
   border: 1px solid rgba(204, 204, 204, 0.063);
   padding: 1em;
   margin: 0.5em;
+  border-radius: 10px;
 }
 
 .post .text-area {
@@ -351,7 +352,7 @@ body {
   cursor: pointer;
 }
 
-.like .counter {
+.counter {
   background: rgba(0, 0, 0, 0.3);
   padding: 2px 9px;
   border-radius: 19px;

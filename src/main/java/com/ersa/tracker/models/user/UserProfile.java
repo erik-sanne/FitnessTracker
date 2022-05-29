@@ -49,6 +49,9 @@ public class UserProfile {
     @OrderBy("date")
     private List<Post> posts;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "belongsTo")
+    private List<Notice> notices;
+
     @Transient
     @JsonProperty(value = "permissionLevel")
     private String permissionLevel() {
@@ -113,5 +116,13 @@ public class UserProfile {
 
     public void setPosts(List<Post> news) {
         this.posts = news;
+    }
+
+    public List<Notice> getNotices() {
+        return notices;
+    }
+
+    public void setNotices(List<Notice> notices) {
+        this.notices = notices;
     }
 }

@@ -3,6 +3,7 @@ package com.ersa.tracker.controllers;
 import com.ersa.tracker.dto.PostDto;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.user.Post;
+import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.services.authentication.AccountService;
 import com.ersa.tracker.services.user.PostService;
 import lombok.extern.log4j.Log4j2;
@@ -35,6 +36,11 @@ public class PostController {
         posts.addAll(currentUser.getUserProfile().getPosts());
         posts = posts.stream().filter(p -> p.getReplyTo() == null).sorted(Comparator.comparing(Post::getDate)).collect(Collectors.toList());
         Collections.reverse(posts);
+        try {
+            postService.clearNotices(currentUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return posts.stream().map(PostDto::new).collect(Collectors.toList());
     }
 

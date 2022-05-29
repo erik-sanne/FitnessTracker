@@ -49,8 +49,10 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                             <FontAwesomeIcon icon={ faPlusCircle } style={{ marginRight: '25px'}}/>New Workout</NavLink>
                     </li>
                     <li>
-                        <NavLink to="/social" activeStyle={ activeClass } onClick={ onNavigate } >
-                            <FontAwesomeIcon icon={ faUserFriends } style={{ marginRight: '25px'}}/>Friends
+                        <NavLink to="/social" activeStyle={ activeClass } onClick={ onNavigate } style={{ position: 'relative' }} >
+
+                            <FontAwesomeIcon icon={ faUserFriends } style={{ marginRight: '25px'}}/>{ userProfile.notices.length > 0 && <span className={'counter'} style={{left: '60px',
+                            bottom: '8px', background: 'rgb(166 32 0 / 71%)'}}> { userProfile.notices.length }</span> }Friends
                         </NavLink>
                     </li>
                     <li>

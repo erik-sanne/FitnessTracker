@@ -10,7 +10,7 @@ import ProfileDisplay from "./ui_components/ProfileDisplay";
 import {Redirect} from "react-router-dom";
 import ModuleNewsFeed from "./modules/ModuleNewsFeed";
 
-const SectionFriends = ({ userProfile, updateUserProfile }) => {
+const SectionFriends = ({ userProfile, updateUserProfile, silentProfileUpdate }) => {
     const [ modVisible, setModVisible ] = useState(false);
     const [ showRequests, setShowRequests ] = useState(true);
     const [ loadingReq, setLoadingReq ] = useState(false);
@@ -139,7 +139,7 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                 }} onClick={ () => setModVisible(true) }/>
             </Module>
 
-            <ModuleNewsFeed profile={ userProfile }/>
+            <ModuleNewsFeed profile={ userProfile } silentProfileUpdate={ silentProfileUpdate }/>
 
             <Modal visible={ modVisible } title={ 'Add friend' } onClose={ () => setModVisible(false) }>
                 { loadingReq && <Spinner /> }

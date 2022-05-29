@@ -7,11 +7,17 @@ import post from "../../services/Post";
 import get from "../../services/Get";
 import ProfileDisplay from "../ui_components/ProfileDisplay";
 
-const ModuleNewsFeed = ({ profile }) => {
+const ModuleNewsFeed = ({ profile, silentProfileUpdate }) => {
     const [ loading, setLoading ] = useState(true);
     const [ posts, setPosts ] = useState([]);
     const [ numComments, setNumComments ] = useState(10);
     const [ maxReached, setMaxReaced ] = useState(false);
+    const [ notices, setNotices ] = useState([])
+
+    useEffect(() => {
+        setNotices(profile.notices)
+        silentProfileUpdate();
+    }, []);
 
     useEffect(() =>  {
         getComments();
@@ -31,7 +37,6 @@ const ModuleNewsFeed = ({ profile }) => {
         get(`/posts/feed?from=0&to=${numComments}`).then(resp => {
             if (resp.length < numComments) {
                 setMaxReaced(true);
-                setNumComments(resp.length)
             }
 
             setPosts(resp)
@@ -94,6 +99,7 @@ const ModuleNewsFeed = ({ profile }) => {
             {posts.map((post, idx) =>
                             <PostCard key={idx}
                                       myprofile={ profile }
+                                      notices={notices}
                                       post={post}
                                       postCallback={ postComment }
                                       likeCallback={ toggleLike }

@@ -37,6 +37,15 @@ const AppContent = ({ logoutCallback }) => {
         setMenuOpen(false)
     }
 
+    const silentProfileUpdate = () => {
+        get('/users/profile').then(profile => {
+            setCurrentUserProfile(profile)
+            setLoading(false);
+        }).catch(err => {
+            setLoading(false);
+        });
+    }
+
     const updateUserProfile = () => {
         setLoading(true);
         get('/users/profile').then(profile => {
@@ -69,6 +78,8 @@ const AppContent = ({ logoutCallback }) => {
 
     useEffect(() => {
         updateUserProfile();
+        let inter =setInterval(silentProfileUpdate, 10000);
+        return () => clearInterval(inter);
     }, [])
 
 
@@ -104,7 +115,7 @@ const AppContent = ({ logoutCallback }) => {
                         </Route>
                         <Route path="/social">
                             <Header title={ "Friends" } onClick={ burgerClick } />
-                            <SectionFriends userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
+                            <SectionFriends userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } silentProfileUpdate={ silentProfileUpdate } />
                         </Route>
                         <Route path="/settings">
                             <Header title={ "User Settings" } onClick={ burgerClick } />
@@ -130,7 +141,7 @@ const AppContent = ({ logoutCallback }) => {
                     </Switch>
                 </section>
                 <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } userProfile={ currentUserProfile } />
-                <Burger onClick={ burgerClick } open={ menuOpen }/>
+                <Burger onClick={ burgerClick } open={ menuOpen } userProfile={ currentUserProfile } />
             </BrowserRouter>
             <Modal visible={ newRecords } title="New Personal Best!" onClose={ () => setNewRecords(null) }>
                 <h2>Congratulations!<FontAwesomeIcon icon={ faStar } style={{ paddingLeft: '12px', color: '#ffc877', width: 'inherit'}}/> </h2>

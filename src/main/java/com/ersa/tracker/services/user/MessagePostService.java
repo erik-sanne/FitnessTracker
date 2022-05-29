@@ -1,8 +1,12 @@
 package com.ersa.tracker.services.user;
 
 import com.ersa.tracker.models.authentication.User;
+import com.ersa.tracker.models.user.Notice;
 import com.ersa.tracker.models.user.Post;
+import com.ersa.tracker.models.user.UserProfile;
+import com.ersa.tracker.repositories.NoticeRepository;
 import com.ersa.tracker.repositories.PostRepository;
+import com.ersa.tracker.repositories.UserProfileRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
@@ -20,10 +24,12 @@ import java.util.stream.Collectors;
 public class MessagePostService implements PostService {
 
     final PostRepository postRepository;
+    final NoticeRepository noticeRepository;
 
     @Autowired
-    public MessagePostService(PostRepository postRepository) {
+    public MessagePostService(PostRepository postRepository, NoticeRepository noticeRepository) {
         this.postRepository = postRepository;
+        this.noticeRepository = noticeRepository;
     }
 
     @Override
@@ -54,6 +60,7 @@ public class MessagePostService implements PostService {
             return null;
         }
 
+        Post originalPost = op.get();
 
         Post post = new Post();
         post.setDate(new Date());
@@ -61,8 +68,23 @@ public class MessagePostService implements PostService {
         post.setTitle(title);
         post.setMessage(message);
         post.setAutoCreated(false);
-        post.setReplyTo(op.get());
-        return postRepository.save(post);
+        post.setReplyTo(originalPost);
+
+        Post newPost = postRepository.save(post);
+
+        if (!originalPost.getAuthor().equals(user.getUserProfile())) {
+            UserProfile originalPoster = originalPost.getAuthor();
+            createNotice(post, originalPoster);
+        }
+
+        return newPost;
+    }
+
+    private void createNotice(Post source, UserProfile toUser) {
+        Notice notice = new Notice();
+        notice.setBelongsTo(toUser);
+        notice.setSource(source);
+        noticeRepository.save(notice);
     }
 
     @Override
@@ -80,9 +102,19 @@ public class MessagePostService implements PostService {
         } else {
             likedPost = p.getHasLiked();
             likedPost.add(user);
+            if (!p.getAuthor().equals(user.getUserProfile()))
+                createNotice(p, p.getAuthor());
         }
         p.setHasLiked(likedPost);
         postRepository.save(p);
+    }
+
+    @Override
+    public void clearNotices(User user) {
+        List<Notice> notices = user.getUserProfile().getNotices();
+        for (Notice notice : notices) {
+            noticeRepository.delete(notice);
+        }
     }
 
 }
