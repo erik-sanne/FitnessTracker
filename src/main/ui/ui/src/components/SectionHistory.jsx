@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Module from "./modules/Module";
 import useFetch from "../services/useFetch";
 import Spinner from "react-bootstrap/cjs/Spinner";
@@ -14,6 +14,7 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Accordion from "@material-ui/core/Accordion";
 import Loader from "./ui_components/Loader";
+import get from "../services/Get";
 
 const SectionHistory = ({ userProfile }) => {
 
@@ -23,7 +24,12 @@ const SectionHistory = ({ userProfile }) => {
         ERROR: "error"
     }
 
-    const { data: summaries, loading } = useFetch('/api/workouts');
+    const FetchStatus = {
+        NONE: 0, LOADING: 1, MAX_REACHED: 2
+    }
+
+    const [ summaries, setSummaries ] = useState([]);
+    const [ fetchSatus, setFetchStatus] = useState(FetchStatus.NONE);
     const { data: personalRecords, loadingPRs } = useFetch(`/api/records`);
     const [ sets, setSets ] = useState(null);
     const [ toRemove, setToRemove ] = useState(null);
@@ -34,7 +40,46 @@ const SectionHistory = ({ userProfile }) => {
     const [ expanded, setExpanded ] = useState(false);
     const [ timer, setTimer ] = useState(null);
 
+    useEffect(() => {
+        getSummaries();
+    }, [])
 
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll, {
+            passive: true
+        });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [summaries, fetchSatus])
+
+
+    const handleScroll = () => {
+        const isBottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
+        if (isBottom) {
+            getSummaries();
+        }
+    }
+
+    const getSummaries = () => {
+        if (fetchSatus !== FetchStatus.NONE)
+            return;
+
+        setFetchStatus(FetchStatus.LOADING)
+
+        const from = summaries.length;
+        const to = from === 0 ? 25 : from+10;
+        get(`/api/workouts?from=${from}&to=${to}`).then(resp => {
+            const newState = [...summaries, ...resp]
+            setSummaries(newState);
+            if (newState.length < to) {
+                setFetchStatus(FetchStatus.MAX_REACHED);
+            } else {
+                setFetchStatus(FetchStatus.NONE);
+            }
+        })
+    }
 
     const onToggle = (eventKey) => {
         timer && clearTimeout(timer);
@@ -123,7 +168,6 @@ const SectionHistory = ({ userProfile }) => {
         <>
             <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
                 <Module title = "Previous workouts">
-                    { loading ? <Loader /> :
                         <>
                             { summaries.map(( summary ) =>
                                 <Accordion square key={summary.workout_id} expanded={ expanded === summary.workout_id } onChange={ () => { onToggle(summary.workout_id) } }  style={{ background: '#282c3400', color: 'inherit', boxShadow: '0px 0px 10px #00000060', border: '1px solid #cccccc10' }}>
@@ -194,7 +238,7 @@ const SectionHistory = ({ userProfile }) => {
                                 </Accordion>)
                        }
                        </>
-                    }
+                    { fetchSatus === FetchStatus.LOADING ? <Loader /> : fetchSatus === FetchStatus.MAX_REACHED ? <p style={maxReachedStyle}> You've reached the end of time as we know it. You are a different person now </p> : <span></span>}
                 </Module>
             </div>
             <Modal visible={ toRemove && removeStatus !== RemoveStatus.LOADING } title={ "Remove workout" } onClose={ () => setToRemove(null) } >
@@ -224,6 +268,13 @@ const editStyle = {
     color: '#ad8e3f',
     cursor: 'pointer',
     fontSize: '16px'
+}
+
+const maxReachedStyle = {
+    textAlign: 'center',
+    color: '#555',
+    padding: '1em',
+    margin: '0',
 }
 
 export default SectionHistory;

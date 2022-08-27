@@ -17,5 +17,6 @@ public interface APIService {
     Map<String, Float> getWorkoutDistribution(User user, Date start, Date end);
     PredictedORM getPredictedORM(User user, String exercise);
     List<WorkoutSummary> getWorkoutSummaries(User user);
+    List<WorkoutSummary> getWorkoutSummaries(User user, int from, int to);
     List<SetAverage> getSetAverages(User user, String exercise);
 }

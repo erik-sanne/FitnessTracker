@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Principal;
 import java.util.Collection;
@@ -59,9 +60,13 @@ public class WorkoutController {
     }
 
     @GetMapping("api/workouts")
-    public List<WorkoutSummary> getWorkouts(final Principal principal) {
+    public List<WorkoutSummary> getWorkouts(final Principal principal, @RequestParam(name = "from", defaultValue = "0") Integer from, @RequestParam(name = "to", defaultValue = "999999") Integer to) {
         User currentUser = accountService.getUserByPrincipal(principal);
-        return apiService.getWorkoutSummaries(currentUser);
+        from = Math.max(0, from);
+        if (to <= from)
+            throw new IllegalArgumentException();
+
+        return apiService.getWorkoutSummaries(currentUser, from, to);
     }
 
     @GetMapping("api/workout/{id}")

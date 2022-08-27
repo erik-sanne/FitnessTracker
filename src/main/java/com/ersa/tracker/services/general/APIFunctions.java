@@ -186,10 +186,16 @@ public class APIFunctions implements APIService {
 
     @Override
     public List<WorkoutSummary> getWorkoutSummaries(final User user) {
+        return getWorkoutSummaries(user, 0, Integer.MAX_VALUE);
+    }
+
+    @Override
+    public List<WorkoutSummary> getWorkoutSummaries(final User user, int from, int to) {
         List<WorkoutSummary> summaries = new ArrayList<>();
 
         Iterable<WType> types = wTypeRepository.findAll();
         List<Workout> workouts = workoutService.getWorkouts(user);
+        workouts = workouts.subList(from, Math.min(to, workouts.size()));
         workouts.forEach(workout -> {
             Map<WType, Float> setsPerType = new HashMap<>();
             types.forEach(type -> setsPerType.put(type, 0f));
