@@ -3,6 +3,17 @@ import defaultPicture from '../../resources/default_pp.png';
 
 const ProfileDisplay = ({ displayName, title, profilePicture, userId, permissionLevel, onClick, style }) => {
 
+    const roleText = (permissionLevel) => {
+        switch (permissionLevel) {
+            case 'MOD':
+                return <span title={'Moderator'}>| Mod ♕ </span>;
+            case 'ADMIN':
+                return <span title={'Administrator'}>| Admin ♔ </span>;
+            default:
+                return '';
+        }
+    }
+
     return (
         <div style={{ ...style, display: displayName ? 'flex' : 'block', maxHeight: '48px' }} onClick={ () => { onClick && onClick()} } className={ 'profile-display' }>
             <img alt={ "" } src={ profilePicture ? profilePicture : defaultPicture } style={{ width: '48px', height: '48px', borderRadius: '24px' }}/>
@@ -34,11 +45,12 @@ const ProfileDisplay = ({ displayName, title, profilePicture, userId, permission
                         whiteSpace: 'nowrap',
                         lineHeight: 'initial',
                         margin: '0px'
-                    }}> {userId !== undefined && `#${userId.toString().padStart(6, '0')}`} { permissionLevel && permissionLevel !== 'BASIC' && `(${permissionLevel})`}</p>
+                    }}> {userId !== undefined && `#${userId.toString().padStart(6, '0')}`} { roleText(permissionLevel) }</p>
                 </div>
             }
         </div>
     );
 }
+
 
 export default ProfileDisplay;
