@@ -23,7 +23,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, likeCallback }) => {
         <div className={"post"} style={ notices.some( notice => notice.postId === post.postId ) ? noticeStyle : {}} >
             <div style={{ position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: "space-between", paddingBottom: "1em" }}>
-                    <ProfileDisplay displayName={ post.authorName } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ post.date } />
+                    <ProfileDisplay displayName={ post.authorName } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ new Date(`${post.date} UTC`).toString().match(/(.*[0-9]{4} [0-9]{2}:[0-9]{2})/g) } />
                 </div>
                 { post.autoPosted ?
                     <p style={{ color: '#ccc' }}>{ post.message.replace(/ in (.*)/, function(cg) { return cg.toLowerCase(); }) }</p>:
@@ -41,7 +41,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, likeCallback }) => {
                         <ProfileDisplay
                             profilePicture={ myprofile.userId === reply.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === reply.authorId)[0] && myprofile.friends.filter(f => f.userId === reply.authorId)[0].profilePicture }
                             displayName={ reply.authorName }
-                            title={ reply.date }/>
+                            title={ new Date(`${reply.date} UTC`).toString().match(/(.*[0-9]{4} [0-9]{2}:[0-9]{2})/g)  }/>
                         <p>{ reply.message }</p>
                         <LikeButton count={ reply.likes } onClick={ () => { likeCallback(reply.postId) } } />
                     </div>

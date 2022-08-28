@@ -22,7 +22,7 @@ public class PostDto {
         postId = post.getId();
         authorId = post.getAuthor().getUser().getId();
         authorName = post.getAuthor().getDisplayName();
-        date = DateUtils.FORMAT_yyyyMMddHHmm.format(post.getDate());
+        date = post.getDate().toString();
         title = post.getTitle();
         message = post.getMessage().replaceAll(PostService.DISPLAY_NAME, authorName);
         replies = post.getReplies().stream().map(PostDto::new).collect(Collectors.toList());
