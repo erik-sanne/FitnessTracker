@@ -3,13 +3,38 @@ import {useEffect, useState} from "react";
 
 const Splash = ({ show = true }) => {
     const [ hidden, setHidden ] = useState(false)
+    const [ welcomeMessage, setWelcomeMessage ] = useState('')
 
     useEffect(()=>{
         if (!show)
+            setWelcomeMessage(getWelcomeMessage())
             setTimeout(() => {
                 setHidden(true)
             }, 3000);
     }, [show])
+
+    const getWelcomeMessage = () => {
+        const set = [
+            'Harder than last time!',
+            'Light weight!',
+            'No pain, no gain!',
+            "You're dereferencing a nullpointer!",
+            'Yeah buddy!',
+            'Good f*ing morning, god damn it!',
+            'Stick to the program!',
+            "You're a sick c*nt!",
+            "We're all gonna make it!",
+            'Everything is hard before it is easy!',
+            'Keff Javaliere, Athlean Y (dot) com!',
+            'Reps for Jesus!',
+            "He's curling in the squat rack already. - Dom Mazzetti",
+            "Chasing the pump!",
+            '',
+            ''
+
+        ]
+        return set[Math.floor(Math.random() * set.length)];
+    }
 
     return (
         hidden ? null :
@@ -17,6 +42,7 @@ const Splash = ({ show = true }) => {
             <div className={'content-wrapper'} style={{textAlign: 'center'}}>
                 <div className={`text-wrapper ${ !show && 'zoom-in' }`}>
                     <h2 className={'glitch'} data-text={"GAINZ TRACKER"}>GAINZ TRACKER</h2>
+                    <p> { welcomeMessage } </p>
                 </div>
             </div>
             {show && <p style={footerText}>© Erik Sänne | 2020 </p>}
@@ -27,7 +53,8 @@ const Splash = ({ show = true }) => {
 const footerText = {
     position: 'fixed',
     bottom: '0px',
-    right: '15px'
+    right: '15px',
+    zIndex: 99
 }
 
 export default Splash;

@@ -173,6 +173,16 @@ body {
   background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
 }
 
+.splash .text-wrapper p {
+    position: absolute;
+    width: 200px;
+    left: 25px;
+    top: 165px;
+    text-align: center;
+    color: #ccc;
+    text-shadow: 0 0 5px #000;
+}
+
 .page-wrapper {
   color: white;
   font-size: calc(10px + 0.5vmin);
