@@ -26,7 +26,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, likeCallback }) => {
                     <ProfileDisplay displayName={ post.authorName } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ post.date } />
                 </div>
                 { post.autoPosted ?
-                    <i>{ post.message }</i>:
+                    <p style={{ color: '#ccc' }}>{ post.message.replace(/ in (.*)/, function(cg) { return cg.toLowerCase(); }) }</p>:
                     <p>{ post.message }</p>
                 }
             </div>
