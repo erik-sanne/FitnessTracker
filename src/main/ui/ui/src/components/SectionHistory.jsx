@@ -29,7 +29,7 @@ const SectionHistory = ({ userProfile }) => {
     }
 
     const [ summaries, setSummaries ] = useState([]);
-    const [ fetchSatus, setFetchStatus] = useState(FetchStatus.NONE);
+    const [ fetchStatus, setFetchStatus] = useState(FetchStatus.NONE);
     const { data: personalRecords, loadingPRs } = useFetch(`/api/records`);
     const [ sets, setSets ] = useState(null);
     const [ toRemove, setToRemove ] = useState(null);
@@ -52,7 +52,7 @@ const SectionHistory = ({ userProfile }) => {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, [summaries, fetchSatus])
+    }, [summaries, fetchStatus])
 
 
     const handleScroll = () => {
@@ -63,7 +63,7 @@ const SectionHistory = ({ userProfile }) => {
     }
 
     const getSummaries = () => {
-        if (fetchSatus !== FetchStatus.NONE)
+        if (fetchStatus !== FetchStatus.NONE)
             return;
 
         setFetchStatus(FetchStatus.LOADING)
@@ -238,7 +238,7 @@ const SectionHistory = ({ userProfile }) => {
                                 </Accordion>)
                        }
                        </>
-                    { fetchSatus === FetchStatus.LOADING ? <Loader /> : fetchSatus === FetchStatus.MAX_REACHED ? <p style={maxReachedStyle}> You've reached the end of time as we know it. You are a different person now </p> : <span></span>}
+                    { fetchStatus === FetchStatus.LOADING ? <Loader /> : fetchStatus === FetchStatus.MAX_REACHED ? <p style={maxReachedStyle}> You've reached the end of time as we know it. You are a different person now </p> : <span></span>}
                 </Module>
             </div>
             <Modal visible={ toRemove && removeStatus !== RemoveStatus.LOADING } title={ "Remove workout" } onClose={ () => setToRemove(null) } >
