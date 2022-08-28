@@ -392,3 +392,17 @@ body {
   background: rgba(40, 44, 52, 0.4);
 
 }
+
+.list-row {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  margin: 0px 0px;
+  padding: 0.5em 1em;
+  color: #eee;
+  box-shadow: 0px 0px 1px #000;
+}
+
+.list-row:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}

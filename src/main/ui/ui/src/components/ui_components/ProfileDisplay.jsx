@@ -15,7 +15,7 @@ const ProfileDisplay = ({ displayName, title, profilePicture, userId, permission
     }
 
     return (
-        <div style={{ ...style, display: displayName ? 'flex' : 'block', maxHeight: '48px' }} onClick={ () => { onClick && onClick()} } className={ 'profile-display' }>
+        <div style={{ ...style, display: displayName ? 'flex' : 'block', maxHeight: '48px', margin: 'auto 0px' }} onClick={ () => { onClick && onClick()} } className={ 'profile-display' }>
             <img alt={ "" } src={ profilePicture ? profilePicture : defaultPicture } style={{ width: '48px', height: '48px', borderRadius: '24px' }}/>
             { displayName &&
                 <div style={{paddingLeft: '15px', position: 'relative', marginTop: title ? '-5px' : '0px'}}>

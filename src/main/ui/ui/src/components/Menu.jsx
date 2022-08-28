@@ -60,16 +60,17 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                             <FontAwesomeIcon icon={ faTrophy } style={{ marginRight: '25px'}}/>My Achievements
                         </NavLink>
                     </li>
-                    { userProfile.permissionLevel !== 'BASIC' && <>
-                        <div style={modmenuStyle}>
-                            <NavLink to="/monitor" activeStyle={ activeClass } onClick={ onNavigate } >
-                                <FontAwesomeIcon icon={ faHeartbeat }/>
-                            </NavLink>
-                            <NavLink to="/updates" activeStyle={ activeClass } onClick={ onNavigate } >
-                                <FontAwesomeIcon icon={ faCodeBranch }/>
-                            </NavLink>
-                        </div>
-                    </> }
+                    { userProfile.permissionLevel !== 'BASIC' &&
+                        <>
+                            <li>
+                            </li>
+                            <li>
+                                <NavLink to="/monitor" activeStyle={ activeClass } onClick={ onNavigate } >
+                                    <FontAwesomeIcon icon={ faHeartbeat } style={{ marginRight: '25px'}}/>Sys-health & Metrics
+                                </NavLink>
+                            </li>
+                        </>
+                        }
                 </ul>
             </div>
             {
@@ -80,8 +81,7 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                         bottom: '20px',
                         cursor: "pointer",
                         color: '#555'
-                    }}>
-                        {!loading && `v.${version[0].sha.slice(-10)}`}
+                    }}> <FontAwesomeIcon icon={ faCodeBranch }/> {!loading && ` v.${version[0].sha.slice(-10)}`}
                     </p>
                 </NavLink>
             }
@@ -90,10 +90,5 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
     )
 }
 
-const modmenuStyle = {
-    paddingTop: '2rem',
-    display: 'flex',
-    textAlign: 'center'
-}
 
 export default Menu;

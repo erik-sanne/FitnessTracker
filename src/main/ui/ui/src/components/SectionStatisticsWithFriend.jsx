@@ -7,6 +7,7 @@ import useFetch from "../services/useFetch";
 import ProfileDisplay from "./ui_components/ProfileDisplay";
 import ModuleBSD from "./modules/ModuleBSD";
 import get from "../services/Get";
+import image from "../resources/party_pattern.jpg";
 
 const SectionStatisticsWithFriend = ({ userProfile }) => {
     const { friendId } = useParams();
@@ -41,7 +42,11 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
-            <Module title={ "Parties" } className={ 'parties' } style={{ background: 'linear-gradient(135deg, rgba(107,166,239,1), rgba(70,131,58,1))' }} headerStyle={{ backgroundImage: 'none' }}>
+            <Module title={ "Parties" } className={ 'parties' } style={{
+                background: `url(${image}), linear-gradient(135deg, rgb(107, 166, 239), rgb(70, 131, 58))`,
+                backgroundBlendMode: 'hard-light',
+                backgroundPosition: 'center'
+            }} headerStyle={{ backgroundImage: 'none' }}>
                 <div style={{ display: 'flex' }}>
                     <div style={{ flex: 1 }}>
                     <ProfileDisplay profilePicture={ userProfile.profilePicture } title={ userProfile.title }/>

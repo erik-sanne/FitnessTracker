@@ -4,11 +4,18 @@ import useFetch from "../services/useFetch";
 import Modal from "./ui_components/Modal";
 import Spinner from 'react-bootstrap/Spinner';
 import {getCookie} from "react-use-cookie";
-import {faCheckCircle, faPlusCircle, faTimes, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
+import {
+    faCheckCircle, faIdBadge,
+    faPeopleArrows,
+    faPlusCircle,
+    faTimes,
+    faTimesCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ProfileDisplay from "./ui_components/ProfileDisplay";
 import {Redirect} from "react-router-dom";
 import ModuleNewsFeed from "./modules/ModuleNewsFeed";
+import ListRow from "./ui_components/ListRow";
 
 const SectionFriends = ({ userProfile, updateUserProfile, silentProfileUpdate }) => {
     const [ modVisible, setModVisible ] = useState(false);
@@ -122,21 +129,27 @@ const SectionFriends = ({ userProfile, updateUserProfile, silentProfileUpdate })
 
             <Module title = "Friends list" className={ "friends-list" }>
                 { userProfile.friends && userProfile.friends.length > 0 && userProfile.friends.map((profile, key) =>
-                    <ProfileDisplay key={key} displayName={profile.displayName} title={ profile.title } userId={ profile.userId } profilePicture={ profile.profilePicture } permissionLevel={ profile.permissionLevel } onClick={() => {
+                    <ListRow onClick={ () => {
                         setRedirect(`/friend/${profile.userId}`)
-                    }} style={{ cursor: 'pointer', margin: '5px 0px' }} />
+                    }}>
+                        <ProfileDisplay key={key} displayName={profile.displayName} title={ profile.title } userId={ profile.userId } profilePicture={ profile.profilePicture } permissionLevel={ profile.permissionLevel } style={{ flex: 1}}/>
+                        <span style={{ margin: 'auto 1em', display:'none'}}> <FontAwesomeIcon icon={faIdBadge} /> View profile </span>
+                        <span style={{ margin: 'auto 1em', display:'none'}}> <FontAwesomeIcon icon={faPeopleArrows} /> Compare stats </span>
+                    </ListRow>
                 )}
                 {
                     !userProfile.friends || userProfile.friends.length === 0 && <p style={{margin: '0px'}}>You can add new friends by clicking the plus sign</p>
                 }
-                <FontAwesomeIcon icon={ faPlusCircle } style={{
-                    color: 'rgb(55, 98, 55)',
-                    fontSize: '48px',
-                    cursor: 'pointer',
-                    width: '48px',
-                    height: '48px',
-                    margin: '5px 0px'
-                }} onClick={ () => setModVisible(true) }/>
+                <ListRow onClick={ () => setModVisible(true) }>
+                    <FontAwesomeIcon icon={ faPlusCircle } style={{
+                        color: 'rgb(55, 98, 55)',
+                        fontSize: '48px',
+                        cursor: 'pointer',
+                        width: '48px',
+                        height: '48px',
+                        margin: '5px 0px'
+                    }} />
+                </ListRow>
             </Module>
 
             <ModuleNewsFeed profile={ userProfile } silentProfileUpdate={ silentProfileUpdate }/>
