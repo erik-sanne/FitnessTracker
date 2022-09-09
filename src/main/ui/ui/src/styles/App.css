@@ -1,6 +1,9 @@
 body {
   background-color: #282c34;
   color: #ffffff;
+
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .App {
