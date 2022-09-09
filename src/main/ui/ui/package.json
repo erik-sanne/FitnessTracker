@@ -29,6 +29,7 @@
     "react-transition-group": "^1.2.1",
     "regression": "^2.0.1",
     "swiper": "^7.4.1",
+    "use-long-press": "^2.0.2",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

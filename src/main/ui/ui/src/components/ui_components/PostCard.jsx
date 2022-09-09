@@ -31,7 +31,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, likeCallback }) => {
                 }
             </div>
             <div className={"text-area divider"} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <LikeButton count={ post.likes } onClick={ () => { likeCallback(post.postId) } } />
+                <LikeButton likes={ post.likes } onClick={ () => { likeCallback(post.postId) } } />
                 <span style={{ margin: 'auto 0', cursor: 'pointer'}} onClick={ () => setShowAllComments(!showAllComments)}>{ post.replies.length <= 2 ? '' : !showAllComments ? `Show all ${post.replies.length} replies` : 'Hide replies' }</span>
             </div>
             <div>
@@ -43,7 +43,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, likeCallback }) => {
                             displayName={ reply.authorName }
                             title={ new Date(`${reply.date} UTC`).toString().match(/(.*[0-9]{4} [0-9]{2}:[0-9]{2})/g)  }/>
                         <p>{ reply.message }</p>
-                        <LikeButton count={ reply.likes } onClick={ () => { likeCallback(reply.postId) } } />
+                        <LikeButton likes={ reply.likes } onClick={ () => { likeCallback(reply.postId) } } />
                     </div>
                 </div>)}
             </div>

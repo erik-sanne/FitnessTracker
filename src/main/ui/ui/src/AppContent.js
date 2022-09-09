@@ -122,7 +122,7 @@ const AppContent = ({ logoutCallback }) => {
                             <SectionSettings userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
                         </Route>
                         <Route path="/friend/:friendId">
-                            <Header title={ "Our Statistics" } onClick={ burgerClick } />
+                            <Header title={ "Compare stats" } onClick={ burgerClick } />
                             <SectionStatisticsWithFriend userProfile={ currentUserProfile } />
                         </Route>
                         <Route path="/achievements">
