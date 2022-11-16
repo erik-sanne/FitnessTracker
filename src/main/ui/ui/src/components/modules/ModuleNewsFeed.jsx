@@ -7,7 +7,7 @@ import post from "../../services/Post";
 import get from "../../services/Get";
 import ProfileDisplay from "../ui_components/ProfileDisplay";
 
-const ModuleNewsFeed = ({ profile, silentProfileUpdate }) => {
+const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
     const [ loading, setLoading ] = useState(true);
     const [ posts, setPosts ] = useState([]);
     const [ numComments, setNumComments ] = useState(10);
@@ -16,7 +16,7 @@ const ModuleNewsFeed = ({ profile, silentProfileUpdate }) => {
 
     useEffect(() => {
         setNotices(profile.notices)
-        silentProfileUpdate();
+        updateUserProfile();
     }, []);
 
     useEffect(() =>  {
@@ -93,9 +93,9 @@ const ModuleNewsFeed = ({ profile, silentProfileUpdate }) => {
             </div>
         </div>
 
-        <div className={"post"} style={{ padding: '0px' }}></div>
 
-        { loading ? <Loader /> : posts.length < 1 ? <p>Nothing new</p> : <>
+        { loading ? <Loader /> : posts.length < 1 ? <p style={noticeStyle}>Nothing new</p> : <>
+            <div className={"post"} style={{ padding: '0px' }}></div>
             {posts.map((post, idx) =>
                             <PostCard key={idx}
                                       myprofile={ profile }
@@ -105,9 +105,11 @@ const ModuleNewsFeed = ({ profile, silentProfileUpdate }) => {
                                       likeCallback={ toggleLike }
                             /> )}
                             <br />
-            { maxReached ? <p style={{ width: '100%', textAlign: 'center', fontStyle: 'italic' }}> No more posts at this time </p> : <Loader /> }
+            { maxReached ? <p style={noticeStyle}> No more posts at this time </p> : <Loader /> }
         </>}
             </Module>);
 }
+
+const noticeStyle = { width: '100%', textAlign: 'center', fontStyle: 'italic', color: '#555' };
 
 export default ModuleNewsFeed;

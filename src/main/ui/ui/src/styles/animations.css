@@ -5,64 +5,80 @@
     -o-animation: fadeOut 3s;
     -ms-animation: fadeOut 3s;
     background: transparent;
+    color: rgba(0,0,0,0);
 }
 @keyframes fadeOut {
     0% {
         background: #18191c;
+        color: rgba(255,255,255,1);
     }
     70% {
         background: #18191c;
+        color: rgba(255,255,255,1);
     }
     80% {
         background: transparent;
+        color: rgba(0,0,0,0);
     }
 }
 
 @-moz-keyframes fadeOut {
     0% {
         background: #18191c;
+        color: rgba(255,255,255,1);
     }
     70% {
         background: #18191c;
+        color: rgba(255,255,255,1);
     }
     80% {
         background: transparent;
+        color: rgba(0,0,0,0);
     }
 }
 
 @-webkit-keyframes fadeOut {
     0% {
         background: #18191c;
+        color: rgba(255,255,255,1);
     }
     70% {
         background: #18191c;
+        color: rgba(255,255,255,1);
     }
     80% {
         background: transparent;
+        color: rgba(0,0,0,0);
     }
 }
 
 @-o-keyframes fadeOut {
     0% {
         background: #18191c;
+        color: rgba(255,255,255,1);
     }
     70% {
         background: #18191c;
+        color: rgba(255,255,255,1);
     }
     80% {
         background: transparent;
+        color: rgba(0,0,0,0);
     }
 }
 
 @-ms-keyframes fadeOut {
     0% {
         background: #18191c;
+        color: rgba(255,255,255,1);
     }
     70% {
         background: #18191c;
+        color: rgba(255,255,255,1);
     }
     80% {
         background: transparent;
+        color: rgba(0,0,0,0);
     }
 }
 

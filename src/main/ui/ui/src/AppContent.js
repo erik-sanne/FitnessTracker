@@ -37,22 +37,9 @@ const AppContent = ({ logoutCallback }) => {
         setMenuOpen(false)
     }
 
-    const silentProfileUpdate = () => {
-        get('/users/profile').then(profile => {
-            setCurrentUserProfile(profile)
-            setLoading(false);
-        }).catch(err => {
-            setLoading(false);
-        });
-    }
-
     const updateUserProfile = () => {
-        setLoading(true);
         get('/users/profile').then(profile => {
             setCurrentUserProfile(profile)
-            setLoading(false);
-        }).catch(err => {
-            setLoading(false);
         });
 
         get('/api/achievements').then(() => {});
@@ -78,7 +65,8 @@ const AppContent = ({ logoutCallback }) => {
 
     useEffect(() => {
         updateUserProfile();
-        let inter =setInterval(silentProfileUpdate, 10000);
+        setLoading(false);
+        let inter = setInterval(updateUserProfile, 10000);
         return () => clearInterval(inter);
     }, [])
 
@@ -115,7 +103,7 @@ const AppContent = ({ logoutCallback }) => {
                         </Route>
                         <Route path="/social">
                             <Header title={ "Friends" } onClick={ burgerClick } />
-                            <SectionFriends userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } silentProfileUpdate={ silentProfileUpdate } />
+                            <SectionFriends userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
                         </Route>
                         <Route path="/settings">
                             <Header title={ "User Settings" } onClick={ burgerClick } />

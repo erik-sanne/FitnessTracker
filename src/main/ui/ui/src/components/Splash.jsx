@@ -45,7 +45,7 @@ const Splash = ({ show = true }) => {
                     <p> { welcomeMessage } </p>
                 </div>
             </div>
-            {show && <p style={footerText}>© Erik Sänne | 2020 </p>}
+            {<p style={footerText}>© Erik Sänne 2020-{new Date().getFullYear()} </p>}
         </section>
     );
 }

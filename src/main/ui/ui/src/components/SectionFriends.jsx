@@ -17,7 +17,7 @@ import {Redirect} from "react-router-dom";
 import ModuleNewsFeed from "./modules/ModuleNewsFeed";
 import ListRow from "./ui_components/ListRow";
 
-const SectionFriends = ({ userProfile, updateUserProfile, silentProfileUpdate }) => {
+const SectionFriends = ({ userProfile, updateUserProfile }) => {
     const [ modVisible, setModVisible ] = useState(false);
     const [ showRequests, setShowRequests ] = useState(true);
     const [ loadingReq, setLoadingReq ] = useState(false);
@@ -152,7 +152,7 @@ const SectionFriends = ({ userProfile, updateUserProfile, silentProfileUpdate })
                 </ListRow>
             </Module>
 
-            <ModuleNewsFeed profile={ userProfile } silentProfileUpdate={ silentProfileUpdate }/>
+            <ModuleNewsFeed profile={ userProfile } updateUserProfile={ updateUserProfile }/>
 
             <Modal visible={ modVisible } title={ 'Add friend' } onClose={ () => setModVisible(false) }>
                 { loadingReq && <Spinner /> }

@@ -80,7 +80,7 @@ public class UserController {
     }
 
     @PostMapping("/users/setTitle")
-    public void incomingFriendRequests(@RequestBody final String title, final Principal principal) {
+    public void setTitle(@RequestBody final String title, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         achievementService.setActive(currentUser, title);
     }
