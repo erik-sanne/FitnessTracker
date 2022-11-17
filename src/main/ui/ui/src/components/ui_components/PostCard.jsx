@@ -1,14 +1,18 @@
 import React, {useEffect, useState} from "react";
 import ProfileDisplay from "./ProfileDisplay";
 import LikeButton from "./LikeButton";
+import OptionsButton from "./options/OptionsButton";
+import Option from "./options/Option";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
 
-const PostCard = ({ myprofile, notices, post, postCallback, likeCallback }) => {
+const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, likeCallback }) => {
 
     const [showAllComments, setShowAllComments] = useState(false);
     const [replies, setReplies] = useState([]);
 
     const onKeyPress = (e) => {
         if (e.key === 'Enter') {
+            e.preventDefault();
             const val = e.target.value;
             e.target.value = "";
             postCallback(post.postId, val);
@@ -29,6 +33,10 @@ const PostCard = ({ myprofile, notices, post, postCallback, likeCallback }) => {
                     <p style={{ color: '#ccc' }}>{ post.message.replace(/ in (.*)/, function(cg) { return cg.toLowerCase(); }) }</p>:
                     <p>{ post.message }</p>
                 }
+                {myprofile.userId === post.authorId &&
+                <OptionsButton style={{right: '1em', top: '0.5em'}}>
+                    <Option icon={faTrash} text={'Delete post'} callback={() => { deletePostCallback(post.postId) }}/>
+                </OptionsButton>}
             </div>
             <div className={"text-area divider"} style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <LikeButton likes={ post.likes } onClick={ () => { likeCallback(post.postId) } } />
@@ -42,6 +50,10 @@ const PostCard = ({ myprofile, notices, post, postCallback, likeCallback }) => {
                             profilePicture={ myprofile.userId === reply.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === reply.authorId)[0] && myprofile.friends.filter(f => f.userId === reply.authorId)[0].profilePicture }
                             displayName={ reply.authorName }
                             title={ new Date(`${reply.date} UTC`).toString().match(/(.*[0-9]{4} [0-9]{2}:[0-9]{2})/g)  }/>
+                        {myprofile.userId === reply.authorId &&
+                        <OptionsButton style={{right: '5px', top: '0'}}>
+                            <Option icon={faTrash} text={'Delete post'} callback={() => { deletePostCallback(reply.postId) }}/>
+                        </OptionsButton>}
                         <p>{ reply.message }</p>
                         <LikeButton likes={ reply.likes } onClick={ () => { likeCallback(reply.postId) } } />
                     </div>
@@ -49,7 +61,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, likeCallback }) => {
             </div>
             <div className={"text-area"} style={{ display: 'flex', justifyContent: "space-between" }}>
                 <ProfileDisplay profilePicture={ myprofile.profilePicture } />
-                <input type={ 'text' } onKeyPress={ onKeyPress }/>
+                <input type={ 'text' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/>
             </div>
         </div>
     );

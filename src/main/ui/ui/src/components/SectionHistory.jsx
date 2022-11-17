@@ -56,7 +56,7 @@ const SectionHistory = ({ userProfile }) => {
 
 
     const handleScroll = () => {
-        const isBottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
+        const isBottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 2;
         if (isBottom) {
             getSummaries();
         }

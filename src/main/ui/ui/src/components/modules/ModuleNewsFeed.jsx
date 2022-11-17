@@ -6,6 +6,8 @@ import PostCard from "../ui_components/PostCard";
 import post from "../../services/Post";
 import get from "../../services/Get";
 import ProfileDisplay from "../ui_components/ProfileDisplay";
+import doDelete from "../../services/DoDelete";
+import Modal from "../ui_components/Modal";
 
 const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
     const [ loading, setLoading ] = useState(true);
@@ -13,6 +15,7 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
     const [ numComments, setNumComments ] = useState(10);
     const [ maxReached, setMaxReaced ] = useState(false);
     const [ notices, setNotices ] = useState([])
+    const [ confirmDeletePost, setConfirmDeletePost] = useState(-1)
 
     useEffect(() => {
         setNotices(profile.notices)
@@ -45,6 +48,13 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
         })
     }
 
+    const deleteComment = () => {
+        doDelete(`/posts/delete/${confirmDeletePost}`).then(() => {
+            setConfirmDeletePost(-1);
+            getComments();
+        });
+    }
+
     const postComment = (id, message) => {
         post(`/posts/reply/${id}`, message
         ).then(() => {
@@ -68,6 +78,7 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
 
     const onKeyPress = (e) => {
         if (e.key === 'Enter') {
+            e.preventDefault();
             const val = e.target.value;
             e.target.value = "";
             postNewComment(val);
@@ -89,7 +100,7 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
                 </div>
             </div>
             <div className={"text-area"} style={{ display: 'flex', justifyContent: "space-between" }}>
-                <input type={ 'text' } onKeyPress={ onKeyPress }/>
+                <input type={ 'text' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/>
             </div>
         </div>
 
@@ -102,12 +113,19 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
                                       notices={notices}
                                       post={post}
                                       postCallback={ postComment }
+                                      deletePostCallback={ setConfirmDeletePost }
                                       likeCallback={ toggleLike }
                             /> )}
                             <br />
             { maxReached ? <p style={noticeStyle}> No more posts at this time </p> : <Loader /> }
         </>}
-            </Module>);
+        <Modal visible={ confirmDeletePost !== -1 } title={ "Are you sure you want to delete this post?" } onClose={ () => setConfirmDeletePost(-1) }>
+            <input type={ 'submit' } value={ 'Yes!' } className={ 'themed' } onClick={ () => {
+                deleteComment();
+            }}/>
+        </Modal>
+       </Module>);
+
 }
 
 const noticeStyle = { width: '100%', textAlign: 'center', fontStyle: 'italic', color: '#555' };

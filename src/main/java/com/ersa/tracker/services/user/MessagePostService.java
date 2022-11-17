@@ -7,6 +7,7 @@ import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.repositories.NoticeRepository;
 import com.ersa.tracker.repositories.PostRepository;
 import com.ersa.tracker.repositories.UserProfileRepository;
+import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
@@ -39,6 +40,28 @@ public class MessagePostService implements PostService {
 
     public Post createPost(User user, String title, String message) {
         return createPost(user, new Date(), title, message,false);
+    }
+
+    @Override
+    public boolean deletePost(User user, long id) {
+        Optional<Post> resource = postRepository.findById(id);
+        if (resource.isEmpty()) {
+            log.warn("User {} tried to remove post {} but it did not exist", user.getId(), id);
+            throw new ResourceNotFoundException("Post does not exist");
+        }
+
+        Post post = resource.get();
+
+        if (!post.getAuthor().getUser().equals(user)) {
+            log.error("User {} tried to remove post {} posted by {}", user.getId(), id, post.getAuthor().getUser().getId());
+            return false;
+        }
+
+        List<Post> replies = post.getReplies();
+
+        replies.forEach(postRepository::delete);
+        postRepository.delete(post);
+        return true;
     }
 
     @Override

@@ -56,6 +56,12 @@ public class PostController {
         postService.createPost(currentUser, new Date(), "", message, true);
     }
 
+    @DeleteMapping("/posts/delete/{id}")
+    public void deletePost(@PathVariable long id, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        postService.deletePost(currentUser, id);
+    }
+
     @PostMapping("/posts/reply/{replyTo}")
     public void postPost(@PathVariable final long replyTo, @RequestBody final String message, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
