@@ -16,7 +16,9 @@ const style = {
     border: '0px',
     boxShadow: '0 0 0',
     background: 'transparent',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    maxWidth: 'inherit',
+    minWidth: 'inherit'
 }
 
 export default FormWrap;

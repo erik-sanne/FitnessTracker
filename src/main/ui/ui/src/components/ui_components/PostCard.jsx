@@ -66,7 +66,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
                     </div>
                 </div>)}
             </div>
-            <div className={"text-area"} style={{ display: 'flex', justifyContent: "space-between" }}>
+            <div className={"text-area"} style={{ display: 'flex' }}>
                 <ProfileDisplay profilePicture={ myprofile.profilePicture } />
                 <FormWrap><input type={ 'text' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/></FormWrap>
             </div>
