@@ -73,4 +73,10 @@ public class PostController {
         User currentUser = accountService.getUserByPrincipal(principal);
         postService.toggleLike(postId, currentUser);
     }
+
+    @PostMapping("/posts/edit/{postId}")
+    public void editPost(@PathVariable final long postId, @RequestBody final String message, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        postService.editPost(postId, message, currentUser);
+    }
 }

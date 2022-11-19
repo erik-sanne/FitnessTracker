@@ -15,6 +15,7 @@ public class PostDto {
     final long authorId;
     final List<LikedBy> likes;
     final boolean isAutoPosted;
+    final boolean isEdited;
     final String date;
     final String authorName;
     final String title;
@@ -31,6 +32,7 @@ public class PostDto {
         replies = post.getReplies().stream().map(PostDto::new).collect(Collectors.toList());
         likes = post.getHasLiked().stream().map(User::getUserProfile).map(LikedBy::new).collect(Collectors.toList());
         isAutoPosted = post.isAutoCreated();
+        isEdited = post.isEdited();
     }
 
     public long getPostId() {
@@ -67,6 +69,10 @@ public class PostDto {
 
     public boolean isAutoPosted() {
         return isAutoPosted;
+    }
+
+    public boolean isEdited() {
+        return isEdited;
     }
 
     static class LikedBy {

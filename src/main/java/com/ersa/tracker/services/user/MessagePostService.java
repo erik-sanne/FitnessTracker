@@ -65,6 +65,27 @@ public class MessagePostService implements PostService {
     }
 
     @Override
+    public boolean editPost(long id, String message, User user) {
+        Optional<Post> resource = postRepository.findById(id);
+        if (resource.isEmpty()){
+            log.warn("User {} tried to edit post {} but it did not exist", user.getId(), id);
+            throw new ResourceNotFoundException("Post does not exist");
+        }
+
+        Post post = resource.get();
+
+        if (!post.getAuthor().getUser().equals(user)) {
+            log.error("User {} tried to remove post {} posted by {}", user.getId(), id, post.getAuthor().getUser().getId());
+            return false;
+        }
+
+        post.setEdited(true);
+        post.setMessage(message);
+        postRepository.save(post);
+        return true;
+    }
+
+    @Override
     public Post createPost(User user, Date date, String title, String message, boolean manual) {
         Post post = new Post();
         post.setDate(new Date());

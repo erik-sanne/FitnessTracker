@@ -3,10 +3,10 @@ import ProfileDisplay from "./ProfileDisplay";
 import LikeButton from "./LikeButton";
 import OptionsButton from "./options/OptionsButton";
 import Option from "./options/Option";
-import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faPen, faTrash} from "@fortawesome/free-solid-svg-icons";
 import FormWrap from "./FormWrap";
 
-const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, likeCallback }) => {
+const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, editPostCallback, likeCallback }) => {
 
     const [showAllComments, setShowAllComments] = useState(false);
     const [replies, setReplies] = useState([]);
@@ -24,11 +24,15 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
         setReplies(showAllComments ? post.replies : post.replies.map(a => a).splice(-2))
     }, [showAllComments, post])
 
+    const date = (date) => {
+        return new Date(`${date} UTC`).toString().match(/(.*[0-9]{4} [0-9]{2}:[0-9]{2})/g)
+    }
+
     return (
         <div className={"post"} style={ notices.some( notice => notice.postId === post.postId ) ? noticeStyle : {}} >
             <div style={{ position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: "space-between", paddingBottom: "1em" }}>
-                    <ProfileDisplay displayName={ post.authorName } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ new Date(`${post.date} UTC`).toString().match(/(.*[0-9]{4} [0-9]{2}:[0-9]{2})/g) } />
+                    <ProfileDisplay displayName={ post.authorName } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ `${date(post.date)} ${ post.edited ? '(edited)' : ''}` } />
                 </div>
                 { post.autoPosted ?
                     <p style={{ color: '#ccc' }}>{ post.message.replace(/ in (.*)/, function(cg) { return cg.toLowerCase(); }) }</p>:
@@ -36,6 +40,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
                 }
                 {myprofile.userId === post.authorId &&
                 <OptionsButton style={{right: '1em', top: '0.5em'}}>
+                    <Option icon={faPen} text={'Edit post'} callback={() => { editPostCallback({id: post.postId, text: post.message})}}/>
                     <Option icon={faTrash} text={'Delete post'} callback={() => { deletePostCallback(post.postId) }}/>
                 </OptionsButton>}
             </div>
@@ -50,9 +55,10 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
                         <ProfileDisplay
                             profilePicture={ myprofile.userId === reply.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === reply.authorId)[0] && myprofile.friends.filter(f => f.userId === reply.authorId)[0].profilePicture }
                             displayName={ reply.authorName }
-                            title={ new Date(`${reply.date} UTC`).toString().match(/(.*[0-9]{4} [0-9]{2}:[0-9]{2})/g)  }/>
+                            title={ `${date(reply.date)} ${ reply.edited ? '(edited)' : ''}`  }/>
                         {myprofile.userId === reply.authorId &&
                         <OptionsButton style={{right: '5px', top: '0'}}>
+                            <Option icon={faPen} text={'Edit post'} callback={() => { editPostCallback({id: reply.postId, text: reply.message}) }}/>
                             <Option icon={faTrash} text={'Delete post'} callback={() => { deletePostCallback(reply.postId) }}/>
                         </OptionsButton>}
                         <p>{ reply.message }</p>

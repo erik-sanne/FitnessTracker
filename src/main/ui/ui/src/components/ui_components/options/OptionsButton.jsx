@@ -28,7 +28,9 @@ const popupStyle = {
     width: '10em',
     padding: '1em',
     background: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: '1em 0em 1em 1em'
+    borderRadius: '1em 0em 1em 1em',
+    display: 'flex',
+    flexDirection: 'column'
 }
 
 const optionButtonStyle = {

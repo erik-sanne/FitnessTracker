@@ -17,6 +17,7 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
     const [ maxReached, setMaxReaced ] = useState(false);
     const [ notices, setNotices ] = useState([])
     const [ confirmDeletePost, setConfirmDeletePost] = useState(-1)
+    const [ editPost, setEditPost] = useState({id: -1, text: ""})
 
     useEffect(() => {
         setNotices(profile.notices)
@@ -70,12 +71,24 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
         })
     }
 
+    const saveEdit = () => {
+        post(`/posts/edit/${editPost.id}`, editPost.text)
+        .then(() => {
+            setEditPost({id: -1, text: ""})
+            getComments();
+        })
+    }
+
     const toggleLike = (id) => {
         post(`/posts/like/${id}`)
         .then(() => {
             getComments();
         })
     }
+
+    const textChanged = (e) => {
+        setEditPost({id: editPost.id, text: e.target.value})
+    };
 
     const onKeyPress = (e) => {
         if (e.key === 'Enter') {
@@ -115,6 +128,7 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
                                       post={post}
                                       postCallback={ postComment }
                                       deletePostCallback={ setConfirmDeletePost }
+                                      editPostCallback={ setEditPost }
                                       likeCallback={ toggleLike }
                             /> )}
                             <br />
@@ -125,8 +139,17 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
                 deleteComment();
             }}/>
         </Modal>
+        <Modal visible={ editPost.id !== -1 } title={ "Edit post" } onClose={ () => setEditPost({id: -1, text: ""}) }>
+            <textarea onChange={ textChanged } style={ taStyle } value={ editPost.text } />
+            <input type={'submit'} value={ 'Save' } onClick={ saveEdit }/>
+        </Modal>
        </Module>);
+}
 
+const taStyle = {
+    borderRadius: '0.5em',
+    background: 'rgb(204, 204, 204)',
+    padding: '1em'
 }
 
 const noticeStyle = { width: '100%', textAlign: 'center', fontStyle: 'italic', color: '#555' };

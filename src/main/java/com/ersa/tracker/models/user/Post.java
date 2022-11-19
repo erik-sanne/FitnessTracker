@@ -36,6 +36,8 @@ public class Post {
     @NotNull
     private String title;
 
+    private boolean edited = false;
+
     @ManyToOne
     @JsonIgnore
     private UserProfile author;
@@ -114,4 +116,13 @@ public class Post {
     public void setHasLiked(List<User> hasLiked) {
         this.hasLiked = hasLiked;
     }
+
+    public boolean isEdited() {
+        return edited;
+    }
+
+    public void setEdited(boolean edited) {
+        this.edited = edited;
+    }
+
 }
