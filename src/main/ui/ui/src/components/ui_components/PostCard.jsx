@@ -4,6 +4,7 @@ import LikeButton from "./LikeButton";
 import OptionsButton from "./options/OptionsButton";
 import Option from "./options/Option";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import FormWrap from "./FormWrap";
 
 const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, likeCallback }) => {
 
@@ -61,7 +62,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
             </div>
             <div className={"text-area"} style={{ display: 'flex', justifyContent: "space-between" }}>
                 <ProfileDisplay profilePicture={ myprofile.profilePicture } />
-                <input type={ 'text' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/>
+                <FormWrap><input type={ 'text' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/></FormWrap>
             </div>
         </div>
     );

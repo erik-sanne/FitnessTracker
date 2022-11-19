@@ -8,6 +8,7 @@ import get from "../../services/Get";
 import ProfileDisplay from "../ui_components/ProfileDisplay";
 import doDelete from "../../services/DoDelete";
 import Modal from "../ui_components/Modal";
+import FormWrap from "../ui_components/FormWrap";
 
 const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
     const [ loading, setLoading ] = useState(true);
@@ -100,7 +101,7 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
                 </div>
             </div>
             <div className={"text-area"} style={{ display: 'flex', justifyContent: "space-between" }}>
-                <input type={ 'text' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/>
+                <FormWrap><input type={ 'text' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/></FormWrap>
             </div>
         </div>
 
