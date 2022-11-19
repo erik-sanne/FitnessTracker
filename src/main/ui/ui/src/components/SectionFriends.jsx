@@ -7,9 +7,8 @@ import {getCookie} from "react-use-cookie";
 import {
     faCheckCircle, faIdBadge,
     faPeopleArrows,
-    faPlusCircle,
     faTimes,
-    faTimesCircle,
+    faTimesCircle, faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ProfileDisplay from "./ui_components/ProfileDisplay";
@@ -137,19 +136,20 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                         <span style={{ margin: 'auto 1em', display:'none'}}> <FontAwesomeIcon icon={faPeopleArrows} /> Compare stats </span>
                     </ListRow>
                 )}
-                {
-                    !userProfile.friends || userProfile.friends.length === 0 && <p style={{margin: '0px'}}>You can add new friends by clicking the plus sign</p>
-                }
-                <ListRow onClick={ () => setModVisible(true) }>
-                    <FontAwesomeIcon icon={ faPlusCircle } style={{
-                        color: 'rgb(55, 98, 55)',
-                        fontSize: '48px',
-                        cursor: 'pointer',
-                        width: '48px',
-                        height: '48px',
-                        margin: '5px 0px'
-                    }} />
-                </ListRow>
+                <div style={{padding: '0.5em 1em'}}>
+                    <div>
+                        <FontAwesomeIcon icon={ faUserPlus } onClick={ () => setModVisible(true) } style={{
+                            color: '#fff',
+                            fontSize: '48px',
+                            cursor: 'pointer',
+                            width: '48px',
+                            height: '48px',
+                            margin: '5px 0px',
+                            filter: 'drop-shadow(0px 0px 5px black)',
+
+                        }} />
+                    </div>
+                </div>
             </Module>
 
             <ModuleNewsFeed profile={ userProfile } updateUserProfile={ updateUserProfile }/>
