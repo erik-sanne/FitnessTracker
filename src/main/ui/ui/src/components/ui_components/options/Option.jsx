@@ -1,9 +1,9 @@
 import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-const Option = ({ icon, text, callback }) => {
+const Option = ({ icon, text, disabled=false, callback }) => {
     return (
-        <span style={{ cursor: 'pointer', margin: '5px' }}  onClick={ callback }>
+        <span style={{ cursor: !disabled && 'pointer', margin: '5px', color: disabled && '#777' }}  onClick={ callback }>
             <FontAwesomeIcon icon={icon} style={{ marginRight: '0.5em' }} /> {text}
         </span>
     );

@@ -40,7 +40,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
                 }
                 {myprofile.userId === post.authorId &&
                 <OptionsButton style={{right: '1em', top: '0.5em'}}>
-                    <Option icon={faPen} text={'Edit post'} callback={() => { editPostCallback({id: post.postId, text: post.message})}}/>
+                    <Option icon={faPen} text={'Edit post'} disabled={ post.autoPosted } callback={() => { if (!post.autoPosted) editPostCallback({id: post.postId, text: post.message}) }}/>
                     <Option icon={faTrash} text={'Delete post'} callback={() => { deletePostCallback(post.postId) }}/>
                 </OptionsButton>}
             </div>
