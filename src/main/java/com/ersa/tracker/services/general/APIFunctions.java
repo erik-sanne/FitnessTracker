@@ -205,13 +205,13 @@ public class APIFunctions implements APIService {
                 exercise.getPrimaryTargets().forEach(target -> {
                     target.getWtypes().forEach(type -> {
                         Float prevVal = setsPerType.get(type);
-                        setsPerType.put(type, prevVal + 1);
+                        setsPerType.put(type, prevVal + 1.5f);
                     });
                 });
                 exercise.getSecondaryTargets().forEach(target -> {
                     target.getWtypes().forEach(type -> {
                         Float prevVal = setsPerType.get(type);
-                        setsPerType.put(type, prevVal + 1);
+                        setsPerType.put(type, prevVal + 1f);
                     });
                 });
             });
