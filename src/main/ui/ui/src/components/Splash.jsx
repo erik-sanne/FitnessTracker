@@ -29,6 +29,8 @@ const Splash = ({ show = true }) => {
             'Reps for Jesus!',
             "He's curling in the squat rack already. - Dom Mazzetti",
             "Chasing the pump!",
+            "More than 40.000 lines of code!",
+            "Securing gainz since 2020!",
             '',
             ''
 
