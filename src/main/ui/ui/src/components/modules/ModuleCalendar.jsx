@@ -4,6 +4,7 @@ import Calendar from "../calendar/Calendar";
 import Module from "./Module";
 import get from "../../services/Get";
 
+const DAYS_TO_SHOW = 14;
 
 const ModuleCalendar = ({profile}) => {
     const [events, setEvents] = useState([]);
@@ -17,7 +18,7 @@ const ModuleCalendar = ({profile}) => {
 
     useEffect(() => {
         resources.forEach((resource) => {
-            get(`/api/workouts/${resource.id}?from=${0}&to=${14}`).then((workouts) => {
+            get(`/api/workouts/${resource.id}?from=${0}&to=${DAYS_TO_SHOW}`).then((workouts) => {
                 const resource_events = workouts.map(workout => ({resourceId: resource.id, date:workout.date, text:workout.description}));
                 setEvents((oldSate) => oldSate.concat(resource_events));
             });
@@ -27,7 +28,7 @@ const ModuleCalendar = ({profile}) => {
     return (
         <Module title={ "Calendar" } className={ "friends-calendar" }>
             <div>
-                <Calendar resources={ resources } events={ events } />
+                <Calendar resources={ resources } events={ events } days={ DAYS_TO_SHOW }/>
             </div>
         </Module>
     )

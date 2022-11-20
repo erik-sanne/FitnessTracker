@@ -3,8 +3,8 @@ import '../../styles/calendar.css';
 
 const day = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
 
-const Calendar = ({resources, events}) => {
-    const dates = getDates(14)
+const Calendar = ({resources, events, days}) => {
+    const dates = getDates(days)
     return (
         <div className={'calendar'}>
             <div className={'resources'}>
@@ -27,7 +27,7 @@ const Calendar = ({resources, events}) => {
                         {resources.map((resource, keyResource) =>
                         <div className={ 'resource-container' } key={ 'resource_'+keyResource }>
                             {events.filter(e => e.resourceId === resource.id && sameDate(e.date, date.toDateString())).map((event, keyEvent) =>
-                                <div className={ 'event' }>
+                                <div className={ `event ${event.text.toLowerCase()}` } key={ 'event_'+keyEvent }>
                                     <span>
                                         { event.text }
                                     </span>
