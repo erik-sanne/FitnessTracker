@@ -50,6 +50,26 @@
   border-radius: 0.5em;
 }
 
+.resource-container:has(.event.pull) {
+  background: linear-gradient(45deg, #000b23, #0051c67d);
+}
+
+.resource-container:has(.event.push) {
+  background: linear-gradient(45deg, #230f00, #c69b00a3);
+}
+
+.resource-container:has(.event.legs) {
+  background: linear-gradient(45deg, #002311, #00c65373);
+}
+
+.resource-container:has(.event.arms) {
+  background: linear-gradient(45deg, black, transparent);
+}
+
+.resource-container:has(.event.shoulders) {
+  background: linear-gradient(45deg, #230008, #c6000073);
+}
+
 .event {
   justify-content: center;
   flex-direction: column;
