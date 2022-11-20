@@ -1,0 +1,60 @@
+.calendar {
+  display: flex;
+  border: 1px solid #333;
+  border-radius: 0.5em;
+}
+
+.calendar-view {
+  display: flex;
+  flex-direction: row-reverse;
+  overflow: auto;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+}
+
+.day-header {
+  width: 7em;
+  text-align: center;
+  height: 1.5em;
+  margin: 0.5em;
+  border-bottom: 1px dashed #333;
+}
+
+.resources {
+  border-right: 1px solid #333;
+}
+
+.resource {
+  flex-direction: column;
+}
+
+.resource > span {
+  text-align: right;
+  margin-right: 1em;
+}
+
+.resource-container {
+  width: 7em;
+  height: 3em;
+  justify-content: center;
+  display: flex;
+  margin: 0.5em;
+}
+
+.resource-container:has(.event) {
+  border: 1px solid #333;
+  border-radius: 0.5em;
+}
+
+.event {
+  justify-content: center;
+  flex-direction: column;
+  display: flex;
+}
+
+.day-margin {
+  height: 1em;
+}

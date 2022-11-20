@@ -26,10 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class WorkoutController {
@@ -67,6 +64,25 @@ public class WorkoutController {
             throw new IllegalArgumentException();
 
         return apiService.getWorkoutSummaries(currentUser, from, to);
+    }
+
+    @GetMapping("api/workouts/{userId}")
+    public List<WorkoutSummary> getWorkouts(final Principal principal, @PathVariable final long userId, @RequestParam(name = "from", defaultValue = "0") Integer from, @RequestParam(name = "to", defaultValue = "999999") Integer to) {
+        from = Math.max(0, from);
+        if (to <= from)
+            throw new IllegalArgumentException();
+
+        User currentUser = accountService.getUserByPrincipal(principal);
+        Optional<User> resource = currentUser.getUserProfile().getFriends().stream().filter(friend -> friend.getUser().getId() == userId).map(UserProfile::getUser).findAny();
+
+        if (resource.isEmpty()) {
+            if (userId == currentUser.getId())
+                resource = Optional.of(currentUser);
+            else
+                return new ArrayList<>();
+        }
+
+        return apiService.getWorkoutSummaries(resource.get(), from, to);
     }
 
     @GetMapping("api/workout/{id}")

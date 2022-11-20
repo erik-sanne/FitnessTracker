@@ -15,6 +15,7 @@ import ProfileDisplay from "./ui_components/ProfileDisplay";
 import {Redirect} from "react-router-dom";
 import ModuleNewsFeed from "./modules/ModuleNewsFeed";
 import ListRow from "./ui_components/ListRow";
+import ModuleCalendar from "./modules/ModuleCalendar";
 
 const SectionFriends = ({ userProfile, updateUserProfile }) => {
     const [ modVisible, setModVisible ] = useState(false);
@@ -151,6 +152,8 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                     </div>
                 </div>
             </Module>
+
+            <ModuleCalendar profile={ userProfile } />
 
             <ModuleNewsFeed profile={ userProfile } updateUserProfile={ updateUserProfile }/>
 

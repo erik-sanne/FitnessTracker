@@ -100,6 +100,10 @@
 
 @media screen and (max-width: 1900px) {
   .module.news-feed {
+    grid-row: 3;
+  }
+
+  .module.friends-calendar {
     grid-row: 2;
   }
 
@@ -110,6 +114,10 @@
 
 @media screen and (min-width: 1900px) {
   .module.news-feed {
+    grid-column: 1 / span 2;
+  }
+
+  .module.friends-calendar {
     grid-column: 1 / span 2;
   }
 
