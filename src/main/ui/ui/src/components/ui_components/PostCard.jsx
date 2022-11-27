@@ -25,7 +25,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
     }, [showAllComments, post])
 
     const date = (date) => {
-        return new Date(`${date} UTC`).toString().match(/(.*[0-9]{4} [0-9]{2}:[0-9]{2})/g)
+        return new Date(`${date.replace(/ /g,"T")}`).toString().match(/(.*[0-9]{4} [0-9]{2}:[0-9]{2})/g)
     }
 
     return (
