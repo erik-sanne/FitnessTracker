@@ -14,7 +14,6 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Accordion from "@material-ui/core/Accordion";
 import Loader from "./ui_components/Loader";
-import get from "../services/Get";
 import GetCache from "../services/GetCache";
 
 const SectionHistory = ({ userProfile }) => {
@@ -70,7 +69,7 @@ const SectionHistory = ({ userProfile }) => {
 
         const from = summaries.length;
         const to = from === 0 ? 25 : from+10;
-        get(`/api/workouts?from=${from}&to=${to}`).then(resp => {
+        GetCache.get(`/api/workouts?from=${from}&to=${to}`).then(resp => {
             const newState = [...summaries, ...resp]
             setSummaries(newState);
             if (newState.length < to) {
