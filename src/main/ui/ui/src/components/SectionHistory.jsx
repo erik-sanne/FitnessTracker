@@ -15,6 +15,7 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Accordion from "@material-ui/core/Accordion";
 import Loader from "./ui_components/Loader";
 import get from "../services/Get";
+import GetCache from "../services/GetCache";
 
 const SectionHistory = ({ userProfile }) => {
 
@@ -38,7 +39,6 @@ const SectionHistory = ({ userProfile }) => {
     const [ loadingStatus, setLoadingStatus ] = useState(-1);
     const [ currentEventKey, setCurrentEventKey ] = useState(false);
     const [ expanded, setExpanded ] = useState(false);
-    const [ timer, setTimer ] = useState(null);
 
     useEffect(() => {
         getSummaries();
@@ -82,8 +82,6 @@ const SectionHistory = ({ userProfile }) => {
     }
 
     const onToggle = (eventKey) => {
-        timer && clearTimeout(timer);
-
         if (currentEventKey === eventKey) {
             setExpanded(expanded === eventKey ? false : eventKey);
             return;
@@ -94,22 +92,10 @@ const SectionHistory = ({ userProfile }) => {
         setLoadingStatus(eventKey)
         setCurrentEventKey(eventKey)
 
-        const token = getCookie('session_token')
-        fetch(`${ process.env.REACT_APP_API_BASE }/api/setsForWorkout/${ eventKey }`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Basic ${token}`
-            }
-        }).then(response => {
-            if (response.ok) {
-                response.json().then(sets => setSets(sets));
-                setTimer(setTimeout(() => {
-                    setLoadingStatus(-1);
-                    setExpanded(eventKey)
-                }, 500));
-            }
+        GetCache.get(`/api/setsForWorkout/${ eventKey }`).then(sets => {
+            setSets(sets);
+            setLoadingStatus(-1);
+            setExpanded(eventKey)
         }).catch(error => {
             setLoadingStatus(-1);
             setSets(null);
@@ -129,6 +115,7 @@ const SectionHistory = ({ userProfile }) => {
         }).then(response => {
             if (response.ok) {
                 setToRemove(null);
+                GetCache.invalidate();
                 window.location.reload(); //There are probably better ways
             }
         }).catch(error => {

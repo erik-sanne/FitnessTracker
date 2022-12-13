@@ -13,6 +13,7 @@ import get from "../services/Get";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Accordion from "@material-ui/core/Accordion";
+import GetCache from "../services/GetCache";
 
 const SectionNewWorkout = ({updateUserProfile}) => {
     const { workoutId } = useParams();
@@ -73,6 +74,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                 }
                 setSubmitStatus(SubmitStatus.SUBMITTED);
                 updateUserProfile();
+                GetCache.invalidate();
             }
         }).catch(error => {
             console.log("error", error)
