@@ -1,9 +1,24 @@
 import React from "react";
 import '../../styles/calendar.css';
+import Loader from "../ui_components/Loader";
 
 const day = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
 
-const Calendar = ({resources, events, days}) => {
+const Calendar = ({resources, events, days, scrollCallback}) => {
+    const slider = React.createRef();
+
+    const handleScroll = (event) => {
+        const left = event.target.scrollWidth - event.target.offsetWidth + event.target.scrollLeft;
+        if (scrollCallback && left < 5) {
+            scrollCallback();
+        }
+    }
+
+    const handleWheel = (event) => {
+        slider.current.scrollLeft = slider.current.scrollLeft + event.deltaY
+        console.log("scroll wid " + event.deltaY)
+    }
+
     const dates = getDates(days)
     return (
         <div className={'calendar'}>
@@ -18,7 +33,7 @@ const Calendar = ({resources, events, days}) => {
                     <div className={ 'day-margin' }></div>
                 </div>
             </div>
-            <div className={ 'calendar-view' }>
+            <div className={ 'calendar-view' } onScroll={ handleScroll } onWheel={ handleWheel } ref={slider}>
                 {dates.map((date, keyDay) =>
                     <div className={'day'} key={'day_'+keyDay}>
                         <div className={ 'day-header' }>
@@ -38,6 +53,9 @@ const Calendar = ({resources, events, days}) => {
                         <div className={ 'day-margin' }></div>
                     </div>
                 )}
+                <div className={'day loader'} key={'day_loader'}>
+                    <Loader />
+                </div>
             </div>
         </div>
     )

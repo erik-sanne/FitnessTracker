@@ -195,7 +195,10 @@ public class APIFunctions implements APIService {
 
         Iterable<WType> types = wTypeRepository.findAll();
         List<Workout> workouts = workoutService.getWorkouts(user);
-        workouts = workouts.subList(from, Math.min(to, workouts.size()));
+        to = Math.min(to, workouts.size());
+        if (to <= from)
+            return summaries;
+        workouts = workouts.subList(from, to);
         workouts.forEach(workout -> {
             Map<WType, Float> setsPerType = new HashMap<>();
             types.forEach(type -> setsPerType.put(type, 0f));

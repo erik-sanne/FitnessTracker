@@ -24,6 +24,10 @@
   border-bottom: 1px dashed #333;
 }
 
+.loader {
+  margin: auto;
+}
+
 .resources {
   border-right: 1px solid #333;
 }
