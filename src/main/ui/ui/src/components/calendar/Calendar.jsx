@@ -37,7 +37,7 @@ const Calendar = ({resources, events, days, scrollCallback}) => {
                 {dates.map((date, keyDay) =>
                     <div className={'day'} key={'day_'+keyDay}>
                         <div className={ 'day-header' }>
-                            { day[date.getDay()] }
+                            { date.displayAsText ? `${day[date.date.getDay()]}` : `${date.date.getDate()}/${date.date.getMonth() + 1}` }
                         </div>
                         {resources.map((resource, keyResource) =>
                         <div className={ 'resource-container' } key={ 'resource_'+keyResource }>
@@ -75,7 +75,7 @@ const getDates = (numberOfDays) => {
     for (let i = 0; i < numberOfDays; i++) {
         const date = new Date();
         date.setDate(date.getDate() - i)
-        days.push(date);
+        days.push({date: date, displayAsText: i < 14});
     }
     return days;
 }
