@@ -23,6 +23,6 @@ public class BishopAchievement extends AchievementProviderBase {
 
     @Override
     public boolean evaluate(User user) {
-        return workoutService.getPartitionedWorkoutSets(user, "PREACHER_CURLS").size() > 100;
+        return workoutService.getAllSetsForExercise(user, "PREACHER_CURLS").size() > 100;
     }
 }

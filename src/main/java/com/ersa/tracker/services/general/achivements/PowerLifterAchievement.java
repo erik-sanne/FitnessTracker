@@ -24,9 +24,9 @@ public class PowerLifterAchievement extends AchievementProviderBase {
 
     @Override
     public boolean evaluate(User user) {
-        boolean bench = workoutService.getPartitionedWorkoutSets(user, "BENCH_PRESS").size() > 250;
-        boolean deadlift = workoutService.getPartitionedWorkoutSets(user, "DEADLIFT").size() > 250;
-        boolean squat = workoutService.getPartitionedWorkoutSets(user, "SQUAT").size() > 250;
+        boolean bench = workoutService.getAllSetsForExercise(user, "BENCH_PRESS").size() > 250;
+        boolean deadlift = workoutService.getAllSetsForExercise(user, "DEADLIFT").size() > 250;
+        boolean squat = workoutService.getAllSetsForExercise(user, "SQUAT").size() > 250;
 
         return bench && deadlift && squat;
     }

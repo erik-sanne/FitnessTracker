@@ -24,9 +24,9 @@ public class AllCompundsAchievement extends AchievementProviderBase {
 
     @Override
     public boolean evaluate(User user) {
-        boolean bench = !workoutService.getPartitionedWorkoutSets(user, "BENCH_PRESS").isEmpty();
-        boolean deadlift = !workoutService.getPartitionedWorkoutSets(user, "DEADLIFT").isEmpty();
-        boolean squat = !workoutService.getPartitionedWorkoutSets(user, "SQUAT").isEmpty();
+        boolean bench = !workoutService.getAllSetsForExercise(user, "BENCH_PRESS").isEmpty();
+        boolean deadlift = !workoutService.getAllSetsForExercise(user, "DEADLIFT").isEmpty();
+        boolean squat = !workoutService.getAllSetsForExercise(user, "SQUAT").isEmpty();
 
         return bench && deadlift && squat;
     }

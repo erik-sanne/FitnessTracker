@@ -78,21 +78,16 @@ public class WorkoutManager implements WorkoutService {
     }
 
     @Override
-    public List<Set<WorkoutSet>> getPartitionedWorkoutSets(final User user, final Exercise exercise) {
-        return getPartitionedWorkoutSets(user, exercise.getName());
+    public List<WorkoutSet> getAllSetsForExercise(final User user, final Exercise exercise) {
+        return getAllSetsForExercise(user, exercise.getName());
     }
 
     @Override
-    public List<Set<WorkoutSet>> getPartitionedWorkoutSets(User user, String exercise) {
-        return getWorkouts(user)
-                .stream()
-                .map(workout -> workout
-                        .getSets()
-                        .stream()
-                        .filter(set -> set
-                                .getExercise()
-                                .equals(exercise))
-                        .collect(Collectors.toSet()))
+    public List<WorkoutSet> getAllSetsForExercise(User user, String exercise) {
+        return getWorkouts(user).stream()
+                .map(Workout::getSets)
+                .flatMap(Collection::stream)
+                        .filter(set -> set.getExercise().equals(exercise))
                 .collect(Collectors.toList());
     }
 

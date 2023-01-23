@@ -9,11 +9,10 @@ import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public interface WorkoutService {
-    List<Set<WorkoutSet>> getPartitionedWorkoutSets(User user, Exercise exercise);
-    List<Set<WorkoutSet>> getPartitionedWorkoutSets(User user, String exercise);
+    List<WorkoutSet> getAllSetsForExercise(User user, Exercise exercise);
+    List<WorkoutSet> getAllSetsForExercise(User user, String exercise);
     List<Workout> getWorkouts(User user, int limit);
     List<Workout> getWorkouts(User user);
     Workout getWorkout(User user, long workoutId);

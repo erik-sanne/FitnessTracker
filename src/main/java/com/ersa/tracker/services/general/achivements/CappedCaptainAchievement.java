@@ -25,10 +25,10 @@ public class CappedCaptainAchievement extends AchievementProviderBase {
     @Override
     public boolean evaluate(User user) {
         boolean front =
-                workoutService.getPartitionedWorkoutSets(user, "MILITARY_PRESS").size() +
-                workoutService.getPartitionedWorkoutSets(user, "SHOULDER_PRESS").size() > 250;
-        boolean side = workoutService.getPartitionedWorkoutSets(user, "LATERAL_RAISES").size() > 250;
-        boolean rear = workoutService.getPartitionedWorkoutSets(user, "REVERSED_FLIES").size() > 250;
+                workoutService.getAllSetsForExercise(user, "MILITARY_PRESS").size() +
+                workoutService.getAllSetsForExercise(user, "SHOULDER_PRESS").size() > 250;
+        boolean side = workoutService.getAllSetsForExercise(user, "LATERAL_RAISES").size() > 250;
+        boolean rear = workoutService.getAllSetsForExercise(user, "REVERSED_FLIES").size() > 250;
 
         return front && side && rear;
     }
