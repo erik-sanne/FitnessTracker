@@ -81,6 +81,31 @@
   max-width: 100%;
 }
 
+.chip {
+  background: rgba(107,166,239,0.5) !important;
+}
+
+.optionContainer > .option  {
+  background: rgba(23, 68, 124, 0.85) !important;
+}
+
+.searchWrapper {
+  border: 1px solid #333 !important;
+}
+
+.optionContainer {
+  border: 0px !important;
+}
+
+.notFound {
+  display: none !important;
+}
+
+.multiSelectContainer input {
+  font-size: 1em;
+  padding: 0.5em;
+}
+
 @media screen and (min-width: 2000px) {
   .module.progression {
     grid-column: 1 / span 2;

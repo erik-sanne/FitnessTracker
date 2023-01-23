@@ -27,7 +27,7 @@ const Calendar = ({resources, events, days, scrollCallback}) => {
                     <div className={ 'day-header' } style={{ border: '0px' }}> </div>
                     {resources.map((resource, key) =>
                     <div className={ 'resource resource-container' } key={key}>
-                        <span>{ resource.text }</span>
+                        <span>{ resource.name }</span>
                     </div>
                     )}
                     <div className={ 'day-margin' }></div>
@@ -41,7 +41,7 @@ const Calendar = ({resources, events, days, scrollCallback}) => {
                         </div>
                         {resources.map((resource, keyResource) =>
                         <div className={ 'resource-container' } key={ 'resource_'+keyResource }>
-                            {events.filter(e => e.resourceId === resource.id && sameDate(e.date, date.toDateString())).map((event, keyEvent) =>
+                            {events.filter(e => e.resourceId === resource.id && sameDate(e.date, date.date.toDateString())).map((event, keyEvent) =>
                                 <div className={ `event ${event.text.toLowerCase()}` } key={ 'event_'+keyEvent }>
                                     <span>
                                         { event.text }

@@ -3,10 +3,12 @@ import React, {useEffect, useState} from "react";
 import Calendar from "../calendar/Calendar";
 import Module from "./Module";
 import get from "../../services/Get";
+import Multiselect from 'multiselect-react-dropdown';
 
 const PAGE_SIZE = 14;
 
 const ModuleCalendar = ({profile}) => {
+    const [exclude, setExclude] = useState([]);
     const [events, setEvents] = useState([]);
     const [resources, setResources] = useState([]);
     const [page, setPage] = useState(1);
@@ -14,8 +16,8 @@ const ModuleCalendar = ({profile}) => {
     const [loading, setLoading] = useState(false)
 
     if (resources.length === 0) {
-        const res = profile.friends.map(friend => ({id: friend.userId, text: friend.displayName}));
-        res.push({id: profile.userId, text: profile.displayName})
+        const res = profile.friends.map(friend => ({id: friend.userId, name: friend.displayName}));
+        res.push({id: profile.userId, name: profile.displayName})
         setResources(res);
     }
 
@@ -37,13 +39,34 @@ const ModuleCalendar = ({profile}) => {
         });
     }, [resources, page])
 
+    const intersect = (a1, a2) => {
+        const b = a1.filter(value => !a2.includes(value));
+        return b;
+    }
+
+    const onSelect = (selectedList, selectedItem) => {
+        setExclude( intersect(resources, selectedList) )
+    }
+
+    const onRemove = (selectedList, selectedItem) => {
+        setExclude( intersect(resources, selectedList) )
+    }
+
     return (
         <Module title={ "Calendar" } className={ "friends-calendar" }>
             <div>
-                <Calendar resources={ resources } events={ events } days={ pagesLoaded * PAGE_SIZE } scrollCallback={ onMaxScrollLeft }/>
+                <Calendar resources={ intersect(resources, exclude) } events={ events } days={ pagesLoaded * PAGE_SIZE } scrollCallback={ onMaxScrollLeft }/>
             </div>
+            <Multiselect
+                options={ resources }
+                selectedValues={ resources }
+                onSelect={ onSelect }
+                onRemove={ onRemove }
+                displayValue="name"
+            />
         </Module>
     )
+
 }
 
 export default ModuleCalendar;
