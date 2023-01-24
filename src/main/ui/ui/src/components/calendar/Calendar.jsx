@@ -16,7 +16,6 @@ const Calendar = ({resources, events, days, scrollCallback}) => {
 
     const handleWheel = (event) => {
         slider.current.scrollLeft = slider.current.scrollLeft + event.deltaY
-        console.log("scroll wid " + event.deltaY)
     }
 
     const dates = getDates(days)

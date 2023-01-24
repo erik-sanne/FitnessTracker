@@ -4,21 +4,27 @@ import Calendar from "../calendar/Calendar";
 import Module from "./Module";
 import get from "../../services/Get";
 import Multiselect from 'multiselect-react-dropdown';
+import LocalStorage from "../../services/LocalStorage";
 
 const PAGE_SIZE = 14;
+const CACHE_KEY = "calendar.selected"
 
 const ModuleCalendar = ({profile}) => {
-    const [exclude, setExclude] = useState([]);
+    const [selected, setSelected] = useState([]);
     const [events, setEvents] = useState([]);
     const [resources, setResources] = useState([]);
     const [page, setPage] = useState(1);
     const [pagesLoaded, setPagesLoaded] = useState(1);
     const [loading, setLoading] = useState(false)
 
+    let initialResources = [];
+    let initialSelected = [];
     if (resources.length === 0) {
-        const res = profile.friends.map(friend => ({id: friend.userId, name: friend.displayName}));
-        res.push({id: profile.userId, name: profile.displayName})
-        setResources(res);
+        initialResources = profile.friends.map(friend => ({id: friend.userId, name: friend.displayName}));
+        initialResources.push({id: profile.userId, name: profile.displayName})
+        setResources(initialResources);
+        initialSelected = LocalStorage.get(CACHE_KEY, null, initialResources);
+        setSelected(initialSelected)
     }
 
     const onMaxScrollLeft = () => {
@@ -39,27 +45,30 @@ const ModuleCalendar = ({profile}) => {
         });
     }, [resources, page])
 
-    const intersect = (a1, a2) => {
-        const b = a1.filter(value => !a2.includes(value));
-        return b;
-    }
-
     const onSelect = (selectedList, selectedItem) => {
-        setExclude( intersect(resources, selectedList) )
+        setSelected( selectedList )
+        LocalStorage.set(CACHE_KEY, selectedList)
     }
 
     const onRemove = (selectedList, selectedItem) => {
-        setExclude( intersect(resources, selectedList) )
+        setSelected( selectedList )
+        LocalStorage.set(CACHE_KEY, selectedList)
+    }
+
+    const thisOrElse = (arr1, arr2) => {
+        if (arr1.length < 1)
+            return arr2;
+        return arr1;
     }
 
     return (
         <Module title={ "Calendar" } className={ "friends-calendar" }>
             <div>
-                <Calendar resources={ intersect(resources, exclude) } events={ events } days={ pagesLoaded * PAGE_SIZE } scrollCallback={ onMaxScrollLeft }/>
+                <Calendar resources={ selected } events={ events } days={ pagesLoaded * PAGE_SIZE } scrollCallback={ onMaxScrollLeft }/>
             </div>
             <Multiselect
-                options={ resources }
-                selectedValues={ resources }
+                options={ thisOrElse(resources, initialResources) }
+                selectedValues={ thisOrElse(selected, initialSelected) }
                 onSelect={ onSelect }
                 onRemove={ onRemove }
                 displayValue="name"
