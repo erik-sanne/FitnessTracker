@@ -25,7 +25,7 @@ public class FullWeekAchievement extends AchievementProviderBase {
 
     @Override
     public String getDescription() {
-        return "You need a rest day. Rewarded for working out on seven consecutive days";
+        return "You need a rest day. Rewarded for working out every day for an entire week";
     }
 
     @Override
