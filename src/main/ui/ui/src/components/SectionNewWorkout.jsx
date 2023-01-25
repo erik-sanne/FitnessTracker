@@ -72,9 +72,9 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                     localStorage.removeItem(LS_KEY_SETS);
                     localStorage.removeItem(LS_KEY_DATE);
                 }
-                setSubmitStatus(SubmitStatus.SUBMITTED);
                 updateUserProfile();
                 GetCache.invalidate();
+                setSubmitStatus(SubmitStatus.SUBMITTED);
             }
         }).catch(error => {
             console.log("error", error)
@@ -244,7 +244,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                                 </div>
                             </>
                         }
-                    <input type="submit" value={ workoutId ? "Update" : "Create and Save"} onClick={ () => setModalVisible(true) }/>
+                    <input type="submit" value={ workoutId ? "Update" : "Submit workout"} onClick={ () => setModalVisible(true) }/>
                     </>
                     }
                     <span ref={bottomRef} />

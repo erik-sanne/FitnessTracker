@@ -38,7 +38,7 @@ const Calendar = ({resources, events, days, scrollCallback}) => {
                         <div className={ 'day-header' }>
                             { date.displayAsText ? `${day[date.date.getDay()]}` : `${date.date.getDate()}/${date.date.getMonth() + 1}` }
                         </div>
-                        {resources.map((resource, keyResource) =>
+                        { resources.map((resource, keyResource) =>
                         <div className={ 'resource-container' } key={ 'resource_'+keyResource }>
                             {events.filter(e => e.resourceId === resource.id && sameDate(e.date, date.date.toDateString())).map((event, keyEvent) =>
                                 <div className={ `event ${event.text.toLowerCase()}` } key={ 'event_'+keyEvent }>
