@@ -24,7 +24,7 @@ public class UserAchievementService implements AchievementService {
     UserProfileRepository userProfileRepository;
 
     @Override
-    public List<Achievement> getAchivements(User user) {
+    public List<Achievement> getAchievements(User user) {
         return providers.stream().map(provider -> provider.getAchievement(user)).collect(Collectors.toList());
     }
 

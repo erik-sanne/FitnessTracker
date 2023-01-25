@@ -16,12 +16,17 @@ public class Workouts500Achievement extends AchievementProviderBase {
 
     @Override
     public String getName() {
-        return "The prophet of pumps";
+        return "The Prophet of Pumps";
     }
 
     @Override
     public String getDescription() {
         return "Has registered a total of 500 workouts";
+    }
+
+    @Override
+    public String getType() {
+        return Type.WORKOUT_COUNT.toString();
     }
 
     @Override

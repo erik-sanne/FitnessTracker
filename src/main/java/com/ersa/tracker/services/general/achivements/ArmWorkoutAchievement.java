@@ -28,6 +28,11 @@ public class ArmWorkoutAchievement extends AchievementProviderBase {
     }
 
     @Override
+    public String getType() {
+        return Type.SETS_AND_EXERCISES.toString();
+    }
+
+    @Override
     public boolean evaluate(User user) {
         List<WorkoutSummary> summaries = apiService.getWorkoutSummaries(user);
         return summaries.stream().anyMatch(s -> "ARMS".equals(s.getDescription()));

@@ -29,6 +29,11 @@ public class FirstWorkoutAchievement extends AchievementProviderBase {
     }
 
     @Override
+    public String getType() {
+        return Type.MISC.toString();
+    }
+
+    @Override
     public boolean evaluate(User user) {
         List<Workout> workouts = workoutRepository.findAllByUser(user);
         return !workouts.isEmpty();

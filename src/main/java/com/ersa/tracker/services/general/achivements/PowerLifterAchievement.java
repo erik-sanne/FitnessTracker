@@ -23,6 +23,11 @@ public class PowerLifterAchievement extends AchievementProviderBase {
     }
 
     @Override
+    public String getType() {
+        return Type.SETS_AND_EXERCISES.toString();
+    }
+
+    @Override
     public boolean evaluate(User user) {
         boolean bench = workoutService.getAllSetsForExercise(user, "BENCH_PRESS").size() > 250;
         boolean deadlift = workoutService.getAllSetsForExercise(user, "DEADLIFT").size() > 250;

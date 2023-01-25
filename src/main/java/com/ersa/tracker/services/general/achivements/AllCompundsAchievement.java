@@ -23,6 +23,11 @@ public class AllCompundsAchievement extends AchievementProviderBase {
     }
 
     @Override
+    public String getType() {
+        return Type.SETS_AND_EXERCISES.toString();
+    }
+
+    @Override
     public boolean evaluate(User user) {
         boolean bench = !workoutService.getAllSetsForExercise(user, "BENCH_PRESS").isEmpty();
         boolean deadlift = !workoutService.getAllSetsForExercise(user, "DEADLIFT").isEmpty();

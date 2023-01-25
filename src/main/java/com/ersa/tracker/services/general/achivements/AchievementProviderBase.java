@@ -21,10 +21,13 @@ public abstract class AchievementProviderBase implements AchievementProvider {
     public abstract String getDescription();
 
     @Override
+    public abstract String getType();
+
+    @Override
     public com.ersa.tracker.dto.Achievement getAchievement(User user) {
         Achievement achievement = achievementRepository.findByUserAndName(user, getName());
         if (achievement != null)
-            return new com.ersa.tracker.dto.Achievement(getName(), getDescription(), achievement.getDate());
+            return new com.ersa.tracker.dto.Achievement(getName(), getDescription(), getType(), achievement.getDate());
 
 
         if (evaluate(user)) {
@@ -36,7 +39,7 @@ public abstract class AchievementProviderBase implements AchievementProvider {
             postService.createPost(user, "New Achievement", String.format("%s unlocked the achievement %s", PostService.DISPLAY_NAME, getName()));
         }
 
-        return new com.ersa.tracker.dto.Achievement(getName(), getDescription(), achievement != null ? achievement.getDate() : null);
+        return new com.ersa.tracker.dto.Achievement(getName(), getDescription(), getType(), achievement != null ? achievement.getDate() : null);
     }
 
     public abstract boolean evaluate(User user);

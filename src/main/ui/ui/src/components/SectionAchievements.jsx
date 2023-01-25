@@ -9,19 +9,23 @@ import TextButton from "./ui_components/TextButton";
 import {getCookie} from "react-use-cookie";
 
 const SectionAchievements = ({userProfile, updateUserProfile}) => {
-    const [achieved, setAchieved] = useState([]);
-    const [nonAchieved, setNonAchieved] = useState([]);
+    const [achievements, setAchievements] = useState({});
 
     useEffect(() => {
         get('/api/achievements').then(achievements => {
             const all = achievements.map(a => {return {
                 name: a.name,
                 description: a.date ? a.description : "",
+                type: a.type,
                 date: a.date ? a.date.split('T')[0] : "",
                 achieved: a.date ? true : false
             }});
-            setAchieved(all.filter(a => a.achieved));
-            setNonAchieved(all.filter(a => !a.achieved));
+
+            const res = all.reduce((map, a) => {
+                map[a.type] = [...map[a.type] || [], a];
+                return map;
+                }, {})
+            setAchievements(res);
         })
     }, []);
 
@@ -41,7 +45,7 @@ const SectionAchievements = ({userProfile, updateUserProfile}) => {
         });
     }
 
-    if (achieved.length === 0 || nonAchieved.length === 0 )
+    if (achievements.length === 0)
         return (
             <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
                     <Module title = "Achievements">
@@ -53,28 +57,31 @@ const SectionAchievements = ({userProfile, updateUserProfile}) => {
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
             <Module title = "Achievements">
-                <p>My Achievements</p>
-                {achieved.map((achievement, idx) =>
-                    <Accordion square key={idx} style={{ background: '#282c3400', color: 'inherit', boxShadow: '0px 0px 10px #00000060', border: '1px solid #cccccc10' }}>
-                        <AccordionSummary aria-controls={`${idx}-content`} id={`${idx}-header`} style={{ color: achievement.achieved ? "#fff" : "#aaa"}}>
-                            <span>{ achievement.name }</span>
-                            <span style={{ flex: 1 }}> </span>
-                            <span>{ achievement.date }</span>
-                        </AccordionSummary>
-                        <AccordionDetails style={{ display: 'block'}}>
-                            <p>{ achievement.description }</p>
-                            { <TextButton mini onClick={ () => setTitle(achievement.name) } disabled={ userProfile.title === achievement.name }>{ userProfile.title !== achievement.name ? "Set as display title" : "Current display title" }</TextButton>}
-                        </AccordionDetails>
-                    </Accordion>
-                )}
-                <br/>
-                <p>Locked Achievements</p>
-                {nonAchieved.map((achievement, idx) =>
-                    <Accordion square key={idx} style={{ background: '#282c3400', color: 'inherit', boxShadow: '0px 0px 10px #00000060', border: '1px solid #cccccc10' }} disabled>
-                        <AccordionSummary aria-controls={`${idx}-content`} id={`${idx}-header`} style={{ color: achievement.achieved ? "#fff" : "#aaa"}}>
-                            <span>{ achievement.name }</span>
-                        </AccordionSummary>
-                    </Accordion>
+                {Object.entries(achievements).map(([type, achievements]) =>
+                    <div key={ type }>
+                        <p style={{ margin: '1em'}}>
+                            { type }
+                        </p>
+                        { achievements.map((achievement, idx) =>
+                            <Accordion square key={type+"_"+idx} style={{ background: '#282c3400', color: 'inherit', boxShadow: '0px 0px 10px #00000060', border: '1px solid #cccccc10' }} disabled={ !achievement.achieved }>
+                                <AccordionSummary aria-controls={`${idx}-content`} id={`${idx}-header`} style={{ color: achievement.achieved ? "#fff" : "#aaa"}}>
+                                    <span>{ achievement.name }</span>
+                                    <span style={{ flex: 1 }}> </span>
+                                    <span>{ achievement.date }</span>
+                                </AccordionSummary>
+                                { achievement.achieved &&
+                                    <AccordionDetails style={{display: 'block'}}>
+                                        <p>{achievement.description}</p>
+                                        {
+                                            <TextButton mini onClick={() => setTitle(achievement.name)} disabled={userProfile.title === achievement.name}>
+                                                {userProfile.title !== achievement.name ? "Set as display title" : "Current display title"}
+                                            </TextButton>
+                                        }
+                                    </AccordionDetails>
+                                }
+                            </Accordion>
+                            )}
+                    </div>
                 )}
             </Module>
         </div>

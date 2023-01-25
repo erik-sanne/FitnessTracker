@@ -23,6 +23,11 @@ public class AchievementsAchievement extends AchievementProviderBase {
     }
 
     @Override
+    public String getType() {
+        return Type.MISC.toString();
+    }
+
+    @Override
     public boolean evaluate(User user) {
         return achievementRepository.findByUser(user).size() >= 10;
     }

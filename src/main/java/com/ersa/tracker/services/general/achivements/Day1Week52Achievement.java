@@ -16,12 +16,17 @@ public class Day1Week52Achievement extends AchievementProviderBase {
 
     @Override
     public String getName() {
-        return "Resilient Mofo";
+        return "Resilient Rack Rat";
     }
 
     @Override
     public String getDescription() {
-        return "Has been working out every single week for over a year";
+        return "Has been working out every single week for over a year! Dedication at it's finest.";
+    }
+
+    @Override
+    public String getType() {
+        return Type.FREQUENCY.toString();
     }
 
     @Override

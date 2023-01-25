@@ -25,6 +25,11 @@ public class Day5Week5Achievement extends AchievementProviderBase {
     }
 
     @Override
+    public String getType() {
+        return Type.FREQUENCY.toString();
+    }
+
+    @Override
     public boolean evaluate(User user) {
         Iterator<Week> weeks = funcs.getWorkoutsPerWeek(user).iterator();
 

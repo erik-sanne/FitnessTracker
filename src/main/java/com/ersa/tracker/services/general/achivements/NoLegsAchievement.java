@@ -25,6 +25,11 @@ public class NoLegsAchievement extends AchievementProviderBase {
     }
 
     @Override
+    public String getType() {
+        return Type.MISC.toString();
+    }
+
+    @Override
     public boolean evaluate(User user) {
         List<WorkoutSummary> summaries = apiService.getWorkoutSummaries(user);
 

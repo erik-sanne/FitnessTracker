@@ -22,6 +22,11 @@ public class BishopAchievement extends AchievementProviderBase {
     }
 
     @Override
+    public String getType() {
+        return Type.SETS_AND_EXERCISES.toString();
+    }
+
+    @Override
     public boolean evaluate(User user) {
         return workoutService.getAllSetsForExercise(user, "PREACHER_CURLS").size() > 100;
     }

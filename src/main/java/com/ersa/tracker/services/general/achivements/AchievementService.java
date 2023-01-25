@@ -6,6 +6,6 @@ import com.ersa.tracker.models.authentication.User;
 import java.util.List;
 
 public interface AchievementService {
-    List<Achievement> getAchivements(User user);
+    List<Achievement> getAchievements(User user);
     void setActive(User user, String achievement);
 }

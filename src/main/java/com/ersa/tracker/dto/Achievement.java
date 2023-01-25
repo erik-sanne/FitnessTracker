@@ -5,11 +5,13 @@ import java.util.Date;
 public class Achievement {
     private String name;
     private String description;
+    private String type;
     private Date date;
 
-    public Achievement(String name, String description, Date date) {
+    public Achievement(String name, String description, String type, Date date) {
         this.name = name;
         this.description = description;
+        this.type = type;
         this.date = date;
     }
 
@@ -27,6 +29,14 @@ public class Achievement {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Date getDate() {

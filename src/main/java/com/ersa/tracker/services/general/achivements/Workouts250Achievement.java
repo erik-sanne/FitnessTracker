@@ -25,6 +25,11 @@ public class Workouts250Achievement extends AchievementProviderBase {
     }
 
     @Override
+    public String getType() {
+        return Type.WORKOUT_COUNT.toString();
+    }
+
+    @Override
     public boolean evaluate(User user) {
         List<Workout> workouts = workoutRepository.findAllByUser(user);
         return workouts.size() > 250;

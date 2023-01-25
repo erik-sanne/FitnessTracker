@@ -29,6 +29,11 @@ public class ActiveOver3YearAchievement extends AchievementProviderBase {
     }
 
     @Override
+    public String getType() {
+        return Type.MISC.toString();
+    }
+
+    @Override
     public boolean evaluate(User user) {
         LocalDateTime dateTime = LocalDateTime.now();
         ZonedDateTime newDateTime = dateTime.minusYears(3).atZone(ZoneId.systemDefault());
