@@ -1,7 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faChartPie, faHistory, faPlusCircle, faTrophy, faUserFriends} from "@fortawesome/free-solid-svg-icons";
+import {
+    faChartPie,
+    faHistory,
+    faPlusCircle,
+    faTrophy,
+    faUserEdit,
+    faUserFriends
+} from "@fortawesome/free-solid-svg-icons";
 import { useMediaQuery } from 'react-responsive';
 import '../styles/glitch.css';
 import ProfileDisplay from "./ui_components/ProfileDisplay";
@@ -26,11 +33,16 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
 
     return (
         <div style={ trans } className={ 'menu' }>
-            <NavLink to="/settings" onClick={ onNavigate }>
-                <div style={{ paddingLeft: '36px'}}>
-                    <ProfileDisplay profilePicture={ userProfile.profilePicture } title={ userProfile.title }  displayName={ userProfile.displayName } userId={ userProfile.userId } permissionLevel={ userProfile.permissionLevel } />
-                </div>
-            </NavLink>
+                <div style={{ padding: '0px 36px', display: 'flex', justifyContent: 'space-between'}}>
+                    <div style={{flex: '1'}}>
+                        <ProfileDisplay profilePicture={ userProfile.profilePicture } title={ userProfile.title }  displayName={ userProfile.displayName } userId={ userProfile.userId } permissionLevel={ userProfile.permissionLevel } />
+                    </div>
+                    <div style={{margin: 'auto' }}>
+                        <NavLink to="/settings" onClick={ onNavigate }>
+                            <FontAwesomeIcon icon={ faUserEdit } style={{color: '#fff', fontSize: '18px'}} />
+                        </NavLink>
+                    </div>
+                  </div>
             <hr />
             <div>
                 <ul>
