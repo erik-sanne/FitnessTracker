@@ -69,35 +69,37 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
         <Module title={required ? "Welcome on board!" : "Edit profile"}>
             { required && <p> As this is your first time using this app, we would like you to set a display name for your account. You can also upload a unique profile picture if you so choose. </p>}
             { message && <span style={styleError}>{message}</span> }
-            <label htmlFor={"displayName"}>Display name: {required ? "*" : ""}</label>
-            <input
-                type={"text"}
-                name={"displayName"}
-                value={ displayName }
-                maxLength={ 16 }
-                minLength={ 4 }
-                onChange={ (e) => {
-                    setMessage("");
-                    setDisplayName(e.target.value)}
-                }
-            />
+
             <br />
-            <label>Avatar:</label>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <div style={{ flex: 1, overflow: 'hidden', maxWidth: '256px', maxHeight: '256px', minWidth: '256px'}}>
-                <Avatar
-                    width={ 256 }
-                    height={ 256 }
-                    onCrop={ onCrop }
-                    onClose={ onClose }
-                    onImageLoad={ onImageLoad }
-                />
+                <div style={{ flex: 1, overflow: 'hidden', maxWidth: '256px', minWidth: '256px'}}>
+                    <label>Avatar:</label>
+                    <Avatar
+                        width={ 256 }
+                        height={ 256 }
+                        onCrop={ onCrop }
+                        onClose={ onClose }
+                        onImageLoad={ onImageLoad }
+                    />
                 </div>
-                <div style={{ flex: 2, textAlign: 'center', lineHeight: '256px', minWidth: '256px', padding: '20px' }} className={ 'centerC' }>
-                    <ProfileDisplay displayName={ ( !displayName ) ? defaultName : displayName } title={ userProfile && userProfile.title } profilePicture={ profilePic } userId={ userProfile?.userId || 0 } />
+                <div style={{ flex: 2, minWidth: '256px', padding: '20px' }}>
+                    <label htmlFor={"displayName"}>Display name: {required ? "*" : ""}</label>
+                    <input
+                        type={"text"}
+                        name={"displayName"}
+                        value={ displayName }
+                        maxLength={ 16 }
+                        minLength={ 4 }
+                        onChange={ (e) => {
+                            setMessage("");
+                            setDisplayName(e.target.value)}
+                        }
+                    />
                 </div>
             </div>
             <br />
+            <label>Preview: </label>
+            <ProfileDisplay displayName={ ( !displayName ) ? defaultName : displayName } title={ userProfile?.title } profilePicture={ profilePic } userId={ userProfile?.userId || 0 } />
             <div style={buttonWrapperStyle}>
                 <input
                     style={ submitButtonStyle }
