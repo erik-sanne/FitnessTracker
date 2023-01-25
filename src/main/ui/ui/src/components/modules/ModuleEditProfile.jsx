@@ -80,6 +80,7 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
                         onCrop={ onCrop }
                         onClose={ onClose }
                         onImageLoad={ onImageLoad }
+                        src={ profilePic }
                     />
                 </div>
                 <div style={{ flex: 2, minWidth: '256px', padding: '20px' }}>

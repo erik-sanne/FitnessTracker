@@ -64,6 +64,8 @@ public class UserProfileService implements ProfileService {
 
         if (profilePicture != null)
             profile.setProfilePicture(profilePicture.getBytes());
+        else
+            profile.setProfilePicture(null);
 
         user.setUserProfile(profile);
         userRepository.save(user);
