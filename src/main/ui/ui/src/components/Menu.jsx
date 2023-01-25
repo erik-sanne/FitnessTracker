@@ -69,7 +69,7 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                     </li>
                     <li>
                         <NavLink to="/achievements" activeStyle={ activeClass } onClick={ onNavigate } >
-                            <FontAwesomeIcon icon={ faTrophy } style={{ marginRight: '25px'}}/>My Achievements
+                            <FontAwesomeIcon icon={ faTrophy } style={{ marginRight: '25px'}}/>Achievements
                         </NavLink>
                     </li>
                     { userProfile.permissionLevel !== 'BASIC' &&
