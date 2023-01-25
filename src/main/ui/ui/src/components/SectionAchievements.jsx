@@ -59,9 +59,16 @@ const SectionAchievements = ({userProfile, updateUserProfile}) => {
             <Module title = "Achievements">
                 {Object.entries(achievements).map(([type, achievements]) =>
                     <div key={ type }>
-                        <p style={{ margin: '1em'}}>
-                            { type }
-                        </p>
+                        <div style={{ display: 'flex' }}>
+                            <div>
+                                <p style={{ margin: '1em'}}>
+                                    { type }
+                                </p>
+                            </div>
+                            <div style={{ flex: 1, margin: 'auto'}}>
+                                <hr style={{ background: 'linear-gradient(90deg, #555, transparent)', border: '0', height: '1px' }}/>
+                            </div>
+                        </div>
                         { achievements.map((achievement, idx) =>
                             <Accordion square key={type+"_"+idx} style={{ background: '#282c3400', color: 'inherit', boxShadow: '0px 0px 10px #00000060', border: '1px solid #cccccc10' }} disabled={ !achievement.achieved }>
                                 <AccordionSummary aria-controls={`${idx}-content`} id={`${idx}-header`} style={{ color: achievement.achieved ? "#fff" : "#aaa"}}>
