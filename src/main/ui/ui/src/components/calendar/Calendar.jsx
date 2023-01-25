@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import '../../styles/calendar.css';
 import Loader from "../ui_components/Loader";
 
@@ -17,6 +17,11 @@ const Calendar = ({resources, events, days, scrollCallback}) => {
     const handleWheel = (event) => {
         slider.current.scrollLeft = slider.current.scrollLeft + event.deltaY
     }
+
+    useEffect(() => {
+        slider.current.addEventListener('wheel', (event) => event.preventDefault(), { passive: false });
+        return () => slider.current.removeEventListener('wheel', (event) => event.preventDefault(), { passive: false })
+    }, [])
 
     const dates = getDates(days)
     return (
