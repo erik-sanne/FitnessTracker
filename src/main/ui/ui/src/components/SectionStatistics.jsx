@@ -56,7 +56,7 @@ const SectionStatistics = () => {
             }
             {
                 !loadingRecords && selfRecords.length > 0 ?
-                <Module title="Weight records" className={ "records" }>
+                <Module title="Personal records" className={ "records" }>
                     <ModulePRs data={loadingRecords ? [] : selfRecords}/>
                 </Module> : <></>
             }

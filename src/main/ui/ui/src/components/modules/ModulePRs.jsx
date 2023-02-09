@@ -25,7 +25,7 @@ const ModulePRs = ({ data=[] }) => {
                                     { viewedExercies.map((pr, idx) =>
                                         <tr key={idx}>
                                             <td style={{textAlign: 'left', whiteSpace: 'nowrap'}}>{camelCase(pr.exercise.replace(/_/g, ' '))}</td>
-                                            <td style={{textAlign: 'right', width: '72px' }}>{pr.weight}kg</td>
+                                            <td style={{textAlign: 'right', width: '72px' }}>{ pr.weight > 0 ? `${pr.weight}kg` : 'BW'}</td>
                                             <td style={{ width: '140px' }}>{pr.date.split('T')[0]}</td>
                                         </tr>
                                     )}
