@@ -83,7 +83,7 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
                         src={ profilePic }
                     />
                 </div>
-                <div style={{ flex: 2, minWidth: '256px', padding: '20px' }}>
+                <div style={{ flex: 2, minWidth: '256px', padding: '0 20px' }}>
                     <label htmlFor={"displayName"}>Display name: {required ? "*" : ""}</label>
                     <input
                         type={"text"}
