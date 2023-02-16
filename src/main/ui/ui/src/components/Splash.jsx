@@ -44,12 +44,16 @@ const Splash = ({ show = true }) => {
             <div className={'content-wrapper'} style={{textAlign: 'center'}}>
                 <div className={`text-wrapper ${ !show && 'zoom-in' }`}>
                     <h2 className={'glitch'} data-text={"GAINZ TRACKER"}>GAINZ TRACKER</h2>
-                    <p> { welcomeMessage } </p>
+                    <p style={ messageStyle }> { welcomeMessage } </p>
                 </div>
             </div>
             {<p style={footerText}>© Erik Sänne 2020-{new Date().getFullYear()} </p>}
         </section>
     );
+}
+
+const messageStyle = {
+    filter: 'drop-shadow(0px 0px 5px #000)'
 }
 
 const footerText = {
