@@ -26,7 +26,16 @@ const getCelebrationText = () => {
     if (date.getMonth() === 11 && [31].includes(date.getDate()) || date.getMonth() === 0 && [1].includes(date.getDate()))
         return { text: `🎇 Happy new year! 🎆`, color: "#469DAB"}
 
+    const daysLeft = daysToJapan(date)
+    if (daysLeft > 0)
+        return { text: `✈️ Only ${daysLeft} days left`, color: "rgb(106 234 246)"}
+
     return {text: "", color: ""};
+}
+
+const daysToJapan = (date) =>{
+    const difference = new Date("2023-04-07").getTime() - date.getTime();
+    return Math.ceil(difference / (1000 * 3600 * 24));
 }
 
 //#469DAB
