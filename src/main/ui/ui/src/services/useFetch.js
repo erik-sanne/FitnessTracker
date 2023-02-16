@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { getCookie } from 'react-use-cookie';
+import {useEffect, useState} from 'react';
+import {getCookie} from 'react-use-cookie';
 
 function useFetch(url, method = 'GET', external= false) {
     const [ data, setData ] = useState(null);

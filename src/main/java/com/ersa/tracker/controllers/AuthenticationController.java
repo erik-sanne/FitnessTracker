@@ -1,8 +1,8 @@
 package com.ersa.tracker.controllers;
 
 import com.ersa.tracker.models.authentication.User;
-import com.ersa.tracker.security.exceptions.EmailAlreadyRegisteredException;
 import com.ersa.tracker.security.OnRegistrationCompleteEvent;
+import com.ersa.tracker.security.exceptions.EmailAlreadyRegisteredException;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import com.ersa.tracker.services.authentication.AccountService;
 import com.ersa.tracker.services.authentication.AuthenticationService;
@@ -16,12 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSendException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;

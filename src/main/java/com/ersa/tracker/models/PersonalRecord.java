@@ -4,12 +4,7 @@ import com.ersa.tracker.models.authentication.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -75,6 +70,6 @@ public final class PersonalRecord {
         }
 
         PersonalRecord other = (PersonalRecord)o;
-        return this.getWeight().equals(other.getWeight()) && this.getExercise().equals(other.getExercise()) && this.getDate() == other.getDate() && this.getUser() == other.getUser();
+        return this.getWeight().equals(other.getWeight()) && this.getExercise().equals(other.getExercise()) && this.getUser() == other.getUser();
     }
 }

@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {useEffect, useRef, useState} from "react";
 
 const DataSelect = ({options, value, onSelect, placeholder = "Select something...", style, className}) => {
     const [ intermediateValue, setIntermediateValue] = useState("");

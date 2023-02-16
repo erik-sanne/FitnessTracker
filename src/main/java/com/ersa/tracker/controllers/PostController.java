@@ -3,7 +3,6 @@ package com.ersa.tracker.controllers;
 import com.ersa.tracker.dto.PostDto;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.user.Post;
-import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.services.authentication.AccountService;
 import com.ersa.tracker.services.user.PostService;
 import lombok.extern.log4j.Log4j2;

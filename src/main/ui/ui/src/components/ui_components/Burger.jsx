@@ -1,5 +1,5 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {faBars, faTimes} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import '../../styles/animations.css';
 

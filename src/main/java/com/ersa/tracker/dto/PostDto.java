@@ -4,7 +4,6 @@ import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.user.Post;
 import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.services.user.PostService;
-import com.ersa.tracker.utils.DateUtils;
 
 import java.util.List;
 import java.util.Optional;

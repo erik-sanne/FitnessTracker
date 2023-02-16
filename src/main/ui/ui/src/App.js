@@ -1,7 +1,7 @@
 import './styles/App.css';
 import React, {useEffect, useState} from 'react';
-import { setCookie, getCookie } from 'react-use-cookie';
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import {getCookie, setCookie} from 'react-use-cookie';
+import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import Splash from "./components/Splash";
 import Login from "./components/Login";
 import Signup from "./components/Signup";

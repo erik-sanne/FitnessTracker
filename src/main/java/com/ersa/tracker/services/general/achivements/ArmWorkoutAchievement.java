@@ -1,11 +1,8 @@
 package com.ersa.tracker.services.general.achivements;
 
 import com.ersa.tracker.dto.WorkoutSummary;
-import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.authentication.User;
-import com.ersa.tracker.repositories.WorkoutRepository;
 import com.ersa.tracker.services.general.APIService;
-import com.ersa.tracker.services.general.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

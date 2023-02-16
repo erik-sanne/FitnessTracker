@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import ProfileDisplay from "./ProfileDisplay";
-import { useLongPress } from 'use-long-press';
+import {useLongPress} from 'use-long-press';
 
 const LikeButton = ({ likes, onClick }) => {
     const [ overlay, setOverlay ] = useState(false);

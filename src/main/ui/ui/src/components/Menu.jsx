@@ -1,6 +1,6 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {NavLink} from 'react-router-dom'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faChartPie,
     faHistory,
@@ -9,7 +9,7 @@ import {
     faUserEdit,
     faUserFriends
 } from "@fortawesome/free-solid-svg-icons";
-import { useMediaQuery } from 'react-responsive';
+import {useMediaQuery} from 'react-responsive';
 import '../styles/glitch.css';
 import ProfileDisplay from "./ui_components/ProfileDisplay";
 import {faHeartbeat} from "@fortawesome/free-solid-svg-icons/faHeartbeat";

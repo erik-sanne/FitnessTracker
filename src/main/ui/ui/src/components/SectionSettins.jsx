@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import ModuleEditProfile from "./modules/ModuleEditProfile";
-import { Redirect } from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import ModulePreferences from "./modules/ModulePreferences";
 import ModuleHardStats from "./modules/ModuleHardStats";
 

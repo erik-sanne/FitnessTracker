@@ -1,8 +1,6 @@
 package com.ersa.tracker.services.general;
 
-import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.PersonalRecord;
-import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.ExerciseRepository;
@@ -11,12 +9,15 @@ import com.ersa.tracker.repositories.WorkoutRepository;
 import com.ersa.tracker.services.user.PostService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Log4j2
 @Service
@@ -55,54 +56,46 @@ public class PersonalRecordService implements PRService {
 
     @Override
     @Transactional
+    @Async
     public void updatePersonalRecords(final User user) {
         log.info("Computing personal records");
         List<PersonalRecord> previousRecords = recordRepository.findAllByUser(user);
 
-        List<PersonalRecord> records = new ArrayList<>();
-        List<Workout> workouts = workoutRepository.findAllByUser(user);
+        Stream<WorkoutSet> sets = workoutRepository.findAllByUser(user).stream().flatMap(w -> w.getSets().stream());
 
-        List<WorkoutSet> allSets = workouts.stream().flatMap(w -> w.getSets().stream())
-                .collect(Collectors.toList());
+        Map<String, PersonalRecord> records = new HashMap<>();
 
-        for (WorkoutSet set : allSets) {
-            boolean exists = false;
-            for (PersonalRecord record : records) {
-                if (record.getExercise().getName().equals(set.getExercise())) {
-                    exists = true;
-                    if (set.getWeight() > record.getWeight()) {
-                        record.setDate(set.getWorkout().getDate());
-                        record.setWeight(set.getWeight());
-                    }
-                }
-            }
-            if (!exists) {
+        sets.forEach(set -> {
+            String key = set.getExercise();
+            if (!records.containsKey(key)) {
                 PersonalRecord pr = new PersonalRecord();
-                Exercise exercise = exerciseRepository.findByName(set.getExercise());
-                pr.setExercise(exercise);
-                pr.setWeight(set.getWeight());
-                pr.setDate(set.getWorkout().getDate());
                 pr.setUser(user);
-                records.add(pr);
-            }
-        }
+                pr.setWeight(set.getWeight());
+                pr.setExercise(exerciseRepository.findByName(key));
+                pr.setDate(set.getWorkout().getDate());
 
-        for (PersonalRecord record : records) {
-            for (PersonalRecord prev : previousRecords) {
-                if (record.getExercise().getName().equals(prev.getExercise().getName()) &&
-                        record.getUser() == prev.getUser() &&
-                        !record.getWeight().equals(prev.getWeight())) {
-                    postService.createPost(user,
-                            record.getDate(),
-                            "New Personal Record",
-                            String.format("%s performed a new personal best in %s",
-                                    PostService.DISPLAY_NAME,
-                                    record.getExercise().getName().replace("_", " ")));
-                }
+                records.put(key, pr);
+                return;
             }
-        }
+
+            if (set.getWeight() > records.get(key).getWeight()) {
+                records.get(key).setWeight(set.getWeight());
+                records.get(key).setDate(set.getWorkout().getDate());
+            }
+        });
+
+        records.values().forEach(pr -> {
+            if (!previousRecords.contains(pr)) {
+                postService.createPost(user,
+                        pr.getDate(),
+                        "New Personal Record",
+                        String.format("%s performed a new personal best in %s",
+                                PostService.DISPLAY_NAME,
+                                pr.getExercise().getName().replace("_", " ")));
+            }
+        });
 
         recordRepository.deleteAllByUser(user);
-        recordRepository.saveAll(records);
+        recordRepository.saveAll(records.values());
     }
 }

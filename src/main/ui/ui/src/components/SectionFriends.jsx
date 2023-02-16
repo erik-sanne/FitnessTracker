@@ -5,10 +5,12 @@ import Modal from "./ui_components/Modal";
 import Spinner from 'react-bootstrap/Spinner';
 import {getCookie} from "react-use-cookie";
 import {
-    faCheckCircle, faIdBadge,
+    faCheckCircle,
+    faIdBadge,
     faPeopleArrows,
     faTimes,
-    faTimesCircle, faUserPlus,
+    faTimesCircle,
+    faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ProfileDisplay from "./ui_components/ProfileDisplay";

@@ -8,7 +8,7 @@ import Slider from "@material-ui/core/Slider";
 import TextButton from "../ui_components/TextButton";
 import body from "../../resources/bodyparts/svg/body.svg";
 import SwiperWrapper from "../ui_components/swiper/SwiperWrapper";
-import { SwiperSlide } from "swiper/react";
+import {SwiperSlide} from "swiper/react";
 
 const manualOrderingPass = (data, ppl=false) => {
     if (ppl) {

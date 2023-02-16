@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Header from "./components/ui_components/Header";
-import { Redirect, BrowserRouter, Route, Switch } from "react-router-dom";
+import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import SectionStatistics from "./components/SectionStatistics";
 import Menu from "./components/Menu";
 import Burger from "./components/ui_components/Burger";
@@ -18,6 +18,7 @@ import Modal from "./components/ui_components/Modal";
 import {faStar} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SectionAchievements from "./components/SectionAchievements";
+
 const AppContent = ({ logoutCallback }) => {
     const [ menuOpen, setMenuOpen ] = useState(false)
     const [ currentUserProfile, setCurrentUserProfile ] = useState(null)

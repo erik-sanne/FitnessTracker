@@ -4,23 +4,17 @@ import com.ersa.tracker.dto.PredictedORM;
 import com.ersa.tracker.dto.SetAverage;
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
-import com.ersa.tracker.models.Exercise;
-import com.ersa.tracker.models.Target;
-import com.ersa.tracker.models.WType;
-import com.ersa.tracker.models.Workout;
-import com.ersa.tracker.models.WorkoutSet;
+import com.ersa.tracker.models.*;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.TargetRepository;
 import com.ersa.tracker.repositories.WTypeRepository;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.ersa.tracker.utils.DateUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2

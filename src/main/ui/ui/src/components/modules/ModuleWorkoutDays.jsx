@@ -1,8 +1,8 @@
 import '../../styles/Module.css';
 import Spinner from "../ui_components/Loader";
 import DisplayValue from "./DisplayValue";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMedal } from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faMedal} from '@fortawesome/free-solid-svg-icons'
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 import Modal from "../ui_components/Modal";

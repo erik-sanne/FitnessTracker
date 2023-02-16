@@ -1,6 +1,5 @@
-
 import React from "react";
-import { Swiper } from "swiper/react";
+import {Swiper} from "swiper/react";
 
 import SwiperCore, {Navigation, Pagination} from "swiper";
 

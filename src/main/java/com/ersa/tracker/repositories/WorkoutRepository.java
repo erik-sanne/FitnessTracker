@@ -1,13 +1,12 @@
 package com.ersa.tracker.repositories;
 
-import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.Workout;
+import com.ersa.tracker.models.authentication.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Date;
 import java.util.List;
 
 public interface WorkoutRepository extends CrudRepository<Workout, Long> {
