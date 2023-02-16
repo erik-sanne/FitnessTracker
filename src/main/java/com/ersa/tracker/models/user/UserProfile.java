@@ -8,7 +8,9 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class UserProfile {
@@ -42,6 +44,7 @@ public class UserProfile {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "friends")
+    @JsonIgnore
     private List<UserProfile> friends;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade = CascadeType.ALL)
@@ -51,6 +54,13 @@ public class UserProfile {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "belongsTo")
     private List<Notice> notices;
+
+    @Transient
+    @JsonProperty(value = "friends")
+    private List<UserProfile> friends() {
+        return friends.stream().peek(up -> up.friends = Collections.emptyList()).collect(Collectors.toList());
+    }
+
 
     @Transient
     @JsonProperty(value = "permissionLevel")
