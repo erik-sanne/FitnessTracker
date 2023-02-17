@@ -7,12 +7,12 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.19",
     "@material-ui/core": "^4.12.4",
-    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.4",
     "base-64": "^1.0.0",
-    "bootstrap": "^4.6.1",
+    "bootstrap": "^4.6.2",
     "chart.js": "^2.9.4",
     "chartjs-plugin-datalabels": "^0.7.0",
     "chartjs-plugin-zoom": "^0.7.7",
@@ -60,8 +60,8 @@
   },
   "devDependencies": {
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "react-bootstrap": "^1.6.5",
-    "react-router-dom": "^5.3.3",
+    "react-bootstrap": "^1.6.6",
+    "react-router-dom": "^5.3.4",
     "react-use-cookie": "^1.4.0"
   }
 }
