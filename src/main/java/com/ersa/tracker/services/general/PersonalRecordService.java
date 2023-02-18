@@ -85,7 +85,12 @@ public class PersonalRecordService implements PRService {
         });
 
         records.values().forEach(pr -> {
-            if (!previousRecords.contains(pr)) {
+            if (previousRecords.stream().anyMatch(oldPr ->
+                pr.getUser() == oldPr.getUser() &&
+                        pr.getExercise().getName().equalsIgnoreCase(oldPr.getExercise().getName()) &&
+                        pr.getWeight() > oldPr.getWeight() &&
+                        pr.getDate() != oldPr.getDate()
+            )) {
                 postService.createPost(user,
                         pr.getDate(),
                         "New Personal Record",
