@@ -5,6 +5,7 @@ import com.ersa.tracker.services.authentication.AuthenticationService;
 import com.ersa.tracker.services.authentication.EmailVerificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,7 +18,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 import static org.hamcrest.Matchers.containsString;

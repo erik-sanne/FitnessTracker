@@ -2,67 +2,57 @@ package com.ersa.tracker.security.configurations;
 
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.services.authentication.AuthenticationService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    private final AuthenticationService authenticationService;
+public class SecurityConfiguration {
 
     @Autowired
-    public SecurityConfiguration(final AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
-
-    @Override
-    public AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
-    }
-
-    @Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+    public SecurityConfiguration(final AuthenticationService authenticationService, final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(authenticationService);
     }
 
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
+    @Bean
+    protected SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         http.cors();
         http.headers().frameOptions().sameOrigin();
         http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.httpBasic();
 
-        http.exceptionHandling().authenticationEntryPoint(
+        http.exceptionHandling(conf -> conf.authenticationEntryPoint(
                 (request, response, authenticationException) ->
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED));
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)));
 
-        http.authorizeRequests()
-                    .antMatchers("/authenticate").permitAll()
-                    .antMatchers("/confirmEmail/**").permitAll()
-                    .antMatchers("/register").permitAll()
-                    .antMatchers("/actuator/**").hasAnyAuthority(User.Permissions.ADMIN, User.Permissions.MODERATOR)
-                    .anyRequest().authenticated();
+        http.authorizeHttpRequests(conf -> conf
+                .requestMatchers("/authenticate").permitAll()
+                .requestMatchers("/confirmEmail/**").permitAll()
+                .requestMatchers("/register").permitAll()
+                .requestMatchers("/actuator/**").hasAnyAuthority(User.Permissions.ADMIN, User.Permissions.MODERATOR)
+                .anyRequest().authenticated());
 
-        http.logout()
-                    .logoutUrl("/logout")
-                    .permitAll();
+        http.logout(conf -> conf.logoutUrl("/logout")
+                .permitAll());
+        return http.build();
     }
 
     @Value("${CLIENT_ORIGIN}")

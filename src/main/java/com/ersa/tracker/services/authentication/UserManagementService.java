@@ -8,6 +8,7 @@ import com.ersa.tracker.repositories.authentication.EmailVerificationTokenReposi
 import com.ersa.tracker.repositories.authentication.UserRepository;
 import com.ersa.tracker.security.exceptions.EmailAlreadyRegisteredException;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,7 +22,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.*;
 

@@ -7,8 +7,13 @@ import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import com.ersa.tracker.services.authentication.AccountService;
 import com.ersa.tracker.services.authentication.AuthenticationService;
 import com.ersa.tracker.services.authentication.EmailVerificationService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.validator.constraints.Length;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -18,11 +23,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.Base64;
 
 @RestController

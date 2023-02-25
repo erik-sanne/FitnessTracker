@@ -1,12 +1,12 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.1'
-	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+	id 'org.springframework.boot' version '3.0.0'
+	id 'io.spring.dependency-management' version '1.1.0'
 	id 'java'
 }
 
 group = 'com.ersa'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 task dist(type: Zip) {
 	check
@@ -29,9 +29,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'com.h2database:h2'
-	implementation 'mysql:mysql-connector-java'
-	compileOnly 'org.projectlombok:lombok:1.18.16'
-	annotationProcessor 'org.projectlombok:lombok:1.18.16'
+	implementation 'mysql:mysql-connector-java:8.0.32'
+	implementation 'org.jetbrains:annotations:19.0.0'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	compileOnly 'org.projectlombok:lombok:1.18.26'
+	annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
 	compileOnly 'commons-beanutils:commons-beanutils:1.9.4'
 

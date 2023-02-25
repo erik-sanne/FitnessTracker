@@ -1,7 +1,7 @@
 package com.ersa.tracker.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity(name = "wtype")
 public final class WType {

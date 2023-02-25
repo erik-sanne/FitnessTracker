@@ -2,8 +2,8 @@ package com.ersa.tracker.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
-import javax.validation.constraints.Min;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 
 @Entity(name = "workoutset")
 public final class WorkoutSet {

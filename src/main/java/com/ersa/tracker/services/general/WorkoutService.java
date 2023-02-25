@@ -5,8 +5,8 @@ import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
+import jakarta.transaction.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 

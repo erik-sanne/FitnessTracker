@@ -2,9 +2,9 @@ package com.ersa.tracker.services.general;
 
 import com.ersa.tracker.models.PersonalRecord;
 import com.ersa.tracker.models.authentication.User;
+import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Async;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 public interface PRService {

@@ -3,9 +3,9 @@ package com.ersa.tracker.models.authentication;
 import com.ersa.tracker.models.user.UserProfile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import org.jetbrains.annotations.NotNull;
 
 
 @Entity(name = "users")

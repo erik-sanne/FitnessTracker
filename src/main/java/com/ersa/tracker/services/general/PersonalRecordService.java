@@ -7,12 +7,12 @@ import com.ersa.tracker.repositories.ExerciseRepository;
 import com.ersa.tracker.repositories.PersonalRecordRepository;
 import com.ersa.tracker.repositories.WorkoutRepository;
 import com.ersa.tracker.services.user.PostService;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

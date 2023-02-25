@@ -3,10 +3,10 @@ package com.ersa.tracker.models.user;
 import com.ersa.tracker.models.authentication.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
