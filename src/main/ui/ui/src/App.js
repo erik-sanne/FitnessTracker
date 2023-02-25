@@ -60,6 +60,11 @@ function App() {
 
     if (authorized === authorizationStatus.UNAUTHORIZED) {
         return (
+            <><div className={'notice'}>
+                <h4>Gainz Tracker is down for maintenance</h4>
+                <p>Changes to the infrastructure are required. Gainz Tracker is upgrading to Spring Boot 3 and java 17. The latter unfortunately requires a new deployment environment and the database needs to be decoupled from the existing one. Thank you for your patience.</p>
+                <p> 2023-02-25 </p>
+            </div>
             <BrowserRouter>
                 <Switch>
                     <Route path="/login">
@@ -76,6 +81,7 @@ function App() {
                     </Route>
                 </Switch>
             </BrowserRouter>
+                </>
         )
     }
 
