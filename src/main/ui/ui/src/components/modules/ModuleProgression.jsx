@@ -315,7 +315,7 @@ const ModuleProgression = () => {
                         }
                         { loading && <div style={{textAlign: "center", padding: '32% 0%'}}> <Loader /> </div> }
                         { !loading && message !== "" && <DisplayValue text={ message } value={""}
-                                                          style={{textAlign: "center", padding: '32% 0%'}}/> }
+                                                          style={{textAlign: "center", padding: '10% 0%'}}/> }
 
 
                     </div>
