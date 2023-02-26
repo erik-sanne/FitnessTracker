@@ -3,6 +3,7 @@ import React from "react";
 import Loader from "../ui_components/Loader";
 import useFetch from "../../services/useFetch";
 import Module from "./Module";
+import Graph from "./Graph";
 
 
 const ModuleHardStats = () => {
@@ -33,9 +34,72 @@ const ModuleHardStats = () => {
                                     </>)
                         }
                     </div>
+                    <Graph data={createConfig(setdata)}/>
                 </div>
             </Module>
 
+}
+
+const createConfig = (setdata={}) => {
+
+    const data = setdata.sort((a, b) => (b.workouts + b.sets) - (a.workouts + a.sets))
+
+    let workouts = data.map(e => e.workouts)
+    let sets = data.map(e => e.sets)
+    let xLabels = data.map(e => format(e.exercise))
+
+    return {
+        type: 'bar',
+        data: {
+            labels: xLabels,
+            datasets: [
+                {
+                    label: 'Workouts with exercise',
+                    backgroundColor: 'rgba(72,125,190,0.4)',
+                    borderColor: 'rgb(61,111,169)',
+                    borderWidth: 1,
+                    data: workouts
+                },
+                {
+                    label: 'Sets performed',
+                    backgroundColor: 'rgba(107,166,239,0.4)',
+                    borderColor: 'rgb(61,111,169)',
+                    borderWidth: 1,
+                    data: sets
+                }
+            ]
+        },
+        options: {
+            legend: {
+                display: false
+            },
+            responsive: true,
+            aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
+            scales: {
+                yAxes: [{
+                    stacked: true,
+                    ticks: {
+                        stepSize: 1,
+                        fontFamily: 'Quicksand',
+                        fontStyle: 'bold'
+                    }
+                }],
+                xAxes: [{
+                    stacked: true,
+                    ticks: {
+                        autoSkip: false,
+                        fontFamily: 'Quicksand',
+                        fontStyle: 'bold'
+                    }
+                }]
+            },
+            elements: {
+                point:{
+                    radius: 0
+                }
+            }
+        }
+    }
 }
 
 const format = (text) => {
