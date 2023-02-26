@@ -78,6 +78,7 @@ const createConfig = (setdata={}) => {
                 xAxes: [{
                     stacked: true,
                     ticks: {
+                        display: window.innerWidth > 600,
                         autoSkip: false,
                         fontFamily: 'Quicksand',
                         fontStyle: 'bold'
