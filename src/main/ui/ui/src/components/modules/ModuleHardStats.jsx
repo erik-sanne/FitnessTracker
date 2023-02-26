@@ -1,5 +1,5 @@
 import '../../styles/Module.css';
-import React from "react";
+import React, {useState} from "react";
 import Loader from "../ui_components/Loader";
 import useFetch from "../../services/useFetch";
 import Module from "./Module";
@@ -8,15 +8,25 @@ import Graph from "./Graph";
 
 const ModuleHardStats = () => {
     const { data, loading } = useFetch('/api/stats');
+    const [ state, setState ] = useState(null);
 
     if (loading)
         return <Loader />
 
-    const setdata = Object.keys(data.setTypes).map(key =>  {
-        return { exercise: key, sets: data.setTypes[key], workouts: data.setWorkouts[key] }
-    });
+    if (!state) {
+        const setdata = Object.keys(data.setTypes).map(key => {
+            return {exercise: key, sets: data.setTypes[key], workouts: data.setWorkouts[key]}
+        });
 
-    return  <Module title={ "General statistics" } style={{ gridRow: '2' }}>
+        const chartdata = createConfig(setdata);
+
+        setState({
+            setdata: setdata,
+            chartdata: chartdata
+        })
+    }
+
+    return state && <Module title={ "General statistics" } style={{ gridRow: '2' }}>
                 <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
                     <p> You registered your first workout on {data.firstWorkout.split("T")[0]}. Since then you've achieved the following:</p>
                     <span>Total number of registered workouts: <b>{data.workouts}</b></span>
@@ -24,7 +34,7 @@ const ModuleHardStats = () => {
                     <span>Exercises:</span>
                     <div style={{ paddingLeft: '1rem', maxHeight: '14em', overflowY: 'auto' }}>
                         {
-                            setdata
+                            state.setdata
                                 .sort((a, b) => a.exercise.localeCompare(b.exercise))
                                 .map(({exercise, sets, workouts}) => sets !== 0 &&
                                     <>
@@ -34,10 +44,9 @@ const ModuleHardStats = () => {
                                     </>)
                         }
                     </div>
-                    <Graph data={createConfig(setdata)}/>
+                    <Graph data={state.chartdata}/>
                 </div>
             </Module>
-
 }
 
 const createConfig = (setdata={}) => {
