@@ -14,6 +14,7 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Accordion from "@material-ui/core/Accordion";
 import GetCache from "../services/GetCache";
+import Utils from "../services/Utils";
 
 const SectionNewWorkout = ({updateUserProfile}) => {
     const { workoutId } = useParams();
@@ -198,7 +199,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                             {sets.map((set, key, array) =>
                                 <tr key={key} style={currentEdit === key ? editStyle : {cursor: 'pointer'}}
                                     onClick={() => toggleEdit(key)}>
-                                    <td> {currentEdit === key ? currentSet.type : set.type} </td>
+                                    <td> {currentEdit === key ? Utils.camelCase(currentSet.type) : Utils.camelCase(set.type)} </td>
                                     <td> {currentEdit === key ? currentSet.reps : set.reps} </td>
                                     <td> {currentEdit === key ? currentSet.weight : set.weight !== '' ? set.weight : '-'} </td>
                                     <td><FontAwesomeIcon icon={faTrash} style={{
@@ -214,7 +215,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                                 { sets.map((set, key, array) => (key === 0 || array.indexOf(array.filter(e => e.type === set.type)[0]) === key) &&
                                     <Accordion square key={set.type} style={collapseStyle} onChange={ deSelect }>
                                         <AccordionSummary aria-controls={`${set.type}-content`}  id={`${set.type}-header`}>
-                                            <span style={{margin: 'auto'}}>{set.type}</span>
+                                            <span style={{margin: 'auto'}}>{Utils.camelCase(set.type)}</span>
                                             <span style={{
                                                 margin: 'auto',
                                                 flex: '1',

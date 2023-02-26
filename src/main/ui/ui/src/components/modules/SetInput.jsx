@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import DataSelect from "../ui_components/DataSelect";
+import Select from "react-select";
+import Utils from "../../services/Utils";
 
 const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, onEdit }) => {
     const [ exerciseState, setExerciseState ] = useState({
@@ -58,11 +59,12 @@ const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, o
         }}>
             <div style={{...inputWrap, flex: 2}}>
                 <label>Exercise</label>
-                <DataSelect
-                    options={ exerciseOptions }
-                    value={ exerciseState.type }
-                    onSelect={ (value) => handleInputChange({ target : { name: 'type', value: value }}) }
-                    placeholder={ 'Select exercise...' }/>
+                <Select
+                    onChange={ (value) => handleInputChange({ target : { name: 'type', value: value.value }}) }
+                    options={ exerciseOptions.map(e =>{ return {value: e, label: Utils.camelCase(e.replace(/_/g, ' '))}}) }
+                    menuPlacement={"top"}
+                    className="select-container"
+                    classNamePrefix="select" />
             </div>
             <div style={inputWrap}>
                 <label>Reps</label>

@@ -324,6 +324,7 @@ const ModuleProgression = () => {
                         defaultValue={ selectedExercise }
                         onChange={ setSelectedExercise }
                         options={ exercises.map(e =>{ return {value: e, label: camelCase(e.replace(/_/g, ' '))}}) }
+                        menuPlacement={"top"}
                         className="select-container"
                         classNamePrefix="select" />
                 </>
