@@ -13,6 +13,7 @@ import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {NavLink} from "react-router-dom";
 import LocalStorage from "../services/LocalStorage";
+import ModuleExerciseDistribution from "./modules/ModuleExerciseDistribution";
 
 const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
@@ -44,6 +45,9 @@ const SectionStatistics = () => {
             </Module>
             <Module title="Progression" className={ "progression" }>
                 <ModuleSetAverages />
+            </Module>
+            <Module title="Exercise distribution" className={ "exercise-distribution" }>
+                <ModuleExerciseDistribution />
             </Module>
             {
                 !loadingRecords &&

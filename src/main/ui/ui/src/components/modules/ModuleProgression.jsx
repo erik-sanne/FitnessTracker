@@ -142,7 +142,7 @@ const createConfig = (data, mergeAxes) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
+            aspectRatio: window.innerWidth < 2000 && window.innerWidth > 1500 ? 3.5 : 1.2,
             hoverMode: 'index',
             stacked: false,
             title:{
