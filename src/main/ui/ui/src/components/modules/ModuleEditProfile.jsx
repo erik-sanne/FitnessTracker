@@ -72,7 +72,7 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
 
             <br />
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <div style={{ flex: 1, overflow: 'hidden', maxWidth: '256px', minWidth: '256px'}}>
+                <div style={{ flex: 1, overflow: 'hidden', maxWidth: '256px', minWidth: '256px'}} className={'avatar-container'}>
                     <label>Avatar:</label>
                     <Avatar
                         width={ 256 }

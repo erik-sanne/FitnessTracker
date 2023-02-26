@@ -436,3 +436,7 @@ body {
 .notice > p {
   max-width: 650px;
 }
+
+.avatar-container svg {
+  z-index: 30 !important;
+}
