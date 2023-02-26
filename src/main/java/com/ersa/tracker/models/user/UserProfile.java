@@ -58,7 +58,7 @@ public class UserProfile {
     @Transient
     @JsonProperty(value = "friends")
     private List<UserProfile> friends() {
-        return friends.stream().peek(up -> up.friends = Collections.emptyList()).collect(Collectors.toList());
+        return friends != null ? friends.stream().peek(up -> up.friends = Collections.emptyList()).collect(Collectors.toList()) : Collections.emptyList();
     }
 
 
