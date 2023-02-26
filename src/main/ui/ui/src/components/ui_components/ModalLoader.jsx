@@ -1,10 +1,10 @@
 import React from "react";
 import Spinner from "../ui_components/Loader";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTimes} from "@fortawesome/free-solid-svg-icons";
+import {faCheckCircle, faTimes} from "@fortawesome/free-solid-svg-icons";
 import {faTimesCircle} from "@fortawesome/free-regular-svg-icons";
 
-const ModalLoader = ({ visible=false, text="", error="", onClose }) => {
+const ModalLoader = ({ visible=false, text="", error="", success="", onClose }) => {
 
     if (!visible)
         return null;
@@ -19,7 +19,7 @@ const ModalLoader = ({ visible=false, text="", error="", onClose }) => {
                     onClick={ onClose }/>
             }
 
-            { !error &&
+            { !error && !success &&
                 <>
                     <Spinner />
                     <p>{ text }</p>
@@ -32,12 +32,23 @@ const ModalLoader = ({ visible=false, text="", error="", onClose }) => {
                     <p style={ errorStyle } > { error }</p>
                 </>
             }
+
+            { success &&
+            <>
+                <FontAwesomeIcon icon={ faCheckCircle } style={{ ...successStyle, fontSize: '32px' }}/>
+                <p style={{ color: "#fff" }} > { success }</p>
+            </>
+            }
         </div>
     );
 }
 
 const errorStyle = {
     color: "rgb(215,73,105)"
+}
+
+const successStyle = {
+    color: "rgb(88,162,82)"
 }
 
 const wrapperStyle = {

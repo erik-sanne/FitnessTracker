@@ -22,7 +22,8 @@ const SectionNewWorkout = ({updateUserProfile}) => {
         ERROR: "submit error",
         SUBMITTING: "submitting",
         FETCHING: "fetching",
-        SUBMITTED: "submitted"
+        SUBMITTED: "submitted",
+        REDIRECT: "redirect"
     }
     const bottomRef = useRef();
     const LS_KEY_UP = "user_preferences"
@@ -72,10 +73,9 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                     localStorage.removeItem(LS_KEY_SETS);
                     localStorage.removeItem(LS_KEY_DATE);
                 }
-                updateUserProfile();
                 GetCache.invalidate();
                 setSubmitStatus(SubmitStatus.SUBMITTED);
-            }
+            } else throw response
         }).catch(error => {
             console.log("error", error)
             setSubmitStatus(SubmitStatus.ERROR);
@@ -166,6 +166,13 @@ const SectionNewWorkout = ({updateUserProfile}) => {
     }, [names, loading])
 
     if (submitStatus === SubmitStatus.SUBMITTED) {
+        setTimeout(() => {
+            updateUserProfile();
+            setSubmitStatus(SubmitStatus.REDIRECT)
+        }, 500);
+    }
+
+    if (submitStatus === SubmitStatus.REDIRECT) {
         const url = workoutId ? '/history' : '/';
         return <Redirect to={url}/>
     }
@@ -267,15 +274,22 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                     }
                 }/>
             </Modal>
-            <ModalLoader visible={
-                submitStatus === SubmitStatus.SUBMITTING ||
-                submitStatus === SubmitStatus.FETCHING ||
-                submitStatus === SubmitStatus.ERROR
-            } text={ submitStatus === SubmitStatus.SUBMITTING ?
-                "Saving workout..." :
-                "Fetching workout" } error={ submitStatus === SubmitStatus.ERROR && "An error occurred :(" } onClose={
-                () => setSubmitStatus(SubmitStatus.NOT_SUBMITTED)
-            }/>
+            <ModalLoader
+                visible={
+                    submitStatus === SubmitStatus.SUBMITTED ||
+                    submitStatus === SubmitStatus.SUBMITTING ||
+                    submitStatus === SubmitStatus.FETCHING ||
+                    submitStatus === SubmitStatus.ERROR
+                }
+                text={
+                    submitStatus === SubmitStatus.SUBMITTING ?
+                    "Saving workout..." :
+                    "Fetching workout" }
+                error={ submitStatus === SubmitStatus.ERROR && "An error occurred :(" }
+                success={ submitStatus === SubmitStatus.SUBMITTED && "Workout saved!" }
+                onClose={
+                    () => setSubmitStatus(SubmitStatus.NOT_SUBMITTED)
+                }/>
         </>
     )
 
