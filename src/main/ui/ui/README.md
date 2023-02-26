@@ -1,1 +1,1 @@
-This is the frontend of Gainz Tracker, built with react. 
+This is the application UI of Gainz Tracker, built with ReactJS. 

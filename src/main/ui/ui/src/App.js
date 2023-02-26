@@ -61,9 +61,8 @@ function App() {
     if (authorized === authorizationStatus.UNAUTHORIZED) {
         return (
             <><div className={'notice'}>
-                <h4>Gainz Tracker is down for maintenance</h4>
-                <p>Changes to the infrastructure are required. Gainz Tracker is upgrading to Spring Boot 3 and java 17. The latter unfortunately requires a new deployment environment and the database needs to be decoupled from the existing one. Thank you for your patience.</p>
-                <p> 2023-02-25 </p>
+                <h4>Maintenance complete!</h4>
+                <p>The required changes to the cloud infrastructure has been completed and the service is back online!</p>
             </div>
             <BrowserRouter>
                 <Switch>

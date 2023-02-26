@@ -422,11 +422,11 @@ body {
 }
 
 .notice {
-  background: orange;
+  background: #7af660;
   color: #333;
   text-align: center;
   padding: 5px;
-  border: 1px solid darkorange;
+  border: 1px solid #0c5d00;
   position: sticky;
   display: flex;
   flex-direction: column;
