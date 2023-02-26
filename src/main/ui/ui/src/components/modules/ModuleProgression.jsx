@@ -3,13 +3,14 @@ import 'chartjs-plugin-zoom'
 import useFetch from "../../services/useFetch";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
-import DataSelect from "../ui_components/DataSelect";
 import {getCookie} from "react-use-cookie";
-import Switch from '@material-ui/core/Switch';
 import DisplayValue from "./DisplayValue";
 import regression from 'regression';
 import LocalStorage from "../../services/LocalStorage";
 import Loader from "../ui_components/Loader";
+import SwiperWrapper from "../ui_components/swiper/SwiperWrapper";
+import {SwiperSlide} from "swiper/react";
+import Select from "react-select";
 
 const getDates = (startDate, stopDate) => {
     let dateArray = [];
@@ -239,17 +240,15 @@ const createConfig = (data, mergeAxes) => {
 
 const ModuleProgression = () => {
     const { data: exercises, loading: loadingExercises } = useFetch('/api/exercises');
-    const [ srcData, setSrcData ] = useState(null);
     const [ chartData, setChartData ] = useState(null);
-    const [ selectedExercise, setSelectedExercise ] = useState("");
+    const [ selectedExercise, setSelectedExercise ] = useState(null);
     const [ message, setMessage ] = useState("Select an exercise to view your progression");
-    const [ splitAxes, setSplitAxes ] = useState(false);
     const [ loading, setLoading ] = useState(false);
 
     const getExerciseData = async (ex) => {
         setLoading(true);
         const token = getCookie('session_token');
-        const response = await fetch( process.env.REACT_APP_API_BASE + `/api/setAverages/${ex.replace(/ /g, '_')}`, {
+        const response = await fetch(process.env.REACT_APP_API_BASE + `/api/setAverages/${ex}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -260,32 +259,31 @@ const ModuleProgression = () => {
 
         const data = await response.json();
         setLoading(false);
-        setSrcData(data)
+        setChartData({
+            data1: createConfig(data, true),
+            data2: createConfig(data, false)
+        })
+
+        if (data.length > 1) {
+            setMessage("");
+            LocalStorage.set("progression_saved_exercise", selectedExercise)
+        } else if (data.length > 0) {
+            setMessage("Not enough data available for this exercise");
+        } else
+            setMessage("No data available for this exercise");
     }
 
     useEffect(() => {
-        setSelectedExercise(LocalStorage.get("progression_saved_exercise", null));
+        const stored = LocalStorage.get("progression_saved_exercise", null);
+        if (typeof stored !== 'string' && 'value' in stored)
+            setSelectedExercise(stored);
     }, [])
 
     useEffect(() => {
         if (selectedExercise)
-            getExerciseData(selectedExercise);
+            getExerciseData(selectedExercise.value).then(_ => _);
     }, [selectedExercise])
 
-
-    useEffect(() => {
-        if (!srcData)
-            setMessage("Select an exercise to view your progression");
-        else if (srcData.length > 1) {
-            setChartData(createConfig(srcData, !splitAxes));
-            LocalStorage.set("progression_saved_exercise", selectedExercise);
-            setMessage("");
-        } else if (srcData.length > 0)
-            setMessage("Not enough data available for this exercise");
-        else
-            setMessage("No data available for this exercise");
-
-    }, [splitAxes, srcData])
 
     return (
         <>
@@ -296,18 +294,22 @@ const ModuleProgression = () => {
                         <>
                             <div style={{ display: 'flex '}}>
                                 <h2 style={{ fontWeight: 'bold', flex: 1, padding: '9px', fontSize: 'calc(10px + 1vmin)'}}>
-                                    { camelCase(selectedExercise) }
+                                    { camelCase(selectedExercise.label) }
                                 </h2>
                             </div>
                             <div className={'centerC'}>
-                                <Graph data={ chartData }/>
-                                <div style={{textAlign: "right", display: "inline-flex", justifyContent: "space-around", paddingTop: "20px" }}>
-                                    <div style={{ textAlign: "center", flex: 1, color: 'rgba(107, 166, 239, 0.7)', marginBottom: '1em'}} onClick={ () => {
-                                        setSplitAxes(!splitAxes);
-                                    }}>
-                                        <span><Switch color="primary" checked={ !splitAxes }/> Mode: { splitAxes ? "Weight & reps" : "Progression"}</span>
-                                    </div>
-                                </div>
+                                <SwiperWrapper>
+                                    <SwiperSlide>
+                                        <div style={{width: '100%'}} className={'no-swipe'}>
+                                            <Graph data={ chartData.data1 }/>
+                                        </div>
+                                    </SwiperSlide>
+                                    <SwiperSlide>
+                                        <div style={{ width: '100%'}} className={'no-swipe'}>
+                                            <Graph data={ chartData.data2 }/>
+                                        </div>
+                                    </SwiperSlide>
+                                </SwiperWrapper>
                             </div>
                         </>
                         }
@@ -318,8 +320,12 @@ const ModuleProgression = () => {
 
                     </div>
 
-                    <DataSelect value={ selectedExercise } onSelect={ (ex) => setSelectedExercise(ex) } options={ exercises.map(e => e.replace(/_/g, ' ')) } />
-                    <DataSelect value={ selectedExercise } onSelect={ (ex) => setSelectedExercise(ex) } options={ exercises.map(e => e.replace(/_/g, ' ')) } style={{display: 'none'}}  />
+                    <Select
+                        defaultValue={ selectedExercise }
+                        onChange={ setSelectedExercise }
+                        options={ exercises.map(e =>{ return {value: e, label: camelCase(e.replace(/_/g, ' '))}}) }
+                        className="select-container"
+                        classNamePrefix="select" />
                 </>
             }
         </>

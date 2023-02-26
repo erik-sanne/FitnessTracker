@@ -13,7 +13,7 @@ const SwiperWrapper = (props) => {
     return (
         <Swiper pagination={{
             "dynamicBullets": true
-        }} navigation={true}  className="mySwiper">
+        }} navigation={true}  className="mySwiper" noSwipingClass={ "no-swipe" }>
             { props.children }
         </Swiper>
     );

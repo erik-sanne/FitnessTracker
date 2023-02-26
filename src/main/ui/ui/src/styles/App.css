@@ -440,3 +440,41 @@ body {
 .avatar-container svg {
   z-index: 30 !important;
 }
+
+.select__control {
+  background: rgba(40, 44, 52, 0.53) !important;
+  border: 1px solid rgb(51, 51, 51) !important;
+  color: #fff !important;
+}
+
+.select__control--is-focused {
+  box-shadow: 0 0 1px rgba(107,166,239,0.5) !important;
+  border:  1px solid rgba(107,166,239,0.5) !important;
+}
+
+.select__value-container > .select__single-value {
+  color: rgb(234, 234, 234) !important;
+}
+
+.select__indicator-separator {
+  background: rgb(51, 51, 51) !important;
+}
+
+.select__indicator {
+  color: rgb(102, 102, 102) !important;
+}
+
+.select__input-container {
+  color: rgb(221, 221, 221) !important;
+}
+
+.select__menu {
+  background: rgba(37, 41, 48, 0.95) !important;
+}
+
+.select__option--is-focused {
+  background: rgba(57, 64, 74, 0.95) !important;
+}
+.select__option--is-selected {
+  background: rgba(107,166,239,0.5) !important;
+}
