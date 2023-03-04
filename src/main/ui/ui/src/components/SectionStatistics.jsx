@@ -19,12 +19,17 @@ const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
     const [ workoutDistribution, setWorkoutDistribution ] = useState([]);
     const { data: selfRecords, loading: loadingRecords  } = useFetch(`/api/records`);
+    const [ , setDimensions ] = useState([])
 
     useEffect(()=>{
         let from = new Date();
         from.setDate(from.getDate() - 30)
         let to = new Date();
         updateDistRange(from, to);
+        window.addEventListener('resize', () => setDimensions({
+            height: window.innerHeight,
+            width: window.innerWidth
+        }))
     }, [])
 
     const updateDistRange = (fromDate, toDate) => {
