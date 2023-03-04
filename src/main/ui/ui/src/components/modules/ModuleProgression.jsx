@@ -11,6 +11,7 @@ import Loader from "../ui_components/Loader";
 import SwiperWrapper from "../ui_components/swiper/SwiperWrapper";
 import {SwiperSlide} from "swiper/react";
 import Select from "react-select";
+import Slider from "@material-ui/core/Slider";
 
 const getDates = (startDate, stopDate) => {
     let dateArray = [];
@@ -55,15 +56,32 @@ const getPolyfitLinePlot = (xLabels, pts) => {
     return getDates(new Date(xLabels[0]), new Date()).map(d => (d.toISOString().split('T')[0])).map((d, i, arr) => ({ x: d, y: Math.max(func.predict(getMagicNumberFromDate(d, arr[0]))[1], 0) }));
 }
 
-const createConfig = (data, mergeAxes) => {
+const createConfig = (data, mergeAxes, interpolation=1) => {
     data.sort(function(a,b){
         // Turn your strings into dates, and then subtract them
         // to get a value that is either negative, positive, or zero.
         return new Date(a.date) - new Date(b.date);
     });
     const xLabels = data.map( e => e.date.split('T')[0]);
-    const weights = data.map( e => e.weight);
-    const reps = data.map( e => e.reps);
+    const weights_pre = data.map( e => e.weight);
+    const reps_pre = data.map( e => e.reps);
+    let weights = [];
+    let reps = [];
+
+    // Interpolation
+    const interpol = interpolation-1;
+    for (let i = 0; i < xLabels.length; i++) {
+        let w = 0, r = 0;
+        let pts = 0;
+        for (let j = Math.max(0, i-interpol); j <= Math.min(xLabels.length-1, i+interpol); j++) {
+            w += weights_pre[j];
+            r += reps_pre[j];
+            pts++;
+        }
+        weights.push(w/pts);
+        reps.push(r/pts);
+    }
+
     const maxCombined = Math.max(...data.map(e => e.combined))
     const maxWeight = Math.max(...data.map(e => e.weight))
     const combined = data.map(e => Math.round((e.combined / maxCombined) * 100));
@@ -240,10 +258,12 @@ const createConfig = (data, mergeAxes) => {
 
 const ModuleProgression = () => {
     const { data: exercises, loading: loadingExercises } = useFetch('/api/exercises');
+    const [ rawData, setRawData ] = useState([]);
     const [ chartData, setChartData ] = useState(null);
     const [ selectedExercise, setSelectedExercise ] = useState(null);
     const [ message, setMessage ] = useState("Select an exercise to view your progression");
     const [ loading, setLoading ] = useState(false);
+    const [ interpolation, setInterpolation ] = useState(3);
 
     const getExerciseData = async (ex) => {
         setLoading(true);
@@ -259,18 +279,7 @@ const ModuleProgression = () => {
 
         const data = await response.json();
         setLoading(false);
-        setChartData({
-            data1: createConfig(data, true),
-            data2: createConfig(data, false)
-        })
-
-        if (data.length > 1) {
-            setMessage("");
-            LocalStorage.set("progression_saved_exercise", selectedExercise)
-        } else if (data.length > 0) {
-            setMessage("Not enough data available for this exercise");
-        } else
-            setMessage("No data available for this exercise");
+        setRawData(data)
     }
 
     useEffect(() => {
@@ -284,6 +293,20 @@ const ModuleProgression = () => {
             getExerciseData(selectedExercise.value).then(_ => _);
     }, [selectedExercise])
 
+    useEffect(() => {
+        setChartData({
+            data1: createConfig(rawData, true, interpolation),
+            data2: createConfig(rawData, false, interpolation)
+        })
+
+        if (rawData.length > 1) {
+            setMessage("");
+            LocalStorage.set("progression_saved_exercise", selectedExercise)
+        } else if (rawData.length > 0) {
+            setMessage("Not enough data available for this exercise");
+        } else
+            setMessage("No data available for this exercise");
+    }, [interpolation, rawData])
 
     return (
         <>
@@ -302,6 +325,14 @@ const ModuleProgression = () => {
                                     <SwiperSlide>
                                         <div style={{ width: '100%'}} className={'no-swipe'}>
                                             <Graph data={ chartData.data2 }/>
+                                            <Slider
+                                                style={{ margin: '0 auto 1em auto', width: '80%' }}
+                                                value={ interpolation }
+                                                onChange={(event, val) => setInterpolation(val) }
+                                                valueLabelDisplay="auto"
+                                                min={1}
+                                                max={10}
+                                            />
                                         </div>
                                     </SwiperSlide>
                                 </SwiperWrapper>
