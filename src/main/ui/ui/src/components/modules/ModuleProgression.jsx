@@ -142,7 +142,7 @@ const createConfig = (data, mergeAxes) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth < 2000 && window.innerWidth > 1500 ? 3.5 : 1.2,
+            aspectRatio: window.innerWidth > 1500 ? 2.5 : 1.2,
             hoverMode: 'index',
             stacked: false,
             title:{
@@ -292,11 +292,6 @@ const ModuleProgression = () => {
                     <div className={'centerC'}>
                         { !loading && chartData && message === "" &&
                         <>
-                            <div style={{ display: 'flex '}}>
-                                <h2 style={{ fontWeight: 'bold', flex: 1, padding: '9px', fontSize: 'calc(10px + 1vmin)'}}>
-                                    { camelCase(selectedExercise.label) }
-                                </h2>
-                            </div>
                             <div className={'centerC'}>
                                 <SwiperWrapper>
                                     <SwiperSlide>

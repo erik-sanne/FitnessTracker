@@ -65,7 +65,7 @@ const createConfig = (setdata={}) => {
                 display: false
             },
             responsive: true,
-            aspectRatio: window.innerWidth < 1500 ? 1.5 : 3.5,
+            aspectRatio: 2.5,
             scales: {
                 yAxes: [{
                     stacked: true,
