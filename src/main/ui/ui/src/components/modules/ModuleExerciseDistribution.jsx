@@ -48,15 +48,15 @@ const createConfig = (setdata={}) => {
                     type: 'line',
                     label: 'Workouts with exercise',
                     //backgroundColor: 'rgba(72,125,190,0.4)',
-                    borderColor: 'rgb(61,111,169)',
+                    borderColor: 'rgba(107,166,239,0.5)',
                     borderWidth: 2,
                     data: workouts
                 },
                 {
                     type: 'bar',
                     label: 'Sets performed',
-                    backgroundColor: 'rgba(107,166,239,0.4)',
-                    borderColor: 'rgb(61,111,169)',
+                    backgroundColor: 'rgba(107,166,239,0.1)',
+                    borderColor: 'rgba(107,166,239,0.5)',
                     borderWidth: 2,
                     data: sets
                 }
