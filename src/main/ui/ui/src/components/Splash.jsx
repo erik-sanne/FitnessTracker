@@ -25,15 +25,17 @@ const Splash = ({ show = true }) => {
             "You're a sick c*nt!",
             "We're all gonna make it!",
             'Everything is hard before it is easy!',
-            'Keff Javaliere, Athlean Y (dot) com!',
+            'Keff Javaliere, AthleanY.net!',
             'Reps for Jesus!',
             "He's curling in the squat rack already. - Dom Mazzetti",
             "Chasing the pump!",
             "More than 40.000 lines of code!",
             "Securing gainz since 2020!",
-            '',
+            "Go hard, mate. The gym lifestyle is the best!",
+            "Everyone has a little bit of Zyzz in them.",
+            "The real workout starts when you want to stop",
+            "Suffer now and live the rest of your life as a champion",
             ''
-
         ]
         return set[Math.floor(Math.random() * set.length)];
     }
