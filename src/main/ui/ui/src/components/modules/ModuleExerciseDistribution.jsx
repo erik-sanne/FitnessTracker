@@ -45,30 +45,33 @@ const createConfig = (setdata={}) => {
             labels: xLabels,
             datasets: [
                 {
+                    type: 'line',
                     label: 'Workouts with exercise',
-                    backgroundColor: 'rgba(72,125,190,0.4)',
+                    //backgroundColor: 'rgba(72,125,190,0.4)',
                     borderColor: 'rgb(61,111,169)',
-                    borderWidth: 1,
+                    borderWidth: 2,
                     data: workouts
                 },
                 {
+                    type: 'bar',
                     label: 'Sets performed',
                     backgroundColor: 'rgba(107,166,239,0.4)',
                     borderColor: 'rgb(61,111,169)',
-                    borderWidth: 1,
+                    borderWidth: 2,
                     data: sets
                 }
             ]
         },
         options: {
             legend: {
-                display: false
+                display: true
             },
             responsive: true,
             aspectRatio: 2.5,
             scales: {
                 yAxes: [{
                     stacked: true,
+                    display: false,
                     ticks: {
                         stepSize: 1,
                         fontFamily: 'Quicksand',
@@ -87,7 +90,7 @@ const createConfig = (setdata={}) => {
             },
             elements: {
                 point:{
-                    radius: 0
+                    radius: 2
                 }
             }
         }
