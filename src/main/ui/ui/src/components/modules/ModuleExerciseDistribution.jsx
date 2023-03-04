@@ -33,7 +33,7 @@ const ModuleExerciseDistribution = () => {
 
 const createConfig = (setdata={}) => {
 
-    const data = setdata.sort((a, b) => (b.workouts + b.sets) - (a.workouts + a.sets))
+    const data = setdata.sort((a, b) => (b.sets) - (a.sets))
 
     let workouts = data.map(e => e.workouts)
     let sets = data.map(e => e.sets)
