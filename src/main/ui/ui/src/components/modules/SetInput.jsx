@@ -62,6 +62,8 @@ const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, o
                 <Select
                     onChange={ (value) => handleInputChange({ target : { name: 'type', value: value.value }}) }
                     options={ exerciseOptions.map(e =>{ return {value: e, label: Utils.camelCase(e.replace(/_/g, ' '))}}) }
+                    defaultValue={ Utils.camelCase(type.replace(/_/g, ' ')) || 'Select'}
+                    placeholder={ Utils.camelCase(type.replace(/_/g, ' ')) }
                     menuPlacement={"top"}
                     className="select-container"
                     classNamePrefix="select" />
