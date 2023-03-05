@@ -284,7 +284,7 @@ const ModuleProgression = () => {
 
     useEffect(() => {
         const stored = LocalStorage.get("progression_saved_exercise", null);
-        if (typeof stored !== 'string' && 'value' in stored)
+        if (stored && typeof stored !== 'string' && 'value' in stored)
             setSelectedExercise(stored);
     }, [])
 
