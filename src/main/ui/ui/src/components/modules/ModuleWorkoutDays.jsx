@@ -7,9 +7,9 @@ import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 import Modal from "../ui_components/Modal";
 
-const createConfig = (rawdata=[]) => {
+const createConfig = (rawdata=[], goal=0) => {
 
-    const data = rawdata.map(d => d.reverse());
+    const data = rawdata.map(d => d.map(a => a).reverse());
 
     const datasets = data.map((person, idx) => {
         const yValues = person.map((week) => week.totalWorkouts );
@@ -58,7 +58,22 @@ const createConfig = (rawdata=[]) => {
         }
     });
 
-    const allDatasets = datasets.concat(trends);
+    const goalLine = {
+        type: 'line',
+        label: 'Target',
+        fill: false,
+        borderColor: "#ffc877",
+        borderWidth: 1,
+        borderDash: [15, 3],
+        data: xLabels.map((x) => goal)
+
+    }
+
+    const allDatasets = datasets.concat(trends)
+
+    if (goal > 0)
+        allDatasets.push(goalLine)
+
 
     return {
         type: 'bar',
@@ -71,7 +86,7 @@ const createConfig = (rawdata=[]) => {
                 display: false
             },
             responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
+            aspectRatio: window.innerWidth < 600 ? 1.2 : 1.2,
             scales: {
                 yAxes: [{
                     ticks: {
@@ -134,7 +149,7 @@ const ModuleWorkoutDays = ({ data=[] }) => {
 
     const changeGoal = (value) => {
         value = parseInt(value);
-        if (value < 1 || value > 14) {
+        if (value < 0 || value > 7) {
             setGoalErr(true)
         } else {
             localStorage.setItem(LS_KEY_WEEKLY_GOAL, value);
@@ -145,8 +160,13 @@ const ModuleWorkoutDays = ({ data=[] }) => {
 
     useEffect(() => {
         if (data.length > 0 && !chartData)
-            setChartData(createConfig(data))
-    }, [data])
+            setChartData(createConfig(data, goal))
+    }, [data, goal])
+
+    useEffect(() => {
+        if (data.length > 0)
+            setChartData(createConfig(data, goal))
+    }, [goal])
 
     return (
         <>
@@ -202,6 +222,7 @@ const ModuleWorkoutDays = ({ data=[] }) => {
                 </>
             }
             <Modal visible={ modalVisible } title={ "Weekly goal" } onClose={ () => setModalVisible(false) }>
+                <i>* Set to 0 to hide target line in graph</i>
                 <input type={ "number" } style={ goalErr ? styleError : {} } value={ goal } onChange={ (e) => changeGoal(e.target.value) } />
             </Modal>
         </>
