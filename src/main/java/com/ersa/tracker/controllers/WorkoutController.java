@@ -15,7 +15,6 @@ import com.ersa.tracker.services.general.achivements.AchievementService;
 import com.ersa.tracker.services.general.missions.TemplateResolver;
 import com.ersa.tracker.services.user.ProfileService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

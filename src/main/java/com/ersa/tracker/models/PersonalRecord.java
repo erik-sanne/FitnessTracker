@@ -3,8 +3,8 @@ package com.ersa.tracker.models;
 import com.ersa.tracker.models.authentication.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.persistence.*;
+
 import java.util.Date;
 
 @Entity

@@ -3,6 +3,7 @@ package com.ersa.tracker.models;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+
 import java.util.Set;
 
 @Entity

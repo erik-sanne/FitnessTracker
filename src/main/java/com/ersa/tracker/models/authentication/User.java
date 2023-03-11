@@ -2,7 +2,6 @@ package com.ersa.tracker.models.authentication;
 
 import com.ersa.tracker.models.user.UserProfile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import org.jetbrains.annotations.NotNull;

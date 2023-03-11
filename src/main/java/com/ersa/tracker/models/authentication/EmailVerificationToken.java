@@ -2,6 +2,7 @@ package com.ersa.tracker.models.authentication;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
 import java.util.Date;
 
 @Entity
