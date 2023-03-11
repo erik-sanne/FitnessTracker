@@ -490,3 +490,62 @@ body {
 .select__value-container {
   padding: min(2vw, 12px) min(3vw, 24px) !important;
 }
+
+.mission-container {
+  position: relative;
+  padding: 1em;
+  border: 1px solid #333;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px #222;
+}
+
+.mission-container.complete {
+  background: #42474c4a;
+  box-shadow: 0 0 10px inset #111;
+}
+
+.mission-container .check {
+  font-size: 1.4rem;
+  position: absolute;
+  top: 0.85em;
+  right: 0.85em;
+  color: #333;
+}
+
+.mission-container.complete .check{
+  color: #4f6251;
+}
+
+.mission-container .progress {
+height: 0.5em;
+background-color: #424242;
+}
+
+.mission-container .progress .progress-bar {
+background-color: rgba(107,166,239,0.7);
+}
+
+.missions > div > div {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
+grid-gap: 1%;
+grid-auto-flow: dense;
+}
+
+.mission-container .h4 {
+font-size: 1.5em
+}
+
+.mission-container p {
+color: #aaa;
+}
+
+.mission-container p:last-child {
+text-align: right;
+}
+
+@media screen and (max-width: 600px) {
+.missions > div > div {
+grid-template-columns: auto
+}
+}

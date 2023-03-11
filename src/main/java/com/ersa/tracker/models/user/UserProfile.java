@@ -61,6 +61,7 @@ public class UserProfile {
         return friends != null ? friends.stream().peek(up -> up.friends = Collections.emptyList()).collect(Collectors.toList()) : Collections.emptyList();
     }
 
+    private long score;
 
     @Transient
     @JsonProperty(value = "permissionLevel")
@@ -135,4 +136,13 @@ public class UserProfile {
     public void setNotices(List<Notice> notices) {
         this.notices = notices;
     }
+
+    public long getScore() {
+        return score;
+    }
+
+    public void setScore(long score) {
+        this.score = score;
+    }
+
 }

@@ -12,7 +12,9 @@ import com.ersa.tracker.services.general.ExerciseService;
 import com.ersa.tracker.services.general.PRService;
 import com.ersa.tracker.services.general.WorkoutService;
 import com.ersa.tracker.services.general.achivements.AchievementService;
+import com.ersa.tracker.services.general.missions.TemplateResolver;
 import com.ersa.tracker.services.user.ProfileService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.security.Principal;
 import java.util.*;
 
 @RestController
+@AllArgsConstructor
 public class WorkoutController {
 
     private final APIService apiService;
@@ -31,23 +34,7 @@ public class WorkoutController {
     private final ExerciseService exerciseService;
     private final ProfileService profileService;
     private final AchievementService achievementService;
-
-    @Autowired
-    public WorkoutController(final WorkoutService workoutService,
-                             final AccountService accountService,
-                             final ExerciseService exerciseService,
-                             final PRService recordService,
-                             final APIService apiService,
-                             final ProfileService profileService,
-                             final AchievementService achievementService) {
-        this.workoutService = workoutService;
-        this.accountService = accountService;
-        this.exerciseService = exerciseService;
-        this.recordService = recordService;
-        this.apiService = apiService;
-        this.profileService = profileService;
-        this.achievementService = achievementService;
-    }
+    private final TemplateResolver missionResolver;
 
     @GetMapping("api/workouts")
     public List<WorkoutSummary> getWorkouts(final Principal principal, @RequestParam(name = "from", defaultValue = "0") Integer from, @RequestParam(name = "to", defaultValue = "999999") Integer to) {
@@ -197,6 +184,12 @@ public class WorkoutController {
     public List<Achievement> getAchievements(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         return achievementService.getAchievements(currentUser);
+    }
+
+    @GetMapping("api/missions")
+    public List<MissionDto> getMissions(final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return missionResolver.getActive(currentUser);
     }
 
     @GetMapping("api/stats")

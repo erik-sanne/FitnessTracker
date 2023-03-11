@@ -14,6 +14,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {NavLink} from "react-router-dom";
 import LocalStorage from "../services/LocalStorage";
 import ModuleExerciseDistribution from "./modules/ModuleExerciseDistribution";
+import ModuleWeeklyMissions from "./modules/ModuleWeeklyMissions";
 
 const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
@@ -42,6 +43,9 @@ const SectionStatistics = () => {
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
+            <Module title={ "Weekly missions" } className={ "missions" }>
+                <ModuleWeeklyMissions />
+            </Module>
             <Module title = "Weekly workouts" className={ "weekly" }>
                 <ModuleWorkoutDays data={ !loadingWorkouts ? [ selfWorkoutsPerWeek ] : [] } />
             </Module>
