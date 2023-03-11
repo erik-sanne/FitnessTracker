@@ -14,7 +14,10 @@ const Mission = ({ name, description, progress, goal, completed, reward }) => {
             <FontAwesomeIcon icon={ faCheckCircle } className={ 'check' } />
             <p>{description}</p>
             <ProgressBar now={ percent }/>
-            <p>{reward} pts</p>
+            <p>
+                <span>{progress}/{goal}</span>
+                <span>{reward} pts</span>
+            </p>
         </div>
     );
 }
