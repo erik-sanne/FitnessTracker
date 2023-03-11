@@ -8,7 +8,12 @@ const ModuleWeeklyMissions = () => {
     const { data: data, loading } = useFetch("/api/missions")
 
     if (loading)
-        return <Loader />
+        return <div>
+            <div className={ 'mission-container loading' }><Loader /></div>
+            <div className={ 'mission-container loading' }><Loader /></div>
+            <div className={ 'mission-container loading' }><Loader /></div>
+        </div>
+
 
     return (<div>
         {

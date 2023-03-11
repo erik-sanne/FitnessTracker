@@ -497,6 +497,17 @@ body {
   border: 1px solid #333;
   border-radius: 5px;
   box-shadow: 0px 0px 10px #222;
+  animation: fadeIn 1s;
+  min-height: 150px;
+}
+
+.mission-container.loading {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  animation: loadingflash ease-in-out;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
 }
 
 .mission-container.complete {
@@ -517,8 +528,12 @@ body {
 }
 
 .mission-container .progress {
-height: 0.5em;
-background-color: #424242;
+  height: 0.5em;
+  background-color: #424242;
+}
+
+.mission-container.complete .progress .progress-bar {
+  background-color: #4f6251;
 }
 
 .mission-container .progress .progress-bar {
@@ -526,26 +541,47 @@ background-color: rgba(107,166,239,0.7);
 }
 
 .missions > div > div {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
-grid-gap: 1%;
-grid-auto-flow: dense;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
+  grid-gap: 1%;
+  grid-auto-flow: dense;
 }
 
 .mission-container .h4 {
-font-size: 1.5em
+  font-size: 1.5em
 }
 
 .mission-container p {
-color: #aaa;
+  color: #aaa;
 }
 
 .mission-container p:last-child {
-text-align: right;
-}
+  text-align: right;
+  }
 
 @media screen and (max-width: 600px) {
-.missions > div > div {
-grid-template-columns: auto
+  .missions > div > div {
+    grid-template-columns: auto
+  }
 }
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes loadingflash {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(100,100,100,0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
 }

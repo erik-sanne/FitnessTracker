@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 @AllArgsConstructor
 @Component
@@ -24,7 +25,10 @@ public class SameNoWorkoutsMission implements MissionTemplate {
 
     @Override
     public String getName(Mission mission) {
-        return String.format("Consistent workout schedule");
+        if (mission.getGoal() < 3)
+            return "Hit the gym";
+
+        return "Stick to the program";
     }
 
     @Override
@@ -34,14 +38,14 @@ public class SameNoWorkoutsMission implements MissionTemplate {
 
     @Override
     public long getReward() {
-        return 50;
+        return 70;
     }
 
     @Override
     public int evaluateProgress(Mission mission) {
         List<Workout> workouts = workoutRepository.findAllByUser(mission.getUser());
 
-        int thisWeek = DateUtils.getCurrentWeek();
+        long thisWeek = mission.getWeek();
         List<Workout> workoutsThisWeek = workouts.stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == thisWeek).toList();
         return workoutsThisWeek.size();
     }

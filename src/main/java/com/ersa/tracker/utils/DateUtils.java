@@ -12,7 +12,7 @@ public class DateUtils {
 
     public static int getWeekForDate(Date date) {
         String yyyyww = DateUtils.FORMAT_YYYYww.format(date.getTime());
-        return Integer.parseInt(yyyyww.substring(4));
+        return Integer.parseInt(yyyyww);
     }
 
     public static int getCurrentWeek() {
@@ -20,6 +20,6 @@ public class DateUtils {
         // ISO 8601
         cal.setMinimalDaysInFirstWeek(4);
         String yyyyww = DateUtils.FORMAT_YYYYww.format(cal.getTime());
-        return Integer.parseInt(yyyyww.substring(4));
+        return Integer.parseInt(yyyyww);
     }
 }
