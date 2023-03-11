@@ -36,6 +36,11 @@ public class TemplateResolver {
         List<MissionDto> dtos = new ArrayList<>();
         for (Mission mission : active) {
             MissionTemplate template = getTemplate(mission);
+            if (template == null) {
+                log.warn("Template for {} not found", mission.getMissionId());
+                continue;
+            }
+
 
             long lastProgress = mission.getProgress();
             mission.setProgress(template.evaluateProgress(mission));
@@ -61,7 +66,7 @@ public class TemplateResolver {
     }
 
     MissionTemplate getTemplate(Mission mission) {
-        return allMissionTemplates.stream().filter(template -> mission.getMissionId() == template.getIdentifier()).findAny().get();
+        return allMissionTemplates.stream().filter(template -> mission.getMissionId().equalsIgnoreCase(template.getIdentifier())).findAny().orElse(null);
     }
 
     boolean removeObsolete(User user) {

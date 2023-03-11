@@ -10,6 +10,7 @@ import com.ersa.tracker.utils.FormatUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -61,13 +62,13 @@ public class AdditionalSetMission implements MissionTemplate {
 
         Workout workout = lastWorkouts.get(0);
 
-        List<WorkoutSet> sets = workout.getSets().stream().toList();
+        List<WorkoutSet> sets = new ArrayList<>(workout.getSets().stream().toList());
         Collections.shuffle(sets);
         if (sets.size() <= 0 ) {
             return null;
         }
         String exercise = sets.get(0).getExercise();
-
+ /*
         WorkoutSet heaviestSet = sets.stream().filter(set -> set.getExercise().equalsIgnoreCase(exercise)).
                 reduce((best, set) -> {
                     if (set.getWeight() > best.getWeight()) {
@@ -75,12 +76,14 @@ public class AdditionalSetMission implements MissionTemplate {
                     } else
                         return best;
                 }).get();
+*/
+        long number = sets.stream().filter(set -> set.getExercise().equalsIgnoreCase(exercise)).count();
 
         Mission mission = new Mission();
         mission.setUser(user);
         mission.setMissionId(getIdentifier());
         mission.setWeek(DateUtils.getCurrentWeek());
-        mission.setGoal(heaviestSet.getReps()+1);
+        mission.setGoal(number+1);
         mission.setAnyString(exercise);
         return mission;
     }

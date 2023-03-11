@@ -10,6 +10,7 @@ import com.ersa.tracker.utils.FormatUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class IncreaseWeightMission implements MissionTemplate {
 
     @Override
     public long getReward() {
-        return 100;
+        return 120;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class IncreaseWeightMission implements MissionTemplate {
             return null;
         Workout workout = lastWorkouts.get(0);
 
-        List<WorkoutSet> sets = workout.getSets().stream().toList();
+        List<WorkoutSet> sets = new ArrayList<>(workout.getSets().stream().toList());
         Collections.shuffle(sets);
         if (sets.size() <= 0)
             return null;
