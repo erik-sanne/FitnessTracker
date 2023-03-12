@@ -53,7 +53,6 @@ const ModuleProfile = ({ profile, isMe=false }) => {
                         <h4>{ profile.displayName }
                         </h4>
                         <p> { formatTitle(profile.title, profile.permissionLevel) } </p>
-                        { profile.friends.length > 0 && <p>{ profile.friends.length } friends </p>}
                     </div>
                 </div>
             </div>
@@ -72,7 +71,7 @@ const ModuleProfile = ({ profile, isMe=false }) => {
                 <p>
                     <FontAwesomeIcon icon={ faUserFriends } />
                     { window.innerWidth < 600 ? ": " : " Friends: " }
-                    { profile.friendsCount }
+                    { profile.friends.length > 0 ? profile.friends.length : profile.friendsCount }
                 </p>
                 <p>
                     <FontAwesomeIcon icon={ faDumbbell } />
