@@ -35,9 +35,6 @@ public class UserProfileService implements ProfileService {
         if (userProfile == null)
             return null;
 
-        if (userProfile.getFriends() != null && userProfile.getFriends().size() > 0)
-            for (UserProfile friend : userProfile.getFriends())
-                friend.setFriends(null);
         return userProfile;
     }
 

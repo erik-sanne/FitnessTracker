@@ -5,6 +5,7 @@ import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.user.Post;
 import com.ersa.tracker.services.authentication.AccountService;
 import com.ersa.tracker.services.user.PostService;
+import jdk.jshell.spi.ExecutionControl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,11 @@ public class PostController {
     public List<PostDto> getNewsFeedInterval(final Principal principal, @RequestParam(name = "from") Integer from, @RequestParam(name = "to") Integer to) {
         List<PostDto> feed = getNewsFeed(principal);
         return feed.subList(from, Math.min(to, feed.size()));
+    }
+
+    @GetMapping("/posts/wall/{userId}")
+    public List<PostDto> getNewsFeedInterval(@PathVariable long userId, final Principal principal, @RequestParam(name = "from") Integer from, @RequestParam(name = "to") Integer to) throws ExecutionControl.NotImplementedException {
+        throw new ExecutionControl.NotImplementedException("Not implemented");
     }
 
     @PostMapping("/posts/post")

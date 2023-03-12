@@ -18,6 +18,7 @@ import Modal from "./components/ui_components/Modal";
 import {faStar} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SectionAchievements from "./components/SectionAchievements";
+import SectionProfile from "./components/SectionProfile";
 
 const AppContent = ({ logoutCallback }) => {
     const [ menuOpen, setMenuOpen ] = useState(false)
@@ -113,6 +114,10 @@ const AppContent = ({ logoutCallback }) => {
                         <Route path="/friend/:friendId">
                             <Header title={ "Compare stats" } onClick={ burgerClick } />
                             <SectionStatisticsWithFriend userProfile={ currentUserProfile } />
+                        </Route>
+                        <Route path="/profile/:friendId">
+                            <Header title={ "User profile" } onClick={ burgerClick } />
+                            <SectionProfile myProfile={ currentUserProfile } />
                         </Route>
                         <Route path="/achievements">
                             <Header title={ "My Achievements" } onClick={ burgerClick } />

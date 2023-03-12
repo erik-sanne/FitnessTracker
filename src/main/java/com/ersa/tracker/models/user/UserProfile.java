@@ -47,6 +47,11 @@ public class UserProfile {
     @JsonIgnore
     private List<UserProfile> friends;
 
+    @Transient
+    @JsonProperty(value = "friendsCount")
+    private int friendsCount;
+
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade = CascadeType.ALL)
     @JsonIgnore
     @OrderBy("date")
@@ -58,7 +63,10 @@ public class UserProfile {
     @Transient
     @JsonProperty(value = "friends")
     private List<UserProfile> friends() {
-        return friends != null ? friends.stream().peek(up -> up.friends = Collections.emptyList()).collect(Collectors.toList()) : Collections.emptyList();
+        return friends != null ? friends.stream().peek(up -> {
+            up.friendsCount = up.friends.size();
+            up.friends = Collections.emptyList();
+        }).collect(Collectors.toList()) : Collections.emptyList();
     }
 
     private long score;

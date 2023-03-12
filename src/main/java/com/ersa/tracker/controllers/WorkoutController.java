@@ -185,6 +185,13 @@ public class WorkoutController {
         return achievementService.getAchievements(currentUser);
     }
 
+    @GetMapping("api/achievements/{userId}")
+    public List<Achievement> getAchievements(@PathVariable long userId, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        User friend = profileService.getFriend(currentUser, userId);
+        return achievementService.getAchievements(friend);
+    }
+
     @GetMapping("api/missions")
     public List<MissionDto> getMissions(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
@@ -195,5 +202,12 @@ public class WorkoutController {
     public StatsDto getHardStats(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         return workoutService.getStats(currentUser);
+    }
+
+    @GetMapping("api/stats/{userId}")
+    public StatsDto getHardStats(@PathVariable long userId, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        User friend = profileService.getFriend(currentUser, userId);
+        return workoutService.getStats(friend);
     }
 }

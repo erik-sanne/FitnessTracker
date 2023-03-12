@@ -132,7 +132,7 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
             <Module title = "Friends list" className={ "friends-list" }>
                 { userProfile.friends && userProfile.friends.length > 0 && userProfile.friends.map((profile, key) =>
                     <ListRow key={key} onClick={ () => {
-                        setRedirect(`/friend/${profile.userId}`)
+                        setRedirect(`/profile/${profile.userId}`)
                     }}>
                         <ProfileDisplay displayName={profile.displayName} title={ profile.title } userId={ profile.userId } profilePicture={ profile.profilePicture } permissionLevel={ profile.permissionLevel } style={{ flex: 1}}/>
                         <span style={{ margin: 'auto 1em', display:'none'}}> <FontAwesomeIcon icon={faIdBadge} /> View profile </span>
