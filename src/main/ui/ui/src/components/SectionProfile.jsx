@@ -8,7 +8,7 @@ const SectionProfile = ({ myProfile }) => {
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
-            <ModuleProfile profile={ friend } />
+            <ModuleProfile profile={ myProfile.userId == friendId ? myProfile : friend } isMe={ myProfile.userId == friendId } />
         </div>)
 }
 

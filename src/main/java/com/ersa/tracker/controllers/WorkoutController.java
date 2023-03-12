@@ -188,6 +188,8 @@ public class WorkoutController {
     @GetMapping("api/achievements/{userId}")
     public List<Achievement> getAchievements(@PathVariable long userId, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
+        if (userId == currentUser.getId())
+            return getAchievements(principal);
         User friend = profileService.getFriend(currentUser, userId);
         return achievementService.getAchievements(friend);
     }
@@ -207,6 +209,8 @@ public class WorkoutController {
     @GetMapping("api/stats/{userId}")
     public StatsDto getHardStats(@PathVariable long userId, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
+        if (userId == currentUser.getId())
+            return getHardStats(principal);
         User friend = profileService.getFriend(currentUser, userId);
         return workoutService.getStats(friend);
     }

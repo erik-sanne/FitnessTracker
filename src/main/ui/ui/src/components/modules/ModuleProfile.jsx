@@ -13,8 +13,9 @@ import image from "../../resources/party_pattern.jpg";
 import get from "./../../services/Get.jsx"
 import Spinner from "react-bootstrap/cjs/Spinner";
 import {Redirect} from "react-router";
+import {NavLink} from 'react-router-dom'
 
-const ModuleProfile = ({ profile }) => {
+const ModuleProfile = ({ profile, isMe=false }) => {
     const [ stats, setStats ] = useState();
     const [ achievements, setAchievements ] = useState();
     const [ redirect, setRedirect ] = useState("");
@@ -34,14 +35,18 @@ const ModuleProfile = ({ profile }) => {
                 <div style={{
                     background: `url(${image}), linear-gradient(180deg, transparent, black`,
                 }}>
-                    <FontAwesomeIcon icon={ faCompressArrowsAlt } onClick={ () => {
+                    { !isMe && <FontAwesomeIcon icon={ faCompressArrowsAlt } onClick={ () => {
                         setRedirect(`/friend/${profile.userId}`)
-                    }} />
+                    }} />}
                 </div>
             </div>
             <div className={ 'profile-wrapper' }>
                 <div style={{ width: '13em', position: 'relative' }}>
-                    <ProfilePicture picture={ profile.profilePicture } />
+                    {
+                        isMe ? <NavLink to={ "/settings" }>
+                            <ProfilePicture picture={ profile.profilePicture } />
+                        </NavLink> : <ProfilePicture picture={ profile.profilePicture } />
+                    }
                 </div>
                 <div style={{ flex: 1}}>
                     <div className={ 'details' }>

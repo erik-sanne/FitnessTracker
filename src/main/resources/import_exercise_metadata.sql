@@ -76,6 +76,7 @@ INSERT INTO exercise (name) VALUES
 ('HIP_THRUST'),
 ('RACK_PULLS'),
 ('LUNGES'),
+('ROMANIAN_DEADLIFT'),
 
 ('BENCH_PRESS'),
 ('DUMBELL_PRESS'),
@@ -140,6 +141,7 @@ INSERT INTO exercise_primary_targets (exercise_name, primary_targets_name) VALUE
 ('LUNGES', 'HAMSTRINGS'),
 ('LUNGES', 'GLUTES'),
 ('LUNGES', 'QUADS'),
+('ROMANIAN_DEADLIFT', 'HAMSTRINGS'),
 
 ('BENCH_PRESS', 'LOWER_CHEST'),
 ('BENCH_PRESS', 'UPPER_CHEST'),
@@ -196,6 +198,7 @@ INSERT INTO exercise_secondary_targets (exercise_name, secondary_targets_name) V
 ('DEADLIFT', 'LATS'),
 ('GLUTE_KICKBACKS', 'HAMSTRINGS'),
 ('HIP_THRUST', 'QUADS'),
+('ROMANIAN_DEADLIFT', 'GLUTES'),
 
 ('BENCH_PRESS', 'FRONT_DELTS'),
 ('BENCH_PRESS', 'TRICEPS'),

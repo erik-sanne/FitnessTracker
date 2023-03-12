@@ -32,7 +32,7 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
 
     return (
         <div style={ trans } className={ 'menu' }>
-            <NavLink to="/settings" onClick={ onNavigate }>
+            <NavLink to={ `/profile/${userProfile.userId}` } onClick={ onNavigate }>
                 <div style={{ padding: '0px 36px', display: 'flex', justifyContent: 'space-between'}}>
                     <div style={{flex: '1'}}>
                         <ProfileDisplay profilePicture={ userProfile.profilePicture } title={ userProfile.title }  displayName={ userProfile.displayName } userId={ userProfile.userId } permissionLevel={ userProfile.permissionLevel } />
