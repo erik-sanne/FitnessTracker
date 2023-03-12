@@ -44,7 +44,8 @@ public class AdditionalSetMission implements MissionTemplate {
         String exercise = mission.getAnyString();
         List<Workout> workouts = workoutRepository.findAllByUser(mission.getUser());
         workouts = workouts.stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == DateUtils.getCurrentWeek()).toList();
-        List<WorkoutSet> setsWithExercise = workouts.stream().flatMap(workout -> workout.getSets().stream()).filter(set -> set.getExercise() == exercise).toList();
+        List<WorkoutSet> setsWithExercise = workouts.stream().flatMap(workout -> workout.getSets().stream())
+                .filter(set -> set.getExercise().equalsIgnoreCase(exercise)).toList();
 
         return setsWithExercise.size();
     }

@@ -46,9 +46,9 @@ public class IncreaseWeightMission implements MissionTemplate {
         String exercise = mission.getAnyString();
         List<Workout> workouts = workoutRepository.findAllByUser(mission.getUser());
         workouts = workouts.stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == DateUtils.getCurrentWeek()).toList();
-        List<WorkoutSet> setsWithExercise = workouts.stream().flatMap(workout -> workout.getSets().stream()).filter(set -> set.getExercise() == exercise).toList();
+        List<WorkoutSet> setsWithExercise = workouts.stream().flatMap(workout -> workout.getSets().stream()).filter(set -> set.getExercise().equalsIgnoreCase(exercise)).toList();
 
-        return setsWithExercise.stream().filter(set -> set.getWeight() >= mission.getAnyDecimal()).toList().size();
+        return (int)setsWithExercise.stream().filter(set -> set.getWeight() >= mission.getAnyDecimal()).count();
     }
 
     @Override
