@@ -47,7 +47,7 @@ const ModuleProfile = ({ profile }) => {
                     <div className={ 'details' }>
                         <h4>{ profile.displayName }
                         </h4>
-                        <p> { formatTitle(profile.title, profile.role) } </p>
+                        <p> { formatTitle(profile.title, profile.permissionLevel) } </p>
                         { profile.friends.length > 0 && <p>{ profile.friends.length } friends </p>}
                     </div>
                 </div>
@@ -62,7 +62,7 @@ const ModuleProfile = ({ profile }) => {
                     <FontAwesomeIcon icon={ faTrophy } />
                     { window.innerWidth < 600 ? ": " : " Achievements: " }
                     { !achievements ? <Spinner animation="border" style={{ width: '16px', height: '16px'}}/>  :
-                        achievements.map(a => a !== null).length}
+                        achievements.filter(a => a.date !== null).length}
                 </p>
                 <p>
                     <FontAwesomeIcon icon={ faUserFriends } />
@@ -95,9 +95,9 @@ const formatTitle = (title, permissionLevel) => {
 const roleText = (permissionLevel) => {
     switch (permissionLevel) {
         case 'MOD':
-            return <span title={'Moderator'}> | Moderator ♕ </span>;
+            return " Moderator ♕ ";
         case 'ADMIN':
-            return <span title={'Administrator'}> | Administrator ♔ </span>;
+            return " Administrator ♔ ";
         default:
             return '';
     }
