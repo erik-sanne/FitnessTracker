@@ -23,7 +23,7 @@ const ModuleProfile = ({ profile, isMe=false }) => {
     useEffect(() => {
         get(`/api/stats/${profile.userId}`).then((resp) => setStats(resp))
         get(`/api/achievements/${profile.userId}`).then((resp) => setAchievements(resp))
-    },[])
+    },[profile])
 
     if (redirect) {
         return <Redirect to={ redirect } />
