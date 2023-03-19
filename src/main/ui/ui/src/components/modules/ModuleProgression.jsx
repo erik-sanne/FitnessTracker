@@ -221,11 +221,11 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             plugins: {
                 zoom: {
                     pan: {
-                        enabled: true,
+                        enabled: window.innerWidth < 600,
                         mode: 'x'
                     },
                     zoom: {
-                        enabled: true,
+                        enabled: window.innerWidth < 600,
                         mode: 'x'
                     }
                 }
