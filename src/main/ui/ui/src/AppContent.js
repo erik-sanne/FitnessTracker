@@ -20,6 +20,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SectionAchievements from "./components/SectionAchievements";
 import SectionProfile from "./components/SectionProfile";
 import ModalLoader from "./components/ui_components/ModalLoader";
+import {faGem} from "@fortawesome/free-regular-svg-icons";
 
 const AppContent = ({ logoutCallback }) => {
     const NOT_LOADED = "NOT_LOADED";
@@ -28,6 +29,8 @@ const AppContent = ({ logoutCallback }) => {
     const [ currentUserProfile, setCurrentUserProfile ] = useState(NOT_LOADED)
     const [ currentRecords, setCurrentRecords ] = useState(null)
     const [ newRecords, setNewRecords ] = useState(null)
+    const [ currentAchievements, setCurrentAchievements ] = useState(null)
+    const [ newAchievements, setNewAchievements ] = useState([])
     const [ loading, setLoading ] = useState(true)
 
     const burgerClick = () => {
@@ -51,7 +54,19 @@ const AppContent = ({ logoutCallback }) => {
             setCurrentUserProfile(NO_PROFILE)
         });
 
-        get('/api/achievements').then(() => {});
+        get('/api/achievements').then((achievements) => {
+            const unlocked = achievements.filter(ach => ach.date)
+
+            if (currentAchievements) {
+                const newAchievements = unlocked.filter(ach => !currentAchievements.some(old => old.name === ach.name ));
+
+                if (newAchievements.length > 0) {
+                    setNewAchievements(newAchievements);
+                }
+            }
+
+            setCurrentAchievements(unlocked);
+        });
 
         get('/api/records').then(records => {
             if (currentRecords) {
@@ -148,14 +163,21 @@ const AppContent = ({ logoutCallback }) => {
                 <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } userProfile={ currentUserProfile } />
                 <Burger onClick={ burgerClick } open={ menuOpen } userProfile={ currentUserProfile } />
             </BrowserRouter>
-            <Modal visible={ newRecords } title="New Personal Best!" onClose={ () => setNewRecords(null) }>
-                <h2>Congratulations!<FontAwesomeIcon icon={ faStar } style={{ paddingLeft: '12px', color: '#ffc877', width: 'inherit'}}/> </h2>
+            <Modal visible={ !newAchievements[0] && newRecords } title="New Personal Best!" onClose={ () => setNewRecords(null) }>
+                <h4 style={{ padding: '0.5em 0' }}>Congratulations!<FontAwesomeIcon icon={ faStar } style={{ paddingLeft: '12px', color: '#ffc877', width: 'inherit'}}/> </h4>
                 <p>Your hard work is paying off! You just hit a new personal record in {newRecords && newRecords.map((pr, idx, arr) =>
                     <>
                         <span>{(idx > 0 ? idx === arr.length-1 ? ' and ' : ', ' : '')}</span>
                         <strong>{ camelCase(pr.exercise.replace(/_/g, ' '))}</strong>
                     </>)}
                 </p>
+            </Modal>
+            <Modal visible={ newAchievements[0] } title="Achievement unlocked!" onClose={ () => setNewAchievements((achievements) => achievements.slice(1)) }>
+                { newAchievements && newAchievements[0] && <>
+                        <h4 style={{padding: '0.5em 0'}}> {newAchievements[0].name} <FontAwesomeIcon icon={ faGem } style={{ paddingLeft: '12px', width: 'inherit'}}/> </h4>
+                        <p><i> {newAchievements[0].description} </i></p>
+                    </>
+                }
             </Modal>
         </>
     );
