@@ -19,10 +19,13 @@ import {faStar} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SectionAchievements from "./components/SectionAchievements";
 import SectionProfile from "./components/SectionProfile";
+import ModalLoader from "./components/ui_components/ModalLoader";
 
 const AppContent = ({ logoutCallback }) => {
+    const NOT_LOADED = "NOT_LOADED";
+    const NO_PROFILE = "NO_PROFILE";
     const [ menuOpen, setMenuOpen ] = useState(false)
-    const [ currentUserProfile, setCurrentUserProfile ] = useState(null)
+    const [ currentUserProfile, setCurrentUserProfile ] = useState(NOT_LOADED)
     const [ currentRecords, setCurrentRecords ] = useState(null)
     const [ newRecords, setNewRecords ] = useState(null)
     const [ loading, setLoading ] = useState(true)
@@ -41,7 +44,11 @@ const AppContent = ({ logoutCallback }) => {
 
     const updateUserProfile = () => {
         get('/users/profile').then(profile => {
+            if (profile == null)
+                setCurrentUserProfile(NO_PROFILE)
             setCurrentUserProfile(profile)
+        }).catch(() => {
+            setCurrentUserProfile(NO_PROFILE)
         });
 
         get('/api/achievements').then(() => {});
@@ -76,7 +83,11 @@ const AppContent = ({ logoutCallback }) => {
     if (loading)
         return <Splash />
 
-    if (currentUserProfile == null)
+    if (currentUserProfile === NOT_LOADED) {
+        return <ModalLoader text={ 'Loading configuration...' } visible={true}/>
+    }
+
+    if (currentUserProfile === NO_PROFILE)
         return ( <section className={"page-wrapper"}>
                     <ModuleEditProfile required={true} updateUserProfile={ updateUserProfile }/>
                 </section>
