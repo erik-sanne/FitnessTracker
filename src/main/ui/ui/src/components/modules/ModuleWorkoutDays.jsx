@@ -137,7 +137,7 @@ const computeAverage = (numWeeks, data) => {
 }
 
 const reachedGoal = (goal, data) => {
-    return data && data[data.length - 1].totalWorkouts >= goal;
+    return data && data[0].totalWorkouts >= goal;
 }
 
 const ModuleWorkoutDays = ({ data=[] }) => {
