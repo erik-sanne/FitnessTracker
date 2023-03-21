@@ -182,6 +182,8 @@ public class WorkoutController {
     @GetMapping("api/achievements")
     public List<Achievement> getAchievements(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
+        if (currentUser.getUserProfile() == null)
+            return Collections.emptyList();
         return achievementService.getAchievements(currentUser);
     }
 

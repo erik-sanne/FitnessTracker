@@ -15,16 +15,19 @@ import SectionUpdates from "./components/SectionUpdates";
 import SectionMonitor from "./components/SectionMonitor";
 import get from "./services/Get.jsx"
 import Modal from "./components/ui_components/Modal";
-import {faStar} from "@fortawesome/free-solid-svg-icons";
+import {faExclamationTriangle, faStar} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SectionAchievements from "./components/SectionAchievements";
 import SectionProfile from "./components/SectionProfile";
 import ModalLoader from "./components/ui_components/ModalLoader";
 import {faGem} from "@fortawesome/free-regular-svg-icons";
+import Spinner from "react-bootstrap/Spinner";
 
 const AppContent = ({ logoutCallback }) => {
     const NOT_LOADED = "NOT_LOADED";
     const NO_PROFILE = "NO_PROFILE";
+    const CONNECTION_LOSS = "CONNECTION_LOSS";
+    const [ connectionStatus, setConnectionStatus ] = useState("")
     const [ menuOpen, setMenuOpen ] = useState(false)
     const [ currentUserProfile, setCurrentUserProfile ] = useState(NOT_LOADED)
     const [ currentRecords, setCurrentRecords ] = useState(null)
@@ -47,12 +50,21 @@ const AppContent = ({ logoutCallback }) => {
 
     const updateUserProfile = () => {
         get('/users/profile').then(profile => {
-            if (profile == null)
-                setCurrentUserProfile(NO_PROFILE)
             setCurrentUserProfile(profile)
+            setConnectionStatus("HEALTHY");
         }).catch(() => {
-            setCurrentUserProfile(NO_PROFILE)
+            setCurrentUserProfile(current => {
+                if (current === NOT_LOADED || current === NO_PROFILE) {
+                    setConnectionStatus("HEALTHY");
+                    return NO_PROFILE
+                }
+                setConnectionStatus(CONNECTION_LOSS);
+                return current
+            })
         });
+
+        if (currentUserProfile === NO_PROFILE)
+            return; // No point continuing
 
         get('/api/achievements').then((achievements) => {
             const unlocked = achievements.filter(ach => ach.date)
@@ -179,6 +191,19 @@ const AppContent = ({ logoutCallback }) => {
                     </>
                 }
             </Modal>
+            { connectionStatus === CONNECTION_LOSS && <div style={{
+                position: 'sticky',
+                bottom: '0em',
+                padding: '1em',
+                background: 'rgba(0, 0, 0, 0.7)'
+            }}>
+                <FontAwesomeIcon icon={ faExclamationTriangle } style={{ color: '#ff8f00' }} /> Connection Loss...
+                <Spinner animation={"border"} style={{
+                    width: '1em',
+                    height: '1em',
+                    border: '0.1em solid currentcolor',
+                    borderRightColor: 'transparent'
+                }}/></div> }
         </>
     );
 }
