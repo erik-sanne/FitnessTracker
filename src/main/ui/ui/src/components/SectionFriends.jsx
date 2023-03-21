@@ -5,23 +5,18 @@ import Modal from "./ui_components/Modal";
 import Spinner from 'react-bootstrap/Spinner';
 import {getCookie} from "react-use-cookie";
 import {
-    faCheckCircle,
     faIdBadge,
-    faPeopleArrows,
-    faTimes,
-    faTimesCircle,
-    faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+} from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ProfileDisplay from "./ui_components/ProfileDisplay";
 import {Redirect} from "react-router-dom";
 import ModuleNewsFeed from "./modules/ModuleNewsFeed";
 import ListRow from "./ui_components/ListRow";
 import ModuleCalendar from "./modules/ModuleCalendar";
+import {faCheck, faPeopleArrows, faTimes, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 
 const SectionFriends = ({ userProfile, updateUserProfile }) => {
     const [ modVisible, setModVisible ] = useState(false);
-    const [ showRequests, setShowRequests ] = useState(true);
     const [ loadingReq, setLoadingReq ] = useState(false);
     const [ error, setError ] = useState("");
     const [ msg, setMsg ] = useState("");
@@ -102,34 +97,28 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
-
-            { !loading && friendRequests && friendRequests.length > 0 && showRequests &&
-                <Module title = "Pending friend requests">
-                    <FontAwesomeIcon icon={ faTimes } style={{
-                        position: 'absolute',
-                        top:'min(4.5vw, 35px)',
-                        right: 'min(4.5vw, 35px)',
-                        fontSize: 'min(calc(8px + 3.5vmin), 30px)',
-                    }}
-                    onClick={ () => setShowRequests(false) }/>
-
-                    { friendRequests.map((request, key) =>
-                            <p key={key} style={{
-                                border: '1px solid #333',
-                                padding: '5px',
-                                borderRadius: '5px',
-                                background: '#232'
-                            }}> <strong> { request.from.displayName } </strong> sent a friend request
-                                <span style={{ float: 'right' }}>
-                                    <FontAwesomeIcon icon={ faCheckCircle } style={{ cursor: "pointer", color: '#376237', marginRight: '10px'}} onClick={ () => accept(request.id) } />
-                                    <FontAwesomeIcon icon={ faTimesCircle } style={{ cursor: "pointer", color: '#752828' }} onClick={ () => reject(request.id) }  />
-                                </span>
-                            </p>
-                    ) }
-                </Module>
-            }
-
             <Module title = "Friends list" className={ "friends-list" }>
+                { !loading && friendRequests && friendRequests.length > 0 &&friendRequests.map((request, key) =>
+                    <div key={key} style={{
+                        border: '1px solid #333',
+                        background: 'rgb(76 102 76)',
+                        display: 'flex',
+                        borderRadius: '0.5em'
+                    }}> <span style={{
+                        flex: 1,
+                        padding: '1em', }}><strong> { request.from.displayName } </strong> sent a friend request</span>
+                        <span style={{ float: 'right', fontSize: '1em', margin: 'auto 1em' }}>
+                                    <span onClick={ () => accept(request.id) } style={{
+                                        color: '#fff', border: '1px solid #fff', padding: '0.5em 1em', marginRight: '1em', borderRadius: '0.5em', background: '#325f3a'
+                                    }}>
+                                        Accept <FontAwesomeIcon icon={ faCheck } style={{ cursor: "pointer" }} />
+                                    </span>
+                                    <span>
+                                        <FontAwesomeIcon icon={ faTimes } style={{ cursor: "pointer", color: '#fff' }} onClick={ () => reject(request.id) }  />
+                                    </span>
+                                </span>
+                    </div>
+                ) }
                 { userProfile.friends && userProfile.friends.length > 0 && userProfile.friends.map((profile, key) =>
                     <ListRow key={key} onClick={ () => {
                         setRedirect(`/profile/${profile.userId}`)
