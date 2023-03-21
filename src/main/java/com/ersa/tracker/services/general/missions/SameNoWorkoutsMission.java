@@ -1,19 +1,26 @@
 package com.ersa.tracker.services.general.missions;
 
+import com.ersa.tracker.dto.Week;
+import com.ersa.tracker.dto.WorkoutSummary;
 import com.ersa.tracker.models.Mission;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.WorkoutRepository;
+import com.ersa.tracker.services.general.APIFunctions;
+import com.ersa.tracker.services.general.APIService;
 import com.ersa.tracker.utils.DateUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Component
 public class SameNoWorkoutsMission implements MissionTemplate {
     WorkoutRepository workoutRepository;
+    APIService apiService;
 
     @Override
     public String getIdentifier() {
@@ -47,13 +54,17 @@ public class SameNoWorkoutsMission implements MissionTemplate {
         return workoutsThisWeek.size();
     }
 
+    final static int WEEKS_TO_AVG = 3;
+
     @Override
     public Mission generateMission(User user) {
-        List<Workout> workouts = workoutRepository.findAllByUser(user);
-
-        int lastWeek = DateUtils.getCurrentWeek() - 1;
-        List<Workout> workoutsLastWeek = workouts.stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == lastWeek).toList();
-        int noOfWorkouts = Math.max(workoutsLastWeek.size(), 1);
+        Iterator<Week> weeks = apiService.getWorkoutsPerWeek(user).iterator();
+        float sum = 0;
+        for (int i = 0; i < WEEKS_TO_AVG; i++) {
+            Week week = weeks.next();
+            sum += week.getTotalWorkouts();
+        }
+        int noOfWorkouts = Math.max(Math.round(sum / WEEKS_TO_AVG), 1);
 
         Mission mission = new Mission();
         mission.setUser(user);
