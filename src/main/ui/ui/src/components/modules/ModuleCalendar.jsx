@@ -62,7 +62,7 @@ const ModuleCalendar = ({profile}) => {
     }
 
     return (
-        <Module title={ "Calendar" } className={ "friends-calendar" }>
+        <Module title={ "Shared Calendar" } className={ "friends-calendar" }>
             <div>
                 <Calendar resources={ selected } events={ events } days={ pagesLoaded * PAGE_SIZE } scrollCallback={ onMaxScrollLeft }/>
             </div>

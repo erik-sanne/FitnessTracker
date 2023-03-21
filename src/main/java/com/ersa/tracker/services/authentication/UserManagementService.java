@@ -130,6 +130,10 @@ public class UserManagementService implements AccountService, AuthenticationServ
         emailVerificationToken.setUser(user);
         emailVerificationToken.setToken(token);
         emailVerificationToken.setExpiryDate(expires);
+        log.info("Creating email verification token for user {} : id: {}, token: {}",
+                emailVerificationToken.getUser().getId(),
+                emailVerificationToken.getId(),
+                emailVerificationToken.getToken());
         emailVerificationTokenRepository.save(emailVerificationToken);
         log.info("Email verification token created for user {}.", user.getId());
     }

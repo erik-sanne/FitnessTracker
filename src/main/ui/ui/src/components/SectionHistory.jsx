@@ -153,7 +153,7 @@ const SectionHistory = ({ userProfile }) => {
     return (
         <>
             <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
-                <Module title = "Previous workouts">
+                <Module title = "My Workouts">
                         <>
                             { summaries.map(( summary ) =>
                                 <Accordion square key={summary.workout_id} expanded={ expanded === summary.workout_id } onChange={ () => { onToggle(summary.workout_id) } }  style={{ background: '#282c3400', color: 'inherit', boxShadow: '0px 0px 10px #00000060', border: '1px solid #cccccc10' }}>
@@ -224,7 +224,9 @@ const SectionHistory = ({ userProfile }) => {
                                 </Accordion>)
                        }
                        </>
-                    { fetchStatus === FetchStatus.LOADING ? <Loader /> : fetchStatus === FetchStatus.MAX_REACHED ? <p style={maxReachedStyle}> You've reached the end of time as we know it. You are a different person now </p> : <span></span>}
+                    { fetchStatus === FetchStatus.LOADING ? <Loader /> : fetchStatus === FetchStatus.MAX_REACHED && summaries.length > 30 ?
+                            <p style={ maxReachedStyle }> You've reached the end of time as we know it. You are a different person now </p> : fetchStatus === FetchStatus.MAX_REACHED ?
+                            <p style={ maxReachedStyle }> No{summaries.length > 0 ? ' more ' : ' ' }registered workouts</p> : <span></span>}
                 </Module>
             </div>
             <Modal visible={ toRemove && removeStatus !== RemoveStatus.LOADING } title={ "Remove workout" } onClose={ () => setToRemove(null) } >

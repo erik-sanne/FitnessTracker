@@ -126,11 +126,11 @@ const AppContent = ({ logoutCallback }) => {
                 <section onClick={ clickOutside } >
                     <Switch>
                         <Route path="/general">
-                            <Header title={ "My Statistics" } onClick={ burgerClick } />
+                            <Header title={ "My Dashboard" } onClick={ burgerClick } />
                             <SectionStatistics />
                         </Route>
                         <Route path="/history">
-                            <Header title={ "History" } onClick={ burgerClick } />
+                            <Header title={ "Logbook" } onClick={ burgerClick } />
                             <SectionHistory userProfile={ currentUserProfile }  />
                         </Route>
                         <Route path="/new">
@@ -142,7 +142,7 @@ const AppContent = ({ logoutCallback }) => {
                             <SectionNewWorkout updateUserProfile={ updateUserProfile }/>
                         </Route>
                         <Route path="/social">
-                            <Header title={ "Friends" } onClick={ burgerClick } />
+                            <Header title={ "Socials & Friends" } onClick={ burgerClick } />
                             <SectionFriends userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile } />
                         </Route>
                         <Route path="/settings">

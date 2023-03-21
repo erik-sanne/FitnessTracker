@@ -145,7 +145,8 @@ public class WorkoutManager implements WorkoutService {
         for (String exercise : exercises) {
             dto.getSetTypes().put(exercise, workoutSetRepository.countByWorkoutUserAndExercise(user, exercise));
         }
-        dto.setFirstWorkout(workoutRepository.findFirstByUserOrderByDate(user).getDate());
+        Workout firstWorkout = workoutRepository.findFirstByUserOrderByDate(user);
+        dto.setFirstWorkout(firstWorkout == null ? null : firstWorkout.getDate());
 
         Map<String, Set<Long>> workouts = new HashMap<>();
         for (String exercise : exercises) {

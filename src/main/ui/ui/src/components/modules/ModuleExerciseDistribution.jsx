@@ -12,7 +12,7 @@ const ModuleExerciseDistribution = () => {
     if (loading)
         return <Loader />
 
-    if (!state) {
+    if (!state && data) {
         const setdata = Object.keys(data.setTypes).map(key => {
             return {exercise: key, sets: data.setTypes[key], workouts: data.setWorkouts[key]}
         });
@@ -46,7 +46,7 @@ const createConfig = (setdata={}) => {
             datasets: [
                 {
                     type: 'line',
-                    label: 'Workouts with exercise',
+                    label: 'Workouts by exercise',
                     //backgroundColor: 'rgba(72,125,190,0.4)',
                     borderColor: 'rgba(107,166,239,0.5)',
                     borderWidth: 2,
@@ -54,7 +54,7 @@ const createConfig = (setdata={}) => {
                 },
                 {
                     type: 'bar',
-                    label: 'Sets performed',
+                    label: 'Sets performed by exercise',
                     backgroundColor: 'rgba(107,166,239,0.1)',
                     borderColor: 'rgba(107,166,239,0.5)',
                     borderWidth: 2,

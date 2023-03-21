@@ -231,7 +231,8 @@ const ModuleWorkoutDays = ({ data=[] }) => {
 
 const styleError = {
     border: '1px solid red',
-    background: 'pink'
+    background: 'rgb(240 0 0 / 5%)',
+    boxShadow: '0 0 5px inset #840000'
 }
 
 export default ModuleWorkoutDays;

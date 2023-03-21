@@ -55,7 +55,7 @@ const SectionStatistics = () => {
             <Module title="Progression" className={ "progression" }>
                 <ModuleSetAverages />
             </Module>
-            <Module title="Exercise distribution" className={ "exercise-distribution" }>
+            <Module title="General statistics" className={ "exercise-distribution" }>
                 <ModuleExerciseDistribution />
             </Module>
             {

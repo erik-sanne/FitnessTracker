@@ -474,6 +474,10 @@ body {
 .select__menu {
   background: rgba(37, 41, 48, 0.95) !important;
 }
+.select__placeholder {
+  white-space: nowrap;
+  color: white !important;
+}
 
 .select__option--is-focused {
   background: rgba(57, 64, 74, 0.95) !important;

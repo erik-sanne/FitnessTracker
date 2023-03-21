@@ -2,8 +2,8 @@ import React from 'react';
 import {NavLink} from 'react-router-dom'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
+    faBook,
     faChartPie,
-    faHistory,
     faPlusCircle,
     faTrophy,
     faUserFriends
@@ -48,22 +48,18 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                     <li>
                         <NavLink to="/general" activeStyle={activeClass} onClick={ onNavigate }>
                             <FontAwesomeIcon icon={ faChartPie } style={{ width: '1em', marginRight: '25px'}}/>
-                            My Statistics
+                            My Dashboard
                         </NavLink>
                     </li>
                     <li>
                         <NavLink to="/history" activeStyle={activeClass} onClick={ onNavigate }>
-                            <FontAwesomeIcon icon={ faHistory } style={{ width: '1em', marginRight: '25px'}}/>History</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/new" activeStyle={activeClass} onClick={ onNavigate }>
-                            <FontAwesomeIcon icon={ faPlusCircle } style={{ width: '1em', marginRight: '25px'}}/>New Workout</NavLink>
+                            <FontAwesomeIcon icon={ faBook } style={{ width: '1em', marginRight: '25px'}}/>Logbook</NavLink>
                     </li>
                     <li>
                         <NavLink to="/social" activeStyle={ activeClass } onClick={ onNavigate } style={{ position: 'relative' }} >
 
                             <FontAwesomeIcon icon={ faUserFriends } style={{ width: '1em', marginRight: '25px'}}/>{ userProfile.notices.length > 0 && <span className={'counter'} style={{left: '60px',
-                            bottom: '8px', background: 'rgb(166 32 0 / 71%)'}}> { userProfile.notices.length }</span> }Friends
+                            bottom: '8px', background: 'rgb(166 32 0 / 71%)'}}> { userProfile.notices.length }</span> }Socials & Friends
                         </NavLink>
                     </li>
                     <li>
@@ -71,7 +67,11 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                             <FontAwesomeIcon icon={ faTrophy } style={{ width: '1em', marginRight: '25px'}}/>Achievements
                         </NavLink>
                     </li>
-                    { userProfile.permissionLevel !== 'BASIC' &&
+                    <li>
+                        <NavLink to="/new" activeStyle={activeClass} onClick={ onNavigate }>
+                            <FontAwesomeIcon icon={ faPlusCircle } style={{ width: '1em', marginRight: '25px'}}/>New Workout</NavLink>
+                    </li>
+                    { userProfile.permissionLevel === 'ADMIN' &&
                         <>
                             <li>
                             </li>

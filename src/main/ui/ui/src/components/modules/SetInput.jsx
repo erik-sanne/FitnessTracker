@@ -76,7 +76,7 @@ const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, o
                        min={1}
                        value={ exerciseState.reps }
                        onChange={ handleInputChange }
-                       style={{ width: '100%',  background: validationErrors.reps ? '#faa' : '' }} />
+                       style={{ width: '100%',  background: validationErrors.reps ? 'rgb(240 0 0 / 10%)' : '' }} />
             </div>
             <div style={{...inputWrap, marginRight: '0px'}}>
                 <label>Weight</label>
@@ -87,7 +87,7 @@ const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, o
                        max={999.99}
                        value={ exerciseState.weight }
                        onChange={ handleInputChange }
-                       style={{ width: '100%',  background: validationErrors.weight ? '#faa' : '' }}/>
+                       style={{ width: '100%',  background: validationErrors.weight ? 'rgb(240 0 0 / 10%)' : '' }}/>
             </div>
         </div>
         <input type="submit" value={buttonText} onClick={ Submit } className={ 'themed' }/>
