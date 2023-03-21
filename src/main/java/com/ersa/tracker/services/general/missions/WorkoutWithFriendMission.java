@@ -1,91 +1,93 @@
 package com.ersa.tracker.services.general.missions;
 
+import com.ersa.tracker.dto.Week;
+import com.ersa.tracker.dto.WorkoutSummary;
 import com.ersa.tracker.models.Mission;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
+import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.repositories.WorkoutRepository;
+import com.ersa.tracker.repositories.authentication.UserRepository;
+import com.ersa.tracker.services.general.APIService;
+import com.ersa.tracker.services.user.ProfileService;
+import com.ersa.tracker.services.user.UserProfileService;
 import com.ersa.tracker.utils.DateUtils;
 import com.ersa.tracker.utils.FormatUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
 @Component
-public class AdditionalSetMission implements MissionTemplate {
+public class WorkoutWithFriendMission implements MissionTemplate {
     WorkoutRepository workoutRepository;
+    APIService apiService;
+    ProfileService profileService;
+
 
     @Override
     public String getIdentifier() {
-        return "additional_set";
+        return "workout_with_friend";
     }
 
     @Override
     public String getName(Mission mission) {
-        return String.format("Focus on %s", FormatUtils.exerciseName(mission.getAnyString()));
+        String name = profileService.getProfile(mission.getAnyLong()).getDisplayName();
+        return String.format("Work out with %s", name);
     }
 
     @Override
     public String getDescription(Mission mission) {
-        return String.format("Perform %s sets of %s this week", mission.getGoal(), FormatUtils.exerciseName(mission.getAnyString()));
+        String name = profileService.getProfile(mission.getAnyLong()).getDisplayName();
+        return String.format("Any day this week, perform the same split day as %s", name);
     }
 
     @Override
     public long getReward() {
-        return 100;
+        return 50;
     }
 
     @Override
     public int evaluateProgress(Mission mission) {
-        String exercise = mission.getAnyString();
-        List<Workout> workouts = workoutRepository.findAllByUser(mission.getUser());
-        workouts = workouts.stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == DateUtils.getCurrentWeek()).toList();
-        List<WorkoutSet> setsWithExercise = workouts.stream().flatMap(workout -> workout.getSets().stream())
-                .filter(set -> set.getExercise().equalsIgnoreCase(exercise)).toList();
+        User friend = profileService.getFriend(mission.getUser(), mission.getAnyLong());
 
-        return setsWithExercise.size();
+        List<WorkoutSummary> friendWorkouts = apiService.getWorkoutSummaries(friend).stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == mission.getWeek()).toList();
+        List<WorkoutSummary> myWorkouts = apiService.getWorkoutSummaries(mission.getUser()).stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == mission.getWeek()).toList();
+
+        return (int)myWorkouts.stream().filter(mine ->
+                friendWorkouts.stream().anyMatch(friends ->
+                        friends.getDate().equals(mine.getDate()) &&
+                                friends.getDescription().equalsIgnoreCase(mine.getDescription())
+                )).count();
     }
 
     @Override
     public Mission generateMission(User user) {
-        List<Workout> workouts = workoutRepository.findAllByUser(user);
-        if (workouts.size() < 1) {
-            return null;
-        }
-        List<Workout> lastWorkouts = workouts.subList(workouts.size() - Math.min(workouts.size(), 4), workouts.size() - 1);
-        Collections.shuffle(lastWorkouts);
-        if (workouts.size() <= 0)
+        List<UserProfile> friends = user.getUserProfile().getFriends();
+
+        friends = friends.stream().filter(friend -> {
+            int workouts = apiService.getWorkoutsPerWeek(friend.getUser()).subList(0,3).stream().mapToInt(Week::getTotalWorkouts).sum();
+            return workouts > 3;
+        }).toList();
+
+        if (friends.isEmpty())
             return null;
 
-        Workout workout = lastWorkouts.get(0);
-
-        List<WorkoutSet> sets = new ArrayList<>(workout.getSets().stream().toList());
-        Collections.shuffle(sets);
-        if (sets.size() <= 0 ) {
-            return null;
-        }
-        String exercise = sets.get(0).getExercise();
- /*
-        WorkoutSet heaviestSet = sets.stream().filter(set -> set.getExercise().equalsIgnoreCase(exercise)).
-                reduce((best, set) -> {
-                    if (set.getWeight() > best.getWeight()) {
-                        return set;
-                    } else
-                        return best;
-                }).get();
-*/
-        long number = sets.stream().filter(set -> set.getExercise().equalsIgnoreCase(exercise)).count();
+        Collections.shuffle(friends);
+        UserProfile friend = friends.get(0);
 
         Mission mission = new Mission();
         mission.setUser(user);
         mission.setMissionId(getIdentifier());
         mission.setWeek(DateUtils.getCurrentWeek());
-        mission.setGoal(number+1);
-        mission.setAnyString(exercise);
+        mission.setGoal(1);
+        mission.setAnyLong(friend.getUser().getId());
         return mission;
     }
 }

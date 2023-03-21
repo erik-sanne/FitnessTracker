@@ -26,6 +26,7 @@ public final class Mission {
     private String anyString;
     private float anyDecimal;
     private int anyNumber;
+    private long anyLong;
 
 
     public long getId() {
@@ -99,4 +100,13 @@ public final class Mission {
     public void setAnyNumber(int anyNumber) {
         this.anyNumber = anyNumber;
     }
+
+    public long getAnyLong() {
+        return anyLong;
+    }
+
+    public void setAnyLong(long anyLong) {
+        this.anyLong = anyLong;
+    }
+
 }

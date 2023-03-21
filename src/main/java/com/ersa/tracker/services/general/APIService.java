@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface APIService {
-    Iterable<Week> getWorkoutsPerWeek(User user);
+    List<Week> getWorkoutsPerWeek(User user);
     Map<String, Float> getWorkoutDistribution(User user);
     Map<String, Float> getWorkoutDistribution(User user, int range);
     Map<String, Float> getWorkoutDistribution(User user, Date start, Date end);

@@ -46,7 +46,7 @@ public class APIFunctions implements APIService {
      * Always returns at least 7 weeks even if there is not sufficient data.
      */
     @SuppressWarnings("checkstyle:MagicNumber")
-    public Iterable<Week> getWorkoutsPerWeek(final User user) {
+    public List<Week> getWorkoutsPerWeek(final User user) {
         List<Week> result = new ArrayList<>();
         Iterable<Workout> workouts = workoutService.getWorkouts(user);
 
