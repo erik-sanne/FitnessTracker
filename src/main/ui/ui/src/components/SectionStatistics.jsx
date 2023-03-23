@@ -15,6 +15,9 @@ import {NavLink} from "react-router-dom";
 import LocalStorage from "../services/LocalStorage";
 import ModuleExerciseDistribution from "./modules/ModuleExerciseDistribution";
 import ModuleWeeklyMissions from "./modules/ModuleWeeklyMissions";
+import ModuleSplitRatios from "./modules/ModuleSplitRatios";
+import SwiperWrapper from "./ui_components/swiper/SwiperWrapper";
+import {SwiperSlide} from "swiper/react";
 
 const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
@@ -56,7 +59,14 @@ const SectionStatistics = () => {
                 <ModuleSetAverages />
             </Module>
             <Module title="General statistics" className={ "exercise-distribution" }>
-                <ModuleExerciseDistribution />
+                <SwiperWrapper>
+                    <SwiperSlide>
+                        <ModuleExerciseDistribution />
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <ModuleSplitRatios />
+                    </SwiperSlide>
+                </SwiperWrapper>
             </Module>
             {
                 !loadingRecords &&
