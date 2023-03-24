@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import Loader from "../ui_components/Loader";
 import useFetch from "../../services/useFetch";
 import Graph from "./Graph";
+import Utils from "../../services/Utils";
 
 
 const ModuleSplitRatios = () => {
@@ -23,21 +24,7 @@ const ModuleSplitRatios = () => {
                 types.push(w.description)
         })
 
-        const sums = [];
         const setdata = types.map(type => ({ type: type, values: doStuff(new Date(firstDate), data.filter(w => w.description === type))}))
-        for (let i = 0; i < setdata[0].values[1].length; i++) {
-            let sum = 0;
-            for (let j = 0; j < setdata.length; j++) {
-                sum += setdata[j].values[1][i]
-            }
-            sums.push(sum)
-            if (sum > 0) {
-                for (let j = 0; j < setdata.length; j++) {
-                    setdata[j].values[1][i] = setdata[j].values[1][i] / sum;
-                }
-            }
-        }
-
 
         const chartdata = createConfig(setdata);
 
@@ -81,19 +68,19 @@ const doStuff = (date, workouts) => {
 }
 
 const colors = {
-    "PUSH": ['rgba(255,204,15,0.8)', 'rgba(255,205,16,0.05)'],
-    "PULL": ['rgba(23,121,255,0.8)', 'rgba(16,112,255,0.05)'],
-    "BACK": ['rgba(64,200,255,0.8)', 'rgba(64,200,255,0.05)'],
-    "LEGS": ['rgba(17,255,121,0.8)', 'rgba(14,255,116,0.05)'],
-    "ARMS": ['rgb(200,0,255)', 'rgba(22,22,22,0.05)'],
-    "SHOULDERS": ['rgba(255,14,14,0.8)', 'rgba(255,13,13,0.05)'],
-    "CUSTOM": ['rgba(22,22,22,0.8)', 'rgba(22,22,22,0.05)']
+    "PUSH": ['rgb(188,167,79)', 'rgba(188,167,79, 0.1)'],
+    "PULL": ['rgb(68,82,179)', 'rgba(68,82,179, 0.1)'],
+    "BACK": ['rgb(80,144,179)', 'rgba(80,144,179, 0.1)'],
+    "LEGS": ['rgb(61,179,114)', 'rgba(61,179,114, 0.1)'],
+    "ARMS": ['rgb(141,57,167)', 'rgba(141,57,167, 0.1)'],
+    "SHOULDERS": ['rgb(177,60,60)', 'rgba(177,60,60, 0.1)'],
+    "CUSTOM": ['rgb(78,78,78)', 'rgba(78,78,78, 0.1)']
 }
 
 const createConfig = (setdata) => {
 
     const data = setdata.map(obj => ({
-        label: obj.type,
+        label: Utils.camelCase(obj.type),
         borderWidth: 2,
         borderColor: colors[obj.type][0],
         backgroundColor: colors[obj.type][1],
@@ -112,19 +99,14 @@ const createConfig = (setdata) => {
                 display: true
             },
             responsive: true,
-            aspectRatio: 2.5,
+            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
             scales: {
                 yAxes: [{
                     stacked: true,
                     display: false,
                     ticks: {
-                        stepSize: 1,
                         fontFamily: 'Quicksand',
                         fontStyle: 'bold',
-                        max: 1,
-                        callback: function(value, index, values) {
-                            return `${(value * 100).toFixed(0)}%`
-                        }
                     }
                 }],
                 xAxes: [{
