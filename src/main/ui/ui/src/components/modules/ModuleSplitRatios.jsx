@@ -23,7 +23,20 @@ const ModuleSplitRatios = () => {
                 types.push(w.description)
         })
 
+        const sums = [];
         const setdata = types.map(type => ({ type: type, values: doStuff(new Date(firstDate), data.filter(w => w.description === type))}))
+        for (let i = 0; i < setdata[0].values[1].length; i++) {
+            let sum = 0;
+            for (let j = 0; j < setdata.length; j++) {
+                sum += setdata[j].values[1][i]
+            }
+            sums.push(sum)
+            if (sum > 0) {
+                for (let j = 0; j < setdata.length; j++) {
+                    setdata[j].values[1][i] = setdata[j].values[1][i] / sum;
+                }
+            }
+        }
 
 
         const chartdata = createConfig(setdata);
@@ -72,7 +85,7 @@ const colors = {
     "PULL": ['rgba(23,121,255,0.8)', 'rgba(16,112,255,0.05)'],
     "BACK": ['rgba(64,200,255,0.8)', 'rgba(64,200,255,0.05)'],
     "LEGS": ['rgba(17,255,121,0.8)', 'rgba(14,255,116,0.05)'],
-    "ARMS": ['rgba(22,22,22,0.8)', 'rgba(22,22,22,0.05)'],
+    "ARMS": ['rgb(200,0,255)', 'rgba(22,22,22,0.05)'],
     "SHOULDERS": ['rgba(255,14,14,0.8)', 'rgba(255,13,13,0.05)'],
     "CUSTOM": ['rgba(22,22,22,0.8)', 'rgba(22,22,22,0.05)']
 }
@@ -107,7 +120,11 @@ const createConfig = (setdata) => {
                     ticks: {
                         stepSize: 1,
                         fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        fontStyle: 'bold',
+                        max: 1,
+                        callback: function(value, index, values) {
+                            return `${(value * 100).toFixed(0)}%`
+                        }
                     }
                 }],
                 xAxes: [{
