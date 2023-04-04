@@ -29,6 +29,9 @@ const getCelebrationText = () => {
     const daysLeft = daysToJapan(date)
     if (daysLeft > 0)
         return { text: `✈️ Only ${daysLeft} days left`, color: "rgb(106 234 246)"}
+    if (daysLeft > -14)
+        return { text: `🌸 Happy vacation! 🌸`, color: "#52e759"}
+
 
     return {text: "", color: ""};
 }
