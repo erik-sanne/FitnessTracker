@@ -22,6 +22,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Component
@@ -74,7 +75,7 @@ public class WorkoutWithFriendMission implements MissionTemplate {
         friends = friends.stream().filter(friend -> {
             int workouts = apiService.getWorkoutsPerWeek(friend.getUser()).subList(0,3).stream().mapToInt(Week::getTotalWorkouts).sum();
             return workouts > 3;
-        }).toList();
+        }).collect(Collectors.toCollection(ArrayList::new));
 
         if (friends.isEmpty())
             return null;
