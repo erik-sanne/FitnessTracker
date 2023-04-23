@@ -3,6 +3,7 @@ package com.ersa.tracker.security.configurations;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.services.authentication.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,7 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
+@Log4j2
 public class SecurityConfiguration {
 
     @Autowired
@@ -60,6 +62,7 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
 
         final CorsConfiguration configuration = new CorsConfiguration();
+        log.info("Initializing cors policy for origin {}", allowedOrigin);
         configuration.setAllowedOrigins(Collections.singletonList(allowedOrigin));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
