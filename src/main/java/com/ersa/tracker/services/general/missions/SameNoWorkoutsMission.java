@@ -1,12 +1,10 @@
 package com.ersa.tracker.services.general.missions;
 
 import com.ersa.tracker.dto.Week;
-import com.ersa.tracker.dto.WorkoutSummary;
 import com.ersa.tracker.models.Mission;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.WorkoutRepository;
-import com.ersa.tracker.services.general.APIFunctions;
 import com.ersa.tracker.services.general.APIService;
 import com.ersa.tracker.utils.DateUtils;
 import lombok.AllArgsConstructor;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Component

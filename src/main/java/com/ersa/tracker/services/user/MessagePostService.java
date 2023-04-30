@@ -32,11 +32,11 @@ public class MessagePostService implements PostService {
 
     @Override
     public Post createPost(User user, Date date, String title, String message) {
-        return createPost(user, date, title, message,false);
+        return createPost(user, null, date, title, message, false);
     }
 
     public Post createPost(User user, String title, String message) {
-        return createPost(user, new Date(), title, message,false);
+        return createPost(user, null, new Date(), title, message, false);
     }
 
     @Override
@@ -83,13 +83,14 @@ public class MessagePostService implements PostService {
     }
 
     @Override
-    public Post createPost(User user, Date date, String title, String message, boolean manual) {
+    public Post createPost(User user, UserProfile toUser, Date date, String title, String message, boolean manual) {
         Post post = new Post();
         post.setDate(new Date());
         post.setAuthor(user.getUserProfile());
         post.setTitle(title);
         post.setMessage(message);
         post.setAutoCreated(!manual);
+        post.setOnWall(toUser != null ? toUser : user.getUserProfile());
         return postRepository.save(post);
     }
 

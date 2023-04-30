@@ -4,9 +4,7 @@ import useFetch from "../services/useFetch";
 import Modal from "./ui_components/Modal";
 import Spinner from 'react-bootstrap/Spinner';
 import {getCookie} from "react-use-cookie";
-import {
-    faIdBadge,
-} from "@fortawesome/free-regular-svg-icons";
+import {faIdBadge,} from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ProfileDisplay from "./ui_components/ProfileDisplay";
 import {Redirect} from "react-router-dom";

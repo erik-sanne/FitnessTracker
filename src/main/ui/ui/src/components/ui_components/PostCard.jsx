@@ -32,7 +32,9 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
         <div className={"post"} style={ notices.some( notice => notice.postId === post.postId ) ? noticeStyle : {}} >
             <div style={{ position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: "space-between", paddingBottom: "1em" }}>
-                    <ProfileDisplay displayName={ post.authorName } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ `${date(post.date)} ${ post.edited ? '(edited)' : ''}` } />
+                    <ProfileDisplay displayName={
+                        post.toUser ? post.authorName + " > " + post.toUser.name : post.authorName
+                    } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ `${date(post.date)} ${ post.edited ? '(edited)' : ''}` } />
                 </div>
                 { post.autoPosted ?
                     <p style={{ color: '#ccc' }}>{ post.message.replace(/ in (.*)/, function(cg) { return cg.toLowerCase(); }) }</p>:
@@ -68,7 +70,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
             </div>
             <div className={"text-area"} style={{ display: 'flex' }}>
                 <ProfileDisplay profilePicture={ myprofile.profilePicture } />
-                <FormWrap><input type={ 'text' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/></FormWrap>
+                <FormWrap><input type={ 'text' } placeholder={ 'Write a comment...' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/></FormWrap>
             </div>
         </div>
     );

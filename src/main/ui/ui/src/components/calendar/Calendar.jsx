@@ -20,7 +20,7 @@ const Calendar = ({resources, events, days, scrollCallback}) => {
 
     useEffect(() => {
         slider.current.addEventListener('wheel', (event) => event.preventDefault(), { passive: false });
-        return () => slider.current.removeEventListener('wheel', (event) => event.preventDefault(), { passive: false })
+        return () => slider.current && slider.current.removeEventListener('wheel', (event) => event.preventDefault(), { passive: false })
     }, [])
 
     const dates = getDates(days)

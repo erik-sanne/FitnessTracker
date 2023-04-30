@@ -1,26 +1,16 @@
 import '../../styles/Module.css';
 import React, {useEffect, useState} from "react";
-import Loader from "../ui_components/Loader";
 import Module from "./Module";
-import PostCard from "../ui_components/PostCard";
-import post from "../../services/Post";
 import get from "../../services/Get";
-import ProfileDisplay from "../ui_components/ProfileDisplay";
-import doDelete from "../../services/DoDelete";
-import Modal from "../ui_components/Modal";
-import FormWrap from "../ui_components/FormWrap";
+import PostWall from "../ui_components/PostWall";
 
 const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
     const [ loading, setLoading ] = useState(true);
     const [ posts, setPosts ] = useState([]);
     const [ numComments, setNumComments ] = useState(10);
-    const [ maxReached, setMaxReaced ] = useState(false);
-    const [ notices, setNotices ] = useState([])
-    const [ confirmDeletePost, setConfirmDeletePost] = useState(-1)
-    const [ editPost, setEditPost] = useState({id: -1, text: ""})
+    const [ maxReached, setMaxReached ] = useState(false);
 
     useEffect(() => {
-        setNotices(profile.notices)
         updateUserProfile();
     }, []);
 
@@ -38,10 +28,17 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
         };
     }, [numComments]);
 
+    const handleScroll = () => {
+        const isBottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
+        if (isBottom) {
+            setNumComments(numComments + 10);
+        }
+    }
+
     const getComments = () => {
         get(`/posts/feed?from=0&to=${numComments}`).then(resp => {
             if (resp.length < numComments) {
-                setMaxReaced(true);
+                setMaxReached(true);
             }
 
             setPosts(resp)
@@ -50,108 +47,16 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
         })
     }
 
-    const deleteComment = () => {
-        doDelete(`/posts/delete/${confirmDeletePost}`).then(() => {
-            setConfirmDeletePost(-1);
-            getComments();
-        });
-    }
+    return  (
+        <Module title={ "Social Feed" } className={ "news-feed" }>
+        <PostWall
+            profile={ profile }
+            updateUserProfile={ updateUserProfile }
+            posts={ posts }
+            refreshCallback={ getComments }
+            maxReached={ maxReached }/>
 
-    const postComment = (id, message) => {
-        post(`/posts/reply/${id}`, message
-        ).then(() => {
-            getComments();
-        })
-    }
-
-    const postNewComment = (message) => {
-        post(`/posts/post`, message
-        ).then(() => {
-            getComments();
-        })
-    }
-
-    const saveEdit = () => {
-        post(`/posts/edit/${editPost.id}`, editPost.text)
-        .then(() => {
-            setEditPost({id: -1, text: ""})
-            getComments();
-        })
-    }
-
-    const toggleLike = (id) => {
-        post(`/posts/like/${id}`)
-        .then(() => {
-            getComments();
-        })
-    }
-
-    const textChanged = (e) => {
-        setEditPost({id: editPost.id, text: e.target.value})
-    };
-
-    const onKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const val = e.target.value;
-            e.target.value = "";
-            postNewComment(val);
-        }
-    }
-
-    const handleScroll = () => {
-        const isBottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
-        if (isBottom) {
-            setNumComments(numComments + 10);
-        }
-    }
-
-    return  (<Module title={ "Social Feed" } className={ "news-feed" }>
-        <div className={"post"}>
-            <div style={{ position: 'relative' }}>
-                <div style={{ display: 'flex', justifyContent: "space-between", paddingBottom: "1em" }}>
-                    <ProfileDisplay profilePicture={ profile.profilePicture } /> <p style={{ margin: 'auto' }}>What's on your mind?</p>
-                </div>
-            </div>
-            <div className={"text-area"} style={{ display: 'flex', justifyContent: "space-between" }}>
-                <FormWrap><input type={ 'text' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/></FormWrap>
-            </div>
-        </div>
-
-
-        { loading ? <Loader /> : posts.length < 1 ? <p style={noticeStyle}>Nothing new</p> : <>
-            <div className={"post"} style={{ padding: '0px' }}></div>
-            {posts.map((post, idx) =>
-                            <PostCard key={idx}
-                                      myprofile={ profile }
-                                      notices={notices}
-                                      post={post}
-                                      postCallback={ postComment }
-                                      deletePostCallback={ setConfirmDeletePost }
-                                      editPostCallback={ setEditPost }
-                                      likeCallback={ toggleLike }
-                            /> )}
-                            <br />
-            { maxReached ? <p style={noticeStyle}> No more posts at this time </p> : <Loader /> }
-        </>}
-        <Modal visible={ confirmDeletePost !== -1 } title={ "Are you sure you want to delete this post?" } onClose={ () => setConfirmDeletePost(-1) }>
-            <input type={ 'submit' } value={ 'Yes!' } className={ 'themed' } onClick={ () => {
-                deleteComment();
-            }}/>
-        </Modal>
-        <Modal visible={ editPost.id !== -1 } title={ "Edit post" } onClose={ () => setEditPost({id: -1, text: ""}) }>
-            <textarea onChange={ textChanged } style={ taStyle } value={ editPost.text } />
-            <input type={'submit'} value={ 'Save' } onClick={ saveEdit }/>
-        </Modal>
        </Module>);
 }
-
-const taStyle = {
-    borderRadius: '0.5em',
-    background: 'rgb(204, 204, 204)',
-    padding: '1em'
-}
-
-const noticeStyle = { width: '100%', textAlign: 'center', fontStyle: 'italic', color: '#555' };
 
 export default ModuleNewsFeed;

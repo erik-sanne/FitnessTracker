@@ -19,6 +19,7 @@ public class PostDto {
     final String authorName;
     final String title;
     final String message;
+    final Wall toUser;
     final List<PostDto> replies;
 
     public PostDto(Post post) {
@@ -32,6 +33,7 @@ public class PostDto {
         likes = post.getHasLiked().stream().map(User::getUserProfile).map(LikedBy::new).collect(Collectors.toList());
         isAutoPosted = post.isAutoCreated();
         isEdited = post.isEdited();
+        toUser = post.getOnWall() == null || post.getOnWall().getUser().getId() == authorId ? null : new Wall(post.getOnWall());
     }
 
     public long getPostId() {
@@ -72,6 +74,34 @@ public class PostDto {
 
     public boolean isEdited() {
         return isEdited;
+    }
+
+    public Wall getToUser() {
+        return toUser;
+    }
+
+    static class Wall {
+        private long id;
+        private String name;
+        private String picture;
+
+        private Wall(UserProfile up) {
+            id = up.getUser().getId();
+            name = up.getDisplayName();
+            picture = Optional.ofNullable(up.getProfilePicture()).map(String::new).orElse(null);
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getPicture() {
+            return picture;
+        }
     }
 
     static class LikedBy {

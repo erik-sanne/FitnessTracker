@@ -18,6 +18,9 @@ public class Post {
     private long id;
 
     @ManyToOne
+    private UserProfile onWall = null;
+
+    @ManyToOne
     private Post replyTo = null;
 
     @OneToMany(mappedBy = "replyTo")
@@ -87,6 +90,14 @@ public class Post {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public UserProfile getOnWall() {
+        return onWall;
+    }
+
+    public void setOnWall(UserProfile onWall) {
+        this.onWall = onWall;
     }
 
     public Post getReplyTo() {
