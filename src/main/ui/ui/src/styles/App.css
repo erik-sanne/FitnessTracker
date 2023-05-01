@@ -625,7 +625,8 @@ body {
   height: 15em;
   border-radius: 5px 5px 0 0;
   background-blend-mode: hard-light;
-  background-position: center;
+  background-position: center !important;
+  background-size: cover !important;
   position: relative;
 }
 

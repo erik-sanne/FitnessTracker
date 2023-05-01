@@ -2,24 +2,28 @@ package com.ersa.tracker.services.user;
 
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.user.UserProfile;
+import com.ersa.tracker.repositories.FileRepository;
 import com.ersa.tracker.repositories.UserProfileRepository;
 import com.ersa.tracker.repositories.authentication.UserRepository;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 
 @Service
+@Log4j2
+@AllArgsConstructor
 public class UserProfileService implements ProfileService {
 
     private UserRepository userRepository;
     private UserProfileRepository profileRepository;
-
-    @Autowired
-    public UserProfileService(final UserRepository userRepository, final UserProfileRepository profileRepository) {
-        this.userRepository = userRepository;
-        this.profileRepository = profileRepository;
-    }
+    private FileRepository fileRepository;
 
     @Override
     public UserProfile getProfile(final long userId) {
@@ -36,6 +40,32 @@ public class UserProfileService implements ProfileService {
             return null;
 
         return userProfile;
+    }
+
+    @Override
+    public boolean saveCover(User user, MultipartFile file) {
+        String fileName = createCoverFileName(user.getId());
+        if (!"image/png".equalsIgnoreCase(file.getContentType())) {
+            throw new IllegalArgumentException("Unsupported content type");
+        }
+
+        try {
+            return fileRepository.saveFile(fileName, file.getInputStream(), "image/png");
+        } catch (IOException exception) {
+            log.error("Failed reading file {} uploaded by user {}, {}",
+                    file.getOriginalFilename(),
+                    user.getId(),
+                    exception);
+            return false;
+        }
+    }
+
+    @Override
+    public byte[] getCover(final User me, final long userId) {
+        String fileName = createCoverFileName(userId);
+        if (fileRepository.fileExists(fileName))
+            return fileRepository.getFile(fileName);
+        return null;
     }
 
     @Override
@@ -66,5 +96,9 @@ public class UserProfileService implements ProfileService {
 
         user.setUserProfile(profile);
         userRepository.save(user);
+    }
+
+    private String createCoverFileName(long userId) {
+        return userId + "_cover.png";
     }
 }

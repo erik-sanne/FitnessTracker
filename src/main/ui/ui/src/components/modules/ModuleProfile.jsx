@@ -2,8 +2,15 @@ import React, {useEffect, useState} from "react";
 import Module from "./Module";
 import ProfilePicture from "../ui_components/ProfilePicture";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCompressArrowsAlt, faDumbbell, faStar, faTrophy, faUserFriends,} from "@fortawesome/free-solid-svg-icons";
-import image from "../../resources/party_pattern.jpg";
+import {
+    faCamera,
+    faCompressArrowsAlt,
+    faDumbbell,
+    faStar,
+    faTrophy,
+    faUserFriends,
+} from "@fortawesome/free-solid-svg-icons";
+import fallback_cover from "../../resources/party_pattern.jpg";
 import get from "./../../services/Get.jsx"
 import Spinner from "react-bootstrap/cjs/Spinner";
 import {Redirect} from "react-router";
@@ -11,9 +18,12 @@ import {NavLink} from 'react-router-dom'
 import PostWall from "../ui_components/PostWall";
 import post from "../../services/Post";
 import PostSubmit from "../ui_components/PostSubmit";
+import FileSelect from "../ui_components/FileSelect";
+import upload from "../../services/Upload";
 
 const ModuleProfile = ({ myProfile, profile }) => {
     const [ stats, setStats ] = useState();
+    const [ cover, setCover ] = useState();
     const [ achievements, setAchievements ] = useState();
     const [ redirect, setRedirect ] = useState("");
     const [ isMe ] = useState(myProfile.userId === profile.userId)
@@ -28,6 +38,7 @@ const ModuleProfile = ({ myProfile, profile }) => {
     useEffect(() => {
         get(`/api/stats/${profile.userId}`).then((resp) => setStats(resp))
         get(`/api/achievements/${profile.userId}`).then((resp) => setAchievements(resp))
+        get(`/users/profile/cover?userId=${profile.userId}`, false,"image/png").then((resp) => setCover(resp))
         getComments();
     },[profile])
 
@@ -43,6 +54,10 @@ const ModuleProfile = ({ myProfile, profile }) => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, [wall.numComments, profile]);
+
+    const uploadCover = (files) => {
+        upload(`/users/profile/cover`, files).then(r => {})
+    }
 
     const handleScroll = () => {
         const isBottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
@@ -82,11 +97,15 @@ const ModuleProfile = ({ myProfile, profile }) => {
         <Module substyle={{ height: 'inherit' }} className={ 'profile' }>
             <div className={ 'profile-banner' }>
                 <div style={{
-                    background: `url(${image}), linear-gradient(180deg, transparent, black`,
-                }}>
+                    background: `url(${cover ? cover : fallback_cover}), linear-gradient(180deg, transparent, black)`}}>
                     { !isMe && <FontAwesomeIcon icon={ faCompressArrowsAlt } onClick={ () => {
                         setRedirect(`/friend/${profile.userId}`)
                     }} />}
+
+                    { isMe &&
+                        <FileSelect onFileSelected={ uploadCover }>
+                            <FontAwesomeIcon icon={ faCamera } />
+                        </FileSelect>}
                 </div>
             </div>
             <div className={ 'profile-wrapper' }>

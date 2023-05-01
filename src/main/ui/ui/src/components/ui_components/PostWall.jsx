@@ -52,7 +52,7 @@ const PostWall = ({ profile, updateUserProfile, posts, refreshCallback, maxReach
     };
 
     return  <>
-        { posts === [] ? <Loader /> : posts.length < 1 ? <p style={noticeStyle}>Nothing new</p> : <>
+        { !posts ? <Loader /> : posts.length < 1 ? <p style={noticeStyle}>Nothing new</p> : <>
             { posts.map((post, idx) =>
                             <PostCard key={idx}
                                       myprofile={ profile }

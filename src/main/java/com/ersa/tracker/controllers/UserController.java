@@ -9,8 +9,10 @@ import com.ersa.tracker.services.general.achivements.AchievementService;
 import com.ersa.tracker.services.user.FriendRequestManager;
 import com.ersa.tracker.services.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -48,6 +50,27 @@ public class UserController {
         profileService.saveProfile(profileEdit.getDisplayName(), profileEdit.getProfilePicture(), currentUser);
         currentUser = accountService.getUserByPrincipal(principal);
         return profileService.getProfile(currentUser);
+    }
+
+    @GetMapping(path = "/users/profile/cover", produces = MediaType.IMAGE_PNG_VALUE)
+    public byte[] getCover(@RequestParam long userId, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return profileService.getCover(currentUser, userId);
+    }
+
+    @PostMapping("/users/profile/cover")
+    public ResponseEntity<?> uploadCover(@RequestParam MultipartFile file, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        try {
+            if (profileService.saveCover(currentUser, file)) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.internalServerError().build();
+            }
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
     @PostMapping("/users/friendRequest")
