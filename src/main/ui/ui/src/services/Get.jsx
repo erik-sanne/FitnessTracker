@@ -18,7 +18,7 @@ const get = (endpoint, external=false, accept='application/json') => new Promise
                     reject(error)
                 });
             } else {
-                response.blob().then(blob => resolve(URL.createObjectURL(blob)))
+                response.blob().then(blob => blob.size > 0 && resolve(URL.createObjectURL(blob)))
             }
         } else if ( !external && response.status === 401) {
             window.location.replace("login?status=expired");
