@@ -39,9 +39,13 @@ const ModuleProfile = ({ myProfile, profile }) => {
         setIsMe(myProfile.userId === profile.userId)
         get(`/api/stats/${profile.userId}`).then((resp) => setStats(resp))
         get(`/api/achievements/${profile.userId}`).then((resp) => setAchievements(resp))
-        get(`/users/profile/cover?userId=${profile.userId}`, false,"image/png").then((resp) => setCover(resp))
+        getProfileCover()
         getComments();
     },[profile])
+
+    const getProfileCover = () => {
+        get(`/users/profile/cover?userId=${profile.userId}`, false,"image/png").then((resp) => setCover(resp))
+    }
 
     useEffect(() =>  {
         let inter = setInterval(() => getComments(0, wall.numComments), 5000);
@@ -57,7 +61,9 @@ const ModuleProfile = ({ myProfile, profile }) => {
     }, [wall.numComments, profile]);
 
     const uploadCover = (files) => {
-        upload(`/users/profile/cover`, files).then(r => {})
+        upload(`/users/profile/cover`, files).then(_ => {
+            getProfileCover()
+        })
     }
 
     const handleScroll = () => {
