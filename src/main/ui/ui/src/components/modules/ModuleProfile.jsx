@@ -26,7 +26,7 @@ const ModuleProfile = ({ myProfile, profile }) => {
     const [ cover, setCover ] = useState();
     const [ achievements, setAchievements ] = useState();
     const [ redirect, setRedirect ] = useState("");
-    const [ isMe ] = useState(myProfile.userId === profile.userId)
+    const [ isMe, setIsMe ] = useState()
 
     const [ wall, setWall ] = useState({
         posts: [],
@@ -36,6 +36,7 @@ const ModuleProfile = ({ myProfile, profile }) => {
     });
 
     useEffect(() => {
+        setIsMe(myProfile.userId === profile.userId)
         get(`/api/stats/${profile.userId}`).then((resp) => setStats(resp))
         get(`/api/achievements/${profile.userId}`).then((resp) => setAchievements(resp))
         get(`/users/profile/cover?userId=${profile.userId}`, false,"image/png").then((resp) => setCover(resp))
