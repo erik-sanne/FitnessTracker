@@ -1,6 +1,6 @@
 import React from 'react';
 import {setCookie} from "react-use-cookie";
-import Loader from "./ui_components/Loader";
+import ModalLoader from "./ui_components/ModalLoader";
 
 class Login extends React.Component {
 
@@ -65,9 +65,6 @@ class Login extends React.Component {
             <section className={'page-wrapper'}>
                 <form onSubmit={ this.onSubmit }>
                     <h2>Sign in</h2>
-                    { this.state.reason && !this.state.msg && <p style={styleStatus}>Your credentials has expired and you need to login again</p>}
-                    { this.state.loading && <Loader/>}
-                    { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
                     <label htmlFor="username">Email</label>
                     <input name="username" type="email" autoFocus={ true } value={ this.state.username } onChange={ this.onChange }/>
                     <br/>
@@ -77,21 +74,30 @@ class Login extends React.Component {
                     <input type="submit" value="Log in" className={'btn-form'}/>
                     <a href="/register">New user? Sign up here!</a>
                 </form>
+                { this.state.reason && !this.state.msg && <p style={styleStatus}>Your credentials has expired and you need to login again</p>}
+                { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
+                { this.state.loading && <ModalLoader visible={ this.state.loading } />}
             </section>
         );
     }
 }
 
 const styleError = {
-    background: '#f16b719e',
-    border: '1px solid #f16b719e',
-    padding: '5px'
+    background: 'rgb(83 37 37 / 30%)',
+    border: '1px solid rgb(91 52 52)',
+    borderRadius: '5px',
+    color: 'rgb(161 129 129)',
+    padding: '0.5em 1em',
+    margin: '0em 1em'
 }
 
 const styleStatus = {
     background: 'rgba(255,173,2,0.44)',
     border: '1px solid #f16b719e',
-    padding: '5px'
+    borderRadius: '5px',
+    color: 'rgb(161 129 129)',
+    padding: '0.5em 1em',
+    margin: '0em 1em'
 }
 
 export default Login;
