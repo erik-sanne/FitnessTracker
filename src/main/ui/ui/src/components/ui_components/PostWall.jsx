@@ -6,7 +6,7 @@ import post from "../../services/Post";
 import doDelete from "../../services/DoDelete";
 import Modal from "../ui_components/Modal";
 
-const PostWall = ({ profile, updateUserProfile, posts, refreshCallback, maxReached=false }) => {
+const PostWall = ({ profile, updateUserProfile, posts, loading, refreshCallback, maxReached=false }) => {
 
     const [ notices, setNotices ] = useState([])
     const [ confirmDeletePost, setConfirmDeletePost] = useState(-1)
@@ -52,7 +52,7 @@ const PostWall = ({ profile, updateUserProfile, posts, refreshCallback, maxReach
     };
 
     return  <>
-        { !posts ? <Loader /> : posts.length < 1 ? <p style={noticeStyle}>Nothing new</p> : <>
+        { loading ? <Loader /> : posts.length < 1 ? <p style={noticeStyle}>Nothing new</p> : <>
             { posts.map((post, idx) =>
                             <PostCard key={idx}
                                       myprofile={ profile }

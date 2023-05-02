@@ -53,6 +53,7 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
             profile={ profile }
             updateUserProfile={ updateUserProfile }
             posts={ posts }
+            loading={ loading }
             refreshCallback={ getComments }
             maxReached={ maxReached }/>
 

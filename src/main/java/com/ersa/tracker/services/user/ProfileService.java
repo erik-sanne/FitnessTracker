@@ -5,7 +5,6 @@ import com.ersa.tracker.models.user.UserProfile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public interface ProfileService {
     UserProfile getProfile(long userId);

@@ -5,6 +5,7 @@ import OptionsButton from "./options/OptionsButton";
 import Option from "./options/Option";
 import {faPen, faTrash} from "@fortawesome/free-solid-svg-icons";
 import FormWrap from "./FormWrap";
+import {NavLink} from "react-router-dom";
 
 const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, editPostCallback, likeCallback }) => {
 
@@ -32,9 +33,11 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
         <div className={"post"} style={ notices.some( notice => notice.postId === post.postId ) ? noticeStyle : {}} >
             <div style={{ position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: "space-between", paddingBottom: "1em" }}>
-                    <ProfileDisplay displayName={
-                        post.toUser ? post.authorName + " > " + post.toUser.name : post.authorName
-                    } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ `${date(post.date)} ${ post.edited ? '(edited)' : ''}` } />
+                    <NavLink to={ `/profile/${post.authorId}` }>
+                        <ProfileDisplay displayName={
+                            post.toUser ? post.authorName + " > " + post.toUser.name : post.authorName
+                        } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ `${date(post.date)} ${ post.edited ? '(edited)' : ''}` } />
+                    </NavLink>    
                 </div>
                 { post.autoPosted ?
                     <p style={{ color: '#ccc' }}>{ post.message.replace(/ in (.*)/, function(cg) { return cg.toLowerCase(); }) }</p>:

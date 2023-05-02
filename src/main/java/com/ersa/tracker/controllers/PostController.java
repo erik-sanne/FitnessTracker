@@ -77,7 +77,8 @@ public class PostController {
             return Collections.emptyList();
         }
 
-        return getWall(principal, friendsWall.get());
+        List<PostDto> wall = getWall(principal, friendsWall.get());
+        return wall.subList(from, Math.min(to, wall.size()));
     }
 
     @PostMapping("/posts/post/{userId}")

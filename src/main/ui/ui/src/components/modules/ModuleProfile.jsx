@@ -32,7 +32,7 @@ const ModuleProfile = ({ myProfile, profile }) => {
         posts: [],
         numComments: 10,
         maxReached: false,
-        loading: false
+        loading: true
     });
 
     useEffect(() => {
@@ -48,7 +48,7 @@ const ModuleProfile = ({ myProfile, profile }) => {
     }
 
     useEffect(() =>  {
-        let inter = setInterval(() => getComments(0, wall.numComments), 5000);
+        let inter = setInterval(() => getComments(), 5000);
 
         window.addEventListener('scroll', handleScroll, {
             passive: true
@@ -58,7 +58,7 @@ const ModuleProfile = ({ myProfile, profile }) => {
             clearInterval(inter);
             window.removeEventListener('scroll', handleScroll);
         };
-    }, [wall.numComments, profile]);
+    }, [profile]);
 
     const uploadCover = (files) => {
         upload(`/users/profile/cover`, files).then(_ => {
@@ -72,8 +72,8 @@ const ModuleProfile = ({ myProfile, profile }) => {
             setWall((old) => ({
                 posts: old.posts,
                 numComments: old.numComments + 10,
-                maxReached: old.numComments,
-                loading: true
+                maxReached: old.maxReached,
+                loading: old.loading
             }))
         }
     }
@@ -82,8 +82,8 @@ const ModuleProfile = ({ myProfile, profile }) => {
         get(`/posts/wall/${profile.userId}?from=0&to=${wall.numComments}`).then(resp => {
             setWall((old) => ({
                 posts: resp,
-                numComments: old.numComments,
-                maxReached: resp.length < wall.numComments,
+                numComments: resp.length,
+                maxReached: resp.length < old.numComments,
                 loading: false
             }))
         })
@@ -161,6 +161,7 @@ const ModuleProfile = ({ myProfile, profile }) => {
             <div className={"post"} style={{ padding: '0px' }} />
             <PostWall profile={ myProfile }
                       posts={ wall.posts }
+                      loading={ wall.loading }
                       refreshCallback={ getComments }
                       updateUserProfile={ () => {} }
                       maxReached={ wall.maxReached } />
