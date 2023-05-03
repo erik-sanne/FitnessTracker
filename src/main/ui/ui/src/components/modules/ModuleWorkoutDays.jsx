@@ -131,7 +131,7 @@ const createConfig = (rawdata=[], goal=0) => {
 }
 
 const computeAverage = (numWeeks, data) => {
-    const subarr = data.slice(Math.max(data.length - numWeeks, 0));
+    const subarr = data.slice(0, Math.min(numWeeks, data.length));
     const total = subarr.map(e => e.totalWorkouts).reduce((acc, el) => acc + el, 0);
     return total / numWeeks;
 }
@@ -192,7 +192,7 @@ const ModuleWorkoutDays = ({ data=[] }) => {
                             <DisplayValue text={'Avg 10 weeks'}
                                           value={data ? computeAverage(10, data[0]).toFixed(1) : "-"}/>
                             <DisplayValue text={'This week'}
-                                          value={data ? data[0][data[0].length - 1].totalWorkouts.toFixed(0) : "-"}/>
+                                          value={data ? data[0][0].totalWorkouts.toFixed(0) : "-"}/>
                         </div>
                         :
                         <div style={{display: "flex"}}>
