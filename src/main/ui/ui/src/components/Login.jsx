@@ -62,7 +62,7 @@ class Login extends React.Component {
 
     render() {
         return (
-            <section className={'page-wrapper'}>
+            <section className={'page-wrapper'} style={{ grid: 'none' }}>
                 <form onSubmit={ this.onSubmit }>
                     <h2>Sign in</h2>
                     <label htmlFor="username">Email</label>
