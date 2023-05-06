@@ -29,7 +29,7 @@ import java.util.*;
 @Log4j2
 public class UserManagementService implements AccountService, AuthenticationService, EmailVerificationService {
 
-    private static final int SESSION_TIMEOUT_MINUTES = 60 * 24 * 2;
+    private static final int SESSION_TIMEOUT_MINUTES = 60 * 24 * 3;
 
     private final UserRepository userRepository;
     private final AuthenticationTokenRepository authenticationTokenRepository;
@@ -129,6 +129,7 @@ public class UserManagementService implements AccountService, AuthenticationServ
         UserToken userToken = user.getToken();
         userToken.setExpiration(getExpiry(SESSION_TIMEOUT_MINUTES));
         userRepository.save(user);
+        log.info("User {} refreshed session", user.getId());
     }
 
     public void createEmailVerificationToken(final User user, final String token) {
