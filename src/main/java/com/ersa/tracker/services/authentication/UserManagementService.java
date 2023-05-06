@@ -29,7 +29,7 @@ import java.util.*;
 @Log4j2
 public class UserManagementService implements AccountService, AuthenticationService, EmailVerificationService {
 
-    private static final int ONE_DAY_IN_MINUTES = 60 * 24;
+    private static final int SESSION_TIMEOUT_MINUTES = 60 * 24 * 2;
 
     private final UserRepository userRepository;
     private final AuthenticationTokenRepository authenticationTokenRepository;
@@ -110,7 +110,7 @@ public class UserManagementService implements AccountService, AuthenticationServ
         final String tokenHash = pwEncoder.encode(token);
         final String tokenString = String.format("%s:%s", username, token);
 
-        final Date expires = getExpiry(ONE_DAY_IN_MINUTES);
+        final Date expires = getExpiry(SESSION_TIMEOUT_MINUTES);
 
         UserToken sessionToken = new UserToken();
         sessionToken.setToken(tokenHash);
@@ -124,9 +124,16 @@ public class UserManagementService implements AccountService, AuthenticationServ
         return tokenString;
     }
 
+    @Override
+    public void refreshSession(User user) {
+        UserToken userToken = user.getToken();
+        userToken.setExpiration(getExpiry(SESSION_TIMEOUT_MINUTES));
+        userRepository.save(user);
+    }
+
     public void createEmailVerificationToken(final User user, final String token) {
         EmailVerificationToken emailVerificationToken = new EmailVerificationToken();
-        final Date expires = getExpiry(ONE_DAY_IN_MINUTES);
+        final Date expires = getExpiry(SESSION_TIMEOUT_MINUTES);
         emailVerificationToken.setUser(user);
         emailVerificationToken.setToken(token);
         emailVerificationToken.setExpiryDate(expires);

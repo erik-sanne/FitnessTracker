@@ -23,6 +23,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Base64;
 
 @RestController
@@ -47,7 +48,9 @@ public class AuthenticationController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<?> validateHeaders() {
+    public ResponseEntity<?> validateHeaders(Principal principal) {
+        User user = accountService.getUserByPrincipal(principal);
+        tokenService.refreshSession(user);
         return ResponseEntity.ok("You are authenticated");
     }
 
