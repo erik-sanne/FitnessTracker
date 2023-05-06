@@ -3,6 +3,7 @@ package com.ersa.tracker.repositories.filestorage;
 import com.ersa.tracker.repositories.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 @Log4j2
 @Component
 @Profile("dev")
+@Primary
 @RequiredArgsConstructor
 public class DevelopmentFileRepository implements FileRepository {
 
@@ -45,6 +47,8 @@ public class DevelopmentFileRepository implements FileRepository {
 
     @Override
     public byte[] getFile(String filename) {
+        if (!fileExists(filename))
+            return null;
         return cachedMap.get(filename);
     }
 

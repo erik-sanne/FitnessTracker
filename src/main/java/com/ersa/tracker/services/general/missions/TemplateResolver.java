@@ -84,7 +84,7 @@ public class TemplateResolver {
         Collections.shuffle(selection);
         for (int i = 0; i < TemplateResolver.NUMBER_OF_MISSIONS; i++) {
             if (selection.size() < i) {
-                log.error("Trying to get more missions that exists");
+                log.error("Trying to get more missions than exists");
             } else {
                 selectedMissionTemplates.add(selection.get(i));
             }

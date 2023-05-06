@@ -4,6 +4,7 @@ import com.ersa.tracker.repositories.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 @Log4j2
 @Component
 @Profile("!dev")
+@Primary
 @RequiredArgsConstructor
 public class S3FileRepository implements FileRepository {
 
@@ -65,6 +67,9 @@ public class S3FileRepository implements FileRepository {
 
     @Override
     public byte[] getFile(String filename) {
+        if (!fileExists(filename))
+            return null;
+
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(FILE_STORAGE_BUCKET)
                 .key(filename)

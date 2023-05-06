@@ -2,9 +2,9 @@ package com.ersa.tracker.services.user;
 
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.user.UserProfile;
-import com.ersa.tracker.repositories.FileRepository;
 import com.ersa.tracker.repositories.UserProfileRepository;
 import com.ersa.tracker.repositories.authentication.UserRepository;
+import com.ersa.tracker.repositories.filestorage.CachedFileRepository;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,7 +21,7 @@ public class UserProfileService implements ProfileService {
 
     private UserRepository userRepository;
     private UserProfileRepository profileRepository;
-    private FileRepository fileRepository;
+    private CachedFileRepository fileRepository;
 
     @Override
     public UserProfile getProfile(final long userId) {
@@ -61,9 +61,7 @@ public class UserProfileService implements ProfileService {
     @Override
     public byte[] getCover(final User me, final long userId) {
         String fileName = createCoverFileName(userId);
-        if (fileRepository.fileExists(fileName))
-            return fileRepository.getFile(fileName);
-        return null;
+        return fileRepository.getFile(fileName);
     }
 
     @Override
