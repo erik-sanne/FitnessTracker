@@ -51,8 +51,8 @@ public class WorkoutWithFriendMission implements MissionTemplate {
     public int evaluateProgress(Mission mission) {
         User friend = profileService.getFriend(mission.getUser(), mission.getAnyLong());
 
-        List<WorkoutSummary> friendWorkouts = apiService.getWorkoutSummaries(friend).stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == mission.getWeek()).toList();
-        List<WorkoutSummary> myWorkouts = apiService.getWorkoutSummaries(mission.getUser()).stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == mission.getWeek()).toList();
+        List<WorkoutSummary> friendWorkouts = apiService.getWorkoutSummaries(friend, 0, 7).stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == mission.getWeek()).toList();
+        List<WorkoutSummary> myWorkouts = apiService.getWorkoutSummaries(mission.getUser(), 0, 7).stream().filter(workout -> DateUtils.getWeekForDate(workout.getDate()) == mission.getWeek()).toList();
 
         return (int)myWorkouts.stream().filter(mine ->
                 friendWorkouts.stream().anyMatch(friends ->
