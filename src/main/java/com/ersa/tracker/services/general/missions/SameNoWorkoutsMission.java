@@ -34,7 +34,7 @@ public class SameNoWorkoutsMission implements MissionTemplate {
 
     @Override
     public String getDescription(Mission mission) {
-        return String.format("Perform a total of %s workouts this week", mission.getGoal());
+        return mission.getGoal() < 2 ? "Perform a workout this week" : String.format("Perform a total of %s workouts this week", mission.getGoal());
     }
 
     @Override
