@@ -148,7 +148,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                 lineTension: 0,
                 data: reps
             }, {
-                label: 'Weights',
+                label: 'Weight',
                 yAxisID: 'wei-y-id',
                 fill: false,
                 borderColor: 'rgba(107,166,239,0.5)',
