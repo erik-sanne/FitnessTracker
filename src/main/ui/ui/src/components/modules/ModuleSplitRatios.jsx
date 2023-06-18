@@ -45,7 +45,7 @@ const ModuleSplitRatios = () => {
 
 const doStuff = (date, workouts) => {
     const today = new Date();
-    const MILLIS_SCAN = 1000 * 60 * 60 * 24 * 30;
+    const MILLIS_SCAN = 1000 * 60 * 60 * 24 * 45; // 45+45=~3 months
 
     const values = [];
     const dates = [];
@@ -61,7 +61,11 @@ const doStuff = (date, workouts) => {
         values.push(y.length)
 
         if (date.getDate() === 1) {
+            date = new Date(date.setDate(7))
+        } else if (date.getDate() === 7) {
             date = new Date(date.setDate(date.getMonth() === 1 ? 14 : 15))
+        } else if (date.getDate() === 14 || date.getDate() === 15) {
+            date = new Date(date.setDate(21))
         } else {
             date = new Date(date.setMonth(date.getMonth() + 1));
             date = new Date(date.getFullYear(), date.getMonth(), 1)
