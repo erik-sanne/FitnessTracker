@@ -3,9 +3,14 @@ import Chart from "chart.js";
 import Zoom from 'chartjs-plugin-zoom'
 import "react-hammerjs"
 
-const Graph = ({ data, style}) => {
+const Graph = ({ data, style, callback}) => {
     const canvasRef = useRef(null);
     const [chart, setChart] = useState(null);
+
+    useEffect(() => {
+        if (callback)
+            callback(canvasRef.current)
+    }, [callback])
 
     useEffect(() => {
         if (!data)

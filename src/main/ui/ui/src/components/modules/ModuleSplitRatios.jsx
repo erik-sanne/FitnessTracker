@@ -1,5 +1,5 @@
 import '../../styles/Module.css';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Loader from "../ui_components/Loader";
 import useFetch from "../../services/useFetch";
 import Graph from "./Graph";
@@ -9,12 +9,11 @@ import Utils from "../../services/Utils";
 const ModuleSplitRatios = () => {
     const { data, loading } = useFetch('/api/workouts');
     const [ state, setState ] = useState(null);
+    const [ ctx, setCtx ] = useState(null);
 
-    if (loading)
-        return <Loader />
-
-    if (!state && data) {
-
+    useEffect(() => {
+        if (!data)
+            return
         const tmp = new Date(data[data.length - 1].date)
         const firstDate = new Date(tmp.getFullYear(), tmp.getMonth(), 1);
 
@@ -26,17 +25,21 @@ const ModuleSplitRatios = () => {
 
         const setdata = types.map(type => ({ type: type, values: doStuff(new Date(firstDate), data.filter(w => w.description === type))}))
 
-        const chartdata = createConfig(setdata);
+        const chartdata = createConfig(setdata, ctx);
 
         setState({
             setdata: setdata,
             chartdata: chartdata
         })
-    }
+    }, [data, ctx])
+
+
+    if (loading)
+        return <Loader />
 
     return state &&
                 <div style={{ width: '100%' }}>
-                    <Graph data={state.chartdata}/>
+                    <Graph data={state.chartdata} callback={ chart => setCtx(chart.getContext('2d'))}/>
                 </div>
 }
 
@@ -68,22 +71,32 @@ const doStuff = (date, workouts) => {
 }
 
 const colors = {
-    "PUSH": ['rgb(188,167,79)', 'rgba(188,167,79, 0.1)'],
-    "PULL": ['rgb(68,82,179)', 'rgba(68,82,179, 0.1)'],
-    "BACK": ['rgb(80,144,179)', 'rgba(80,144,179, 0.1)'],
-    "LEGS": ['rgb(61,179,114)', 'rgba(61,179,114, 0.1)'],
-    "ARMS": ['rgb(141,57,167)', 'rgba(141,57,167, 0.1)'],
-    "SHOULDERS": ['rgb(177,60,60)', 'rgba(177,60,60, 0.1)'],
-    "CUSTOM": ['rgb(78,78,78)', 'rgba(78,78,78, 0.1)']
+    "PUSH": ['rgb(255,217,57)', 'rgb(236,198,35, 0.8)', 'rgba(236,192,1,0)'],
+    "PULL": ['rgb(45,104,255)', 'rgb(22,81,231, 0.8)', 'rgba(0,65,233,0)'],
+    "BACK": ['rgb(59,191,255)', 'rgb(35,171,238, 0.8)', 'rgba(0,157,233,0)'],
+    "LEGS": ['rgb(74,255,157)', 'rgb(31,238,125, 0.8)', 'rgba(0,236,109,0)'],
+    "ARMS": ['rgb(212,70,255)', 'rgb(188,30,236, 0.8)', 'rgba(182,0,236,0)'],
+    "SHOULDERS": ['rgb(255,68,68)', 'rgb(239,35,35, 0.8)', 'rgba(238,0,0,0)'],
+    "CUSTOM": ['rgb(78,78,78)', 'rgba(52,52,52,0.8)', 'rgb(78,78,78, 0)']
 }
 
-const createConfig = (setdata) => {
+const asGradient = (ctx, [_, start, stop]) => {
+    if (!ctx)
+        return stop;
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+    gradient.addColorStop(0, start);
+    gradient.addColorStop(0.8, stop);
+    return gradient;
+}
+
+const createConfig = (setdata, ctx) => {
 
     const data = setdata.map(obj => ({
         label: Utils.camelCase(obj.type),
         borderWidth: 2,
         borderColor: colors[obj.type][0],
-        backgroundColor: colors[obj.type][1],
+        backgroundColor: asGradient(ctx, colors[obj.type]),
         data: obj.values[1],
         lineTension: 0,
     }))
@@ -97,6 +110,9 @@ const createConfig = (setdata) => {
         options: {
             legend: {
                 display: true
+            },
+            tooltips: {
+                mode: 'index'
             },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
