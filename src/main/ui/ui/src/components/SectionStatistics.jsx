@@ -59,14 +59,16 @@ const SectionStatistics = () => {
                 <ModuleSetAverages />
             </Module>
             <Module title="General statistics" className={ "exercise-distribution" }>
-                <SwiperWrapper>
-                    <SwiperSlide>
-                        <ModuleExerciseDistribution />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <ModuleSplitRatios />
-                    </SwiperSlide>
-                </SwiperWrapper>
+                <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
+                    <SwiperWrapper>
+                        <SwiperSlide>
+                            <ModuleExerciseDistribution />
+                        </SwiperSlide>
+                        <SwiperSlide>
+                            <ModuleSplitRatios />
+                        </SwiperSlide>
+                    </SwiperWrapper>
+                </div>
             </Module>
             {
                 !loadingRecords &&

@@ -35,7 +35,7 @@ const ModuleSplitRatios = () => {
     }
 
     return state &&
-                <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
+                <div style={{ width: '100%' }}>
                     <Graph data={state.chartdata}/>
                 </div>
 }
