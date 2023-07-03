@@ -83,15 +83,15 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
     }
 
     const maxCombined = Math.max(...data.map(e => e.combined))
-    const maxWeight = Math.max(...data.map(e => e.weight))
+    // const maxWeight = Math.max(...data.map(e => e.weight))
     const combined = data.map(e => Math.round((e.combined / maxCombined) * 100));
-    const weightScaled = data.map(e => Math.round((e.weight / maxWeight) * 100));
+    // const weightScaled = data.map(e => Math.round((e.weight / maxWeight) * 100));
 
     const zip = (a, b) => a.map((k, i, arr) => [getMagicNumberFromDate(k, arr[0]), b[i]]);
     const ptsComb = zip(xLabels, combined);
-    const ptsWeight = zip(xLabels, weightScaled);
+    // const ptsWeight = zip(xLabels, weightScaled);
     const progressionPts = getPolyfitLinePlot(xLabels, ptsComb);
-    const weightProgPts = getPolyfitLinePlot(xLabels, ptsWeight);
+    // const weightProgPts = getPolyfitLinePlot(xLabels, ptsWeight);
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -124,7 +124,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                 lineTension: 0,
                 //function: function (x) { return func.predict(x)[1]; },
                 data: progressionPts
-            }, {
+            }/*, {
                 label: 'Weight progression',
                 yAxisID: 'wei-y-id',
                 borderDash: [15, 3],
@@ -137,7 +137,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                 hidden: true,
                 //function: function (x) { return func.predict(x)[1]; },
                 data: weightProgPts
-            }] : [{
+            }*/] : [{
                 label: 'Repetitions',
                 yAxisID: 'rep-y-id',
                 fill: false,
