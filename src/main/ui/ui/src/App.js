@@ -1,4 +1,5 @@
 import './styles/App.css';
+import './styles/grain.css';
 import React, {useEffect, useState} from 'react';
 import {getCookie, setCookie} from 'react-use-cookie';
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
@@ -9,6 +10,7 @@ import AppContent from "./AppContent";
 import './styles/snow.css';
 import Background from "./Background";
 import Activate from "./components/Activate";
+import Overlay from "./Overlay";
 
 const authorizationStatus = {
     AUTHORIZED: "authorized",
@@ -87,6 +89,7 @@ function App() {
     return (
         <>
             <Background/>
+            <Overlay />
             <AppContent logoutCallback={ logoutCallback } />
             <Splash show={ showSplash } />
         </>
