@@ -26,7 +26,7 @@ const ModuleHardStats = () => {
         })
     }
 
-    return state && <Module title={ "General statistics" } style={{ gridRow: '2' }}>
+    return state && <Module title={ "fallback_coverstatistics" } style={{ gridRow: '2' }}>
                 <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
                     <p> You registered your first workout on {data.firstWorkout.split("T")[0]}. Since then you've achieved the following:</p>
                     <span>Total number of registered workouts: <b>{data.workouts}</b></span>

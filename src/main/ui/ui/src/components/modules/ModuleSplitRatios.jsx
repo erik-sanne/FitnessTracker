@@ -38,7 +38,7 @@ const ModuleSplitRatios = () => {
         return <Loader />
 
     return state &&
-                <div style={{ width: '100%' }}>
+                <div style={{ width: '100%', marginBottom: '2em' }}>
                     <Graph data={state.chartdata} callback={ chart => setCtx(chart.getContext('2d'))}/>
                 </div>
 }
@@ -103,6 +103,7 @@ const createConfig = (setdata, ctx) => {
         backgroundColor: asGradient(ctx, colors[obj.type]),
         data: obj.values[1],
         lineTension: 0,
+        pointStyle: 'circle'
     }))
 
     return {
@@ -113,7 +114,14 @@ const createConfig = (setdata, ctx) => {
         },
         options: {
             legend: {
-                display: true
+                display: true,
+                position: "chartArea",
+                align: "center",
+                labels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
             },
             tooltips: {
                 mode: 'index'
@@ -138,7 +146,7 @@ const createConfig = (setdata, ctx) => {
                     ticks: {
                         fontSize: 12,
                         fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        fontStyle: 'bold',
                     }
                 }]
             },

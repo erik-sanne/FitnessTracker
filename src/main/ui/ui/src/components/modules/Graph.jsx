@@ -16,6 +16,7 @@ const Graph = ({ data, style, callback}) => {
         if (!data)
             return;
 
+        Chart.defaults.global.legend.labels.usePointStyle = true;
         Chart.plugins.register(Zoom);
         Chart.pluginService.register({
             beforeInit: function(chart) {

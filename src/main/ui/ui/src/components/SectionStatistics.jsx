@@ -58,7 +58,7 @@ const SectionStatistics = () => {
             <Module title="Progression" className={ "progression" }>
                 <ModuleSetAverages />
             </Module>
-            <Module title="General statistics" className={ "exercise-distribution" }>
+            <Module title="General statistics" className={ "exercise-distribution" } style={{ paddingBottom: '0em'}}>
                 <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
                     <SwiperWrapper>
                         <SwiperSlide>

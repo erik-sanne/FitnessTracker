@@ -26,7 +26,7 @@ const ModuleExerciseDistribution = () => {
     }
 
     return state &&
-                <div style={{ width: '100%' }}>
+                <div style={{ width: '100%', marginBottom: '2em' }}>
                     <Graph data={state.chartdata}/>
                 </div>
 }
@@ -64,7 +64,15 @@ const createConfig = (setdata={}) => {
         },
         options: {
             legend: {
-                display: true
+                display: true,
+                position: "top",
+                align: "end",
+                labels: {
+                    textAlign: "right",
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
             },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,

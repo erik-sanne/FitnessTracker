@@ -167,6 +167,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                 display: false,
             },
             legend: {
+                align: "end",
                 labels: {
                     fontSize: 12,
                     fontFamily: 'Quicksand',
