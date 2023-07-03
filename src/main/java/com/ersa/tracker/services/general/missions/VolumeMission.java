@@ -65,15 +65,18 @@ public class VolumeMission implements MissionTemplate {
         Workout workout = lastWorkouts.get(0);
 
         List<WorkoutSet> sets = new ArrayList<>(workout.getSets().stream().toList());
-        Collections.shuffle(sets);
-        if (sets.size() <= 0 ) {
+        if (sets.size() <= 0 )
             return null;
-        }
+
+        Collections.shuffle(sets);
         String exercise = sets.get(0).getExercise();
 
         double summedWeight = sets.stream().filter(set -> set.getExercise().equalsIgnoreCase(exercise))
                 .mapToDouble(set -> set.getWeight() * set.getReps()).sum();
         summedWeight = summedWeight * 1.2;
+
+        if (summedWeight <= 0)
+            return null;
 
         Mission mission = new Mission();
         mission.setUser(user);
