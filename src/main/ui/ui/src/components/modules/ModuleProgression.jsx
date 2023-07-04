@@ -320,7 +320,7 @@ const ModuleProgression = () => {
                                 <SwiperWrapper>
                                     <SwiperSlide>
                                         <div style={{width: '100%'}} className={'no-swipe'}>
-                                            <Graph data={ chartData.data1 }/>
+                                            <Graph data={ chartData.data1 } style={{ marginTop: 0 }}/>
                                         </div>
                                     </SwiperSlide>
                                     <SwiperSlide>
