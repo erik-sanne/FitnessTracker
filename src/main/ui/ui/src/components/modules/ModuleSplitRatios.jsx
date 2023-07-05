@@ -117,6 +117,7 @@ const createConfig = (setdata, ctx) => {
                 display: true,
                 position: "chartArea",
                 align: "center",
+                reverse: true,
                 labels: {
                     fontSize: 12,
                     fontFamily: 'Quicksand',
