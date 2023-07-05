@@ -341,6 +341,17 @@ body {
   object-fit: cover;
 }
 
+.swiper-button-next, .swiper-button-prev {
+  opacity: 1;
+  transition: 0.1s ease-in-out;
+}
+
+.swiper-button-disabled {
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.1s ease-in-out;
+}
+
 .MuiSwitch-colorPrimary {
   color: rgba(107,166,239,0.5) !important;
 }
