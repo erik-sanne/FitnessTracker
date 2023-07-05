@@ -85,6 +85,11 @@ const createConfig = (rawdata=[], goal=0) => {
             legend: {
                 display: false
             },
+            layout: {
+                padding: {
+                    left: -5,
+                }
+            },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.2 : 1.2,
             scales: {
