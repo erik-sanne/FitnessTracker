@@ -152,14 +152,14 @@ const createConfig = (setdata, ctx) => {
                     ticks: {
                         maxRotation: window.innerWidth < 600 ? 0 : 50,
                         labelOffset: window.innerWidth < 600 ? 25 : 0,
-                        maxTicksLimit: window.innerWidth < 600 ? 4 : 11,
+                        maxTicksLimit: window.innerWidth < 600 ? 4 : 0,
                         fontSize: 12,
                         fontFamily: 'Quicksand',
                         fontStyle: 'bold',
                     },
                     afterFit: (axis) => {
-                        axis.paddingRight = 0;
-                        axis.paddingLeft = 0;
+                        axis.paddingRight = window.innerWidth < 600 ? 0 : 0;
+                        axis.paddingLeft = window.innerWidth < 600 ? 0 : 40;
                     }
                 }]
             },

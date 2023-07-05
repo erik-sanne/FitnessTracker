@@ -160,7 +160,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth > 1500 ? 2.5 : 1.2,
+            aspectRatio: window.innerWidth < 600 && mergeAxes ? 1 : window.innerWidth > 1500 ? 2.5 : 1.2,
             hoverMode: 'index',
             stacked: false,
             title:{
@@ -168,8 +168,8 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             },
             layout: {
                 padding: {
-                    left: -10,
-                    right:  -10
+                    left: -9,
+                    right: window.innerWidth < 600 ? -10 : 0
                 }
             },
             legend: {
@@ -187,7 +187,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     position: "left",
                     id: "rep-y-id",
                     ticks: {
-                        mirror: true,
+                        mirror: window.innerWidth < 600,
                         suggestedMin: 0,
                         callback: function(value, index, values) {
                             return value;
@@ -201,7 +201,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     position: "right",
                     id: "wei-y-id",
                     ticks: {
-                        mirror: true,
+                        mirror: window.innerWidth < 600,
                         suggestedMin: 0,
                         callback: function(value, index, values) {
                             return value + (mergeAxes ? '%' : 'kg');
@@ -218,32 +218,20 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     ticks: {
                         maxRotation: window.innerWidth < 600 ? 0 : 50,
                         labelOffset: window.innerWidth < 600 ? 20 : 0,
-                        maxTicksLimit: window.innerWidth < 600 ? 5 : 11,
+                        maxTicksLimit: window.innerWidth < 600 ? 5 : 0,
                         fontSize: 12,
                         fontFamily: 'Quicksand',
                         fontStyle: 'bold'
                     },
                     afterFit: (axis) => {
-                        axis.paddingRight = -10;
-                        axis.paddingLeft = -10;
+                        axis.paddingRight = window.innerWidth < 600 ? -10 : 0;
+                        axis.paddingLeft = window.innerWidth < 600 ? -10 : 30;
                     }
                 }]
             },
             elements: {
                 point:{
                     radius: 0
-                }
-            },
-            plugins: {
-                zoom: {
-                    pan: {
-                        enabled: window.innerWidth < 600,
-                        mode: 'x'
-                    },
-                    zoom: {
-                        enabled: window.innerWidth < 600,
-                        mode: 'x'
-                    }
                 }
             },
             tooltips: {
@@ -334,12 +322,12 @@ const ModuleProgression = () => {
                             <div className={'centerC'}>
                                 <SwiperWrapper>
                                     <SwiperSlide>
-                                        <div style={{width: '100%'}} className={'no-swipe'}>
+                                        <div style={{width: '100%'}}>
                                             <Graph data={ chartData.data1 } style={{ marginTop: 0 }}/>
                                         </div>
                                     </SwiperSlide>
                                     <SwiperSlide>
-                                        <div style={{ width: '100%'}} className={'no-swipe'}>
+                                        <div style={{ width: '100%'}}>
                                             <Graph data={ chartData.data2 }/>
                                             <Slider
                                                 style={{ margin: '0 auto 1em auto', width: '80%' }}
