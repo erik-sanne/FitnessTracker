@@ -267,7 +267,7 @@ const ModuleProgression = () => {
     const [ selectedExercise, setSelectedExercise ] = useState(null);
     const [ message, setMessage ] = useState("Select an exercise to view your progression");
     const [ loading, setLoading ] = useState(false);
-    const [ interpolation, setInterpolation ] = useState(3);
+    const [ interpolation, setInterpolation ] = useState(10);
 
     const getExerciseData = async (ex) => {
         setLoading(true);
