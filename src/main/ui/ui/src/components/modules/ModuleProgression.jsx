@@ -166,6 +166,12 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             title:{
                 display: false,
             },
+            layout: {
+                padding: {
+                    left: -10,
+                    right:  -10
+                }
+            },
             legend: {
                 align: "end",
                 labels: {
@@ -181,6 +187,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     position: "left",
                     id: "rep-y-id",
                     ticks: {
+                        mirror: true,
                         suggestedMin: 0,
                         callback: function(value, index, values) {
                             return value;
@@ -194,6 +201,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     position: "right",
                     id: "wei-y-id",
                     ticks: {
+                        mirror: true,
                         suggestedMin: 0,
                         callback: function(value, index, values) {
                             return value + (mergeAxes ? '%' : 'kg');
@@ -208,9 +216,16 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                         unit: 'day'
                     },
                     ticks: {
+                        maxRotation: window.innerWidth < 600 ? 0 : 50,
+                        labelOffset: window.innerWidth < 600 ? 20 : 0,
+                        maxTicksLimit: window.innerWidth < 600 ? 5 : 11,
                         fontSize: 12,
                         fontFamily: 'Quicksand',
                         fontStyle: 'bold'
+                    },
+                    afterFit: (axis) => {
+                        axis.paddingRight = -10;
+                        axis.paddingLeft = -10;
                     }
                 }]
             },

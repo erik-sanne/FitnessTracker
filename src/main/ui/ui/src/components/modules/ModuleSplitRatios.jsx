@@ -123,6 +123,12 @@ const createConfig = (setdata, ctx) => {
                     fontStyle: 'bold'
                 }
             },
+            layout: {
+                padding: {
+                    left: 1,
+                    right:  0
+                }
+            },
             tooltips: {
                 mode: 'index'
             },
@@ -144,9 +150,16 @@ const createConfig = (setdata, ctx) => {
                         unit: 'month'
                     },
                     ticks: {
+                        maxRotation: window.innerWidth < 600 ? 0 : 50,
+                        labelOffset: window.innerWidth < 600 ? 25 : 0,
+                        maxTicksLimit: window.innerWidth < 600 ? 4 : 11,
                         fontSize: 12,
                         fontFamily: 'Quicksand',
                         fontStyle: 'bold',
+                    },
+                    afterFit: (axis) => {
+                        axis.paddingRight = 0;
+                        axis.paddingLeft = 0;
                     }
                 }]
             },
