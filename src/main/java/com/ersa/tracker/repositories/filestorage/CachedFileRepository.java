@@ -47,7 +47,7 @@ public class CachedFileRepository implements FileRepository {
 
     @Override
     public boolean fileExists(String filename) {
-        return cache.asMap().keySet().stream().anyMatch((key) -> key == filename);
+        return cache.asMap().keySet().stream().anyMatch((key) -> key.equals(filename));
     }
 
     @Override

@@ -1,3 +1,15 @@
+.has-cover{
+    animation: fadeIn 0.5s;
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 .fade-out-image {
     animation: fadeOut 3s;
     -webkit-animation: fadeOut 3s;
@@ -7,6 +19,7 @@
     background: transparent;
     color: rgba(0,0,0,0);
 }
+
 @keyframes fadeOut {
     0% {
         background: #18191c;

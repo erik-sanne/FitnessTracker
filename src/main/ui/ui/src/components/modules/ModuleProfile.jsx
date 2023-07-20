@@ -10,7 +10,6 @@ import {
     faTrophy,
     faUserFriends,
 } from "@fortawesome/free-solid-svg-icons";
-import fallback_cover from "../../resources/party_pattern.jpg";
 import get from "./../../services/Get.jsx"
 import Spinner from "react-bootstrap/cjs/Spinner";
 import {Redirect} from "react-router";
@@ -103,8 +102,9 @@ const ModuleProfile = ({ myProfile, profile }) => {
     return (<>
         <Module substyle={{ height: 'inherit' }} className={ 'profile' }>
             <div className={ 'profile-banner' }>
-                <div style={{
-                    background: `url(${cover ? cover : fallback_cover}), linear-gradient(180deg, transparent, black)`}}>
+                <div className={ cover ? 'has-cover' : 'no-content'}
+                     style={{
+                    background: `url(${cover}), linear-gradient(180deg, transparent, black)`}}>
                     { !isMe && <FontAwesomeIcon icon={ faCompressArrowsAlt } onClick={ () => {
                         setRedirect(`/friend/${profile.userId}`)
                     }} />}
