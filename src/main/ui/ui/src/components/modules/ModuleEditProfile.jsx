@@ -66,7 +66,7 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
     }
 
     return (
-        <Module title={required ? "Welcome on board!" : "Edit profile"}>
+        <Module title={required ? "Welcome on board!" : "Edit display profile"}>
             { required && <p> As this is your first time using this app, we would like you to set a display name for your account. You can also upload a unique profile picture if you so choose. </p>}
             { message && <span style={styleError}>{message}</span> }
 

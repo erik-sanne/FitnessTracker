@@ -13,6 +13,7 @@
     "axios": "^0.21.4",
     "base-64": "^1.0.0",
     "bootstrap": "^4.6.2",
+    "buffer": "^6.0.3",
     "chart.js": "^2.9.4",
     "chartjs-plugin-datalabels": "^0.7.0",
     "chartjs-plugin-zoom": "^0.7.7",

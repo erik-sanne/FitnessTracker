@@ -37,7 +37,7 @@ const ModulePreferences = ({ userProfile }) => {
     }
 
     return (
-        <Module title={"Preferences"}>
+        <Module title={"UI preferences"}>
             <div className={'centerC'} style={{ justifyContent: 'start' }}>
                 <p>General UI</p>
                 <div>
@@ -53,7 +53,7 @@ const ModulePreferences = ({ userProfile }) => {
                     </label>
                 </div> }
                 <br />
-                <p>Statistics</p>
+                <p>Dashboard settings</p>
                 <div onClick={ () => setFullColorManikin(!fullColorManikin) }>
                     <Switch color="primary" checked={ fullColorManikin }/>
                     <label style={{ cursor: 'pointer' }}>
@@ -66,7 +66,8 @@ const ModulePreferences = ({ userProfile }) => {
                         Hide quick-button for new workout
                     </label>
                 </div>
-                <p>New workout</p>
+                <br />
+                <p>New workout settings</p>
                 <div onClick={ () => setCollapseSets(!collapseSets) }>
                     <Switch color="primary" checked={ collapseSets }/>
                     <label style={{ cursor: 'pointer' }}>
