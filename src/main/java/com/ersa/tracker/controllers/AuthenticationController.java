@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.validator.constraints.Length;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Base64;
+import java.util.Objects;
 
 @RestController
 @Log4j2
@@ -66,6 +69,21 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody final ChangePasswordDto passwordDto,
+                                            final Principal principal) {
+        try {
+            User user = accountService.getUserByPrincipal(principal);
+            accountService.authenticate(user.getEmail(), passwordDto.oldPassword);
+            accountService.changePassword(principal, passwordDto.newPassword);
+            log.info("User {} changed password", user.getId());
+            return ResponseEntity.ok("Password changed");
+        } catch (AuthenticationException e) {
+            // This should respond with 400 rather than 401 as user in fact is authenticated at this point
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad password");
+        }
+    }
+
     @PutMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody final SignupRequest signupRequest,
                                       final BindingResult binding,
@@ -81,10 +99,6 @@ public class AuthenticationController {
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, appUrl));
         } catch (EmailAlreadyRegisteredException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (MailSendException e) {
-            // TODO: Verify that this clause is still relevant
-            log.error("Failed to send email, msg: " + e.getMessage());
-            return ResponseEntity.accepted().body("User created");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unknown error occurred");
         }
@@ -106,6 +120,19 @@ public class AuthenticationController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
+    }
+
+    @Getter
+    @Setter
+    private static class ChangePasswordDto {
+        @SuppressWarnings("checkstyle:MagicNumber")
+        @Length(min = 8, max = 32, message = "Password must be 8-32 characters")
+        @Pattern(regexp = "^(?=.*[0-9]).*$", message = "Password must contain a digit")
+        @Pattern(regexp = "^(?=.*[a-z]).*$", message = "Password must contain a lower case letter")
+        @Pattern(regexp = "^(?=.*[A-Z]).*$", message = "Password must contain an upper case letter")
+        @Pattern(regexp = "^(?=\\S+$).*$", message = "Password must not contain whitespaces")
+        private String newPassword;
+        private String oldPassword;
     }
 
     private static class SignupRequest {

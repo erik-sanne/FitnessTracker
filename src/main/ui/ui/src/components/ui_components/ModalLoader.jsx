@@ -12,7 +12,7 @@ const ModalLoader = ({ visible=false, text="", error="", success="", onClose }) 
     return (
         <div style={ wrapperStyle }>
             {
-                error &&
+                (error || success) &&
                 <FontAwesomeIcon
                     icon={ faTimes }
                     style={{ position: 'absolute', right: '24px', top: '24px', fontSize: 'min(calc(8px + 3.5vmin), 30px)' }}
@@ -62,7 +62,7 @@ const wrapperStyle = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 5
+    zIndex: 25
 }
 
 export default ModalLoader

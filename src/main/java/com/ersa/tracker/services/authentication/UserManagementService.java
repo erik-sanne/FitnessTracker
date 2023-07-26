@@ -82,6 +82,13 @@ public class UserManagementService implements AccountService, AuthenticationServ
     }
 
     @Override
+    public void changePassword(Principal principal, String newPassword) {
+        User user = getUserByPrincipal(principal);
+        user.setPassword(pwEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Override
     public User getUserByPrincipal(final Principal principal) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(principal.getName());
         if (user == null) {

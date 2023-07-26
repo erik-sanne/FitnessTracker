@@ -79,6 +79,7 @@ const ModulePreferences = ({ userProfile }) => {
             <div style={buttonWrapperStyle}>
                 <input
                     style={ submitButtonStyle }
+                    className={ 'mini' }
                     type={"submit"}
                     value={ "Save changes & reload" }
                     onClick={ save }

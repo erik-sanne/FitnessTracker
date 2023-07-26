@@ -10,5 +10,6 @@ import java.security.Principal;
 public interface AccountService {
     User register(String email, String password) throws EmailAlreadyRegisteredException;
     void authenticate(String email, String password) throws AuthenticationException;
+    void changePassword(Principal principal, String newPassword);
     User getUserByPrincipal(Principal principal) throws UsernameNotFoundException;
 }

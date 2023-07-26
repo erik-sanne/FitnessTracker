@@ -66,7 +66,7 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
     }
 
     return (
-        <Module title={required ? "Welcome on board!" : "Edit display profile"}>
+        <Module title={required ? "Welcome on board!" : "Profile settings"}>
             { required && <p> As this is your first time using this app, we would like you to set a display name for your account. You can also upload a unique profile picture if you so choose. </p>}
             { message && <span style={styleError}>{message}</span> }
 
@@ -100,10 +100,11 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
             </div>
             <br />
             <label>Preview: </label>
-            <ProfileDisplay displayName={ ( !displayName ) ? defaultName : displayName } title={ userProfile?.title } profilePicture={ profilePic } userId={ userProfile?.userId || 0 } />
+            <ProfileDisplay displayName={ ( !displayName ) ? defaultName : displayName } title={ userProfile?.title } profilePicture={ profilePic } userId={ userProfile?.userId || 0 } style={{ margin: '0px 0px auto 0px' }} />
             <div style={buttonWrapperStyle}>
                 <input
                     style={ submitButtonStyle }
+                    className={ 'mini' }
                     type={"submit"}
                     value={ required ? "Save and continue" : "Save changes" }
                     onClick={ save }
