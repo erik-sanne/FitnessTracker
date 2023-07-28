@@ -63,6 +63,11 @@ public class UserManagementService implements AccountService, AuthenticationServ
         return user;
     }
 
+    @Override
+    public boolean doesUserExist(String email) {
+        return userRepository.findByEmail(email) != null;
+    }
+
     public void authenticate(final String email, final String password) throws AuthenticationException {
         User user = userRepository.findByEmail(email);
         if (user == null) {
@@ -139,10 +144,11 @@ public class UserManagementService implements AccountService, AuthenticationServ
         log.info("User {} refreshed session", user.getId());
     }
 
-    public void createEmailVerificationToken(final User user, final String token) {
+    public void createEmailVerificationToken(final User user, final String email, final String token) {
         EmailVerificationToken emailVerificationToken = new EmailVerificationToken();
         final Date expires = getExpiry(SESSION_TIMEOUT_MINUTES);
         emailVerificationToken.setUser(user);
+        emailVerificationToken.setEmail(email);
         emailVerificationToken.setToken(token);
         emailVerificationToken.setExpiryDate(expires);
         log.info("Creating email verification token for user {} : id: {}, token: {}",
@@ -168,9 +174,26 @@ public class UserManagementService implements AccountService, AuthenticationServ
         }
         User user = token.getUser();
         user.setVerified(true);
-        userRepository.save(user);
 
+        if (token.getEmail() != null && user.getEmail().equals(token.getEmail())) {
+            // For email change
+            user.setEmail(token.getEmail());
+        }
+
+        userRepository.save(user);
         emailVerificationTokenRepository.delete(token);
+
+        log.info("User {} has verified their email. Will perform force logout in case of email changed", user.getId());
+        signoutAndRemoveSessionToken(user);
+    }
+
+    private void signoutAndRemoveSessionToken(User user) {
+        UserToken token = user.getToken();
+        if (token != null) {
+            user.setToken(null);
+            userRepository.save(user);
+            authenticationTokenRepository.delete(token);
+        }
     }
 
     @Override

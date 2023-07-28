@@ -75,7 +75,7 @@ function App() {
                         <Signup/>
                     </Route>
                     <Route path="/activate/:token">
-                        <Activate/>
+                        <Activate />
                     </Route>
                     <Route path="/">
                         <Redirect to="/login" />

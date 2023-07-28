@@ -17,6 +17,9 @@ public final class EmailVerificationToken {
     private User user;
 
     @NotNull
+    private String email;
+
+    @NotNull
     private String token;
 
     @NotNull
@@ -44,6 +47,14 @@ public final class EmailVerificationToken {
 
     public void setUser(final User user) {
         this.user = user;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getToken() {

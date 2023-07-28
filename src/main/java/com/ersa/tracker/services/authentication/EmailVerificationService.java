@@ -5,6 +5,6 @@ import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import org.springframework.security.core.AuthenticationException;
 
 public interface EmailVerificationService {
-    void createEmailVerificationToken(User user, String token);
+    void createEmailVerificationToken(User user, final String email, String token);
     void verifyEmail(String tokenString) throws AuthenticationException, ResourceNotFoundException;
 }
