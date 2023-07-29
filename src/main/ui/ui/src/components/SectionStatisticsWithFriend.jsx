@@ -69,7 +69,7 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
             <Module title = "Weekly workouts">
                 <ModuleWorkoutDays data={ !lswpw && !lfwpw ? [selfWorkoutsPerWeek, friendWorkoutsPerWeek] : [] } />
             </Module>
-            <Module title="Workout distribution">
+            <Module title="Workout distributions">
                 <ModuleWorkoutDistribution data={ workoutDistribution } rangeCallback={ updateDistRange } />
             </Module>
             {
@@ -80,7 +80,7 @@ const SectionStatisticsWithFriend = ({ userProfile }) => {
                 friendRecords.filter(e => e.exercise === "BENCH_PRESS").length > 0 &&
                 friendRecords.filter(e => e.exercise === "SQUAT").length > 0 &&
                 friendRecords.filter(e => e.exercise === "DEADLIFT").length > 0 ?
-                    <Module title="Powerlift ratios">
+                    <Module title="Powerlifting profiles">
                         <ModuleBSD data={lsrec || lfrec  ? [] : [ selfRecords, friendRecords ]}/>
                     </Module> : <></>
             }
