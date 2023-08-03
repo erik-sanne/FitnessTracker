@@ -22,4 +22,11 @@ public class DateUtils {
         String yyyyww = DateUtils.FORMAT_YYYYww.format(cal.getTime());
         return Integer.parseInt(yyyyww);
     }
+
+    public static Date addMinutes(Date date, int minutes) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.MINUTE, minutes);
+        return c.getTime();
+    }
 }

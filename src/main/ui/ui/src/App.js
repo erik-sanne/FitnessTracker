@@ -11,6 +11,8 @@ import './styles/snow.css';
 import Background from "./Background";
 import Activate from "./components/Activate";
 import Overlay from "./Overlay";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 
 const authorizationStatus = {
     AUTHORIZED: "authorized",
@@ -73,6 +75,12 @@ function App() {
                     </Route>
                     <Route path="/register">
                         <Signup/>
+                    </Route>
+                    <Route path="/forgot-password">
+                        <ForgotPassword />
+                    </Route>
+                    <Route path="/change-password/:token">
+                        <ResetPassword />
                     </Route>
                     <Route path="/activate/:token">
                         <Activate />

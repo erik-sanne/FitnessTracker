@@ -6,5 +6,6 @@ import org.springframework.security.core.AuthenticationException;
 
 public interface EmailVerificationService {
     void createEmailVerificationToken(User user, final String email, String token);
+    void createForgotPasswordToken(final String email, String token);
     void verifyEmail(String tokenString) throws AuthenticationException, ResourceNotFoundException;
 }

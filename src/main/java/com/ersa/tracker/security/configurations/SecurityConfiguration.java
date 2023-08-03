@@ -46,6 +46,8 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(conf -> conf
                 .requestMatchers("/authenticate").permitAll()
                 .requestMatchers("/confirmEmail/**").permitAll()
+                .requestMatchers("/forgot-password").permitAll()
+                .requestMatchers("/change-password").permitAll()
                 .requestMatchers("/register").permitAll()
                 .requestMatchers("/actuator/**").hasAnyAuthority(User.Permissions.ADMIN, User.Permissions.MODERATOR)
                 .anyRequest().authenticated());

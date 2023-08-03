@@ -72,7 +72,10 @@ class Login extends React.Component {
                     <input name="password" type="password" value={ this.state.password } onChange={ this.onChange }/>
                     <br/>
                     <input type="submit" value="Log in" className={'btn-form'}/>
-                    <a href="/register">New user? Sign up here!</a>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5em 0'}}>
+                        <i><a href="/register">New user? Sign up here!</a></i>
+                        <i><a href="/forgot-password">Forgot password?</a></i>
+                    </div>
                 </form>
                 { this.state.reason && !this.state.msg && <p style={styleStatus}>Your credentials has expired and you need to login again</p>}
                 { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}

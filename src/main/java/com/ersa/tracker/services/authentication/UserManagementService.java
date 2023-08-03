@@ -1,9 +1,11 @@
 package com.ersa.tracker.services.authentication;
 
+import com.ersa.tracker.models.authentication.ChangePasswordToken;
 import com.ersa.tracker.models.authentication.EmailVerificationToken;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.authentication.UserToken;
 import com.ersa.tracker.repositories.authentication.AuthenticationTokenRepository;
+import com.ersa.tracker.repositories.authentication.ChangePasswordTokenRepository;
 import com.ersa.tracker.repositories.authentication.EmailVerificationTokenRepository;
 import com.ersa.tracker.repositories.authentication.UserRepository;
 import com.ersa.tracker.security.exceptions.EmailAlreadyRegisteredException;
@@ -30,20 +32,24 @@ import java.util.*;
 public class UserManagementService implements AccountService, AuthenticationService, EmailVerificationService {
 
     private static final int SESSION_TIMEOUT_MINUTES = 60 * 24 * 3;
+    private static final int VERIFY_EMAIL_MINUTES = 60 * 24 * 3;
+    public static final int CHANGE_PASSWORD_MINUTES = 10;
 
     private final UserRepository userRepository;
     private final AuthenticationTokenRepository authenticationTokenRepository;
     private final EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private final ChangePasswordTokenRepository changePasswordTokenRepository;
     private final PasswordEncoder pwEncoder;
 
     @Autowired
     public UserManagementService(final UserRepository userRepository,
                                  final AuthenticationTokenRepository authenticationTokenRepository,
                                  final EmailVerificationTokenRepository emailVerificationTokenRepository,
-                                 final PasswordEncoder pwEncoder) {
+                                 ChangePasswordTokenRepository changePasswordTokenRepository, final PasswordEncoder pwEncoder) {
         this.userRepository = userRepository;
         this.authenticationTokenRepository = authenticationTokenRepository;
         this.emailVerificationTokenRepository = emailVerificationTokenRepository;
+        this.changePasswordTokenRepository = changePasswordTokenRepository;
         this.pwEncoder = pwEncoder;
     }
 
@@ -91,6 +97,28 @@ public class UserManagementService implements AccountService, AuthenticationServ
         User user = getUserByPrincipal(principal);
         user.setPassword(pwEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+    @Override
+    public void validateTokenAndChangePassword(String token, String newPassword) {
+        ChangePasswordToken cpToken = changePasswordTokenRepository.findByToken(token);
+        if (cpToken == null) {
+            log.warn("Failed to change password, no token found in database: {}.", token);
+            return; // No exceptions, log only
+        }
+
+        if (new Date().after(cpToken.getExpiryDate())) {
+            log.warn("Failed to change password, token has expired: {}.", token);
+            return;
+        }
+
+        User user = cpToken.getUser();
+        user.setPassword(pwEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        changePasswordTokenRepository.delete(cpToken);
+
+        signoutAndRemoveSessionToken(user);
     }
 
     @Override
@@ -146,7 +174,7 @@ public class UserManagementService implements AccountService, AuthenticationServ
 
     public void createEmailVerificationToken(final User user, final String email, final String token) {
         EmailVerificationToken emailVerificationToken = new EmailVerificationToken();
-        final Date expires = getExpiry(SESSION_TIMEOUT_MINUTES);
+        final Date expires = getExpiry(VERIFY_EMAIL_MINUTES);
         emailVerificationToken.setUser(user);
         emailVerificationToken.setEmail(email);
         emailVerificationToken.setToken(token);
@@ -157,6 +185,23 @@ public class UserManagementService implements AccountService, AuthenticationServ
                 emailVerificationToken.getToken());
         emailVerificationTokenRepository.save(emailVerificationToken);
         log.info("Email verification token created for user {}.", user.getId());
+    }
+
+    @Override
+    public void createForgotPasswordToken(String email, String token) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            log.error("Forgot password invoked on non registered email");
+            throw new ResourceNotFoundException("User does not exist");
+        }
+
+        ChangePasswordToken changePasswordToken = new ChangePasswordToken();
+        final Date expires = getExpiry(CHANGE_PASSWORD_MINUTES);
+        changePasswordToken.setUser(user);
+        changePasswordToken.setToken(token);
+        changePasswordToken.setExpiryDate(expires);
+        changePasswordTokenRepository.save(changePasswordToken);
+        log.info("Creating token for changing password for user {}, tokenID: {} token: {}", user, changePasswordToken.getId(), token);
     }
 
     public void verifyEmail(final String tokenString) throws AuthenticationException, ResourceNotFoundException {

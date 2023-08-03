@@ -11,7 +11,7 @@ public final class SendEmailEvent extends ApplicationEvent {
     private String url;
 
     public SendEmailEvent(final EventType eventType, final User user, final String email, final String url) {
-        super(user);
+        super(eventType);
         this.user = user;
         this.url = url;
         this.email = email;
@@ -51,7 +51,7 @@ public final class SendEmailEvent extends ApplicationEvent {
     }
 
     public enum EventType {
-        RegistrationComplete, RequestEmailChange;
+        RegistrationComplete, RequestEmailChange, ForgotPassword;
 
 
         @Override
@@ -59,6 +59,7 @@ public final class SendEmailEvent extends ApplicationEvent {
             return switch (this) {
                 case RegistrationComplete -> "EventType[Registration Complete]";
                 case RequestEmailChange -> "EventType[Email Change]";
+                case ForgotPassword -> "EventType[Forgot Password]";
             };
         }
     }

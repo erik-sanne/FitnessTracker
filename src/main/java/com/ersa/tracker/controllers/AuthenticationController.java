@@ -14,6 +14,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.util.Strings;
 import org.hibernate.validator.constraints.Length;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,9 +81,26 @@ public class AuthenticationController {
         return ResponseEntity.ok("A verification email has been sent!");
     }
 
-    @PostMapping("/change-password")
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody final EmailDto emailDto, HttpServletRequest request) {
+        eventPublisher.publishEvent(new SendEmailEvent(SendEmailEvent.EventType.ForgotPassword, null, emailDto.getEmail(), request.getServerName()));
+        return ResponseEntity.ok("Password reset email sent!");
+    }
+
+    @PostMapping("/change-password") //Permit all, both for change- and forgot-password
     public ResponseEntity<?> changePassword(@Valid @RequestBody final ChangePasswordDto passwordDto,
                                             final Principal principal) {
+
+        if (Strings.isBlank(passwordDto.oldPassword) && Strings.isBlank(passwordDto.token)) {
+            log.error("Neither password, nor token, was supplied for change password!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+
+        if (Strings.isNotBlank(passwordDto.token)) {
+            accountService.validateTokenAndChangePassword(passwordDto.token, passwordDto.newPassword);
+            return ResponseEntity.ok("Password changed");
+        }
+
         try {
             User user = accountService.getUserByPrincipal(principal);
             accountService.authenticate(user.getEmail(), passwordDto.oldPassword);
@@ -152,6 +170,7 @@ public class AuthenticationController {
         @Pattern(regexp = "^(?=\\S+$).*$", message = "Password must not contain whitespaces")
         private String newPassword;
         private String oldPassword;
+        private String token; //If password not supplied
     }
 
     private static class SignupRequest {

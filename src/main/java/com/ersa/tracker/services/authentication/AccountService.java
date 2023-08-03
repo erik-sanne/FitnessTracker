@@ -12,5 +12,6 @@ public interface AccountService {
     boolean doesUserExist(String email);
     void authenticate(String email, String password) throws AuthenticationException;
     void changePassword(Principal principal, String newPassword);
+    void validateTokenAndChangePassword(String token, String newPassword);
     User getUserByPrincipal(Principal principal) throws UsernameNotFoundException;
 }

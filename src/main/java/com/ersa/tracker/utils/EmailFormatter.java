@@ -19,12 +19,19 @@ public class EmailFormatter {
     @Value("classpath:mailtemplates/change_email.html")
     private Resource changeEmailTemplate;
 
+    @Value("classpath:mailtemplates/reset_password.html")
+    private Resource resetPasswordTemplate;
+
     public Template registrationEmail() {
         return new Template(registrationTemplate);
     }
 
     public Template changeEmailTemplate() {
         return new Template(changeEmailTemplate);
+    }
+
+    public Template resetPasswordTemplate() {
+        return new Template(resetPasswordTemplate);
     }
 
     public class Template {
@@ -55,6 +62,16 @@ public class EmailFormatter {
 
         public Template withActivationLink(String activationLink) {
             content = StringUtils.replace(content, "{{ACTIVATION_LINK}}", activationLink);
+            return this;
+        }
+
+        public Template withResetLink(String activationLink) {
+            content = StringUtils.replace(content, "{{RESET_LINK}}", activationLink);
+            return this;
+        }
+
+        public Template withValidityMinutes(String activationLink) {
+            content = StringUtils.replace(content, "{{VALID_MINUTES}}", activationLink);
             return this;
         }
 
