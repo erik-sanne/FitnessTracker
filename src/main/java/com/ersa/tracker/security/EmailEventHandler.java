@@ -8,16 +8,17 @@ import com.ersa.tracker.services.authentication.UserManagementService;
 import com.ersa.tracker.utils.DateUtils;
 import com.ersa.tracker.utils.EmailFormatter;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -113,13 +114,13 @@ public final class EmailEventHandler implements ApplicationListener<SendEmailEve
         try {
             MimeMessage mail = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mail, true);
-            helper.setFrom("no-reply@erik-sanne.com");
+            helper.setFrom(new InternetAddress("no-reply@erik-sanne.com", "Gainz Tracker"));
             helper.setTo(recipient);
             helper.setSubject(subject);
             helper.setText(messageBody, true);
             mailSender.send(mail);
             log.info("Email sent!");
-        } catch (MessagingException | MailException e) {
+        } catch (MessagingException | MailException | UnsupportedEncodingException e) {
             log.error("Failed to send email", e);
         }
     }
