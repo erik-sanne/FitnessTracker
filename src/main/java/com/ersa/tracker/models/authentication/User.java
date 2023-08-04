@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Date;
+
 
 @Entity(name = "users")
 public final class User {
@@ -25,6 +27,9 @@ public final class User {
     @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserProfile userProfile;
+
+    @JsonIgnore
+    private Date lastLogin;
 
     @JsonIgnore
     private boolean verified = false;
@@ -83,6 +88,14 @@ public final class User {
 
     public void setUserProfile(final UserProfile userProfile) {
         this.userProfile = userProfile;
+    }
+
+    public Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
     public boolean isVerified() {

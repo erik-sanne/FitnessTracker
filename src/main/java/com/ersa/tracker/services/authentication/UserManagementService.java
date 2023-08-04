@@ -158,6 +158,7 @@ public class UserManagementService implements AccountService, AuthenticationServ
         authenticationTokenRepository.save(sessionToken);
 
         user.setToken(sessionToken);
+        user.setLastLogin(new Date());
         userRepository.save(user);
 
         log.info("Authentication token created for user {}.", user.getId());
