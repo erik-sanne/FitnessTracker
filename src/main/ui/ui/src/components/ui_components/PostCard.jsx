@@ -25,10 +25,6 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
         setReplies(showAllComments ? post.replies : post.replies.map(a => a).splice(-2))
     }, [showAllComments, post])
 
-    const date = (date) => {
-        return new Date(`${date.replace(/ /g,"T")}`).toString().match(/(.*[0-9]{4} [0-9]{2}:[0-9]{2})/g)
-    }
-
     return (
         <div className={"post"} style={ notices.some( notice => notice.postId === post.postId ) ? noticeStyle : {}} >
             <div style={{ position: 'relative' }}>
@@ -36,7 +32,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
                     <NavLink to={ `/profile/${post.authorId}` }>
                         <ProfileDisplay displayName={
                             post.toUser ? post.authorName + " > " + post.toUser.name : post.authorName
-                        } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ `${date(post.date)} ${ post.edited ? '(edited)' : ''}` } />
+                        } profilePicture={ myprofile.userId === post.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === post.authorId)[0] && myprofile.friends.filter(f => f.userId === post.authorId)[0].profilePicture } title={ `${post.date} ${ post.edited ? '(edited)' : ''}` } />
                     </NavLink>    
                 </div>
                 { post.autoPosted ?
@@ -60,7 +56,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
                         <ProfileDisplay
                             profilePicture={ myprofile.userId === reply.authorId ? myprofile.profilePicture : myprofile.friends.filter(f => f.userId === reply.authorId)[0] && myprofile.friends.filter(f => f.userId === reply.authorId)[0].profilePicture }
                             displayName={ reply.authorName }
-                            title={ `${date(reply.date)} ${ reply.edited ? '(edited)' : ''}`  }/>
+                            title={ `${reply.date} ${ reply.edited ? '(edited)' : ''}`  }/>
                         {myprofile.userId === reply.authorId &&
                         <OptionsButton style={{right: '5px', top: '0'}}>
                             <Option icon={faPen} text={'Edit post'} callback={() => { editPostCallback({id: reply.postId, text: reply.message}) }}/>

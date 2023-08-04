@@ -57,7 +57,7 @@ public final class EmailEventHandler implements ApplicationListener<SendEmailEve
         final String token = UUID.randomUUID().toString();
         emailService.createEmailVerificationToken(user, event.getEmail(), token);
 
-        String verificationLink = String.format("%s/%s?", EMAIL_VERIFICATION_LINK_BASE, token);
+        String verificationLink = String.format("%s/%s", EMAIL_VERIFICATION_LINK_BASE, token);
 
         String recipient = event.getEmail();
 
@@ -76,7 +76,7 @@ public final class EmailEventHandler implements ApplicationListener<SendEmailEve
         final String token = UUID.randomUUID().toString();
         emailService.createEmailVerificationToken(user, event.getEmail(), token);
 
-        String verificationLink = String.format("%s/%s?", EMAIL_VERIFICATION_LINK_BASE, token);
+        String verificationLink = String.format("%s/%s", EMAIL_VERIFICATION_LINK_BASE, token);
 
         String recipient = event.getEmail();
 
@@ -99,7 +99,7 @@ public final class EmailEventHandler implements ApplicationListener<SendEmailEve
             return;
         }
 
-        String changePasswordLink = String.format("%s/%s?", FORGOT_PASSWORD_LINK_BASE, token);
+        String changePasswordLink = String.format("%s/%s", FORGOT_PASSWORD_LINK_BASE, token);
         String recipient = event.getEmail();
         String subject = "Change password";
 
