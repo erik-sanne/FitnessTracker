@@ -4,11 +4,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateUtils {
     public static Locale LOCALE_SWE = new Locale("sv","SE");
+    public static TimeZone TZ_SWE = TimeZone.getTimeZone("Europe/Berlin");
     public static SimpleDateFormat FORMAT_YYYYww = new SimpleDateFormat("YYYYww", LOCALE_SWE);
     public static SimpleDateFormat FORMAT_yyyyMMddHHmm = new SimpleDateFormat("yyyy-MM-dd HH:mm", LOCALE_SWE);
+
+    static {
+        FORMAT_YYYYww.setTimeZone(TZ_SWE);
+        FORMAT_yyyyMMddHHmm.setTimeZone(TZ_SWE);
+    }
 
     public static int getWeekForDate(Date date) {
         String yyyyww = DateUtils.FORMAT_YYYYww.format(date.getTime());
