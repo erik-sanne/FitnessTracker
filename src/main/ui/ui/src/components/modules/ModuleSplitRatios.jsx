@@ -96,8 +96,17 @@ const asGradient = (ctx, [_, start, stop]) => {
 
 const createConfig = (setdata, ctx) => {
 
+
+    let sumAll = 0;
+    const sumEx = {};
+    setdata.forEach(obj => {
+        const sum = obj.values[1].reduce((acc, val) => acc+val, 0);
+        sumEx[obj.type] = sum;
+        sumAll += sum;
+    });
+
     const data = setdata.map(obj => ({
-        label: Utils.camelCase(obj.type),
+        label: Utils.camelCase(obj.type) + ` (${Math.round((sumEx[obj.type] / sumAll) * 100)}%)`,
         borderWidth: 2,
         borderColor: colors[obj.type][0],
         backgroundColor: asGradient(ctx, colors[obj.type]),
