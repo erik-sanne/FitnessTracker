@@ -191,19 +191,13 @@ const AppContent = ({ logoutCallback }) => {
                     </>
                 }
             </Modal>
-            { connectionStatus === CONNECTION_LOSS && <div style={{
-                position: 'sticky',
-                bottom: '0em',
-                padding: '1em',
-                background: 'rgba(0, 0, 0, 0.7)'
-            }}>
-                <FontAwesomeIcon icon={ faExclamationTriangle } style={{ color: '#ff8f00' }} /> Connection Loss...
-                <Spinner animation={"border"} style={{
-                    width: '1em',
-                    height: '1em',
-                    border: '0.1em solid currentcolor',
-                    borderRightColor: 'transparent'
-                }}/></div> }
+            { connectionStatus === CONNECTION_LOSS && <div className={'alert-msg'}>
+                <FontAwesomeIcon icon={ faExclamationTriangle } style={{ color: '#ff8f00' }} /> <Spinner animation={"border"} style={{
+                width: '1em',
+                height: '1em',
+                border: '0.1em solid currentcolor',
+                borderRightColor: 'transparent'
+            }}/> Connection Loss... </div> }
         </>
     );
 }
