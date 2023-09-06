@@ -18,6 +18,7 @@ import ModuleWeeklyMissions from "./modules/ModuleWeeklyMissions";
 import ModuleSplitRatios from "./modules/ModuleSplitRatios";
 import SwiperWrapper from "./ui_components/swiper/SwiperWrapper";
 import {SwiperSlide} from "swiper/react";
+import ModuleWorkoutDistributionOverTime from "./modules/ModuleWorkoutDistributionOverTime";
 
 const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
@@ -66,6 +67,9 @@ const SectionStatistics = () => {
                         </SwiperSlide>
                         <SwiperSlide>
                             <ModuleSplitRatios />
+                        </SwiperSlide>
+                        <SwiperSlide>
+                            <ModuleWorkoutDistributionOverTime />
                         </SwiperSlide>
                     </SwiperWrapper>
                 </div>

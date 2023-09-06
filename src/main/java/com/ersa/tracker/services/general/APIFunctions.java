@@ -28,6 +28,9 @@ public class APIFunctions implements APIService {
 
     private final int DEFAULT_WTC = 30;
 
+    final float SCALE_FACTOR_PRIMARY = 1f;
+    final float SCALE_FACTOR_SECONDARY = 0.5f;
+
     @Autowired
     public APIFunctions(final WorkoutService workoutService,
                         final ExerciseService exerciseService,
@@ -106,6 +109,63 @@ public class APIFunctions implements APIService {
     }
 
     @Override
+    public Map<String, List<Number>> getBodyPartDistributionOverTime(User user) {
+        final String DATES = "dates";
+        List<Workout> workouts = workoutService.getWorkouts(user);
+        Collections.reverse(workouts);
+
+        Map<String, List<Number>> res = new HashMap<>();
+        targetRepository.findAll().forEach(target -> res.put(target.getName(), new ArrayList<>(workouts.size())));
+        res.put(DATES, new ArrayList<>(workouts.size()));
+
+        workouts.forEach(workout -> {
+            res.forEach((key, arr) -> {
+                if (DATES.equals(key))
+                    arr.add(0L);
+                else
+                    arr.add(0f);
+            });
+        });
+
+        for (int i = 0; i < workouts.size(); i++) {
+            final int index = i;
+            Workout workout = workouts.get(i);
+            List<Exercise> exercises = workout.getSets().stream()
+                    .map(WorkoutSet::getExercise)
+                    .map(exerciseService::getExerciseByName)
+                    .toList();
+
+            Long milli = workout.getDate().toInstant().toEpochMilli();
+            res.get(DATES).set(index, milli);
+
+            res.forEach((key, arr) -> {
+                if (!DATES.equalsIgnoreCase(key) && index > 0)
+                    arr.set(index, arr.get(index-1));
+            });
+
+            exercises.stream()
+                    .map(Exercise::getPrimaryTargets)
+                    .flatMap(Collection::stream)
+                    .map(Target::getName)
+                    .forEach(bodyPart -> addExercise(res, index, bodyPart, SCALE_FACTOR_PRIMARY));
+
+            exercises.stream()
+                    .map(Exercise::getSecondaryTargets)
+                    .flatMap(Collection::stream)
+                    .map(Target::getName)
+                    .forEach(bodyPart -> addExercise(res, index, bodyPart, SCALE_FACTOR_SECONDARY));
+        }
+
+        return res;
+    }
+
+    private void addExercise(Map<String, List<Number>> map, int index, String bodyPart, Float scaleFactor) {
+        List<Number> list = map.get(bodyPart);
+        Float currentVal = (Float)list.get(index);
+        list.set(index, currentVal + scaleFactor);
+    }
+
+    @Override
     public PredictedORM getPredictedORM(User user, String exercise) {
         List<Workout> workouts = workoutService.getWorkouts(user, DEFAULT_WTC);
         List<WorkoutSet> sets = workouts.stream().map(Workout::getSets).flatMap(Collection::stream).filter(set -> set.getExercise().equals(exercise)).collect(Collectors.toList());
@@ -156,8 +216,6 @@ public class APIFunctions implements APIService {
             resultMap.put(target.getName(), 0f);
         }
 
-        final float primaryWeight = 1f;
-        final float secondaryWeight = 0.5f;
         while (iterator.hasNext()) {
             Workout workout = iterator.next();
 
@@ -165,12 +223,12 @@ public class APIFunctions implements APIService {
                 Exercise exercise = exerciseService.getExerciseByName(set.getExercise());
                 exercise.getPrimaryTargets().forEach(target -> {
                     float prevValue = resultMap.get(target.getName());
-                    resultMap.put(target.getName(), prevValue + primaryWeight);
+                    resultMap.put(target.getName(), prevValue + SCALE_FACTOR_PRIMARY);
                 });
 
                 exercise.getSecondaryTargets().forEach(target -> {
                     float prevValue = resultMap.get(target.getName());
-                    resultMap.put(target.getName(), prevValue + secondaryWeight);
+                    resultMap.put(target.getName(), prevValue + SCALE_FACTOR_SECONDARY);
                 });
             }
         }

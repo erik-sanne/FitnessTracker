@@ -132,6 +132,13 @@ public class WorkoutController {
         return apiService.getWorkoutDistribution(friend);
     }
 
+    @GetMapping("api/distribution-over-time")
+    public Map<String, List<Number>> getSetsPerBodypart(final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return apiService.getBodyPartDistributionOverTime(currentUser);
+
+    }
+
     @GetMapping("api/setAverages/{exercise}")
     public List<SetAverage> getExercises(@PathVariable final String exercise, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
