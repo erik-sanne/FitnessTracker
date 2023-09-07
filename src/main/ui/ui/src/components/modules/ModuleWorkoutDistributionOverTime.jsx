@@ -29,28 +29,26 @@ const ModuleWorkoutDistributionOverTime = () => {
                 </div>
 }
 
-const colorArray = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
-    '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
-    '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
-    '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
-    '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC',
-    '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399',
-    '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680',
-    '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
-    '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3',
-    '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
 
 const createConfig = (setdata) => {
 
+    const sum = (arr) => arr.reduce((a, b) => a+b, 0)
 
     const dates = setdata['dates'].map(d => new Date(d));
 
-    const data = Object.keys(setdata).filter(key => key !== 'dates').map((bodyPart, index) => ({
-        label: Utils.camelCase(bodyPart.replace("_", " ")),
+    const data = Object.keys(setdata)
+        .filter(key => key !== 'dates')
+        .map(a => ({ label: a, values: setdata[a], sum: sum(setdata[a]) }))
+        .sort((a, b) => b.sum - a.sum)
+
+    const sumTot = data.reduce((a, b) => a + b.sum, 0)
+
+    const dataset = data.map((bodyPart, index) => ({
+        label: Utils.camelCase(bodyPart.label.replace("_", " ")) + ` (${(100 * bodyPart.sum/sumTot).toFixed(1)}%)`,
         borderWidth: 2,
-        data: setdata[bodyPart],
-        borderColor: colorArray[index],
-        backgroundColor: "rgba(0,0,0,0)",
+        data: bodyPart.values,
+        backgroundColor: 'rgba(60,96,140,0.1)',
+        borderColor: 'rgba(107,166,239,0.5)',
         lineTension: 0,
         pointStyle: 'circle'
     }))
@@ -60,7 +58,7 @@ const createConfig = (setdata) => {
         type: 'line',
         data: {
             labels: dates,
-            datasets: data
+            datasets: dataset
         },
         options: {
             legend: {
@@ -89,6 +87,7 @@ const createConfig = (setdata) => {
                 yAxes: [{
                     stacked: true,
                     display: false,
+                    position: "left",
                     ticks: {
                         fontFamily: 'Quicksand',
                         fontStyle: 'bold',
