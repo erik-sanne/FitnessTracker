@@ -6,6 +6,7 @@ import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.repositories.MissionRepository;
 import com.ersa.tracker.repositories.UserProfileRepository;
+import com.ersa.tracker.services.general.season.SeasonService;
 import com.ersa.tracker.utils.DateUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,6 +26,7 @@ public class TemplateResolver {
     private UserProfileRepository userProfileRepository;
     private MissionRepository missionRepository;
     private List<MissionTemplate> allMissionTemplates;
+    private SeasonService seasonService;
 
 
     public List<MissionDto> getActive(User user) {
@@ -50,6 +52,7 @@ public class TemplateResolver {
                 UserProfile profile  = user.getUserProfile();
                 profile.setScore(profile.getScore() + template.getReward());
                 userProfileRepository.save(profile);
+                seasonService.addScore(profile, template.getReward());
             }
 
             dtos.add(new MissionDto(

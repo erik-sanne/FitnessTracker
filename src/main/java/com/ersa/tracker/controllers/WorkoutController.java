@@ -13,6 +13,7 @@ import com.ersa.tracker.services.general.PRService;
 import com.ersa.tracker.services.general.WorkoutService;
 import com.ersa.tracker.services.general.achivements.AchievementService;
 import com.ersa.tracker.services.general.missions.TemplateResolver;
+import com.ersa.tracker.services.general.season.SeasonService;
 import com.ersa.tracker.services.user.ProfileService;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,6 +35,7 @@ public class WorkoutController {
     private final ProfileService profileService;
     private final AchievementService achievementService;
     private final TemplateResolver missionResolver;
+    private final SeasonService seasonService;
 
     @GetMapping("api/workouts")
     public List<WorkoutSummary> getWorkouts(final Principal principal, @RequestParam(name = "from", defaultValue = "0") Integer from, @RequestParam(name = "to", defaultValue = "999999") Integer to) {
@@ -213,6 +215,12 @@ public class WorkoutController {
     public StatsDto getHardStats(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         return workoutService.getStats(currentUser);
+    }
+
+    @GetMapping("api/current-season")
+    public SeasonDto getCurrentSeason(final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return seasonService.getCurrentSeason(currentUser.getUserProfile());
     }
 
     @GetMapping("api/stats/{userId}")

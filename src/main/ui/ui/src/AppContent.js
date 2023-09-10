@@ -22,6 +22,8 @@ import SectionProfile from "./components/SectionProfile";
 import ModalLoader from "./components/ui_components/ModalLoader";
 import {faGem} from "@fortawesome/free-regular-svg-icons";
 import Spinner from "react-bootstrap/Spinner";
+import FooterMenu from "./components/ui_components/FooterMenu";
+import SectionChallenge from "./components/SectionChallenge";
 
 const AppContent = ({ logoutCallback }) => {
     const NOT_LOADED = "NOT_LOADED";
@@ -157,6 +159,10 @@ const AppContent = ({ logoutCallback }) => {
                             <Header title={ "User profile" } onClick={ burgerClick } />
                             <SectionProfile myProfile={ currentUserProfile } />
                         </Route>
+                        <Route path="/challenge">
+                            <Header title={ "Weekly challenges" } onClick={ burgerClick } />
+                            <SectionChallenge />
+                        </Route>
                         <Route path="/achievements">
                             <Header title={ "My Achievements" } onClick={ burgerClick } />
                             <SectionAchievements userProfile={ currentUserProfile } updateUserProfile={ updateUserProfile }/>
@@ -171,6 +177,7 @@ const AppContent = ({ logoutCallback }) => {
                         </Route>
                         <Redirect from="/" to="/general" />
                     </Switch>
+                    <FooterMenu />
                 </section>
                 <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } userProfile={ currentUserProfile } />
                 <Burger onClick={ burgerClick } open={ menuOpen } userProfile={ currentUserProfile } />

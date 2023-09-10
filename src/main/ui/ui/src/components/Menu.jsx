@@ -1,7 +1,7 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBook, faChartPie, faPlusCircle, faTrophy, faUserFriends} from "@fortawesome/free-solid-svg-icons";
+import {faBook, faChartPie, faPlusCircle, faTrophy, faUserFriends, faStar} from "@fortawesome/free-solid-svg-icons";
 import {useMediaQuery} from 'react-responsive';
 import '../styles/glitch.css';
 import ProfileDisplay from "./ui_components/ProfileDisplay";
@@ -50,6 +50,11 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                             <FontAwesomeIcon icon={ faBook } style={{ width: '1em', marginRight: '25px'}}/>Logbook</NavLink>
                     </li>
                     <li>
+                        <NavLink to="/challenge" activeStyle={ activeClass } onClick={ onNavigate } >
+                            <FontAwesomeIcon icon={ faTrophy } style={{ width: '1em', marginRight: '25px'}}/>Weekly challanges
+                        </NavLink>
+                    </li>
+                    <li>
                         <NavLink to="/social" activeStyle={ activeClass } onClick={ onNavigate } style={{ position: 'relative' }} >
 
                             <FontAwesomeIcon icon={ faUserFriends } style={{ width: '1em', marginRight: '25px'}}/>{ userProfile.notices.length > 0 && <span className={'counter'} style={{left: '60px',
@@ -58,7 +63,7 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                     </li>
                     <li>
                         <NavLink to="/achievements" activeStyle={ activeClass } onClick={ onNavigate } >
-                            <FontAwesomeIcon icon={ faTrophy } style={{ width: '1em', marginRight: '25px'}}/>Achievements
+                            <FontAwesomeIcon icon={ faStar } style={{ width: '1em', marginRight: '25px'}}/>My achievements
                         </NavLink>
                     </li>
                     <li>

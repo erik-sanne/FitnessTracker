@@ -68,7 +68,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
                 </div>)}
             </div>
             <div className={"text-area"} style={{ display: 'flex' }}>
-                <ProfileDisplay profilePicture={ myprofile.profilePicture } />
+
                 <FormWrap><input type={ 'text' } placeholder={ 'Write a comment...' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/></FormWrap>
             </div>
         </div>

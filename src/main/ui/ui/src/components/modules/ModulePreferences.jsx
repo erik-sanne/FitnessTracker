@@ -63,7 +63,7 @@ const ModulePreferences = ({ userProfile }) => {
                 <div onClick={ () => setNoQuickNew(!noQuickNew) }>
                     <Switch color="primary" checked={ noQuickNew }/>
                     <label style={{ cursor: 'pointer' }}>
-                        Hide quick-button for new workout
+                        Hide new workout shortcut on large screens
                     </label>
                 </div>
                 <br />

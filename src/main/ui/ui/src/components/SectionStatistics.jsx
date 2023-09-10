@@ -14,7 +14,6 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {NavLink} from "react-router-dom";
 import LocalStorage from "../services/LocalStorage";
 import ModuleExerciseDistribution from "./modules/ModuleExerciseDistribution";
-import ModuleWeeklyMissions from "./modules/ModuleWeeklyMissions";
 import ModuleSplitRatios from "./modules/ModuleSplitRatios";
 import SwiperWrapper from "./ui_components/swiper/SwiperWrapper";
 import {SwiperSlide} from "swiper/react";
@@ -47,9 +46,6 @@ const SectionStatistics = () => {
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
-            <Module title={ "Weekly missions" } className={ "missions" }>
-                <ModuleWeeklyMissions />
-            </Module>
             <Module title = "Weekly workouts" className={ "weekly" }>
                 <ModuleWorkoutDays data={ !loadingWorkouts ? [ selfWorkoutsPerWeek ] : [] } />
             </Module>
@@ -100,7 +96,7 @@ const SectionStatistics = () => {
 
             { !LocalStorage.get("user_preferences", 'noQuickNew', false) &&
                 <NavLink to="/new">
-                    <div style={addWrapStyle}>
+                    <div style={addWrapStyle} className={ 'quick-add' }>
                             <FontAwesomeIcon icon={ faPlus } style={addInnerStyle}/>
                     </div>
                 </NavLink>
