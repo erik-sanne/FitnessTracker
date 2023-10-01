@@ -20,7 +20,7 @@ public class Notice {
     private Post source;
 
     @JsonProperty(value = "postId")
-    private Long permissionLevel() {
+    private Long sourceId() {
         return source.getId();
     }
 

@@ -18,7 +18,7 @@ const FooterMenu = () => {
             </div>
             <div>
                 <NavLink to="/new">
-                    <FontAwesomeIcon icon={ faPlusCircle } style={{ fontSize: '3em' }}/>
+                    <FontAwesomeIcon icon={ faPlusCircle } style={{ fontSize: '2.5em' }}/>
                 </NavLink>
             </div>
             <div>
