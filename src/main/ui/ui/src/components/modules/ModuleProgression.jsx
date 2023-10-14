@@ -332,7 +332,7 @@ const ModuleProgression = () => {
                                             <Slider
                                                 style={{ margin: '0 auto 1em auto', width: '80%' }}
                                                 value={ interpolation }
-                                                onChange={(event, val) => setInterpolation(val) }
+                                                onChange={(event, val) => { event.stopPropagation(); setInterpolation(val) }}
                                                 valueLabelDisplay="auto"
                                                 min={1}
                                                 max={10}
