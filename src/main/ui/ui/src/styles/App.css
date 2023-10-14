@@ -531,6 +531,7 @@ body {
 .select-container {
   padding: 4px 0 !important;
   font-size: min(calc(10px + 3.5vmin), 16px) !important;
+  text-align: left;
 }
 
 .select__value-container {

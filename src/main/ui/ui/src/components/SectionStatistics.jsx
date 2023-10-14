@@ -57,7 +57,7 @@ const SectionStatistics = () => {
             </Module>
             <Module title="General statistics" className={ "exercise-distribution" } style={{ paddingBottom: '0em'}}>
                 <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
-                    <SwiperWrapper>
+                    <SwiperWrapper touchStartPreventDefault={false}>
                         <SwiperSlide>
                             <ModuleExerciseDistribution />
                         </SwiperSlide>

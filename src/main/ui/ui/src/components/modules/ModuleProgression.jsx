@@ -351,6 +351,8 @@ const ModuleProgression = () => {
                     </div>
 
                     <Select
+                        menuPortalTarget={document.body}
+                        menuPosition={'fixed'} 
                         defaultValue={ selectedExercise }
                         onChange={ setSelectedExercise }
                         options={ exercises.map(e =>{ return {value: e, label: camelCase(e.replace(/_/g, ' '))}}) }
