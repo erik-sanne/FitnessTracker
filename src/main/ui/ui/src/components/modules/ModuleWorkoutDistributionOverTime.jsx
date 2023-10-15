@@ -46,25 +46,25 @@ const ModuleWorkoutDistributionOverTime = () => {
 
 const createConfig = (setdata, selected) => {
 
-    const sum = (arr) => arr.reduce((a, b) => a+b, 0)
-
     const dates = setdata['dates'].map(d => new Date(d));
 
     const data = Object.keys(setdata)
         .filter(key => key !== 'dates')
-        .map(a => ({ label: a, values: setdata[a], sum: sum(setdata[a]) }))
+        .map(a => ({ label: a, values: setdata[a], sum: setdata[a][setdata[a].length - 1] }))
         .sort((a, b) => b.sum - a.sum)
 
     const sumTot = data.reduce((a, b) => a + b.sum, 0)
 
-    const dataset = data.map((bodyPart, index) => {
-        const label = Utils.camelCase(bodyPart.label.replace("_", " ")) + ` (${(100 * bodyPart.sum/sumTot).toFixed(1)}%)`
+    const dataMormalized = data.map(({label, values, sum}) => ({label: label, values: values.map((a) => a / sumTot), sum: sum / sumTot}))
+
+    const dataset = dataMormalized.map((bodyPart, index) => {
+        const label = Utils.camelCase(bodyPart.label.replace("_", " ")) + ` (${(100 * bodyPart.sum).toFixed(1)}%)`
         return ({
             label: label,
             borderWidth: 2,
             data: bodyPart.values,
             backgroundColor: selected && selected === label ? 'rgb(165,110,39)' : 'rgba(60,96,140,1)',
-            borderColor:  selected && selected === label ? 'rgb(239,169,107)' : 'rgba(107,166,239,1)',
+            borderColor:  index == data.length - 1 ? 'rgba(107,166,239,1)' : 'rgba(0,0,0,0)',
             lineTension: 0,
             pointStyle: 'circle'
     })})
@@ -101,11 +101,14 @@ const createConfig = (setdata, selected) => {
             scales: {
                 yAxes: [{
                     stacked: true,
-                    display: false,
-                    position: "left",
+                    display: true,
+                    position: "right",
                     ticks: {
                         fontFamily: 'Quicksand',
                         fontStyle: 'bold',
+                        callback: function (value) {
+                            return (value * 100).toFixed(0) + '%';
+                        },
                     }
                 }],
                 xAxes: [{

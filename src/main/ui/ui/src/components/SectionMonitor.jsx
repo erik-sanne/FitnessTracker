@@ -47,10 +47,10 @@ const SectionMonitor = () => {
                         <>
                             <h4>Status:</h4>
                             <div>
-                                <span>UI build time: </span><span>{preval`module.exports = new Date().toLocaleString('sv-SE');`}. ({ time && new Date(new Date() - new Date(preval`module.exports = new Date()`)).toISOString().substr(11, 8) }).</span>
+                                <span>UI build time: </span><span>{preval`module.exports = new Date().toLocaleString('sv-SE', {timeZone: "Europe/Berlin"});`}. (Uptime: { time && new Date(new Date() - new Date(preval`module.exports = new Date()`)).toISOString().substr(11, 8) }).</span>
                             </div>
                             <div>
-                                <span>Latest deploy: </span><span>{ time && new Date(new Date() - new Date((time * 1000))).toLocaleString('sv-SE') }. ({ time && new Date((time * 1000)).toISOString().substr(11, 8) })</span>
+                                <span>Last API deploy: </span><span>{ time && new Date(new Date() - new Date((time * 1000))).toLocaleString('sv-SE') }. (Uptime: { time && new Date((time * 1000)).toISOString().substr(11, 8) })</span>
                             </div>
                             <div>
                                 <span>API health check: </span><span>{ health === 'UP' ? <FontAwesomeIcon icon={faCheckCircle} style={{color: "green" }}/> : <FontAwesomeIcon icon={faExclamationTriangle} style={{color: "orange" }}/> }</span>
