@@ -7,6 +7,7 @@ import Graph from "./modules/Graph";
 import {faCheckCircle} from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
 import get from "../services/Get.jsx";
+import preval from 'preval.macro'
 
 const SectionMonitor = () => {
     const [ health, setHealth ] = useState('LOADING')
@@ -43,8 +44,18 @@ const SectionMonitor = () => {
 
                 { health === 'LOADING' ? <h4>Health Status: <Loader animation={"grow"}/></h4> :
                     <>
-                        <h4>Health Status: { health === 'UP' ? <FontAwesomeIcon icon={faCheckCircle} style={{color: "green" }}/> : <FontAwesomeIcon icon={faExclamationTriangle} style={{color: "orange" }}/> }</h4>
-                        <span>Time since last restart: { time && new Date((time * 1000)).toISOString().substr(11, 8) }</span>
+                        <>
+                            <h4>Status:</h4>
+                            <div>
+                                <span>UI build time: </span><span>{preval`module.exports = new Date().toLocaleString('sv-SE');`}. ({ time && new Date(new Date() - new Date(preval`module.exports = new Date()`)).toISOString().substr(11, 8) }).</span>
+                            </div>
+                            <div>
+                                <span>Latest deploy: </span><span>{ time && new Date(new Date() - new Date((time * 1000))).toLocaleString('sv-SE') }. ({ time && new Date((time * 1000)).toISOString().substr(11, 8) })</span>
+                            </div>
+                            <div>
+                                <span>API health check: </span><span>{ health === 'UP' ? <FontAwesomeIcon icon={faCheckCircle} style={{color: "green" }}/> : <FontAwesomeIcon icon={faExclamationTriangle} style={{color: "orange" }}/> }</span>
+                            </div>
+                        </>
                     </>
                 }
             </Module>
