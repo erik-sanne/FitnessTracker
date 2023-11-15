@@ -24,7 +24,7 @@ public class Season {
     Date startDate;
     Date endDate;
 
-    @OneToMany(mappedBy = "season")
+    @OneToMany(mappedBy = "season", fetch = FetchType.EAGER)
     List<SeasonWeek> weeks = new ArrayList<>();
 
     @OneToMany(mappedBy = "season")

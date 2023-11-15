@@ -137,6 +137,7 @@ public class SeasonManager implements SeasonService {
     }
 
     @Override
+    @Transactional
     public void preComputeScores() {
         Season season = getCurrentSeasonDB();
         if (season == null)
@@ -167,6 +168,8 @@ public class SeasonManager implements SeasonService {
         }
     }
 
+
+    @Transactional
     public void manageWeeks() {
         Season season = getCurrentSeasonDB();
         if (season == null)
