@@ -151,8 +151,8 @@ public class SeasonManager implements SeasonService {
 
             boolean isCurrentWeek = week.getWeekNumber() == DateUtils.getCurrentWeek();
 
+            int sum = 0;
             if (!isCurrentWeek) {
-                int sum = 0;
                 for (UserWeek userWeek : week.getUserWeeks()) {
                     sum += userWeek.getScore();
                     if (userWeek.getScore() > bestScore) {
@@ -164,7 +164,7 @@ public class SeasonManager implements SeasonService {
             week.setAverageScore(avgScore);
             week.setBestScore(bestScore);
             weekRepository.save(week);
-            log.info("Updated scores for season {} week {}", week.getSeason().getId(), week.getWeekNumber());
+            log.info("Updated scores for season {} week {}. Total score: {}", week.getSeason().getId(), week.getWeekNumber(), sum);
         }
     }
 
