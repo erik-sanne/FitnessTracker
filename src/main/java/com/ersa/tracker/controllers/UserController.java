@@ -9,6 +9,7 @@ import com.ersa.tracker.services.general.achivements.AchievementService;
 import com.ersa.tracker.services.user.FriendRequestManager;
 import com.ersa.tracker.services.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class UserController {
@@ -53,9 +55,11 @@ public class UserController {
     }
 
     @GetMapping(path = "/users/profile/cover", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] getCover(@RequestParam long userId, final Principal principal) {
+    public ResponseEntity<byte[]> getCover(@RequestParam long userId, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
-        return profileService.getCover(currentUser, userId);
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(3600, TimeUnit.SECONDS))
+                .body(profileService.getCover(currentUser, userId));
     }
 
     @PostMapping("/users/profile/cover")
