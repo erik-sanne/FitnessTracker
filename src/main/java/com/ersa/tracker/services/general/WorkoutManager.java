@@ -11,6 +11,7 @@ import com.ersa.tracker.repositories.WorkoutSetRepository;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,16 +29,19 @@ public class WorkoutManager implements WorkoutService {
     private final WorkoutSetRepository workoutSetRepository;
     private final ExerciseRepository exerciseRepository;
     private final PRService personalRecordService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     public WorkoutManager(final WorkoutRepository workoutRepository,
                           final PRService personalRecordService,
                           final WorkoutSetRepository workoutSetRepository,
-                          final ExerciseRepository exerciseRepository) {
+                          final ExerciseRepository exerciseRepository,
+                          final ApplicationEventPublisher applicationEventPublisher) {
         this.workoutRepository = workoutRepository;
         this.personalRecordService = personalRecordService;
         this.workoutSetRepository = workoutSetRepository;
         this.exerciseRepository = exerciseRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -98,6 +102,7 @@ public class WorkoutManager implements WorkoutService {
         workoutRepository.save(workout);
         log.info("User with id {} published new workout", user.getId());
         personalRecordService.updatePersonalRecords(user);
+        applicationEventPublisher.publishEvent(new NewWorkoutEvent(this));
     }
 
     @Override
@@ -123,6 +128,7 @@ public class WorkoutManager implements WorkoutService {
         persistedWorkout.setDate(submittedWorkout.getDate());
         persistedWorkout = workoutRepository.save(persistedWorkout);
         personalRecordService.updatePersonalRecords(user);
+        applicationEventPublisher.publishEvent(new NewWorkoutEvent(this));
         log.info("User with id {} edited workout {}", user.getId(), persistedWorkout.getId());
     }
 
@@ -130,6 +136,7 @@ public class WorkoutManager implements WorkoutService {
     public void deleteWorkout(final User user, final long workoutId) {
         workoutRepository.deleteById(workoutId);
         personalRecordService.updatePersonalRecords(user);
+        applicationEventPublisher.publishEvent(new NewWorkoutEvent(this));
         log.info("Workout with id {} removed by user with id {}", workoutId, user.getId());
     }
 

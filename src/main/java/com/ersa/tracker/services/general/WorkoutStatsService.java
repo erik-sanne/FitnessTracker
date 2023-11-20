@@ -11,14 +11,14 @@ import com.ersa.tracker.repositories.WTypeRepository;
 import com.ersa.tracker.utils.DateUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
 @Log4j2
-public class APIFunctions implements APIService {
+public class WorkoutStatsService implements APIService {
     private static final int MAX_YEARS_DISPLAY = 5;
 
     private final WorkoutService workoutService;
@@ -32,10 +32,10 @@ public class APIFunctions implements APIService {
     final float SCALE_FACTOR_SECONDARY = 0.5f;
 
     @Autowired
-    public APIFunctions(final WorkoutService workoutService,
-                        final ExerciseService exerciseService,
-                        final TargetRepository targetRepository,
-                        final WTypeRepository wTypeRepository) {
+    public WorkoutStatsService(final WorkoutService workoutService,
+                               final ExerciseService exerciseService,
+                               final TargetRepository targetRepository,
+                               final WTypeRepository wTypeRepository) {
         this.workoutService = workoutService;
         this.exerciseService = exerciseService;
         this.targetRepository = targetRepository;

@@ -2,7 +2,7 @@ package com.ersa.tracker.services.general.achivements;
 
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.models.authentication.User;
-import com.ersa.tracker.services.general.APIFunctions;
+import com.ersa.tracker.services.general.APIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.Iterator;
 public class Day1Week52Achievement extends AchievementProviderBase {
 
     @Autowired
-    APIFunctions funcs;
+    APIService funcs;
 
     @Override
     public String getName() {

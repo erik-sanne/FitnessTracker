@@ -5,6 +5,8 @@ import com.ersa.tracker.dto.SetAverage;
 import com.ersa.tracker.dto.Week;
 import com.ersa.tracker.dto.WorkoutSummary;
 import com.ersa.tracker.models.authentication.User;
+import org.hibernate.annotations.Comment;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
