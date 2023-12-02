@@ -35,6 +35,7 @@ const Splash = ({ show = true }) => {
             "Everyone has a little bit of Zyzz in them.",
             "The real workout starts when you want to stop",
             "Suffer now and live the rest of your life as a champion",
+            "We love casting spells!",
             ''
         ]
         return set[Math.floor(Math.random() * set.length)];
