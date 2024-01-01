@@ -140,6 +140,11 @@ public class SeasonManager implements SeasonService {
     @Transactional
     public void preComputeScores() {
         Season season = getCurrentSeasonDB();
+        if (season == null) {
+            //Should also compute score for finished but unclosed season
+            season = getUnclosedSeasonDB();
+        }
+
         if (season == null)
             return;
 
@@ -172,8 +177,9 @@ public class SeasonManager implements SeasonService {
     @Transactional
     public void manageWeeks() {
         Season season = getCurrentSeasonDB();
-        if (season == null)
+        if (season == null) {
             return;
+        }
 
         int currentWeek = DateUtils.getCurrentWeek();
 
@@ -187,6 +193,38 @@ public class SeasonManager implements SeasonService {
                 createWeek(season);
             }
         }
+    }
+
+    @Transactional
+    public void declareWinnerAndCloseSeason() {
+        Season season = getUnclosedSeasonDB();
+        if (season == null) {
+            log.warn("Trying to close season but no unclosed season found");
+            return;
+        }
+        log.info("Season {} ({}-{}) completed, will close...", season.getSeasonNumber(), season.getStartDate(), season.getEndDate());
+
+        List<UserTotal> totals = season.getUserTotals();
+        Optional<UserTotal> best = totals.stream().max((a, b) -> (int) (a.getScore() - b.getScore()));
+
+        if (best.isEmpty()) {
+            log.warn("Could not compute winner of season {}", season.getSeasonNumber());
+            return;
+        }
+
+        UserTotal winnerTotal = best.get();
+        log.info("Winner of season {} is {} (user id {}) with a total of {} score",
+                season.getSeasonNumber(),
+                winnerTotal.getUserProfile().getDisplayName(),
+                winnerTotal.getUserProfile().getUser().getId(),
+                winnerTotal.getScore());
+
+        season.setWinner(winnerTotal.getUserProfile());
+        seasonRepository.save(season);
+    }
+
+    public boolean hasCloseableSeason() {
+        return getUnclosedSeasonDB() != null;
     }
 
     private void createWeek(Season season) {
@@ -210,6 +248,25 @@ public class SeasonManager implements SeasonService {
                 now.after(season.getStartDate()) &&
                 now.before(season.getEndDate()))
                 .findFirst();
+
         return current.orElse(null);
+    }
+
+    private Season getUnclosedSeasonDB() {
+        Date now = new Date();
+        Stream<Season> seasons = StreamSupport.stream(seasonRepository.findAll().spliterator(), false);
+        List<Season> unfinished = seasons.filter(season ->
+                now.after(season.getStartDate()) &&
+                now.after(season.getEndDate()) &&
+                season.getWinner() == null).toList();
+        if (unfinished.isEmpty()) {
+            return null;
+        }
+
+        if (unfinished.size() > 1) {
+            log.error("Multiple ongoing seasons, {}", seasons);
+        }
+
+        return unfinished.get(0);
     }
 }

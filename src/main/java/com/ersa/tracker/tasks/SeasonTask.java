@@ -18,6 +18,7 @@ public class SeasonTask {
         log.info("Starting task to manage current season");
         manageWeeks();
         preComputeScores();
+        declareWinnerAndClose();
         log.info("Task complete");
     }
 
@@ -27,6 +28,12 @@ public class SeasonTask {
 
     private void preComputeScores() {
         seasonService.preComputeScores();
+    }
+
+    private void declareWinnerAndClose() {
+        if (seasonService.hasCloseableSeason()) {
+            seasonService.declareWinnerAndCloseSeason();
+        }
     }
 
 }

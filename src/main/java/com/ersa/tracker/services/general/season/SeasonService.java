@@ -8,4 +8,6 @@ public interface SeasonService {
     void addScore(UserProfile profile, long score);
     void preComputeScores();
     void manageWeeks();
+    void declareWinnerAndCloseSeason();
+    boolean hasCloseableSeason();
 }
