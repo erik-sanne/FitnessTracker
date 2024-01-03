@@ -59,10 +59,10 @@ const SectionStatistics = () => {
                 <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
                     <SwiperWrapper touchStartPreventDefault={false}>
                         <SwiperSlide>
-                            <ModuleExerciseDistribution />
+                            <ModuleSplitRatios />
                         </SwiperSlide>
                         <SwiperSlide>
-                            <ModuleSplitRatios />
+                            <ModuleExerciseDistribution />
                         </SwiperSlide>
                         <SwiperSlide>
                             <ModuleWorkoutDistributionOverTime />
