@@ -59,7 +59,7 @@ public class WorkoutGoalService implements GoalService {
 
         var now = Instant.now().atZone(DateUtils.TZ_SWE.toZoneId());
         var targetDate = goal.getEndDate().toInstant().atZone(DateUtils.TZ_SWE.toZoneId());
-        var weeksDiff = (float)ChronoUnit.WEEKS.between(now, targetDate);
+        var weeksDiff = (float)Math.max(ChronoUnit.WEEKS.between(now, targetDate), 0);
         var progressLeft = target - current;
         goalProgress.setWeeklyTarget(progressLeft / weeksDiff);
         return goalProgress;
