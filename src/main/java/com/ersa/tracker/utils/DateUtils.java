@@ -11,6 +11,7 @@ public class DateUtils {
     public static TimeZone TZ_SWE = TimeZone.getTimeZone("Europe/Berlin");
     public static SimpleDateFormat FORMAT_YYYYww = new SimpleDateFormat("YYYYww", LOCALE_SWE);
     public static SimpleDateFormat FORMAT_yyyyMMddHHmm = new SimpleDateFormat("yyyy-MM-dd HH:mm", LOCALE_SWE);
+    public static SimpleDateFormat FORMAT_yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd", LOCALE_SWE);
 
     static {
         FORMAT_YYYYww.setTimeZone(TZ_SWE);

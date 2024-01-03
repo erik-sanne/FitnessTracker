@@ -24,6 +24,7 @@ import {faGem} from "@fortawesome/free-regular-svg-icons";
 import Spinner from "react-bootstrap/Spinner";
 import FooterMenu from "./components/ui_components/FooterMenu";
 import SectionChallenge from "./components/SectionChallenge";
+import SectionGoals from './components/SectionGoals';
 
 const AppContent = ({ logoutCallback }) => {
     const NOT_LOADED = "NOT_LOADED";
@@ -158,6 +159,10 @@ const AppContent = ({ logoutCallback }) => {
                         <Route path="/profile/:friendId">
                             <Header title={ "User profile" } onClick={ burgerClick } />
                             <SectionProfile myProfile={ currentUserProfile } />
+                        </Route>
+                        <Route path="/goals">
+                            <Header title={ "My goals" } onClick={ burgerClick } />
+                            <SectionGoals />
                         </Route>
                         <Route path="/challenge">
                             <Header title={ "Weekly challenges" } onClick={ burgerClick } />

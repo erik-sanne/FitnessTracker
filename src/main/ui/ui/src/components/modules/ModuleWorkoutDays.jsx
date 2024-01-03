@@ -1,11 +1,12 @@
 import '../../styles/Module.css';
+import get from "../../services/Get";
+import {NavLink} from 'react-router-dom'
 import Spinner from "../ui_components/Loader";
 import DisplayValue from "./DisplayValue";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faMedal} from '@fortawesome/free-solid-svg-icons'
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
-import Modal from "../ui_components/Modal";
 
 const createConfig = (rawdata=[], goal=0) => {
 
@@ -142,26 +143,12 @@ const computeAverage = (numWeeks, data) => {
 }
 
 const reachedGoal = (goal, data) => {
-    return data && data[0].totalWorkouts >= goal;
+    return goal > 0 && data && data[0].totalWorkouts >= goal;
 }
 
 const ModuleWorkoutDays = ({ data=[] }) => {
-    const LS_KEY_WEEKLY_GOAL = "weekly_goal"
     const [ chartData, setChartData ] = useState(null);
-    const [ goal, setGoal ] = useState(localStorage.getItem(LS_KEY_WEEKLY_GOAL) || 3);
-    const [ goalErr, setGoalErr ] = useState(false);
-    const [ modalVisible, setModalVisible ] = useState(false)
-
-    const changeGoal = (value) => {
-        value = parseInt(value);
-        if (value < 0 || value > 7) {
-            setGoalErr(true)
-        } else {
-            localStorage.setItem(LS_KEY_WEEKLY_GOAL, value);
-            setGoalErr(false)
-        }
-        setGoal(value)
-    }
+    const [ goal, setGoal ] = useState(0);
 
     useEffect(() => {
         if (data.length > 0 && !chartData)
@@ -169,21 +156,27 @@ const ModuleWorkoutDays = ({ data=[] }) => {
     }, [data, goal])
 
     useEffect(() => {
-        if (data.length > 0)
-            setChartData(createConfig(data, goal))
-    }, [goal])
+        get(`/goal/progress`).then(resp => {
+            const mostDifficultGoal = resp.reduce((max, goal) => goal.weeklyTarget <= 7 ? Math.max(goal.weeklyTarget, max) : max, 0);    
+            setGoal(mostDifficultGoal);
+        })
+
+    }, [])
 
     return (
         <>
-            { data.length === 1 && <FontAwesomeIcon icon={ faMedal } style={{
-                color: reachedGoal(goal, data[0]) ? "#ffc877" : "rgb(61 65 72)",
-                position: 'absolute',
-                top:'min(4.5vw, 35px)',
-                right: 'min(4.5vw, 35px)',
-                fontSize: 'min(calc(8px + 3.5vmin), 30px)',
-                cursor: 'pointer'
-                }}
-                onClick={ () => setModalVisible(true) }/>}
+            { data.length === 1 && 
+            <NavLink to="/goals">
+                <FontAwesomeIcon icon={ faMedal } style={{
+                    color: reachedGoal(goal, data[0]) ? "#ffc877" : "rgb(61 65 72)",
+                    position: 'absolute',
+                    top:'min(4.5vw, 35px)',
+                    right: 'min(4.5vw, 35px)',
+                    fontSize: 'min(calc(8px + 3.5vmin), 30px)',
+                    cursor: 'pointer'
+                    }}
+                onClick={ () => {} }/>
+                </NavLink>}
 
             { data.length < 1 ? <Spinner /> :
                 <>
@@ -226,18 +219,8 @@ const ModuleWorkoutDays = ({ data=[] }) => {
                     }
                 </>
             }
-            <Modal visible={ modalVisible } title={ "Weekly goal" } onClose={ () => setModalVisible(false) }>
-                <i>* Set to 0 to hide target line in graph</i>
-                <input type={ "number" } style={ goalErr ? styleError : {} } value={ goal } onChange={ (e) => changeGoal(e.target.value) } />
-            </Modal>
         </>
     );
-}
-
-const styleError = {
-    border: '1px solid red',
-    background: 'rgb(240 0 0 / 5%)',
-    boxShadow: '0 0 5px inset #840000'
 }
 
 export default ModuleWorkoutDays;

@@ -614,6 +614,53 @@ body {
   text-align: right;
 }
 
+.goal-container {
+  position: relative;
+  padding: 1em;
+  margin: 0.2em 0em;
+  border: 1px solid #3333334d;
+  border-radius: 5px;
+  animation: fadeIn 1s;
+}
+
+.goal-container .progress {
+  height: 0.5em;
+  background-color: #424242;
+}
+
+.goal-container .progress .progress-bar.bg-notreached {
+  background-color: rgba(238, 196, 9, 0.7);
+}
+
+.goal-container .progress .progress-bar.bg-deficit {
+  background-color: rgba(238, 97, 15, 0.7);
+}
+
+.goal-container .progress .progress-bar.bg-reached {
+  background-color: rgba(2, 160, 2, 0.7);
+}
+
+.goal-container .progress .progress-bar.bg-surplus {
+  background-color: rgba(104, 255, 33, 0.7);
+}
+
+.goal-container p span {
+  float: left;
+}
+
+.goal-container p span:last-child {
+  float: right;
+}
+
+.goal-container p:last-child {
+  text-align: right;
+}
+
+.section-goals .modal-content label {
+  margin-top: 0.5rem;
+  margin-bottom: 0rem;
+}
+
 @media screen and (max-width: 600px) {
   .missions > div > div {
     grid-template-columns: auto
