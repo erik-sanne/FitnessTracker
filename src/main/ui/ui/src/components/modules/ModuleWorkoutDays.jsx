@@ -77,6 +77,7 @@ const createConfig = (rawdata=[], goal) => {
 
 
     return {
+        goal: goal,
         type: 'bar',
         data: {
             labels: xLabels,
@@ -86,7 +87,7 @@ const createConfig = (rawdata=[], goal) => {
             legend: {
                 display: true,
                 position: "chartArea",
-                align: "end",
+                align: "start",
                 reverse: true,
                 labels: {
                     filter: function(item, chart) {
@@ -166,14 +167,18 @@ const ModuleWorkoutDays = ({ data=[] }) => {
     });
 
     useEffect(() => {
-        if (data.length > 0 && !chartData)
+        if (data.length > 0 && (!chartData || chartData.goal != goal))
             setChartData(createConfig(data, goal))
     }, [data, goal])
 
     useEffect(() => {
         get(`/goal/progress`).then(resp => {
-            const mostDifficultGoal = resp.reduce((max, goal) => goal.weeklyTarget <= 7 ? goal.weeklyTarget > max.weeklyTarget ? goal : max : max, goal);    
-            setGoal(mostDifficultGoal);
+            const mostDifficultGoal = resp.reduce((max, goal) => goal.weeklyTarget <= 7 ? goal.weeklyTarget > max.weeklyTarget ? goal : max : max, goal);
+            const tracked = resp.filter(goal => goal.tracked)[0]    
+            if (tracked) {
+                tracked.name = tracked.name + " (Manually tracked)"
+            }
+            setGoal(tracked ? tracked : mostDifficultGoal);
         })
 
     }, [])
