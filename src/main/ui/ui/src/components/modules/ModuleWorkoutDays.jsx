@@ -186,15 +186,18 @@ const ModuleWorkoutDays = ({ data=[] }) => {
     return (
         <>
             { data.length === 1 && 
-            <NavLink to="/goals">
+            <NavLink to="/goals" style={{
+                
+                position: 'absolute',
+                top:'min(2.5vw, 24px)',
+                right: 'min(4.5vw, 35px)',
+                fontSize: 'min(calc(8px + 3.5vmin), 30px)',
+                cursor: 'pointer',
+                padding: 0,
+                filter: "drop-shadow(0px 0px 2px black)"
+            }}>
                 <FontAwesomeIcon icon={ faMedal } style={{
-                    color: reachedGoal(goal, data[0]) ? "#ffc877" : "rgb(61 65 72)",
-                    position: 'absolute',
-                    top:'min(4.5vw, 35px)',
-                    right: 'min(4.5vw, 35px)',
-                    fontSize: 'min(calc(8px + 3.5vmin), 30px)',
-                    cursor: 'pointer'
-                    }}/>
+                    color: reachedGoal(goal, data[0]) ? "#ffc877" : "rgb(61 65 72)" }}/>
                 </NavLink>}
 
             { data.length < 1 ? <Spinner /> :
