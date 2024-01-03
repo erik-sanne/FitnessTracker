@@ -8,7 +8,17 @@ const GoalProgression = ({ type, name, startDate, endDate, currentDate, progress
     const targetPercent = ((new Date(currentDate) - new Date(startDate)) / (new Date(endDate) - new Date(startDate))) * 100
 
     const renderProgressbar = () => {
-        if (progressPercent < targetPercent) {
+        if (progressPercent >= 100) {
+            return (
+                <>
+                    <p>You've registered {progress} out of {target} workouts and have threrefor reached your goal!</p>
+                    <ProgressBar>
+                        <ProgressBar animated variant="surplus" now={ progressPercent } key={1} />
+                    </ProgressBar>
+                </>
+            )
+        }
+        else if (progressPercent < targetPercent) {
             return (
                 <>
                     <p>You've registered {progress} out of {target} workouts so far. Keep it up in order to reach your goal!</p>

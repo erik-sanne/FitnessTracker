@@ -8,7 +8,7 @@ import {faMedal} from '@fortawesome/free-solid-svg-icons'
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 
-const createConfig = (rawdata=[], goal=0) => {
+const createConfig = (rawdata=[], goal) => {
 
     const data = rawdata.map(d => d.map(a => a).reverse());
 
@@ -61,18 +61,18 @@ const createConfig = (rawdata=[], goal=0) => {
 
     const goalLine = {
         type: 'line',
-        label: 'Target',
+        label: goal.name ? goal.name : "Target",
         fill: false,
         borderColor: "#ffc877",
         borderWidth: 1,
         borderDash: [15, 3],
-        data: xLabels.map((x) => goal)
+        data: xLabels.map((x) => goal.weeklyTarget)
 
     }
 
     const allDatasets = datasets.concat(trends)
 
-    if (goal > 0)
+    if (goal.weeklyTarget > 0)
         allDatasets.push(goalLine)
 
 
@@ -84,7 +84,19 @@ const createConfig = (rawdata=[], goal=0) => {
         },
         options: {
             legend: {
-                display: false
+                display: true,
+                position: "chartArea",
+                align: "end",
+                reverse: true,
+                labels: {
+                    filter: function(item, chart) {
+                        // Logic to remove a particular legend item goes here
+                        return item.text === goal.name || item.text === "Target";
+                    },
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
             },
             layout: {
                 padding: {
@@ -143,12 +155,15 @@ const computeAverage = (numWeeks, data) => {
 }
 
 const reachedGoal = (goal, data) => {
-    return goal > 0 && data && data[0].totalWorkouts >= goal;
+    return goal.weeklyTarget > 0 && data && data[0].totalWorkouts >= goal.weeklyTarget;
 }
 
 const ModuleWorkoutDays = ({ data=[] }) => {
     const [ chartData, setChartData ] = useState(null);
-    const [ goal, setGoal ] = useState(0);
+    const [ goal, setGoal ] = useState({
+        weeklyTarget: 0,
+        name: "N/A"
+    });
 
     useEffect(() => {
         if (data.length > 0 && !chartData)
@@ -157,7 +172,7 @@ const ModuleWorkoutDays = ({ data=[] }) => {
 
     useEffect(() => {
         get(`/goal/progress`).then(resp => {
-            const mostDifficultGoal = resp.reduce((max, goal) => goal.weeklyTarget <= 7 ? Math.max(goal.weeklyTarget, max) : max, 0);    
+            const mostDifficultGoal = resp.reduce((max, goal) => goal.weeklyTarget <= 7 ? goal.weeklyTarget > max.weeklyTarget ? goal : max : max, goal);    
             setGoal(mostDifficultGoal);
         })
 

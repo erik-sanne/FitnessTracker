@@ -1,7 +1,7 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBook, faChartPie, faPlusCircle, faTrophy, faUserFriends, faStar} from "@fortawesome/free-solid-svg-icons";
+import {faBook, faChartPie, faPlusCircle, faTrophy, faUserFriends, faStar, faMedal} from "@fortawesome/free-solid-svg-icons";
 import {useMediaQuery} from 'react-responsive';
 import '../styles/glitch.css';
 import ProfileDisplay from "./ui_components/ProfileDisplay";
@@ -48,6 +48,11 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                     <li>
                         <NavLink to="/history" activeStyle={activeClass} onClick={ onNavigate }>
                             <FontAwesomeIcon icon={ faBook } style={{ width: '1em', marginRight: '25px'}}/>Logbook</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/goals" activeStyle={ activeClass } onClick={ onNavigate } >
+                            <FontAwesomeIcon icon={ faMedal } style={{ width: '1em', marginRight: '25px'}}/>My goals
+                        </NavLink>
                     </li>
                     <li>
                         <NavLink to="/challenge" activeStyle={ activeClass } onClick={ onNavigate } >

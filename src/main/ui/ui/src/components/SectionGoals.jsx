@@ -47,7 +47,11 @@ const SectionGoals = () => {
 
     const validateAndPublish = () => {
         setSubmitting(true)
-        post(`/goal/create`, JSON.stringify(newGoal))
+        let payload = newGoal;
+        if (!payload.name || payload.name == "") {
+            payload.name = suggestedName();
+        }
+        post(`/goal/create`, JSON.stringify(payload))
         .then(() => {
             setSubmitting(false)
             setModalVisible(false)
@@ -56,6 +60,10 @@ const SectionGoals = () => {
         }).catch((_) => {
             setErr(true)
         })
+    }
+
+    const suggestedName = () => {
+        return `${ newGoal.target } workouts registered`
     }
 
     return (
@@ -87,7 +95,7 @@ const SectionGoals = () => {
                 <input id="target" type={'number'} value={ newGoal.target } onChange={ e => setNewGoal({...newGoal, target: e.target.value})} min={ 0 } max={ 9999 }/>
                 <br />
                 <label htmlFor="name">Custom name (optional):</label>
-                <input id="name" type={ 'text' } value={ newGoal.name } onChange={ e => setNewGoal({...newGoal, name: e.target.value})} maxlength="32" placeholder={ newGoal.target ? `${ newGoal.target } workouts registered` : ""} />
+                <input id="name" type={ 'text' } value={ newGoal.name } onChange={ e => setNewGoal({...newGoal, name: e.target.value})} maxlength="32" placeholder={ newGoal.target ? suggestedName() : ""} />
                 <TextButton onClick={ () =>{ validateAndPublish() }}>Create</TextButton>
             </Modal>
             <ModalLoader visible={ isSubitting } error={ err ? "Could not save goal" : "" } onClose={() => { setSubmitting(false)}}>Creating goal</ModalLoader>
