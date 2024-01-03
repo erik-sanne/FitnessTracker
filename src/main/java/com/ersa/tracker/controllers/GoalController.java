@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
@@ -30,18 +27,31 @@ public class GoalController {
         User user = accountService.getUserByPrincipal(principal);
         if (user.getUserProfile() == null)
             return;
-
-        if (goal.start == null || goal.end == null || goal.end.before(goal.start))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad interval");
-
-        if (goal.target <= 0 || goal.target > 9999)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad target value");
-
-        if (goal.name != null && goal.name.length() > 45)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name too long");
-
-
+        validate(goal);
         goalService.createGoal(goal, user.getUserProfile());
+    }
+
+    @PostMapping("/goal/{id}/update")
+    public void updateGoal(@PathVariable long id, @RequestBody final CreateGoal goal, final Principal principal) {
+        User user = accountService.getUserByPrincipal(principal);
+        if (user.getUserProfile() == null)
+            return;
+        validate(goal);
+        goalService.updateGoal(id, goal, user.getUserProfile());
+    }
+
+    @DeleteMapping("/goal/{id}/delete")
+    public void deleteGoal(@PathVariable long id, final Principal principal) {
+        User user = accountService.getUserByPrincipal(principal);
+        goalService.removeGoal(id, user.getUserProfile());
+    }
+
+    @PostMapping("/goal/{id}/track")
+    public void updateGoal(@PathVariable long id, final Principal principal) {
+        User user = accountService.getUserByPrincipal(principal);
+        if (user.getUserProfile() == null)
+            return;
+        goalService.trackGoal(id, user.getUserProfile());
     }
 
     @GetMapping("/goal/progress")
@@ -50,6 +60,17 @@ public class GoalController {
         if (user.getUserProfile() != null)
             return goalService.getProgress(user.getUserProfile());
         return new ArrayList<>();
+    }
+
+    private void validate(CreateGoal goal) {
+        if (goal.start == null || goal.end == null || goal.end.before(goal.start))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad interval");
+
+        if (goal.target <= 0 || goal.target > 9999)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad target value");
+
+        if (goal.name != null && goal.name.length() > 45)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name too long");
     }
 
     @Getter
@@ -64,11 +85,13 @@ public class GoalController {
     @Getter
     @Setter
     public static class GoalProgress {
+        private long id;
         private String name;
         private String startDate;
         private String endDate;
         private float targetValue;
         private float currentValue;
         private float weeklyTarget;
+        private boolean tracked;
     }
 }

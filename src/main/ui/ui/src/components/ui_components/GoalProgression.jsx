@@ -1,8 +1,10 @@
+import { faDotCircle } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 
 
-const GoalProgression = ({ type, name, startDate, endDate, currentDate, progress, target }) => {
+const GoalProgression = ({ id, type, name, startDate, endDate, currentDate, progress, target, tracked, toggleCallback, onClick }) => {
 
     const progressPercent = (progress / target) * 100;
     const targetPercent = ((new Date(currentDate) - new Date(startDate)) / (new Date(endDate) - new Date(startDate))) * 100
@@ -43,7 +45,14 @@ const GoalProgression = ({ type, name, startDate, endDate, currentDate, progress
 
     return (
         <div className={ `goal-container` } >
-            <h5>{name ? name : `${ target } workouts registered`}</h5>
+            <h5>
+                <span onClick={ onClick } style={{ cursor: "pointer" }}>
+                    {name ? name : `${ target } workouts registered`}
+                </span>
+                <span style={{float: 'right'}}>
+                    <FontAwesomeIcon icon={ faDotCircle } style={{ color: tracked ? "#ffc877" : "rgb(61 65 72)", cursor: "pointer" }} title={tracked ? "Prority Tracking" : "Toggle to track manually" } onClick={ () => { toggleCallback(id) } }/>
+                </span>
+            </h5>
             {
                 renderProgressbar()
             }

@@ -38,6 +38,8 @@ public class Goal {
     @NotNull
     private float target;
 
+    private boolean tracked = false;
+
     @NotNull
     private final Type type = Type.WORKOUTS;
 

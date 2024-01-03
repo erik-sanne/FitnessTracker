@@ -189,8 +189,7 @@ const ModuleWorkoutDays = ({ data=[] }) => {
                     right: 'min(4.5vw, 35px)',
                     fontSize: 'min(calc(8px + 3.5vmin), 30px)',
                     cursor: 'pointer'
-                    }}
-                onClick={ () => {} }/>
+                    }}/>
                 </NavLink>}
 
             { data.length < 1 ? <Spinner /> :

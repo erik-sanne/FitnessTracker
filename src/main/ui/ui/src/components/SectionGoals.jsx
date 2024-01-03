@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import doDelete from "../services/DoDelete";
 import get from "../services/Get";
 import Module from "./modules/Module";
 import Loader from "./ui_components/Loader";
@@ -15,15 +16,20 @@ const SectionGoals = () => {
         now.setUTCHours(0,0,0,0);
         return now
     }
-    const [ loading, setLoading ] = useState(false);
-    const [ goals, setGoals ] = useState([]);
-    const [ modalVisible, setModalVisible ] = useState(false);
-    const [ newGoal, setNewGoal ] = useState({
+
+    const goalTemplate = {
+        id: -1,
         name: "",
         start: currentDate(),
         end: undefined,
         target: undefined
-    })
+    }
+
+    const [ loading, setLoading ] = useState(false);
+    const [ goals, setGoals ] = useState([]);
+    const [ modalVisible, setModalVisible ] = useState(false);
+    const [ newGoal, setNewGoal ] = useState(goalTemplate)
+    const [ isEditMode, setEditMode ] = useState(false)
     const [ isSubitting, setSubmitting ] = useState(false);
     const [ err, setErr ] = useState(false)
 
@@ -51,14 +57,47 @@ const SectionGoals = () => {
         if (!payload.name || payload.name == "") {
             payload.name = suggestedName();
         }
-        post(`/goal/create`, JSON.stringify(payload))
+
+        const url = isEditMode ? `/goal/${payload.id}/update` : `/goal/create`;
+
+        delete payload.id;
+        post(url, JSON.stringify(payload))
         .then(() => {
             setSubmitting(false)
             setModalVisible(false)
             setErr(false)
+            setEditMode(false);
+            setNewGoal(goalTemplate);
             fetchGoals();
         }).catch((_) => {
             setErr(true)
+        })
+    }
+
+    const toggleTracking = (id) => {
+        post(`/goal/${id}/track`).then(() => {
+            fetchGoals();
+        })
+    }
+
+    const edit = (goal) => {
+        setEditMode(true);
+        setNewGoal({
+            id: goal.id,
+            name: goal.name,
+            start: new Date(goal.startDate),
+            end: new Date(goal.endDate),
+            target: goal.targetValue
+        });
+        setModalVisible(true)
+    }
+
+    const remove = () => {
+        setModalVisible(true)
+        doDelete(`/goal/${newGoal.id}/delete`).then(() => {
+            setModalVisible(false)
+            setEditMode(false);
+            fetchGoals();
         })
     }
 
@@ -70,12 +109,12 @@ const SectionGoals = () => {
         <div className={ 'page-wrapper section-goals' } style={{ justifyContent: 'normal'}}>
             <Module title = "My current goals" className={ "my-goals" }>
                 { loading ? <Loader /> : goals.length > 0 ? goals.map((goal, idx) => 
-                    <GoalProgression key={idx} type="WORKOUTS" name={ goal.name } startDate={ goal.startDate } endDate={ goal.endDate } currentDate={ new Date() } progress={ goal.currentValue } target={ goal.targetValue }/>
+                    <GoalProgression key={idx} id={ goal.id } type="WORKOUTS" name={ goal.name } startDate={ goal.startDate } endDate={ goal.endDate } currentDate={ new Date() } progress={ goal.currentValue } target={ goal.targetValue } tracked={ goal.tracked } toggleCallback={ toggleTracking } onClick={ (_) => edit(goal) }/>
                 ) : <p style={{ textAlign: 'center', marginBottom: 0 }}>You do not currently have any goals</p> }
                 <br />
                 <TextButton onClick={ () => { setModalVisible(true) }}>Create Goal</TextButton>
             </Module>
-            <Modal title="Create Goal" visible={modalVisible} onClose={ () => {setModalVisible(false)}}>
+            <Modal title={ isEditMode ? "Update goal" : "Create goal" } visible={modalVisible} onClose={ () => { setModalVisible(false); setEditMode(false); setNewGoal(goalTemplate); }}>
                 <label htmlFor="type">Type of goal:</label>
                 <Select
                     id="type"
@@ -96,9 +135,13 @@ const SectionGoals = () => {
                 <br />
                 <label htmlFor="name">Custom name (optional):</label>
                 <input id="name" type={ 'text' } value={ newGoal.name } onChange={ e => setNewGoal({...newGoal, name: e.target.value})} maxlength="32" placeholder={ newGoal.target ? suggestedName() : ""} />
-                <TextButton onClick={ () =>{ validateAndPublish() }}>Create</TextButton>
+                <div style={{ display: "flex" }}>
+                <TextButton onClick={ () =>{ validateAndPublish() }}>{ isEditMode ? "Update" : "Create" }</TextButton>
+                {isEditMode && <div style={{ margin: "0.5em" }}></div> }
+                {isEditMode && <TextButton onClick={ () =>{ remove(); }}>{ "Delete" }</TextButton> }
+                </div>
             </Modal>
-            <ModalLoader visible={ isSubitting } error={ err ? "Could not save goal" : "" } onClose={() => { setSubmitting(false)}}>Creating goal</ModalLoader>
+            <ModalLoader visible={ isSubitting } error={ err ? "Could not save goal" : "" } onClose={() => { setSubmitting(false); setEditMode(false); setNewGoal(goalTemplate); }}>{ isEditMode ? "Updating goal" : "Creating goal"}</ModalLoader>
         </div>)
 }
 
