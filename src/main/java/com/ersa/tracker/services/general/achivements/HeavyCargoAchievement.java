@@ -19,7 +19,7 @@ public class HeavyCargoAchievement extends AchievementProviderBase {
 
     @Override
     public String getDescription() {
-        return "Time to install the reverse alarm. Awarded for hitting glutes 1000 times!";
+        return "Time to install the back-up beeper. Awarded for hitting glutes 1000 times!";
     }
 
     @Override

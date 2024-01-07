@@ -10,7 +10,7 @@ public interface AchievementProvider {
     Achievement getAchievement(User user);
 
     enum Type {
-        WORKOUT_COUNT("Dedication to the Cause"), SETS_AND_EXERCISES("Sets & Exercises"), FREQUENCY("Frequency & Consistency"), MISC("Miscellaneous");
+        WORKOUT_COUNT("Dedication to the Cause"), SETS_AND_EXERCISES("Sets & Exercises"), FREQUENCY("Frequency & Consistency"), MISC("Miscellaneous"), SEASONS_AND_EVENTS("Seasons & events");
 
         final private String value;
         Type(String text) {

@@ -26,7 +26,7 @@ public class SeasonOneAchievement extends AchievementProviderBase {
 
     @Override
     public String getType() {
-        return Type.MISC.toString();
+        return Type.SEASONS_AND_EVENTS.toString();
     }
 
     @Override
