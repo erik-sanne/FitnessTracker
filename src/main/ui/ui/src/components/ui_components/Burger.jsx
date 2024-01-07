@@ -18,7 +18,7 @@ const Burger = ({ onClick, open, userProfile }) => {
 
     return (
         <div style={ styleBurger } onClick={ onClick }>
-            <FontAwesomeIcon icon={ open ? faTimes : faBars }/>
+            <FontAwesomeIcon icon={ open ? faTimes : faBars } className={ open ? "menu-open" : "menu-closed" }/>
             { userProfile.notices.length > 0 && <span className={'counter'} style={{ bottom: '0px', background: 'rgb(166 32 0 / 71%)' }}>{ userProfile.notices.length }</span>}
         </div>
     );

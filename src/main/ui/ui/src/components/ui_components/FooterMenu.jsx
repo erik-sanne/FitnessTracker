@@ -1,9 +1,9 @@
 import React from 'react';
 import {NavLink} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBook, faChartPie, faPlusCircle, faTrophy, faUserFriends} from "@fortawesome/free-solid-svg-icons";
+import {faBook, faChartPie, faEllipsisH, faPlusCircle, faUserFriends} from "@fortawesome/free-solid-svg-icons";
 
-const FooterMenu = () => {
+const FooterMenu = ({toggleMenu}) => {
     return (
         <footer className={ 'footer-menu' }>
             <div>
@@ -25,16 +25,16 @@ const FooterMenu = () => {
                 </NavLink>
             </div>
             <div>
-                <NavLink to="/challenge">
-                    <span><FontAwesomeIcon icon={ faTrophy } style={{ fontSize: '1.5em'}}/></span>
-                    <span>Challenges</span>
-                </NavLink>
-            </div>
-            <div>
-                <NavLink to="/social" >
+                <NavLink to="/social">
                     <span><FontAwesomeIcon icon={ faUserFriends } style={{ fontSize: '1.5em'}}/></span>
                     <span>Social</span>
                 </NavLink>
+            </div>
+            <div>
+                <a href="#" onClick={ toggleMenu }>
+                    <span><FontAwesomeIcon icon={ faEllipsisH } style={{ fontSize: '1.5em'}}/></span>
+                    <span>More</span>
+                </a>
             </div>
         </footer>
     );

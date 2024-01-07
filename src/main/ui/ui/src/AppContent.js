@@ -40,7 +40,7 @@ const AppContent = ({ logoutCallback }) => {
     const [ loading, setLoading ] = useState(true)
 
     const burgerClick = () => {
-        setMenuOpen(!menuOpen);
+        setMenuOpen((menuOpen) => !menuOpen);
     }
 
     const clickOutside = () => {
@@ -182,7 +182,7 @@ const AppContent = ({ logoutCallback }) => {
                         </Route>
                         <Redirect from="/" to="/general" />
                     </Switch>
-                    <FooterMenu />
+                    <FooterMenu toggleMenu={ burgerClick } />
                 </section>
                 <Menu open={ menuOpen } logoutCallback={ logoutCallback } onNavigate={ onNavigate } userProfile={ currentUserProfile } />
                 <Burger onClick={ burgerClick } open={ menuOpen } userProfile={ currentUserProfile } />

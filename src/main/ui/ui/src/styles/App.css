@@ -802,6 +802,12 @@ body {
   display: none;
 }
 
+@media screen and (max-width: 600px) {
+  .menu-closed {
+    display: none !important;
+  }
+}
+
 @media screen and (min-width: 600px) {
   .footer-menu {
     display: none !important;
