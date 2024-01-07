@@ -73,10 +73,15 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
     for (let i = 0; i < xLabels.length; i++) {
         let w = 0, r = 0;
         let pts = 0;
-        for (let j = Math.max(0, i-interpol); j <= Math.min(xLabels.length-1, i+interpol); j++) {
-            w += weights_pre[j];
-            r += reps_pre[j];
-            pts++;
+        let lb = new Date(xLabels[i]); lb.setDate(lb.getDate() - 10*interpol);
+        let ub = new Date(xLabels[i]); ub.setDate(lb.getDate() + 10*interpol);
+        for (let j = 0; j < xLabels.length; j++) {
+            const sampleDate = new Date(xLabels[j]);
+            if (sampleDate >= lb && sampleDate <= ub) {
+                w += weights_pre[j];
+                r += reps_pre[j];
+                pts++;
+            }
         }
         weights.push(w/pts);
         reps.push(r/pts);
