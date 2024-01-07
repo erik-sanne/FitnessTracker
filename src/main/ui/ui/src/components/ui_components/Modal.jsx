@@ -32,7 +32,7 @@ const wrapperStyle = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 5
+    zIndex: 25
 }
 
 export default Modal

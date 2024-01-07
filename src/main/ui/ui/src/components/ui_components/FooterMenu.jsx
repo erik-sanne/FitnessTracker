@@ -8,27 +8,32 @@ const FooterMenu = () => {
         <footer className={ 'footer-menu' }>
             <div>
                 <NavLink to="/general">
-                    <FontAwesomeIcon icon={ faChartPie } style={{ fontSize: '2em' }}/>
+                    <span><FontAwesomeIcon icon={ faChartPie } style={{ fontSize: '1.5em' }}/></span>
+                    <span>Home</span>
                 </NavLink>
             </div>
             <div>
                 <NavLink to="/history">
-                    <FontAwesomeIcon icon={ faBook } style={{ fontSize: '2em' }}/>
+                    <span><FontAwesomeIcon icon={ faBook } style={{ fontSize: '1.5em' }}/></span>
+                    <span>Logbook</span>
                 </NavLink>
             </div>
             <div>
                 <NavLink to="/new">
-                    <FontAwesomeIcon icon={ faPlusCircle } style={{ fontSize: '2.5em' }}/>
+                    <span><FontAwesomeIcon icon={ faPlusCircle } style={{ fontSize: '1.5em' }}/></span>
+                    <span>New</span>
                 </NavLink>
             </div>
             <div>
                 <NavLink to="/challenge">
-                    <FontAwesomeIcon icon={ faTrophy } style={{ fontSize: '2em'}}/>
+                    <span><FontAwesomeIcon icon={ faTrophy } style={{ fontSize: '1.5em'}}/></span>
+                    <span>Challenges</span>
                 </NavLink>
             </div>
             <div>
                 <NavLink to="/social" >
-                    <FontAwesomeIcon icon={ faUserFriends } style={{ fontSize: '2em'}}/>
+                    <span><FontAwesomeIcon icon={ faUserFriends } style={{ fontSize: '1.5em'}}/></span>
+                    <span>Social</span>
                 </NavLink>
             </div>
         </footer>
