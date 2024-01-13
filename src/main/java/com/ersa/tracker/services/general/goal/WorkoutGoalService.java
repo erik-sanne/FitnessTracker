@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,7 @@ public class WorkoutGoalService implements GoalService {
     @Override
     public void createGoal(GoalController.CreateGoal goalDto, UserProfile userProfile) {
         Goal goal = new Goal();
+        goal.setType(Goal.Type.valueOf(goalDto.getType()));
         goal.setUserProfile(userProfile);
         goal.setComplete(false);
         goal.setStartDate(goalDto.getStart());
@@ -106,20 +108,38 @@ public class WorkoutGoalService implements GoalService {
 
         GoalController.GoalProgress goalProgress = new GoalController.GoalProgress();
         goalProgress.setId(goal.getId());
+        goalProgress.setType(goal.getType().name());
         goalProgress.setStartDate(DateUtils.FORMAT_yyyyMMdd.format(goal.getStartDate()));
         goalProgress.setEndDate(DateUtils.FORMAT_yyyyMMdd.format(goal.getEndDate()));
         goalProgress.setTargetValue(target);
         goalProgress.setName(goal.getName());
         goalProgress.setTracked(goal.isTracked());
 
+        return switch (goal.getType()) {
+            case WORKOUTS -> evaluateWorkoutsTotal(goal, goalProgress);
+            case WORKOUTS_WEEKLY -> evaluateWorkoutsWeekly(goal, goalProgress);
+        };
+    }
+
+    private GoalController.GoalProgress evaluateWorkoutsTotal(Goal goal, GoalController.GoalProgress goalProgress) {
         var current = workoutRepository.countByUserAndDateGreaterThanEqualAndDateLessThanEqual(goal.getUserProfile().getUser(), goal.getStartDate(), goal.getEndDate());
         goalProgress.setCurrentValue(current);
 
-        var now = Instant.now().atZone(DateUtils.TZ_SWE.toZoneId());
+        var startOfWeek = Instant.now().atZone(DateUtils.TZ_SWE.toZoneId()).with(ChronoField.DAY_OF_WEEK, 1);
+        var currentAtStartOfWeek = workoutRepository.countByUserAndDateGreaterThanEqualAndDateLessThanEqual(goal.getUserProfile().getUser(), goal.getStartDate(), Date.from(startOfWeek.toInstant()));
         var targetDate = goal.getEndDate().toInstant().atZone(DateUtils.TZ_SWE.toZoneId());
-        var weeksDiff = (float)Math.max(ChronoUnit.WEEKS.between(now, targetDate), 1);
-        var progressLeft = target - current;
+        var weeksDiff = (float)Math.max(ChronoUnit.WEEKS.between(startOfWeek, targetDate), 1);
+        var progressLeft = goal.getTarget() - currentAtStartOfWeek;
         goalProgress.setWeeklyTarget(progressLeft / weeksDiff);
+        return goalProgress;
+    }
+
+    private GoalController.GoalProgress evaluateWorkoutsWeekly(Goal goal, GoalController.GoalProgress goalProgress) {
+        var now = Instant.now().atZone(DateUtils.TZ_SWE.toZoneId());
+        var startOfWeek = now.with(ChronoField.DAY_OF_WEEK, 1);
+        var current = workoutRepository.countByUserAndDateGreaterThanEqualAndDateLessThanEqual(goal.getUserProfile().getUser(), Date.from(startOfWeek.toInstant()), Date.from(now.toInstant()));
+        goalProgress.setCurrentValue(current);
+        goalProgress.setWeeklyTarget(goal.getTarget());
         return goalProgress;
     }
 

@@ -656,6 +656,19 @@ body {
   text-align: right;
 }
 
+.goal-container .CircularProgressbar-path {
+  stroke: rgba(2, 160, 2, 0.7) !important;
+}
+.goal-container .CircularProgressbar-trail {
+  stroke: #424242 !important;
+}
+.goal-container .CircularProgressbar-text {
+  fill: white !important;
+}
+.goal-container .CircularProgressbar-background {
+  fill: green !important;
+}
+
 .section-goals .modal-content label {
   margin-top: 0.5rem;
   margin-bottom: 0rem;

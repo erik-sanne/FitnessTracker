@@ -20,6 +20,7 @@ const SectionGoals = () => {
     const goalTemplate = {
         id: -1,
         name: "",
+        type: "WORKOUTS",
         start: currentDate(),
         end: undefined,
         target: undefined
@@ -35,7 +36,7 @@ const SectionGoals = () => {
 
     // For now...
     const defaultValue = {
-        value: "", 
+        value: "WORKOUTS", 
         label: "Workouts until date",
     };
 
@@ -84,6 +85,7 @@ const SectionGoals = () => {
         setEditMode(true);
         setNewGoal({
             id: goal.id,
+            type: goal.type,
             name: goal.name,
             start: new Date(goal.startDate),
             end: new Date(goal.endDate),
@@ -102,14 +104,14 @@ const SectionGoals = () => {
     }
 
     const suggestedName = () => {
-        return `${ newGoal.target } workouts registered`
+        return newGoal.type === "WORKOUTS" ? `${ newGoal.target } workouts registered` : `${ newGoal.target } workouts a week`
     }
 
     return (
         <div className={ 'page-wrapper section-goals' } style={{ justifyContent: 'normal'}}>
             <Module title = "My current goals" className={ "my-goals" }>
                 { loading ? <Loader /> : goals.length > 0 ? goals.map((goal, idx) => 
-                    <GoalProgression key={idx} id={ goal.id } type="WORKOUTS" name={ goal.name } startDate={ goal.startDate } endDate={ goal.endDate } currentDate={ new Date() } progress={ goal.currentValue } target={ goal.targetValue } tracked={ goal.tracked } toggleCallback={ toggleTracking } onClick={ (_) => edit(goal) }/>
+                    <GoalProgression key={idx} id={ goal.id } type={ goal.type } name={ goal.name } startDate={ goal.startDate } endDate={ goal.endDate } currentDate={ new Date() } progress={ goal.currentValue } target={ goal.targetValue } tracked={ goal.tracked } toggleCallback={ toggleTracking } onClick={ (_) => edit(goal) }/>
                 ) : <p style={{ textAlign: 'center', marginBottom: 0 }}>You do not currently have any goals</p> }
                 <br />
                 <TextButton onClick={ () => { setModalVisible(true) }}>Create Goal</TextButton>
@@ -120,18 +122,19 @@ const SectionGoals = () => {
                     id="type"
                     menuPosition={'fixed'} 
                     defaultValue={ defaultValue }
-                    onChange={ () => {} }
+                    onChange={ opt => setNewGoal({...newGoal, type: opt.value }) }
                     options={ 
-                        [defaultValue]
+                        [defaultValue, { value: "WORKOUTS_WEEKLY", label: "Weekly workouts"}]
                     }
                     className="select-container"
-                    classNamePrefix="select" />
+                    classNamePrefix="select"
+                    isDisabled={ isEditMode } />
                 <label htmlFor="startdate">Start date:</label>
                 <input id="startdate" type={'date'} value={ newGoal.start.toDateInputValue() } onChange={ e => setNewGoal({...newGoal, start: e.target.valueAsDate})}/>
                 <label htmlFor="enddate">End date:</label>
                 <input id="enddate" type={'date'} value={ newGoal.end ? newGoal.end.toDateInputValue() : "" } onChange={ e => setNewGoal({...newGoal, end: e.target.valueAsDate})}/>
                 <label htmlFor="target">Target:</label>
-                <input id="target" type={'number'} value={ newGoal.target } onChange={ e => setNewGoal({...newGoal, target: e.target.value})} min={ 0 } max={ 9999 }/>
+                <input id="target" type={'number'} value={ newGoal.target } onChange={ e => setNewGoal({...newGoal, target: e.target.value})} min={ 0 } max={ newGoal.type === "WORKOUTS" ? 9999 : 7 }/>
                 <br />
                 <label htmlFor="name">Custom name (optional):</label>
                 <input id="name" type={ 'text' } value={ newGoal.name } onChange={ e => setNewGoal({...newGoal, name: e.target.value})} maxlength="32" placeholder={ newGoal.target ? suggestedName() : ""} />

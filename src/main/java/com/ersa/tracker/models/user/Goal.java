@@ -41,11 +41,11 @@ public class Goal {
     private boolean tracked = false;
 
     @NotNull
-    private final Type type = Type.WORKOUTS;
+    private Type type = Type.WORKOUTS;
 
     boolean complete = false;
 
-    enum Type {
-        WORKOUTS,
+    public enum Type {
+        WORKOUTS, WORKOUTS_WEEKLY
     }
 }

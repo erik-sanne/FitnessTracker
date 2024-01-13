@@ -1,6 +1,7 @@
 package com.ersa.tracker.controllers;
 
 import com.ersa.tracker.models.authentication.User;
+import com.ersa.tracker.models.user.Goal;
 import com.ersa.tracker.services.authentication.AccountService;
 import com.ersa.tracker.services.general.goal.GoalService;
 import lombok.Getter;
@@ -71,6 +72,13 @@ public class GoalController {
 
         if (goal.name != null && goal.name.length() > 45)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name too long");
+
+        try {
+            Goal.Type.valueOf(goal.type);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid type");
+        }
+
     }
 
     @Getter
@@ -80,6 +88,7 @@ public class GoalController {
         private Date start;
         private Date end;
         private float target;
+        private String type;
     }
 
     @Getter
@@ -87,6 +96,7 @@ public class GoalController {
     public static class GoalProgress {
         private long id;
         private String name;
+        private String type;
         private String startDate;
         private String endDate;
         private float targetValue;

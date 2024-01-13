@@ -2,6 +2,8 @@ import { faDotCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import ProgressBar from 'react-bootstrap/ProgressBar';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 
 const GoalProgression = ({ id, type, name, startDate, endDate, currentDate, progress, target, tracked, toggleCallback, onClick }) => {
@@ -17,6 +19,10 @@ const GoalProgression = ({ id, type, name, startDate, endDate, currentDate, prog
                     <ProgressBar>
                         <ProgressBar animated variant="surplus" now={ progressPercent } key={1} />
                     </ProgressBar>
+                    <p>
+                        <span>{startDate}</span>
+                        <span>{endDate}</span>
+                    </p>
                 </>
             )
         }
@@ -28,6 +34,10 @@ const GoalProgression = ({ id, type, name, startDate, endDate, currentDate, prog
                         <ProgressBar striped variant="notreached" now={ progressPercent } key={1} />
                         <ProgressBar animated variant="deficit" now={ targetPercent - progressPercent } key={2} />
                     </ProgressBar>
+                    <p>
+                        <span>{startDate}</span>
+                        <span>{endDate}</span>
+                    </p>
                 </>
             )
         } else {
@@ -38,9 +48,28 @@ const GoalProgression = ({ id, type, name, startDate, endDate, currentDate, prog
                         <ProgressBar striped variant="reached" now={ targetPercent } key={1} />
                         <ProgressBar animated variant="surplus" now={ progressPercent - targetPercent } key={2} />
                     </ProgressBar>
+                    <p>
+                        <span>{startDate}</span>
+                        <span>{endDate}</span>
+                    </p>
                 </>
             )
         }
+    }
+
+    const renderWeeklyProgress = () => {
+        return (
+            <>
+                <div style={{ display: "flex"}}>
+                    <div style={{ maxWidth: "5em"}}>
+                        <CircularProgressbar value={ progressPercent } text={ progress + "/"+target }/>
+                    </div>
+                    <div>
+                        <p style={{ padding: '1em'}}> You've registered {progress} out of {target} this week. </p>
+                    </div>
+                </div>
+            </>
+        )
     }
 
     return (
@@ -54,12 +83,8 @@ const GoalProgression = ({ id, type, name, startDate, endDate, currentDate, prog
                 </span>
             </h5>
             {
-                renderProgressbar()
+                type === "WORKOUTS" ? renderProgressbar() : renderWeeklyProgress()
             }
-            <p>
-                <span>{startDate}</span>
-                <span>{endDate}</span>
-            </p>
         </div>
     );
 }
