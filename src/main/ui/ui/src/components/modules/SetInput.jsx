@@ -60,7 +60,6 @@ const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, o
             <div style={{...inputWrap, flex: 2}}>
                 <label>Exercise</label>
                 <Select
-                    menuPortalTarget={document.body}
                     menuPosition={'fixed'} 
                     onChange={ (value) => handleInputChange({ target : { name: 'type', value: value.value }}) }
                     options={ exerciseOptions.map(e =>{ return {value: e, label: Utils.camelCase(e.replace(/_/g, ' '))}}) }

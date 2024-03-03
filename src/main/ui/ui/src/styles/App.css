@@ -240,12 +240,14 @@ body {
 
 .bottom-panel {
   position: fixed !important;
-  bottom: 5rem;
+  bottom: 4rem;
   margin: 0px auto;
   border-radius: 0px;
+  border-bottom: 0px !important;
   background: rgba(22, 23, 26, 0.96) !important;
   height: auto;
   width: 100vw !important;
+  max-width: min(100vw, 1890px) !important;
 }
 
 @media screen and (min-width: 600px) {
