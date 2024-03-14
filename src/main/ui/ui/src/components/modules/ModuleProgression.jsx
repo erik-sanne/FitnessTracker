@@ -56,118 +56,208 @@ const getPolyfitLinePlot = (xLabels, pts) => {
     return getDates(new Date(xLabels[0]), new Date()).map(d => (d.toISOString().split('T')[0])).map((d, i, arr) => ({ x: d, y: Math.max(func.predict(getMagicNumberFromDate(d, arr[0]))[1], 0) }));
 }
 
+const createInterpolation = (x, _reps, _weights, interpolation) => {
+    let weights = [];
+    let reps = [];
+
+    // Interpolation
+    const interpol = interpolation-1;
+    for (let i = 0; i < x.length; i++) {
+        let w = 0, r = 0;
+        let pts = 0;
+        let lb = new Date(x[i]); lb.setDate(lb.getDate() - 10*interpol);
+        let ub = new Date(x[i]); ub.setDate(lb.getDate() + 10*interpol);
+        if (_weights[i] === null && _reps[i] === null) {
+            weights.push(null);
+            reps.push(null);
+        } else {
+            for (let j = 0; j < x.length; j++) {
+                const sampleDate = new Date(x[j]);
+                if (sampleDate >= lb && sampleDate <= ub) {
+                    if (_weights[j] === null && _reps[j] === null) {
+                        continue;
+                    }
+                    w += _weights[j];
+                    r += _reps[j];
+                    pts++;
+                }
+            }
+            weights.push(w/pts);
+            reps.push(r/pts);
+        }
+    }
+
+    return { reps, weights }
+}
+
+const createProgression = (x, progressionValues) => {
+    const maxCombined = Math.max(...progressionValues)
+
+    const progressionPoints = progressionValues.map(val => val ? Math.round((val / maxCombined) * 100) : null);
+    const _pts_filtered = progressionPoints.filter(v => v !== null);
+    const zip = (a, b) => a.map((k, i, arr) => [getMagicNumberFromDate(k, arr[0]), b[i]]);
+    const ptsComb = zip(x, _pts_filtered)
+
+    const plottedLine = getPolyfitLinePlot(x, ptsComb);
+    return { progressionPoints, plottedLine };
+}
+
+const calculateValues = (allXValues, data, interpolation) => {
+    const xLabels = data.map( e => e.date.split('T')[0]);
+    const _weights = [];
+    const _reps = [];
+    const _combined = [];
+
+    for (let i = 0; i < allXValues.length; i++) {
+        let x = -1;
+        for (let j = 0; j < xLabels.length; j++) {
+            if (allXValues[i] === xLabels[j]) {
+                x = j;
+                break;
+            }
+        }
+
+        if (x === -1) {
+            _weights.push(null)
+            _reps.push(null)
+            _combined.push(null)
+        } else {
+            _weights.push(data[x].weight)
+            _reps.push(data[x].reps)
+            _combined.push(data[x].combined) 
+        }
+
+    }
+
+    const { reps, weights } = createInterpolation(allXValues, _reps, _weights, interpolation);
+    const { progressionPoints, plottedLine } = createProgression(xLabels, _combined);
+    return { reps, weights, progressionPoints, plottedLine }
+}
+
+const splitBodyweightOnly = (data) => {
+    const bodyweight = data.filter( e => e.weight === 0);
+    const weighted = data.filter( e => e.weight !== 0);
+    return { bodyweight, weighted }
+}
+
 const createConfig = (data, mergeAxes, interpolation=1) => {
     data.sort(function(a,b){
         // Turn your strings into dates, and then subtract them
         // to get a value that is either negative, positive, or zero.
         return new Date(a.date) - new Date(b.date);
     });
-    const xLabels = data.map( e => e.date.split('T')[0]);
-    const weights_pre = data.map( e => e.weight);
-    const reps_pre = data.map( e => e.reps);
-    let weights = [];
-    let reps = [];
+    const datasetsProgression = [];
+    const datasets = [];
 
-    // Interpolation
-    const interpol = interpolation-1;
-    for (let i = 0; i < xLabels.length; i++) {
-        let w = 0, r = 0;
-        let pts = 0;
-        let lb = new Date(xLabels[i]); lb.setDate(lb.getDate() - 10*interpol);
-        let ub = new Date(xLabels[i]); ub.setDate(lb.getDate() + 10*interpol);
-        for (let j = 0; j < xLabels.length; j++) {
-            const sampleDate = new Date(xLabels[j]);
-            if (sampleDate >= lb && sampleDate <= ub) {
-                w += weights_pre[j];
-                r += reps_pre[j];
-                pts++;
-            }
-        }
-        weights.push(w/pts);
-        reps.push(r/pts);
+    const x = data.map( e => e.date.split('T')[0]);
+    const { bodyweight, weighted } = splitBodyweightOnly(data);
+
+    if (weighted && weighted.length > 0) {
+        const { reps, weights, progressionPoints, plottedLine } = calculateValues(x, weighted, interpolation);
+        datasetsProgression.push(...[{
+            label: 'Volume / max',
+            yAxisID: 'right_axis',
+            fill: false,
+            borderColor: 'rgba(107,166,239,0.35)',
+            backgroundColor: 'rgba(107,166,239,0.35)',
+            borderWidth: 2,
+            lineTension: 0,
+            pointRadius: 4,
+            pointHoverRadius: 8,
+            showLine: false,
+            data: progressionPoints
+        }, {
+            label: 'Total Progression',
+            yAxisID: 'right_axis',
+            borderDash: [15, 3],
+            fill: false,
+            borderColor: 'rgb(239,169,107)',
+            backgroundColor: 'rgb(239,164,107)',
+            borderWidth: 1,
+            pointHoverRadius: 0,
+            lineTension: 0,
+            data: plottedLine
+        }])
+
+        datasets.push(...[{
+            label: 'Repetitions',
+            yAxisID: 'left_axis',
+            fill: false,
+            borderDash: [15, 3],
+            borderColor: 'rgba(107,166,239,0.35)',
+            backgroundColor: 'rgba(107,166,239,0.35)',
+            borderWidth: 2,
+            lineTension: 0,
+            data: reps
+        }, {
+            label: 'Weight',
+            yAxisID: 'right_axis',
+            fill: false,
+            borderColor: 'rgba(107,166,239,0.5)',
+            backgroundColor: 'rgba(107,166,239,0.35)',
+            borderWidth: 2,
+            lineTension: 0,
+            data: weights
+        }])
     }
 
-    const maxCombined = Math.max(...data.map(e => e.combined))
-    // const maxWeight = Math.max(...data.map(e => e.weight))
-    const combined = data.map(e => Math.round((e.combined / maxCombined) * 100));
-    // const weightScaled = data.map(e => Math.round((e.weight / maxWeight) * 100));
+    if (bodyweight && bodyweight.length > 0) {
+        const { reps, weights, progressionPoints, plottedLine } = calculateValues(x, bodyweight, interpolation);
+        if (weights) { weights.push(null) } // ESLint workaround
 
-    const zip = (a, b) => a.map((k, i, arr) => [getMagicNumberFromDate(k, arr[0]), b[i]]);
-    const ptsComb = zip(xLabels, combined);
-    // const ptsWeight = zip(xLabels, weightScaled);
-    const progressionPts = getPolyfitLinePlot(xLabels, ptsComb);
-    // const weightProgPts = getPolyfitLinePlot(xLabels, ptsWeight);
+        datasetsProgression.push(...[{
+            label: 'Volume / max (BW)',
+            yAxisID: 'right_axis',
+            fill: false,
+            borderColor: 'rgba(239, 115, 107, 0.35)',
+            backgroundColor: 'rgba(239, 115, 107, 0.35)',
+            borderWidth: 2,
+            lineTension: 0,
+            pointRadius: 4,
+            pointHoverRadius: 8,
+            showLine: false,
+            data: progressionPoints
+        }, {
+            label: 'Total Progression (BW)',
+            yAxisID: 'right_axis',
+            borderDash: [15, 3],
+            fill: false,
+            borderColor: 'rgb(239, 107, 131, 0.3)',
+            backgroundColor: 'rgb(239, 107, 131, 0.3)',
+            borderWidth: 1,
+            pointHoverRadius: 0,
+            lineTension: 0,
+            data: plottedLine
+        }])
+
+        datasets.push(...[{
+            label: 'Repetitions (BW)',
+            yAxisID: 'left_axis',
+            fill: false,
+            borderDash: [15, 3],
+            borderColor: 'rgba(239, 115, 107, 0.35)',
+            backgroundColor: 'rgba(239, 115, 107, 0.35)',
+            borderWidth: 2,
+            lineTension: 0,
+            data: reps
+        }])
+    }
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    xLabels.push(tomorrow.toISOString().split('T')[0]);
+    x.push(tomorrow.toISOString().split('T')[0]);
     return {
         type: 'line',
         data: {
-            labels: xLabels,
-            datasets: mergeAxes ? [{
-                label: 'Volume / max',
-                yAxisID: 'wei-y-id',
-                fill: false,
-                borderColor: 'rgba(107,166,239,0.35)',
-                backgroundColor: 'rgba(107,166,239,0.35)',
-                borderWidth: 2,
-                lineTension: 0,
-                pointRadius: 4,
-                pointHoverRadius: 8,
-                showLine: false,
-                data: combined
-            }, {
-                label: 'Total Progression',
-                yAxisID: 'wei-y-id',
-                borderDash: [15, 3],
-                fill: false,
-                borderColor: 'rgb(239,169,107)',
-                backgroundColor: 'rgb(239,164,107)',
-                borderWidth: 1,
-                pointHoverRadius: 0,
-                lineTension: 0,
-                //function: function (x) { return func.predict(x)[1]; },
-                data: progressionPts
-            }/*, {
-                label: 'Weight progression',
-                yAxisID: 'wei-y-id',
-                borderDash: [15, 3],
-                fill: false,
-                borderColor: 'rgb(159,102,53)',
-                backgroundColor: 'rgb(152,97,55)',
-                borderWidth: 1,
-                pointHoverRadius: 0,
-                lineTension: 0,
-                hidden: true,
-                //function: function (x) { return func.predict(x)[1]; },
-                data: weightProgPts
-            }*/] : [{
-                label: 'Repetitions',
-                yAxisID: 'rep-y-id',
-                fill: false,
-                borderDash: [15, 3],
-                borderColor: 'rgba(107,166,239,0.35)',
-                backgroundColor: 'rgba(107,166,239,0.35)',
-                borderWidth: 2,
-                lineTension: 0,
-                data: reps
-            }, {
-                label: 'Weight',
-                yAxisID: 'wei-y-id',
-                fill: false,
-                borderColor: 'rgba(107,166,239,0.5)',
-                backgroundColor: 'rgba(107,166,239,0.35)',
-                borderWidth: 2,
-                lineTension: 0,
-                data: weights
-            }]
+            labels: x,
+            datasets: mergeAxes ? datasetsProgression : datasets
         },
         options: {
             responsive: true,
             aspectRatio: window.innerWidth < 600 && mergeAxes ? 1 : window.innerWidth > 1500 ? 2.5 : 1.2,
             hoverMode: 'index',
             stacked: false,
+            spanGaps: true,
             title:{
                 display: false,
             },
@@ -190,7 +280,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     type: "linear",
                     display: !mergeAxes,
                     position: "left",
-                    id: "rep-y-id",
+                    id: "left_axis",
                     ticks: {
                         mirror: window.innerWidth < 600,
                         suggestedMin: 0,
@@ -204,10 +294,11 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     type: "linear",
                     display: true,
                     position: "right",
-                    id: "wei-y-id",
+                    id: "right_axis",
                     ticks: {
                         mirror: window.innerWidth < 600,
                         suggestedMin: 0,
+                        max: 100,
                         callback: function(value, index, values) {
                             return value + (mergeAxes ? '%' : 'kg');
                         },
@@ -242,12 +333,12 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             tooltips: {
                 mode: 'nearest',
                 filter: function (tooltipItem) {
-                    return tooltipItem.datasetIndex === 0;
+                    return tooltipItem.datasetIndex === 0 || tooltipItem.datasetIndex === 2;
                 },
                 callbacks: {
                     footer: function (context) {
                         let pointInfo = context[0];
-                        if (!pointInfo || pointInfo.datasetIndex !== 0)
+                        if (!pointInfo || pointInfo.datasetIndex !== 0 && pointInfo.datasetIndex !== 2)
                             return '';
 
 
