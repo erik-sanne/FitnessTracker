@@ -151,6 +151,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
 
     const x = data.map( e => e.date.split('T')[0]);
     const { bodyweight, weighted } = splitBodyweightOnly(data);
+    const maxVal = Math.max(...weighted.map(e => e.weight));
 
     if (weighted && weighted.length > 0) {
         const { reps, weights, progressionPoints, plottedLine } = calculateValues(x, weighted, interpolation);
@@ -298,7 +299,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     ticks: {
                         mirror: window.innerWidth < 600,
                         suggestedMin: 0,
-                        max: 100,
+                        max: mergeAxes ? 100 : maxVal,
                         callback: function(value, index, values) {
                             return value + (mergeAxes ? '%' : 'kg');
                         },
