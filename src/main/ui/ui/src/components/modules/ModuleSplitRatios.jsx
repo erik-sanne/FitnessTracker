@@ -57,8 +57,10 @@ const doStuff = (date, workouts) => {
             return diff < MILLIS_SCAN
         })
 
+        const overflow = 2 - Math.min((today.getTime() - date.getTime()) / MILLIS_SCAN, 1) // Scale up a bit near today
+
         dates.push(new Date(date))
-        values.push(y.length)
+        values.push(y.length * overflow)
 
         if (date.getDate() === 1) {
             date = new Date(date.setDate(7))
@@ -71,6 +73,7 @@ const doStuff = (date, workouts) => {
             date = new Date(date.getFullYear(), date.getMonth(), 1)
         }
     }
+
     return [dates, values];
 }
 
