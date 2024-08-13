@@ -31,7 +31,7 @@ const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, o
 
         const validError = {
             type: selected_exercise.length === 0,
-            reps: exerciseState.reps < 1 || exerciseState.reps === "",
+            reps: exerciseState.reps < 1 || exerciseState.reps === "" || exerciseState.reps > Math.floor(exerciseState.reps),
             weight: exerciseState.weight < 0
         };
         setValidationErrors(validError);
