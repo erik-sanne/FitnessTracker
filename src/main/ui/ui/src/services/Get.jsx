@@ -17,7 +17,10 @@ const get = (endpoint, external=false, accept='application/json') => new Promise
                 }).catch((error) => {
                     reject(error)
                 });
-            } else {
+            } else if (accept === 'text/plain') {
+                response.text().then(text => resolve(text))
+            }
+            else {
                 response.blob().then(blob => blob.size > 0 && resolve(URL.createObjectURL(blob)))
             }
         } else if ( !external && response.status === 401) {

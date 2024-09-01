@@ -9,32 +9,65 @@ import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclama
 import get from "../services/Get.jsx";
 import preval from 'preval.macro'
 
+const SCRAPE_INTERVAL = 10000
+const DATA_POINTS = 50
+const Metrics = {
+    JVM_MEMORY_USED_BYTES: "jvm_memory_used_bytes",
+    JVM_MEMORY_MAX_BYTES: "jvm_memory_max_bytes",
+}
+
 const SectionMonitor = () => {
     const [ health, setHealth ] = useState('LOADING')
     const [ time, setTime ] = useState(null)
-    const [ cpu, setCpu ] = useState(new Array(100).fill(''))
-    const [ memory, setMemory ] = useState(new Array(100).fill(''))
-    const [ gc, setGc ] = useState(new Array(100).fill(''))
+    const [ metrics, setMetrics ] = useState([])
 
     useEffect(() => {
+        pollForData();
         const interval = setInterval(() => {
             pollForData();
-        }, 1000);
+        }, SCRAPE_INTERVAL);
         return () => clearInterval(interval);
     }, []);
 
     const pollForData = () => {
         get('/actuator/health').then(health => setHealth(health.status)).catch(() => setHealth('DOWN'));
         get('/actuator/metrics/process.uptime').then(time => setTime(time.measurements[0].value));
-        get('/actuator/metrics/process.cpu.usage').then(clock => setCpu(([_, ...tail]) => [...tail, {time: timestamp(), value: clock.measurements[0].value}]))
-        get('/actuator/metrics/jvm.memory.used').then(mem => setMemory(([_, ...tail]) => [...tail, {time: timestamp(), value: mem.measurements[0].value}]));
-        get('/actuator/metrics/jvm.gc.pause').then(mem =>
-            setGc(([_, ...tail]) => [...tail, {
-                time: timestamp(),
-                count: mem.measurements[0].value,
-                total: mem.measurements[1].value,
-                max: mem.measurements[2].value,
-                }]));
+        get('/actuator/prometheus', false, "text/plain").then(scraped => handleScrape(scraped.split('\n').filter(row => !row.startsWith('#'))))
+    }
+
+    const handleScrape = (scraped) => {
+        const measurement = {}
+        measurement['time'] = timestamp()
+        measurement['metrics'] = []
+
+        for (let row of scraped) {
+            const metric = {}
+
+            if (row.indexOf("{") === -1) {
+                metric['metricName'] = row.split(" ")[0]
+                metric['value'] = parseFloat(row.split(" ")[1])
+                measurement['metrics'].push(metric)
+                continue;
+            }
+
+
+            metric['metricName'] = row.split('{')[0]
+            metric['value'] = parseFloat(row.split('}')[1])
+            const labelstrings = row.substring(row.indexOf("{") + 1, row.lastIndexOf("}")).split(",");
+            for (let kv of labelstrings) {
+                const [ key, value ] = kv.split("=")
+                metric[key] = value.replaceAll("\"", "")
+            }
+            measurement['metrics'].push(metric)
+        }
+
+        const metricsToKeep = []
+        for (const [, value] of Object.entries(Metrics)) {
+            metricsToKeep.push(value)
+        }
+        measurement.metrics = measurement.metrics.filter(metric => metricsToKeep.includes(metric.metricName))
+
+        setMetrics((tail) => [...tail, measurement])
     }
 
     return (
@@ -80,8 +113,7 @@ const SectionMonitor = () => {
 
                 { health === 'LOADING' ? <h4><Loader animation={"grow"}/></h4> :
                     <>
-                        <Graph data={ createConfig(cpu, memory) }/>
-                       <Graph data={ createGCConfig(gc) }/>
+                        <Graph data={ memoryConfig(metrics) }/>
                     </>
                 }
             </Module>
@@ -89,138 +121,125 @@ const SectionMonitor = () => {
     );
 }
 
-const createConfig = (cpu, memory) => {
-    const linespace = cpu.map((e) => e.time);
-    return {
-        type: 'line',
-        data: {
-            labels: linespace,
-            datasets: [{
-                label: 'CPU Usage',
-                yAxisID: 'CPU',
-                borderWidth: 2,
-                backgroundColor: 'rgb(146,20,20)',
-                data: cpu.map((e) => e.value)
-            },{
-                label: 'JVM Memory Used',
-                yAxisID: 'MEM',
-                fill: false,
-                borderDash: [3],
-                borderWidth: 2,
-                borderColor: 'rgb(112,20,146)',
-                data: memory.map((e) => e.value)
-            }]
-        },
-        options: {
-            legend: {
-                display: true
-            },
-            responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
-            animation: {
-                duration: 0
-            },
-            elements: {
-                point:{
-                    radius: 0
-                }
-            },
-            scales: {
-                yAxes: [{
-                    id: 'CPU',
-                    ticks: {
-                        max: 1,
-                        callback: function(value, index, values) {
-                            return `${(value * 100).toFixed(0)}%`
-                        }
-                    }
-                },{
-                    id: 'MEM',
-                    position: 'right',
-                    ticks: {
-                        callback: function(value, index, values) {
-                            return `${(value / 1024 / 1024).toFixed(1)}Mb`
-                        }
-                    }
-                }],
-                xAxes: [{
-                    ticks: {
-                        min: linespace[linespace.length - 100],
-                        max: linespace[linespace.length - 1],
-                        callback: function(value, index, values) {
-                            return value ? value : '';
-                        }
-                    }
-                }]
-            },
-            plugins: {
-                zoom: {
-                    pan: {
-                        enabled: false,
-                        mode: 'x'
-                    },
-                    zoom: {
-                        enabled: false
-                    }
+const sumMetric = (metrics, metricName, ...conditions) => {
+    const timeline = []
+    for (let scrape of metrics) {
+        var values = []
+        for (let metric of scrape.metrics.filter(metric => metric.metricName === metricName)) {
+            var keep = true
+            for (let condition of conditions) {
+                const key = Object.keys(condition)[0]
+                if (metric[key] !== condition[key]) {
+                    keep = false
+                    break;
                 }
             }
+
+            if (keep && metric.value >= 0) {
+                values.push(metric.value)
+            }
         }
+        timeline.push({time: scrape.time, value: values.reduce((a, b) => a + b, 0)})
     }
+
+    if (timeline.length > DATA_POINTS) {
+        timeline.shift()
+    }
+
+    while (timeline.length < DATA_POINTS) {
+        timeline.unshift({time: null, value: null})
+    }
+
+    return timeline;
 }
 
-const createGCConfig = (gc) => {
-    const linespace = gc.map((e) => e.time);
+
+const memoryConfig = (metrics) => {
+    const linespace = metrics.map((e) => e.time);
+    if (linespace.length > DATA_POINTS) {
+        linespace.shift()
+    }
+
+    while (linespace.length < DATA_POINTS) {
+        linespace.unshift(null)
+    }
+    const heapUsage = sumMetric(metrics, Metrics.JVM_MEMORY_USED_BYTES, { "area": "heap" }).map(metric => (metric.value / 1024 / 1024).toFixed(1))
+    const nonHeapUsage = sumMetric(metrics, Metrics.JVM_MEMORY_USED_BYTES, { "area": "nonheap" }).map(metric => (metric.value / 1024 / 1024).toFixed(1))
+    const heapMax = sumMetric(metrics, Metrics.JVM_MEMORY_MAX_BYTES, { "area": "heap" }).map(metric => (metric.value / 1024 / 1024).toFixed(1))
+    const nonHeapMax = sumMetric(metrics, Metrics.JVM_MEMORY_MAX_BYTES, { "area": "nonheap" }).map(metric => (metric.value / 1024 / 1024).toFixed(1))
     return {
         type: 'line',
         data: {
             labels: linespace,
-            datasets: [{
-                label: 'GC Pause Max',
-                yAxisID: 'Max',
-                showLine: false,
-                pointRadius: 2,
-                backgroundColor: 'rgb(46, 117, 171)',
-                data: gc.map((e) => e.max)
-            },{
-                label: 'GC Pause Total',
-                yAxisID: 'Total',
-                fill: false,
-                borderDash: [3],
-                borderWidth: 2,
-                borderColor: 'rgb(85, 92, 88)',
-                data: gc.map((e) => e.total)
-            }]
+            datasets: [
+                {
+                   label: 'usage heap',
+                   yAxisID: 'Memory',
+                   borderWidth: 2,
+                   pointRadius: 2,
+                   backgroundColor: 'rgb(23, 105, 138)',
+                   data: heapUsage
+                },
+                {
+                    label: 'usage non-heap',
+                    yAxisID: 'Memory',
+                    borderWidth: 2,
+                    pointRadius: 2,
+                    backgroundColor: 'rgb(69, 36, 77)',
+                    data: nonHeapUsage
+                },
+                {
+                   label: 'max heap',
+                   yAxisID: 'Memory',
+                   hidden: true,
+                   borderDash: [3],
+                   borderWidth: 2,
+                   pointRadius: 2,
+                   fill: false,
+                   borderColor: 'rgb(23, 105, 138)',
+                   data: heapMax
+                },
+                {
+                    label: 'max non-heap',
+                    yAxisID: 'Memory',
+                    hidden: true,
+                    borderDash: [3],
+                    borderWidth: 2,
+                    pointRadius: 2,
+                    fill: false,
+                    borderColor: 'rgb(69, 36, 77)',
+                    data: nonHeapMax
+                }
+            ]
         },
         options: {
             legend: {
-                display: true
+                display: true,
+                position: "chartArea",
+                align: "center",
+                reverse: true,
+                labels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
             },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
                 duration: 0
             },
-            elements: {
-                point:{
-                    radius: 0
-                }
+            interaction: {
+                mode: 'index',
+                intersect: false
             },
             scales: {
                 yAxes: [{
-                    id: 'Max',
+                    id: 'Memory',
                     ticks: {
                         min: 0,
                         callback: function(value, index, values) {
-                            return `${(value)}s`
-                        }
-                    }
-                },{
-                    id: 'Total',
-                    position: 'right',
-                    ticks: {
-                        min: 0,
-                        callback: function(value, index, values) {
-                            return `${(value)}s`
+                            return `${(value).toFixed(1)}Mb`
                         }
                     }
                 }],
@@ -251,7 +270,10 @@ const createGCConfig = (gc) => {
 
 const timestamp = () => {
     const now = new Date();
-    return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+    const hh = `${now.getHours()}`.padStart(2, '0')
+    const mm = `${now.getMinutes()}`.padStart(2, '0')
+    const ss = `${now.getSeconds()}`.padStart(2, '0')
+    return `${hh}:${mm}:${ss}`;
 }
 
 export default SectionMonitor;
