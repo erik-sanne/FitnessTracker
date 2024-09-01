@@ -14,6 +14,7 @@ const SectionMonitor = () => {
     const [ time, setTime ] = useState(null)
     const [ cpu, setCpu ] = useState(new Array(100).fill(''))
     const [ memory, setMemory ] = useState(new Array(100).fill(''))
+    const [ gc, setGc ] = useState(new Array(100).fill(''))
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -27,6 +28,13 @@ const SectionMonitor = () => {
         get('/actuator/metrics/process.uptime').then(time => setTime(time.measurements[0].value));
         get('/actuator/metrics/process.cpu.usage').then(clock => setCpu(([_, ...tail]) => [...tail, {time: timestamp(), value: clock.measurements[0].value}]))
         get('/actuator/metrics/jvm.memory.used').then(mem => setMemory(([_, ...tail]) => [...tail, {time: timestamp(), value: mem.measurements[0].value}]));
+        get('/actuator/metrics/jvm.gc.pause').then(mem =>
+            setGc(([_, ...tail]) => [...tail, {
+                time: timestamp(),
+                count: mem.measurements[0].value,
+                total: mem.measurements[1].value,
+                max: mem.measurements[2].value,
+                }]));
     }
 
     return (
@@ -73,6 +81,7 @@ const SectionMonitor = () => {
                 { health === 'LOADING' ? <h4><Loader animation={"grow"}/></h4> :
                     <>
                         <Graph data={ createConfig(cpu, memory) }/>
+                       <Graph data={ createGCConfig(gc) }/>
                     </>
                 }
             </Module>
@@ -131,6 +140,87 @@ const createConfig = (cpu, memory) => {
                     ticks: {
                         callback: function(value, index, values) {
                             return `${(value / 1024 / 1024).toFixed(1)}Mb`
+                        }
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        min: linespace[linespace.length - 100],
+                        max: linespace[linespace.length - 1],
+                        callback: function(value, index, values) {
+                            return value ? value : '';
+                        }
+                    }
+                }]
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                }
+            }
+        }
+    }
+}
+
+const createGCConfig = (gc) => {
+    const linespace = gc.map((e) => e.time);
+    return {
+        type: 'line',
+        data: {
+            labels: linespace,
+            datasets: [{
+                label: 'GC Pause Max',
+                yAxisID: 'Max',
+                showLine: false,
+                pointRadius: 2,
+                backgroundColor: 'rgb(46, 117, 171)',
+                data: gc.map((e) => e.max)
+            },{
+                label: 'GC Pause Total',
+                yAxisID: 'Total',
+                fill: false,
+                borderDash: [3],
+                borderWidth: 2,
+                borderColor: 'rgb(85, 92, 88)',
+                data: gc.map((e) => e.total)
+            }]
+        },
+        options: {
+            legend: {
+                display: true
+            },
+            responsive: true,
+            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
+            animation: {
+                duration: 0
+            },
+            elements: {
+                point:{
+                    radius: 0
+                }
+            },
+            scales: {
+                yAxes: [{
+                    id: 'Max',
+                    ticks: {
+                        min: 0,
+                        callback: function(value, index, values) {
+                            return `${(value)}s`
+                        }
+                    }
+                },{
+                    id: 'Total',
+                    position: 'right',
+                    ticks: {
+                        min: 0,
+                        callback: function(value, index, values) {
+                            return `${(value)}s`
                         }
                     }
                 }],
