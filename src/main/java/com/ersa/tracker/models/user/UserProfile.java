@@ -39,6 +39,7 @@ public class UserProfile {
     private Achievement title;
 
     @Lob
+    @Column(length=4000000) //Approximately 4mb
     @JsonIgnore
     private byte[] profilePicture = null;
 
