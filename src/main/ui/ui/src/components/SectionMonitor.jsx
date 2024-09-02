@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import Module from "./modules/Module";
 import Loader from "./ui_components/Loader";
-import {faUserShield} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Graph from "./modules/Graph";
 import {faCheckCircle} from "@fortawesome/free-solid-svg-icons/faCheckCircle";
@@ -9,7 +8,7 @@ import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclama
 import get from "../services/Get.jsx";
 import preval from 'preval.macro'
 
-const SCRAPE_INTERVAL = 10000
+const SCRAPE_INTERVAL = 5000
 const DATA_POINTS = 50
 const Metrics = {
     JVM_MEMORY_USED_BYTES: "jvm_memory_used_bytes",
@@ -18,20 +17,35 @@ const Metrics = {
 
 const SectionMonitor = () => {
     const [ health, setHealth ] = useState('LOADING')
+    const [ responseTime, setResponseTime ] = useState(0)
     const [ time, setTime ] = useState(null)
     const [ metrics, setMetrics ] = useState([])
+    const [ chartConfigs, setChartConfigs ] = useState({})
 
     useEffect(() => {
         pollForData();
-        const interval = setInterval(() => {
+        const scrapeInterval = setInterval(() => {
             pollForData();
+        }, 1000);
+
+        const refreshInterval = setInterval(() => {
+            performScrape();
         }, SCRAPE_INTERVAL);
-        return () => clearInterval(interval);
+
+        return () => { clearInterval(scrapeInterval); clearInterval(refreshInterval); }
     }, []);
 
+    useEffect(() => {
+        setChartConfigs({ memory: memoryConfig(metrics) })
+    }, [metrics])
+
     const pollForData = () => {
-        get('/actuator/health').then(health => setHealth(health.status)).catch(() => setHealth('DOWN'));
+        const since = new Date().getTime();
+        get('/actuator/health').then(health => { setHealth(health.status); setResponseTime( new Date().getTime() - since) }).catch(() => {setHealth('DOWN'); setResponseTime(-1)});
         get('/actuator/metrics/process.uptime').then(time => setTime(time.measurements[0].value));
+    }
+
+    const performScrape = () => {
         get('/actuator/prometheus', false, "text/plain").then(scraped => handleScrape(scraped.split('\n').filter(row => !row.startsWith('#'))))
     }
 
@@ -72,49 +86,35 @@ const SectionMonitor = () => {
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
-            <Module title = "System Health">
-                <span style={{
-                    position: 'absolute',
-                    right: 'min(4vw, 32px)',
-                    top: 'min(3.5vw, 32px)',
-                    fontSize: 'min(calc(8px + 3.5vmin), 30px)',
-                    color: 'rgb(61 65 72)'
-                }}>
-                    Mod <FontAwesomeIcon icon={ faUserShield }/>
-                </span>
-
+            <Module title = "System Health" className={ "health-status" }>
                 { health === 'LOADING' ? <h4>Health Status: <Loader animation={"grow"}/></h4> :
                     <>
-                        <>
-                            <h4>Status:</h4>
+                        <div className={ 'health-status-table' }>
+                            <h4><span>Status:</span><span>{ health === 'UP' ? <FontAwesomeIcon icon={faCheckCircle} style={{color: "green" }}/> : <FontAwesomeIcon icon={faExclamationTriangle} style={{color: "orange" }}/> }</span></h4>
                             <div>
-                                <span>UI build time: </span><span>{preval`module.exports = new Date().toLocaleString('sv-SE', {timeZone: "Europe/Berlin"});`}. (Uptime: { time && new Date(new Date() - new Date(preval`module.exports = new Date()`)).toISOString().substr(11, 8) }).</span>
+                                <span>API response: </span><span>{ responseTime > 0 && responseTime + " ms"}</span>
                             </div>
                             <div>
-                                <span>Last API deploy: </span><span>{ time && new Date(new Date() - new Date((time * 1000))).toLocaleString('sv-SE') }. (Uptime: { time && new Date((time * 1000)).toISOString().substr(11, 8) })</span>
+                                <span>API uptime: </span><span>{ time && new Date((time * 1000)).toISOString().substr(11, 8) }</span>
                             </div>
                             <div>
-                                <span>API health check: </span><span>{ health === 'UP' ? <FontAwesomeIcon icon={faCheckCircle} style={{color: "green" }}/> : <FontAwesomeIcon icon={faExclamationTriangle} style={{color: "orange" }}/> }</span>
+                                <span>API build: </span><span>{ time && new Date(new Date() - new Date((time * 1000))).toLocaleString('sv-SE') }</span>
                             </div>
-                        </>
+                            <div>
+                                <span>UI uptime: </span><span>{ time && new Date(new Date() - new Date(preval`module.exports = new Date()`)).toISOString().substr(11, 8) }</span>
+                            </div>
+                            <div>
+                                <span>UI build: </span><span>{preval`module.exports = new Date().toLocaleString('sv-SE', {timeZone: "Europe/Berlin"});`}</span>
+                            </div>
+                        </div>
                     </>
                 }
             </Module>
-            <Module title = "Performance monitor">
-                <span style={{
-                    position: 'absolute',
-                    right: 'min(4vw, 32px)',
-                    top: 'min(3.5vw, 32px)',
-                    fontSize: 'min(calc(8px + 3.5vmin), 30px)',
-                    color: 'rgb(61 65 72)'
-                }}>
-                    Mod <FontAwesomeIcon icon={ faUserShield }/>
-                </span>
-
-                { health === 'LOADING' ? <h4><Loader animation={"grow"}/></h4> :
-                    <>
-                        <Graph data={ memoryConfig(metrics) }/>
-                    </>
+            <Module title = "JVM Memory">
+                { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
+                    <div>
+                        <Graph data={ chartConfigs.memory }/>
+                    </div>
                 }
             </Module>
         </div>
@@ -215,9 +215,8 @@ const memoryConfig = (metrics) => {
         options: {
             legend: {
                 display: true,
-                position: "chartArea",
-                align: "center",
-                reverse: true,
+                position: "top",
+                align: "end",
                 labels: {
                     fontSize: 12,
                     fontFamily: 'Quicksand',

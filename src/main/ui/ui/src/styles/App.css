@@ -969,3 +969,31 @@ body {
 .leaderboard-row .score-icon {
   color: #333
 }
+
+.health-status-table > div {
+    display: flex;
+}
+
+.health-status-table > div > span {
+    display: block;
+}
+
+.health-status-table > h4 {
+    display: flex;
+}
+
+.health-status-table > h4 > span {
+    display: block;
+}
+
+.health-status-table > h4 > span:nth-child(1) {
+    width: calc(80px + 4vmin);
+}
+
+.health-status-table > div > span:nth-child(1) {
+    width: calc(80px + 4vmin);
+}
+
+.health-status-table > div > span:nth-child(2) {
+    width: 10em;
+}
