@@ -8,11 +8,19 @@ import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclama
 import get from "../services/Get.jsx";
 import preval from 'preval.macro'
 
-const SCRAPE_INTERVAL = 5000
-const DATA_POINTS = 50
+const SCRAPE_INTERVAL = 3000
+const DATA_POINTS = 150
 const Metrics = {
     JVM_MEMORY_USED_BYTES: "jvm_memory_used_bytes",
     JVM_MEMORY_MAX_BYTES: "jvm_memory_max_bytes",
+    SERVER_REQUEST_COUNT: "http_server_requests_seconds_count",
+    SERVER_REQUEST_SUM: "http_server_requests_seconds_sum",
+    SERVER_REQUEST_MAX: "http_server_requests_seconds_max"
+}
+const Aggs = {
+    AVG: "avg",
+    SUM: "sum",
+    MAX: "max"
 }
 
 const SectionMonitor = () => {
@@ -36,7 +44,11 @@ const SectionMonitor = () => {
     }, []);
 
     useEffect(() => {
-        setChartConfigs({ memory: memoryConfig(metrics) })
+        setChartConfigs({
+            memory: memoryConfig(metrics),
+            serverRequestCounts: serverRequestCountConfig(metrics),
+            serverRequestMax: serverRequestMaxConfig(metrics)
+        })
     }, [metrics])
 
     const pollForData = () => {
@@ -51,7 +63,7 @@ const SectionMonitor = () => {
 
     const handleScrape = (scraped) => {
         const measurement = {}
-        measurement['time'] = timestamp()
+        measurement['time'] = new Date()
         measurement['metrics'] = []
 
         for (let row of scraped) {
@@ -81,12 +93,18 @@ const SectionMonitor = () => {
         }
         measurement.metrics = measurement.metrics.filter(metric => metricsToKeep.includes(metric.metricName))
 
-        setMetrics((tail) => [...tail, measurement])
+        setMetrics((tail) => {
+            let arr = [...tail, measurement]
+            if (arr.length > DATA_POINTS) {
+                arr = arr.slice(arr.length - DATA_POINTS)
+            }
+            return arr
+        })
     }
 
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
-            <Module title = "System Health" className={ "health-status" }>
+            <Module title = "System Info" className={ "health-status" }>
                 { health === 'LOADING' ? <h4>Health Status: <Loader animation={"grow"}/></h4> :
                     <>
                         <div className={ 'health-status-table' }>
@@ -110,10 +128,24 @@ const SectionMonitor = () => {
                     </>
                 }
             </Module>
-            <Module title = "JVM Memory">
+            <Module title = "Request rate">
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
                     <div>
-                        <Graph data={ chartConfigs.memory }/>
+                        <Graph data={ chartConfigs.serverRequestCounts } style={{ margin: '-1em' }}/>
+                    </div>
+                }
+            </Module>
+            <Module title = "Reponse time">
+                { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
+                    <div>
+                        <Graph data={ chartConfigs.serverRequestMax } style={{ margin: '-1em' }}/>
+                    </div>
+                }
+            </Module>
+            <Module title = "JVM Memory Usage">
+                { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
+                    <div>
+                        <Graph data={ chartConfigs.memory } style={{ margin: '-1em' }}/>
                     </div>
                 }
             </Module>
@@ -121,11 +153,12 @@ const SectionMonitor = () => {
     );
 }
 
-const sumMetric = (metrics, metricName, ...conditions) => {
+const aggMetric = (metrics, agg, metricName, ...conditions) => {
     const timeline = []
     for (let scrape of metrics) {
         var values = []
-        for (let metric of scrape.metrics.filter(metric => metric.metricName === metricName)) {
+        const thisMetric = scrape.metrics.filter(metric => metric.metricName === metricName)
+        for (let metric of thisMetric) {
             var keep = true
             for (let condition of conditions) {
                 const key = Object.keys(condition)[0]
@@ -139,53 +172,89 @@ const sumMetric = (metrics, metricName, ...conditions) => {
                 values.push(metric.value)
             }
         }
-        timeline.push({time: scrape.time, value: values.reduce((a, b) => a + b, 0)})
-    }
+        let finalValue = 0;
+        if (agg === Aggs.SUM) {
+            finalValue = values.reduce((a, b) => a + b, 0)
+        } else if (agg === Aggs.MAX) {
+            finalValue = values.reduce((a, b) => Math.max(a, b), 0)
+        } else if (agg === Aggs.AVG) {
+            finalValue = values.reduce((a, b) => a + b, 0) / values.length
+        }
 
-    if (timeline.length > DATA_POINTS) {
-        timeline.shift()
+        timeline.push({time: scrape.time, value: finalValue })
     }
-
-    while (timeline.length < DATA_POINTS) {
-        timeline.unshift({time: null, value: null})
-    }
-
     return timeline;
 }
 
+const pad = (metrics) => {
+    if (metrics.length < DATA_POINTS) {
+        let test = (DATA_POINTS) * SCRAPE_INTERVAL / 1000.0
+
+        let d0 = new Date();
+        d0.setSeconds(d0.getSeconds() - test);
+        let d1 = metrics.length > 0 ? new Date(metrics[0].time) : new Date();
+        d1.setSeconds(d1.getSeconds() - 1)
+        if (d0.getTime() < d1.getTime()){
+            metrics.unshift({ time: d1, value: 0 })
+            metrics.unshift({ time: d0, value: 0 })
+        }
+    }
+    return metrics;
+}
+
+const rate = (metrics) => {
+    const rated = metrics.map((elem, index) => {
+        if (index === 0) {
+            return { time: elem.time, value: 0}
+        }
+
+        const lastElem = metrics[index - 1]
+        const timeDiffInSeconds = (elem.time.getTime() - lastElem.time.getTime()) / 1000.0
+        const deltaValue = (elem.value - lastElem.value) / timeDiffInSeconds
+        return { time: elem.time, value: deltaValue }
+    })
+    return rated;
+}
+
+const division = (metrics1, metrics2) => {
+    const divided = metrics1.map((elem, index) => {
+        const other = metrics2[index];
+        if (other.value < 0.001) {
+            return { time: elem.time, value: 0 }
+        }
+
+        return { time: elem.time, value: elem.value / other.value }
+    })
+    return divided;
+}
 
 const memoryConfig = (metrics) => {
-    const linespace = metrics.map((e) => e.time);
-    if (linespace.length > DATA_POINTS) {
-        linespace.shift()
-    }
-
-    while (linespace.length < DATA_POINTS) {
-        linespace.unshift(null)
-    }
-    const heapUsage = sumMetric(metrics, Metrics.JVM_MEMORY_USED_BYTES, { "area": "heap" }).map(metric => (metric.value / 1024 / 1024).toFixed(1))
-    const nonHeapUsage = sumMetric(metrics, Metrics.JVM_MEMORY_USED_BYTES, { "area": "nonheap" }).map(metric => (metric.value / 1024 / 1024).toFixed(1))
-    const heapMax = sumMetric(metrics, Metrics.JVM_MEMORY_MAX_BYTES, { "area": "heap" }).map(metric => (metric.value / 1024 / 1024).toFixed(1))
-    const nonHeapMax = sumMetric(metrics, Metrics.JVM_MEMORY_MAX_BYTES, { "area": "nonheap" }).map(metric => (metric.value / 1024 / 1024).toFixed(1))
+    const heapUsage = pad(aggMetric(metrics, Aggs.SUM, Metrics.JVM_MEMORY_USED_BYTES, { "area": "heap" })).map((metric) => { return { x: metric.time, y: (metric.value / 1024 / 1024)}})
+    const nonHeapUsage = pad(aggMetric(metrics, Aggs.SUM, Metrics.JVM_MEMORY_USED_BYTES, { "area": "nonheap" })).map((metric) => { return { x: metric.time, y: (metric.value / 1024 / 1024)}})
+    const heapMax = pad(aggMetric(metrics, Aggs.SUM, Metrics.JVM_MEMORY_MAX_BYTES, { "area": "heap" })).map((metric) => { return { x: metric.time, y: (metric.value / 1024 / 1024)}})
+    const nonHeapMax = pad(aggMetric(metrics, Aggs.SUM, Metrics.JVM_MEMORY_MAX_BYTES, { "area": "nonheap" })).map((metric) => { return { x: metric.time, y: (metric.value / 1024 / 1024)}})
     return {
         type: 'line',
         data: {
-            labels: linespace,
             datasets: [
                 {
-                   label: 'usage heap',
+                   label: 'heap',
                    yAxisID: 'Memory',
-                   borderWidth: 2,
-                   pointRadius: 2,
-                   backgroundColor: 'rgb(23, 105, 138)',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
+                   borderColor: 'rgb(23, 105, 138)',
+                   backgroundColor: 'rgba(23, 105, 138, 0.3)',
+                   lineTension: 0,
                    data: heapUsage
                 },
                 {
-                    label: 'usage non-heap',
+                    label: 'non-heap',
                     yAxisID: 'Memory',
-                    borderWidth: 2,
-                    pointRadius: 2,
-                    backgroundColor: 'rgb(69, 36, 77)',
+                    borderWidth: window.innerWidth < 600 ? 1 : 2,
+                    pointRadius: 0,
+                    borderColor: 'rgb(69, 36, 77)',
+                    backgroundColor: 'rgba(69, 36, 77, 0.3)',
+                    lineTension: 0,
                     data: nonHeapUsage
                 },
                 {
@@ -193,10 +262,11 @@ const memoryConfig = (metrics) => {
                    yAxisID: 'Memory',
                    hidden: true,
                    borderDash: [3],
-                   borderWidth: 2,
-                   pointRadius: 2,
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
                    fill: false,
                    borderColor: 'rgb(23, 105, 138)',
+                   lineTension: 0,
                    data: heapMax
                 },
                 {
@@ -204,10 +274,11 @@ const memoryConfig = (metrics) => {
                     yAxisID: 'Memory',
                     hidden: true,
                     borderDash: [3],
-                    borderWidth: 2,
-                    pointRadius: 2,
+                    borderWidth: window.innerWidth < 600 ? 1 : 2,
+                    pointRadius: 0,
                     fill: false,
                     borderColor: 'rgb(69, 36, 77)',
+                    lineTension: 0,
                     data: nonHeapMax
                 }
             ]
@@ -224,7 +295,7 @@ const memoryConfig = (metrics) => {
                 }
             },
             responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
+            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
                 duration: 0
             },
@@ -238,17 +309,19 @@ const memoryConfig = (metrics) => {
                     ticks: {
                         min: 0,
                         callback: function(value, index, values) {
-                            return `${(value).toFixed(1)}Mb`
+                            return `${(value).toFixed(0)}Mb`
                         }
                     }
                 }],
                 xAxes: [{
-                    ticks: {
-                        min: linespace[linespace.length - 100],
-                        max: linespace[linespace.length - 1],
-                        callback: function(value, index, values) {
-                            return value ? value : '';
-                        }
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                          millisecond: 'HH:mm:ss',
+                          second: 'HH:mm:ss',
+                          minute: 'HH:mm',
+                          hour: 'HH'
+                      }
                     }
                 }]
             },
@@ -267,12 +340,201 @@ const memoryConfig = (metrics) => {
     }
 }
 
-const timestamp = () => {
-    const now = new Date();
-    const hh = `${now.getHours()}`.padStart(2, '0')
-    const mm = `${now.getMinutes()}`.padStart(2, '0')
-    const ss = `${now.getSeconds()}`.padStart(2, '0')
-    return `${hh}:${mm}:${ss}`;
+const serverRequestCountConfig = (metrics) => {
+    const getRequests = pad(rate(aggMetric(metrics, Aggs.SUM, Metrics.SERVER_REQUEST_COUNT, { "method": "GET" }))).map((metric) => { return { x: metric.time, y: metric.value}})
+    const postRequests = pad(rate(aggMetric(metrics, Aggs.SUM, Metrics.SERVER_REQUEST_COUNT, { "method": "POST" }))).map((metric) => { return { x: metric.time, y: metric.value}})
+    return {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                   label: 'GET',
+                   yAxisID: 'Requests',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
+                   borderColor: 'rgb(23, 105, 138)',
+                   lineTension: 0,
+                   fill: false,
+                   data: getRequests
+                },
+                {
+                    label: 'POST',
+                    yAxisID: 'Requests',
+                    borderWidth: window.innerWidth < 600 ? 1 : 2,
+                    pointRadius: 0,
+                    borderColor: 'rgb(69, 36, 77)',
+                    lineTension: 0,
+                    fill: false,
+                    data: postRequests
+                }
+            ]
+        },
+        options: {
+            legend: {
+                display: true,
+                position: "top",
+                align: "end",
+                labels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
+            },
+            responsive: true,
+            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            animation: {
+                duration: 0
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                yAxes: [{
+                    id: 'Requests',
+                    ticks: {
+                        min: 0,
+                        callback: function(value, index, values) {
+                            return `${(value)}rps`
+                        }
+                    }
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                          millisecond: 'HH:mm:ss',
+                          second: 'HH:mm:ss',
+                          minute: 'HH:mm',
+                          hour: 'HH'
+                      }
+                    }
+                }]
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                }
+            }
+        }
+    }
+}
+
+const serverRequestMaxConfig = (metrics) => {
+    const maxGetRequests = pad(aggMetric(metrics, Aggs.MAX, Metrics.SERVER_REQUEST_MAX, { "method": "GET" })).map((metric) => { return { x: metric.time, y: metric.value * 1000}})
+    const maxPostRequests = pad(aggMetric(metrics, Aggs.MAX, Metrics.SERVER_REQUEST_MAX, { "method": "POST" })).map((metric) => { return { x: metric.time, y: metric.value * 1000}})
+    const avgGetRequests = pad(division(rate(aggMetric(metrics, Aggs.SUM, Metrics.SERVER_REQUEST_SUM, { "method": "GET" })), rate(aggMetric(metrics, Aggs.SUM, Metrics.SERVER_REQUEST_COUNT, { "method": "GET" })))).map((metric) => { return { x: metric.time, y: metric.value * 1000}})
+    const avgPostRequests = pad(division(rate(aggMetric(metrics, Aggs.SUM, Metrics.SERVER_REQUEST_SUM, { "method": "POST" })), rate(aggMetric(metrics, Aggs.SUM, Metrics.SERVER_REQUEST_COUNT, { "method": "POST" })))).map((metric) => { return { x: metric.time, y: metric.value * 1000}})
+
+    return {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                   label: 'GET Max',
+                   yAxisID: 'Requests',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
+                   borderColor: 'rgba(23, 105, 138, 0.5)',
+                   lineTension: 0,
+                   borderDash: [3],
+                   fill: false,
+                   data: maxGetRequests
+                },
+                {
+                    label: 'POST Max',
+                    yAxisID: 'Requests',
+                    borderWidth: window.innerWidth < 600 ? 1 : 2,
+                    pointRadius: 0,
+                    borderColor: 'rgba(69, 36, 77, 0.5)',
+                    lineTension: 0,
+                    borderDash: [3],
+                    fill: false,
+                    data: maxPostRequests
+                },
+                {
+                    label: 'GET Avg',
+                    yAxisID: 'Requests',
+                    borderWidth: window.innerWidth < 600 ? 1 : 2,
+                    pointRadius: 0,
+                    borderColor: 'rgb(23, 105, 138)',
+                    lineTension: 0,
+                    fill: false,
+                    data: avgGetRequests
+                },
+                {
+                    label: 'POST Avg',
+                    yAxisID: 'Requests',
+                    borderWidth: window.innerWidth < 600 ? 1 : 2,
+                    pointRadius: 0,
+                    borderColor: 'rgb(69, 36, 77)',
+                    lineTension: 0,
+                    fill: false,
+                    data: avgPostRequests
+                }
+            ]
+        },
+        options: {
+            legend: {
+                display: true,
+                position: "top",
+                align: "end",
+                labels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
+            },
+            responsive: true,
+            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            animation: {
+                duration: 0
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                yAxes: [{
+                    id: 'Requests',
+                    ticks: {
+                        min: 0,
+                        callback: function(value, index, values) {
+                            return `${(value)}ms`
+                        }
+                    }
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                          millisecond: 'HH:mm:ss',
+                          second: 'HH:mm:ss',
+                          minute: 'HH:mm',
+                          hour: 'HH'
+                      }
+                    }
+                }]
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                }
+            }
+        }
+    }
 }
 
 export default SectionMonitor;
