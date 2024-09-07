@@ -183,22 +183,28 @@ const SectionMonitor = () => {
 }
 
 const getLabelValues = (metrics, metricName, ...labels) => {
-    if (metrics.length == 0) {
-        return []
-    }
-
-    const last = metrics[metrics.length - 1]
-    const thisMetric = last.metrics.filter(metric => metric.metricName === metricName)
-
     const res = []
-    for (let metric of thisMetric) {
-        const comb = {}
-        for (let label of labels) {
-            const labelValue = metric[label]
-            comb[label] = labelValue
-        }
-        if (!res.includes(comb)) {
-            res.push(comb)
+    for (let scrape of metrics) {
+        const thisMetric = scrape.metrics.filter(metric => metric.metricName === metricName)
+
+        for (let metric of thisMetric) {
+            const comb = {}
+            for (let label of labels) {
+                const labelValue = metric[label]
+                comb[label] = labelValue
+            }
+            const exists = res.filter(a => {
+               for (const label of labels) {
+                    if (comb[label] != a[label]) {
+                        return false
+                    }
+               }
+               return true
+            }).length > 0;
+
+            if (!exists) {
+                res.push(comb)
+            }
         }
     }
     return res;
@@ -521,6 +527,7 @@ const gcPauseConfig = (metrics) => {
                 display: true,
                 position: "chartArea",
                 align: "start",
+                reverse: true,
                 labels: {
                     fontSize: 12,
                     fontFamily: 'Quicksand',
