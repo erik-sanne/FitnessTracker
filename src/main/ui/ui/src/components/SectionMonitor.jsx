@@ -11,11 +11,16 @@ import preval from 'preval.macro'
 const SCRAPE_INTERVAL = 3000
 const DATA_POINTS = 150
 const Metrics = {
+    PROCESS_CPU_USAGE: "process_cpu_usage",
     JVM_MEMORY_USED_BYTES: "jvm_memory_used_bytes",
     JVM_MEMORY_MAX_BYTES: "jvm_memory_max_bytes",
     SERVER_REQUEST_COUNT: "http_server_requests_seconds_count",
     SERVER_REQUEST_SUM: "http_server_requests_seconds_sum",
-    SERVER_REQUEST_MAX: "http_server_requests_seconds_max"
+    SERVER_REQUEST_MAX: "http_server_requests_seconds_max",
+    DB_INVOCATIONS_SUM: "spring_data_repository_invocations_seconds_sum",
+    DB_INVOCATIONS_COUNT: "spring_data_repository_invocations_seconds_count",
+    GC_PAUSE_COUNT: "jvm_gc_pause_seconds_count",
+    GC_PAUSE_SUM: "jvm_gc_pause_seconds_sum"
 }
 const Aggs = {
     AVG: "avg",
@@ -46,8 +51,11 @@ const SectionMonitor = () => {
     useEffect(() => {
         setChartConfigs({
             memory: memoryConfig(metrics),
+            cpu: cpuConfig(metrics),
             serverRequestCounts: serverRequestCountConfig(metrics),
-            serverRequestMax: serverRequestMaxConfig(metrics)
+            serverRequestMax: serverRequestMaxConfig(metrics),
+            dbInvocations: dbInvocationsConfig(metrics),
+            gcPause: gcPauseConfig(metrics)
         })
     }, [metrics])
 
@@ -142,6 +150,13 @@ const SectionMonitor = () => {
                     </div>
                 }
             </Module>
+            <Module title = "CPU Usage">
+                { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
+                    <div>
+                        <Graph data={ chartConfigs.cpu } style={{ margin: '-1em' }}/>
+                    </div>
+                }
+            </Module>
             <Module title = "JVM Memory Usage">
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
                     <div>
@@ -149,8 +164,44 @@ const SectionMonitor = () => {
                     </div>
                 }
             </Module>
+            <Module title = "GC Pause">
+                { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
+                    <div>
+                        <Graph data={ chartConfigs.gcPause } style={{ margin: '-1em' }}/>
+                    </div>
+                }
+            </Module>
+            <Module title = "Database IO">
+                { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
+                    <div>
+                        <Graph data={ chartConfigs.dbInvocations } style={{ margin: '-1em' }}/>
+                    </div>
+                }
+            </Module>
         </div>
     );
+}
+
+const getLabelValues = (metrics, metricName, ...labels) => {
+    if (metrics.length == 0) {
+        return []
+    }
+
+    const last = metrics[metrics.length - 1]
+    const thisMetric = last.metrics.filter(metric => metric.metricName === metricName)
+
+    const res = []
+    for (let metric of thisMetric) {
+        const comb = {}
+        for (let label of labels) {
+            const labelValue = metric[label]
+            comb[label] = labelValue
+        }
+        if (!res.includes(comb)) {
+            res.push(comb)
+        }
+    }
+    return res;
 }
 
 const aggMetric = (metrics, agg, metricName, ...conditions) => {
@@ -238,7 +289,7 @@ const memoryConfig = (metrics) => {
         data: {
             datasets: [
                 {
-                   label: 'heap',
+                   label: 'Heap',
                    yAxisID: 'Memory',
                    borderWidth: window.innerWidth < 600 ? 1 : 2,
                    pointRadius: 0,
@@ -248,7 +299,7 @@ const memoryConfig = (metrics) => {
                    data: heapUsage
                 },
                 {
-                    label: 'non-heap',
+                    label: 'Non-heap',
                     yAxisID: 'Memory',
                     borderWidth: window.innerWidth < 600 ? 1 : 2,
                     pointRadius: 0,
@@ -258,7 +309,7 @@ const memoryConfig = (metrics) => {
                     data: nonHeapUsage
                 },
                 {
-                   label: 'max heap',
+                   label: 'Max Heap',
                    yAxisID: 'Memory',
                    hidden: true,
                    borderDash: [3],
@@ -270,7 +321,7 @@ const memoryConfig = (metrics) => {
                    data: heapMax
                 },
                 {
-                    label: 'max non-heap',
+                    label: 'Max Non-heap',
                     yAxisID: 'Memory',
                     hidden: true,
                     borderDash: [3],
@@ -312,6 +363,292 @@ const memoryConfig = (metrics) => {
                             return `${(value).toFixed(0)}Mb`
                         }
                     }
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                          millisecond: 'HH:mm:ss',
+                          second: 'HH:mm:ss',
+                          minute: 'HH:mm',
+                          hour: 'HH'
+                      }
+                    }
+                }]
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                }
+            }
+        }
+    }
+}
+
+const cpuConfig = (metrics) => {
+    const heapUsage = pad(aggMetric(metrics, Aggs.SUM, Metrics.PROCESS_CPU_USAGE)).map((metric) => { return { x: metric.time, y: (metric.value * 100)}})
+    return {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                   label: 'CPU Usage',
+                   yAxisID: 'Cpu',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
+                   borderColor: 'rgb(23, 105, 138)',
+                   backgroundColor: 'rgba(23, 105, 138, 0.3)',
+                   lineTension: 0,
+                   data: heapUsage
+                }
+            ]
+        },
+        options: {
+            legend: {
+                display: true,
+                position: "top",
+                align: "end",
+                labels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
+            },
+            responsive: true,
+            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            animation: {
+                duration: 0
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                yAxes: [{
+                    id: 'Cpu',
+                    ticks: {
+                        min: 0,
+                        max: 100,
+                        callback: function(value, index, values) {
+                            return `${(value).toFixed(0)}%`
+                        }
+                    }
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                          millisecond: 'HH:mm:ss',
+                          second: 'HH:mm:ss',
+                          minute: 'HH:mm',
+                          hour: 'HH'
+                      }
+                    }
+                }]
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                }
+            }
+        }
+    }
+}
+
+const getColor = (idx) => {
+    if (idx === 0) {
+        return 'rgb(138, 105, 32)'
+    } else if (idx === 1) {
+        return 'rgb(105, 138, 32)'
+    } else if (idx === 2) {
+        return 'rgb(138, 32, 105)'
+    } else if (idx === 3) {
+        return 'rgb(32, 138, 105)'
+    } else if (idx === 4) {
+        return 'rgb(32, 105, 138)'
+    } else if (idx === 5) {
+        return 'rgb(105, 32, 138)'
+    }
+}
+
+const gcPauseConfig = (metrics) => {
+    const combinations = getLabelValues(metrics, Metrics.GC_PAUSE_COUNT, "cause", "gc")
+
+    if (combinations == 0)
+        return
+
+    const datasets = combinations.map((comb, idx) => {
+        const cause = comb["cause"]
+        const gc = comb["gc"]
+        const avgGCPause = pad(
+                    division(
+                        rate(aggMetric(metrics, Aggs.SUM, Metrics.GC_PAUSE_SUM, { "cause": cause }, { "gc": gc })),
+                        rate(aggMetric(metrics, Aggs.SUM, Metrics.GC_PAUSE_COUNT, { "cause": cause }, { "gc": gc }))
+                    )
+                ).map((metric) => { return { x: metric.time, y: (metric.value * 1000)}})
+        return {
+                   label: cause + ", " + gc,
+                   yAxisID: 'GC',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: window.innerWidth < 600 ? 1 : 2,
+                   barThickness: window.innerWidth < 600 ? 1 : 2,
+                   showLine: false,
+                   borderColor: getColor(idx),
+                   lineTension: 0,
+                   data: avgGCPause
+                }
+    })
+
+    return {
+        type: 'bar',
+        data: {
+            datasets: datasets
+        },
+        options: {
+            legend: {
+                display: true,
+                position: "chartArea",
+                align: "start",
+                labels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
+            },
+            responsive: true,
+            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            animation: {
+                duration: 0
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                yAxes: [{
+                    id: 'GC',
+                    position: 'left',
+                    ticks: {
+                        min: 0,
+                        callback: function(value, index, values) {
+                            return `${(value)}ms`
+                        }
+                    }
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                          millisecond: 'HH:mm:ss',
+                          second: 'HH:mm:ss',
+                          minute: 'HH:mm',
+                          hour: 'HH'
+                      }
+                    }
+                }]
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                }
+            }
+        }
+    }
+}
+
+const dbInvocationsConfig = (metrics) => {
+    const dbLatency = pad(
+            division(
+                rate(aggMetric(metrics, Aggs.SUM, Metrics.DB_INVOCATIONS_SUM)),
+                rate(aggMetric(metrics, Aggs.SUM, Metrics.DB_INVOCATIONS_COUNT))
+            )
+        ).map((metric) => { return { x: metric.time, y: (metric.value * 1000)}})
+
+    const dbIO = pad(
+                rate(aggMetric(metrics, Aggs.SUM, Metrics.DB_INVOCATIONS_COUNT))
+        ).map((metric) => { return { x: metric.time, y: (metric.value)}})
+
+    return {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                   label: 'Avg latency',
+                   yAxisID: 'DBLatency',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
+                   borderColor: 'rgb(23, 105, 138)',
+                   lineTension: 0,
+                   data: dbLatency
+                },
+                {
+                   label: 'Invocations',
+                   yAxisID: 'DBIO',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
+                   borderColor: 'rgb(69, 36, 77)',
+                   lineTension: 0,
+                   data: dbIO
+                }
+            ]
+        },
+        options: {
+            legend: {
+                display: true,
+                position: "top",
+                align: "end",
+                labels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
+            },
+            responsive: true,
+            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            animation: {
+                duration: 0
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                yAxes: [{
+                    id: 'DBLatency',
+                    position: 'left',
+                    ticks: {
+                        min: 0,
+                        callback: function(value, index, values) {
+                            return `${(value)}ms`
+                        }
+                    }
+                },{
+                      id: 'DBIO',
+                      position: 'right',
+                      ticks: {
+                          min: 0,
+                          callback: function(value, index, values) {
+                              return `${(value).toFixed(0)}iops`
+                          }
+                      }
                 }],
                 xAxes: [{
                     type: 'time',
