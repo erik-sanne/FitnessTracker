@@ -120,7 +120,6 @@
 
 .module.health-status {
   grid-column: 1 / span 1;
-  grid-row: 1;
 }
 
 @media screen and (min-width: 2000px) {
@@ -162,7 +161,6 @@
 @media screen and (min-width: 1250px) {
     .module.health-status {
       grid-column: 1 / span 2;
-      grid-row: 1;
     }
 }
 
@@ -209,13 +207,11 @@
   }
   .module.health-status {
     grid-column: 1 / span 3;
-    grid-row: 1;
   }
 }
 
 @media screen and (max-width: 600px) {
  .module.health-status {
     grid-column: 1;
-    grid-row: 1;
   }
 }

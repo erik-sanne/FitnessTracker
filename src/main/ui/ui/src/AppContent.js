@@ -177,7 +177,7 @@ const AppContent = ({ logoutCallback }) => {
                             <SectionUpdates/>
                         </Route>
                         <Route path="/monitor">
-                            <Header title={ "Health check" } onClick={ burgerClick } />
+                            <Header title={ "System insights" } onClick={ burgerClick } />
                             <SectionMonitor/>
                         </Route>
                         <Redirect from="/" to="/general" />

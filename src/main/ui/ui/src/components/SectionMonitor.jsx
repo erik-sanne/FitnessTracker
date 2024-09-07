@@ -20,7 +20,9 @@ const Metrics = {
     DB_INVOCATIONS_SUM: "spring_data_repository_invocations_seconds_sum",
     DB_INVOCATIONS_COUNT: "spring_data_repository_invocations_seconds_count",
     GC_PAUSE_COUNT: "jvm_gc_pause_seconds_count",
-    GC_PAUSE_SUM: "jvm_gc_pause_seconds_sum"
+    GC_PAUSE_SUM: "jvm_gc_pause_seconds_sum",
+    LOGBACK_EVENTS: "logback_events_total",
+    JVM_THREAD_STATES: "jvm_threads_states_threads"
 }
 const Aggs = {
     AVG: "avg",
@@ -34,8 +36,10 @@ const SectionMonitor = () => {
     const [ time, setTime ] = useState(null)
     const [ metrics, setMetrics ] = useState([])
     const [ chartConfigs, setChartConfigs ] = useState({})
+    const [ clientInfo, setClientInfo ] = useState({})
 
     useEffect(() => {
+        setClientInfo(createClientInfo(window))
         pollForData();
         const scrapeInterval = setInterval(() => {
             pollForData();
@@ -55,7 +59,9 @@ const SectionMonitor = () => {
             serverRequestCounts: serverRequestCountConfig(metrics),
             serverRequestMax: serverRequestMaxConfig(metrics),
             dbInvocations: dbInvocationsConfig(metrics),
-            gcPause: gcPauseConfig(metrics)
+            gcPause: gcPauseConfig(metrics),
+            logbackEvents: logbackEventsConfig(metrics),
+            jvmThreadStates: jvmThreadStatesConfig(metrics)
         })
     }, [metrics])
 
@@ -114,32 +120,49 @@ const SectionMonitor = () => {
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
             <Module title = "System Info" className={ "health-status" }>
                 { health === 'LOADING' ? <h4>Health Status: <Loader animation={"grow"}/></h4> :
-                    <>
+                    <div className={ 'health-status-table-wrapper' }>
                         <div className={ 'health-status-table' }>
-                            <h4><span>Status:</span><span>{ health === 'UP' ? <FontAwesomeIcon icon={faCheckCircle} style={{color: "green" }}/> : <FontAwesomeIcon icon={faExclamationTriangle} style={{color: "orange" }}/> }</span></h4>
+                            <h4>API</h4>
                             <div>
-                                <span>API response: </span><span>{ responseTime > 0 && responseTime + " ms"}</span>
+                                <span>Last Restart: </span><span>{ time && new Date(new Date() - new Date((time * 1000))).toLocaleString('sv-SE') }</span>
                             </div>
                             <div>
-                                <span>API uptime: </span><span>{ time && new Date((time * 1000)).toISOString().substr(11, 8) }</span>
+                                <span>Uptime: </span><span>{ time && new Date((time * 1000)).toISOString().substr(11, 8) }</span>
+                            </div>
+                            <div><p /></div>
+                            <div>
+                                <span>Response time: </span><span>{ responseTime > 0 && responseTime + " ms"}</span>
                             </div>
                             <div>
-                                <span>API build: </span><span>{ time && new Date(new Date() - new Date((time * 1000))).toLocaleString('sv-SE') }</span>
-                            </div>
-                            <div>
-                                <span>UI uptime: </span><span>{ time && new Date(new Date() - new Date(preval`module.exports = new Date()`)).toISOString().substr(11, 8) }</span>
-                            </div>
-                            <div>
-                                <span>UI build: </span><span>{preval`module.exports = new Date().toLocaleString('sv-SE', {timeZone: "Europe/Berlin"});`}</span>
+                                <span>Health check:</span><span>{ health === 'UP' ? <FontAwesomeIcon icon={faCheckCircle} style={{color: "green" }}/> : <FontAwesomeIcon icon={faExclamationTriangle} style={{color: "orange" }}/> }</span>
                             </div>
                         </div>
-                    </>
+                        <div className={ 'health-status-table' }>
+                            <h4>Client</h4>
+                            <div>
+                                <span>Built at: </span><span>{preval`module.exports = new Date().toLocaleString('sv-SE', {timeZone: "Europe/Berlin"});`}</span>
+                            </div>
+                            <div>
+                                <span>Uptime: </span><span>{ time && new Date(new Date() - new Date(preval`module.exports = new Date()`)).toISOString().substr(11, 8) }</span>
+                            </div>
+                            <div><p /></div>
+                            <div>
+                                <span>OS: </span><span>{ clientInfo.os } { clientInfo.osVersion }</span>
+                            </div>
+                            <div>
+                                <span>Browser: </span><span>{ clientInfo.browser } { clientInfo.browserMajorVersion } ({clientInfo.browserVersion })</span>
+                            </div>
+                            <div>
+                                <span>Resolution: </span><span>{ clientInfo.screen } { clientInfo.mobile ? "(mobile)" : "" } </span>
+                            </div>
+                        </div>
+                    </div>
                 }
             </Module>
-            <Module title = "Request rate">
+            <Module title = "Errors & Warnings" className={ "health-status" }>
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
                     <div>
-                        <Graph data={ chartConfigs.serverRequestCounts } style={{ margin: '-1em' }}/>
+                        <Graph data={ chartConfigs.logbackEvents } style={{ margin: '-1em' }}/>
                     </div>
                 }
             </Module>
@@ -147,6 +170,13 @@ const SectionMonitor = () => {
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
                     <div>
                         <Graph data={ chartConfigs.serverRequestMax } style={{ margin: '-1em' }}/>
+                    </div>
+                }
+            </Module>
+            <Module title = "Request rate">
+                { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
+                    <div>
+                        <Graph data={ chartConfigs.serverRequestCounts } style={{ margin: '-1em' }}/>
                     </div>
                 }
             </Module>
@@ -168,6 +198,13 @@ const SectionMonitor = () => {
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
                     <div>
                         <Graph data={ chartConfigs.gcPause } style={{ margin: '-1em' }}/>
+                    </div>
+                }
+            </Module>
+            <Module title = "JVM Thread States">
+                { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
+                    <div>
+                        <Graph data={ chartConfigs.jvmThreadStates } style={{ margin: '-1em' }}/>
                     </div>
                 }
             </Module>
@@ -527,7 +564,7 @@ const gcPauseConfig = (metrics) => {
                 display: true,
                 position: "chartArea",
                 align: "start",
-                reverse: true,
+                reverse: false,
                 labels: {
                     fontSize: 12,
                     fontFamily: 'Quicksand',
@@ -879,6 +916,365 @@ const serverRequestMaxConfig = (metrics) => {
             }
         }
     }
+}
+
+const logbackEventsConfig = (metrics) => {
+    const errors = pad(rate(aggMetric(metrics, Aggs.SUM, Metrics.LOGBACK_EVENTS, { "level": "error" }))).map((metric) => { return { x: metric.time, y: metric.value}})
+    const warnings = pad(rate(aggMetric(metrics, Aggs.SUM, Metrics.LOGBACK_EVENTS, { "level": "warn" }))).map((metric) => { return { x: metric.time, y: metric.value}})
+    return {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                   label: 'Errors',
+                   yAxisID: 'Events',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
+                   borderColor: 'rgb(128, 0, 0)',
+                   lineTension: 0,
+                   fill: false,
+                   data: errors
+                },
+                {
+                    label: 'Warnings',
+                    yAxisID: 'Events',
+                    borderWidth: window.innerWidth < 600 ? 1 : 2,
+                    pointRadius: 0,
+                    borderColor: 'rgb(179, 71, 0)',
+                    lineTension: 0,
+                    fill: false,
+                    data: warnings
+                }
+            ]
+        },
+        options: {
+            legend: {
+                display: true,
+                position: "top",
+                align: "end",
+                labels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
+            },
+            responsive: true,
+            aspectRatio: window.innerWidth > 1900 ? 8 : window.innerWidth < 600 ? 2 : window.innerWidth < 900 ? 4 : 6,
+            animation: {
+                duration: 0
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                yAxes: [{
+                    id: 'Events',
+                    ticks: {
+                        min: 0,
+                        stepSize: 1,
+                        callback: function(value, index, values) {
+                            return `${(value)}`
+                        }
+                    }
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                          millisecond: 'HH:mm:ss',
+                          second: 'HH:mm:ss',
+                          minute: 'HH:mm',
+                          hour: 'HH'
+                      }
+                    }
+                }]
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                }
+            }
+        }
+    }
+}
+
+const jvmThreadStatesConfig = (metrics) => {
+    const combinations = getLabelValues(metrics, Metrics.JVM_THREAD_STATES, "state")
+
+    if (combinations == 0)
+        return
+
+    const datasets = combinations.map((comb, idx) => {
+        const state = comb["state"]
+        const threadStates = pad(
+           aggMetric(metrics, Aggs.SUM, Metrics.JVM_THREAD_STATES, { "state": state })
+        ).map((metric) => { return { x: metric.time, y: (metric.value)}})
+        return {
+                   label: state.charAt(0).toUpperCase() + state.slice(1),
+                   yAxisID: 'Threads',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
+                   borderColor: getColor(idx),
+                   lineTension: 0,
+                   fill: false,
+                   data: threadStates
+                }
+    })
+
+    return {
+        type: 'line',
+        data: {
+            datasets: datasets
+        },
+        options: {
+            legend: {
+                display: true,
+                position: "top",
+                align: "end",
+                labels: {
+                    fontSize: 12,
+                    fontFamily: 'Quicksand',
+                    fontStyle: 'bold'
+                }
+            },
+            responsive: true,
+            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            animation: {
+                duration: 0
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                yAxes: [{
+                    id: 'Threads',
+                    ticks: {
+                        min: 0,
+                        callback: function(value, index, values) {
+                            return `${(value).toFixed(0)}`
+                        }
+                    }
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                          millisecond: 'HH:mm:ss',
+                          second: 'HH:mm:ss',
+                          minute: 'HH:mm',
+                          hour: 'HH'
+                      }
+                    }
+                }]
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                }
+            }
+        }
+    }
+}
+
+const createClientInfo = (window) => {
+    var unknown = '-';
+
+    // screen
+    var screenSize = '';
+    let screen = window.screen;
+    let width, height;
+    if (screen.width) {
+        width = (screen.width) ? screen.width : '';
+        height = (screen.height) ? screen.height : '';
+        screenSize += '' + width + " x " + height;
+    }
+
+    // browser
+    var nVer = navigator.appVersion;
+    var nAgt = navigator.userAgent;
+    var browser = navigator.appName;
+    var version = '' + parseFloat(nVer);
+    var nameOffset, verOffset, ix;
+
+    // Yandex Browser
+    if ((verOffset = nAgt.indexOf('YaBrowser')) != -1) {
+        browser = 'Yandex';
+        version = nAgt.substring(verOffset + 10);
+    }
+    // Samsung Browser
+    else if ((verOffset = nAgt.indexOf('SamsungBrowser')) != -1) {
+        browser = 'Samsung';
+        version = nAgt.substring(verOffset + 15);
+    }
+    // UC Browser
+    else if ((verOffset = nAgt.indexOf('UCBrowser')) != -1) {
+        browser = 'UC Browser';
+        version = nAgt.substring(verOffset + 10);
+    }
+    // Opera Next
+    else if ((verOffset = nAgt.indexOf('OPR')) != -1) {
+        browser = 'Opera';
+        version = nAgt.substring(verOffset + 4);
+    }
+    // Opera
+    else if ((verOffset = nAgt.indexOf('Opera')) != -1) {
+        browser = 'Opera';
+        version = nAgt.substring(verOffset + 6);
+        if ((verOffset = nAgt.indexOf('Version')) != -1) {
+            version = nAgt.substring(verOffset + 8);
+        }
+    }
+    // Legacy Edge
+    else if ((verOffset = nAgt.indexOf('Edge')) != -1) {
+        browser = 'Microsoft Legacy Edge';
+        version = nAgt.substring(verOffset + 5);
+    }
+    // Edge (Chromium)
+    else if ((verOffset = nAgt.indexOf('Edg')) != -1) {
+        browser = 'Microsoft Edge';
+        version = nAgt.substring(verOffset + 4);
+    }
+    // MSIE
+    else if ((verOffset = nAgt.indexOf('MSIE')) != -1) {
+        browser = 'Microsoft Internet Explorer';
+        version = nAgt.substring(verOffset + 5);
+    }
+    // Chrome
+    else if ((verOffset = nAgt.indexOf('Chrome')) != -1) {
+        browser = 'Chrome';
+        version = nAgt.substring(verOffset + 7);
+    }
+    // Safari
+    else if ((verOffset = nAgt.indexOf('Safari')) != -1) {
+        browser = 'Safari';
+        version = nAgt.substring(verOffset + 7);
+        if ((verOffset = nAgt.indexOf('Version')) != -1) {
+            version = nAgt.substring(verOffset + 8);
+        }
+    }
+    // Firefox
+    else if ((verOffset = nAgt.indexOf('Firefox')) != -1) {
+        browser = 'Firefox';
+        version = nAgt.substring(verOffset + 8);
+    }
+    // MSIE 11+
+    else if (nAgt.indexOf('Trident/') != -1) {
+        browser = 'Microsoft Internet Explorer';
+        version = nAgt.substring(nAgt.indexOf('rv:') + 3);
+    }
+    // Other browsers
+    else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) < (verOffset = nAgt.lastIndexOf('/'))) {
+        browser = nAgt.substring(nameOffset, verOffset);
+        version = nAgt.substring(verOffset + 1);
+        if (browser.toLowerCase() == browser.toUpperCase()) {
+            browser = navigator.appName;
+        }
+    }
+    // trim the version string
+    if ((ix = version.indexOf(';')) != -1) version = version.substring(0, ix);
+    if ((ix = version.indexOf(' ')) != -1) version = version.substring(0, ix);
+    if ((ix = version.indexOf(')')) != -1) version = version.substring(0, ix);
+
+    let majorVersion = parseInt('' + version, 10);
+    if (isNaN(majorVersion)) {
+        version = '' + parseFloat(nVer);
+        majorVersion = parseInt(nVer, 10);
+    }
+
+    // mobile version
+    var mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer);
+
+    // cookie
+    var cookieEnabled = (navigator.cookieEnabled) ? true : false;
+
+    if (typeof navigator.cookieEnabled == 'undefined' && !cookieEnabled) {
+        document.cookie = 'testcookie';
+        cookieEnabled = (document.cookie.indexOf('testcookie') != -1) ? true : false;
+    }
+
+    // system
+    var os = unknown;
+    var clientStrings = [
+        {s:'Windows 10', r:/(Windows 10.0|Windows NT 10.0)/},
+        {s:'Windows 8.1', r:/(Windows 8.1|Windows NT 6.3)/},
+        {s:'Windows 8', r:/(Windows 8|Windows NT 6.2)/},
+        {s:'Windows 7', r:/(Windows 7|Windows NT 6.1)/},
+        {s:'Windows Vista', r:/Windows NT 6.0/},
+        {s:'Windows Server 2003', r:/Windows NT 5.2/},
+        {s:'Windows XP', r:/(Windows NT 5.1|Windows XP)/},
+        {s:'Windows 2000', r:/(Windows NT 5.0|Windows 2000)/},
+        {s:'Windows ME', r:/(Win 9x 4.90|Windows ME)/},
+        {s:'Windows 98', r:/(Windows 98|Win98)/},
+        {s:'Windows 95', r:/(Windows 95|Win95|Windows_95)/},
+        {s:'Windows NT 4.0', r:/(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/},
+        {s:'Windows CE', r:/Windows CE/},
+        {s:'Windows 3.11', r:/Win16/},
+        {s:'Android', r:/Android/},
+        {s:'Open BSD', r:/OpenBSD/},
+        {s:'Sun OS', r:/SunOS/},
+        {s:'Chrome OS', r:/CrOS/},
+        {s:'Linux', r:/(Linux|X11(?!.*CrOS))/},
+        {s:'iOS', r:/(iPhone|iPad|iPod)/},
+        {s:'Mac OS X', r:/Mac OS X/},
+        {s:'Mac OS', r:/(Mac OS|MacPPC|MacIntel|Mac_PowerPC|Macintosh)/},
+        {s:'QNX', r:/QNX/},
+        {s:'UNIX', r:/UNIX/},
+        {s:'BeOS', r:/BeOS/},
+        {s:'OS/2', r:/OS\/2/},
+        {s:'Search Bot', r:/(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/}
+    ];
+    for (var id in clientStrings) {
+        var cs = clientStrings[id];
+        if (cs.r.test(nAgt)) {
+            os = cs.s;
+            break;
+        }
+    }
+
+    var osVersion = "unknown";
+
+    if (/Windows/.test(os)) {
+        osVersion = /Windows (.*)/.exec(os)[1];
+        os = 'Windows';
+    }
+
+    switch (os) {
+        case 'Mac OS':
+        case 'Mac OS X':
+        case 'Android':
+            osVersion = /(?:Android|Mac OS|Mac OS X|MacPPC|MacIntel|Mac_PowerPC|Macintosh) ([._\d]+)/.exec(nAgt)[1];
+            break;
+
+        case 'iOS':
+            osVersion = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
+            osVersion = osVersion[1] + '.' + osVersion[2] + '.' + (osVersion[3] | 0);
+            break;
+    }
+
+    return {
+        screen: screenSize,
+        browser: browser,
+        browserVersion: version,
+        browserMajorVersion: majorVersion,
+        mobile: mobile,
+        os: os,
+        osVersion: osVersion,
+        cookies: cookieEnabled
+    };
 }
 
 export default SectionMonitor;

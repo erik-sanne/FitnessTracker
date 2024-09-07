@@ -970,6 +970,16 @@ body {
   color: #333
 }
 
+.health-status-table-wrapper {
+    display: table;
+}
+
+.health-status-table {
+    display: inline-grid;
+    padding-right: 2em;
+    margin-bottom: 1em;
+}
+
 .health-status-table > div {
     display: flex;
 }
@@ -995,5 +1005,5 @@ body {
 }
 
 .health-status-table > div > span:nth-child(2) {
-    width: 10em;
+    width: 12em;
 }
