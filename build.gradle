@@ -6,15 +6,9 @@ plugins {
 
 group = 'com.ersa'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '21'
 
-task dist(type: Zip) {
-	check
-	from bootJar
-	from ('.ebextensions/') {
-		into '.ebextensions'
-	}
-	from 'procfile'
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {

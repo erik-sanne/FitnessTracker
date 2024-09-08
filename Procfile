@@ -1,1 +1,1 @@
-web: java -jar tracker-0.0.1-SNAPSHOT -XX:MaxRAMPercentage=75
+web: java -jar tracker-0.0.1-SNAPSHOT.jar -Xmx512m
