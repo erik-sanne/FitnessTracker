@@ -7,7 +7,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.19",
     "@material-ui/core": "^4.12.4",
-    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.4",
@@ -33,7 +33,7 @@
     "react-transition-group": "^1.2.1",
     "regression": "^2.0.1",
     "swiper": "^7.4.1",
-    "use-long-press": "^2.0.2",
+    "use-long-press": "^2.0.4",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
@@ -63,9 +63,9 @@
   },
   "devDependencies": {
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "react-bootstrap": "^1.6.6",
+    "react-bootstrap": "^1.6.8",
     "react-router-dom": "^5.3.4",
-    "react-select": "^5.7.0",
-    "react-use-cookie": "^1.4.0"
+    "react-select": "^5.8.0",
+    "react-use-cookie": "^1.6.1"
   }
 }
