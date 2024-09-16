@@ -65,7 +65,7 @@ const createConfig = (setdata, selected) => {
             data: bodyPart.values,
             backgroundColor: selected && selected === label ? 'rgb(165,110,39)' : 'rgba(60,96,140,1)',
             borderColor:  index == data.length - 1 ? 'rgba(107,166,239,1)' : 'rgba(0,0,0,0)',
-            lineTension: 0,
+            tension: 0,
             pointStyle: 'circle'
     })})
     
@@ -76,42 +76,33 @@ const createConfig = (setdata, selected) => {
             datasets: dataset
         },
         options: {
-            legend: {
-                display: false,
-                position: "chartArea",
-                align: "center",
-                reverse: true,
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             layout: {
                 padding: {
                     left: 1,
                     right:  0
                 }
             },
-            tooltips: {
+            interaction: {
                 mode: 'index'
             },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 2 : 2.5,
             scales: {
-                yAxes: [{
+                y: {
                     stacked: true,
                     display: true,
                     position: "right",
                     ticks: {
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold',
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold',
+                        },
                         callback: function (value) {
                             return (value * 100).toFixed(0) + '%';
                         },
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     stacked: true,
                     time: {
@@ -121,15 +112,33 @@ const createConfig = (setdata, selected) => {
                         maxRotation: window.innerWidth < 600 ? 0 : 50,
                         labelOffset: window.innerWidth < 600 ? 25 : 0,
                         maxTicksLimit: window.innerWidth < 600 ? 4 : 0,
-                        fontSize: 12,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold',
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold',
+                        }
                     }
-                }]
+                }
             },
             elements: {
                 point:{
                     radius: 0
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                    position: "chartArea",
+                    align: "center",
+                    reverse: true,
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
                 }
             }
         }

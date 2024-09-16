@@ -65,7 +65,7 @@ const createConfig = (data=[], usePPL = false, useBody = false) => {
             backgroundColor: idx === 0 ? 'rgba(107,166,239,0.1)' : 'rgba(70,131,58,0.1)',
             borderColor: idx === 0 ? 'rgba(107,166,239,0.5)' : 'rgba(70,131,58,0.5)',
             data: yValues,
-            lineTension: 0.1,
+            tension: 0.1,
             borderWidth: useBody ? 1 : 2
         }
     })
@@ -77,26 +77,35 @@ const createConfig = (data=[], usePPL = false, useBody = false) => {
             datasets: datasets
         },
         options: {
-            legend: {
-                display: false
-            },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
-            scale: {
-                ticks: {
-                    display: false,
+            scales: {
+                r: {
                     max: 1,
-                    min: 0
-                },
-                pointLabels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
+                    min: 0,
+                    ticks: {
+                        display: false,
+                    },
+                    pointLabels: {
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
                 }
             },
             elements: {
                 point:{
                     radius: 0
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: true
+                    }
                 }
             }
         }

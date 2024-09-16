@@ -84,21 +84,6 @@ const createConfig = (rawdata=[], goal) => {
             datasets: allDatasets
         },
         options: {
-            legend: {
-                display: true,
-                position: "chartArea",
-                align: "start",
-                reverse: true,
-                labels: {
-                    filter: function(item, chart) {
-                        // Logic to remove a particular legend item goes here
-                        return item.text === goal.name || item.text === "Target";
-                    },
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             layout: {
                 padding: {
                     left: -5,
@@ -107,27 +92,31 @@ const createConfig = (rawdata=[], goal) => {
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.2 : 1.2,
             scales: {
-                yAxes: [{
+                y: {
+                    min: 0,
+                    max: 7,
                     ticks: {
-                        min: 0,
-                        max: 7,
                         stepSize: 1,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
+                    min: xLabels[xLabels.length - 7],
+                    max: xLabels[xLabels.length - 1],
                     ticks: {
-                        min: xLabels[xLabels.length - 7],
-                        max: xLabels[xLabels.length - 1],
-                        callback: function(value, index, values) {
-                            const arr = value.split(" ")
+                        callback: function(value, index) {
+                            const arr = this.getLabelForValue(value).split(" ")
                             return arr[1] === "1" ? [arr[1], arr[0]] : [arr[1], ''];
                         },
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
-                }]
+                }
             },
             elements: {
                 point:{
@@ -135,14 +124,28 @@ const createConfig = (rawdata=[], goal) => {
                 }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    position: "chartArea",
+                    align: "start",
+                    reverse: true,
+                    labels: {
+                        filter: function(item, chart) {
+                            // Logic to remove a particular legend item goes here
+                            return item.text === goal.name || item.text === "Target";
+                        },
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                        }
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: true,
                         mode: 'x'
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }

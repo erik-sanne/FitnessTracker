@@ -79,26 +79,27 @@ const createConfig = (setdata={}) => {
             ]
         },
         options: {
-            legend: {
-                display: false
-            },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
             scales: {
-                yAxes: [{
+                y: {
                     stacked: true,
                     ticks: {
                         stepSize: 1,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
                 }],
-                xAxes: [{
+                x: {
                     stacked: true,
                     ticks: {
                         autoSkip: false,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
                 }]
             },
@@ -106,6 +107,14 @@ const createConfig = (setdata={}) => {
                 point:{
                     radius: 0
                 }
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: true
+                    }
+                },
             }
         }
     }

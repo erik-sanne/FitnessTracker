@@ -123,32 +123,33 @@ const createChartData = (data) => {
             ]
         },
         options: {
-            legend: {
-                display: true
-            },
-            tooltips: {
+            interaction: {
                 mode: 'index'
             },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
             scales: {
-                yAxes: [{
+                y: {
                     position: "right",
+                    min: 0,
                     ticks: {
-                        min: 0,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
+                    min: xLabels[xLabels.length - 7],
+                    max: xLabels[xLabels.length - 1],
                     ticks: {
-                        min: xLabels[xLabels.length - 7],
-                        max: xLabels[xLabels.length - 1],
                         autoSkip: false,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
-                }]
+                }
             },
             elements: {
                 point:{
@@ -156,14 +157,17 @@ const createChartData = (data) => {
                 }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        usePointStyle: true,
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: true,
                         mode: 'x'
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }

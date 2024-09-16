@@ -8,9 +8,10 @@ const Splash = ({ show = true }) => {
     useEffect(()=>{
         if (!show)
             setWelcomeMessage(getWelcomeMessage())
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 setHidden(true)
             }, 3000);
+        return () => clearTimeout(timeout);
     }, [show])
 
     const getWelcomeMessage = () => {

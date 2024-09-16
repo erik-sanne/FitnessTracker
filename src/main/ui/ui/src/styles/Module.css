@@ -23,7 +23,6 @@
 
 .module-header {
   font-size: min(calc(8px + 3.5vmin), 30px);
-  margin: max(-4vw, -32px) max(-4vw, -32px) min(5vw, 32px);
   padding: min(3vw, 26px) min(4vw, 32px);
   border-bottom: 1px solid #333;
   box-shadow: 0px 4px 10px 0px #00000033;

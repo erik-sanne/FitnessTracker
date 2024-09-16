@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react'
-import Chart from "chart.js";
-import Zoom from 'chartjs-plugin-zoom'
+import { Chart, registerables } from "chart.js";
+import zoomPlugin from 'chartjs-plugin-zoom'
+import 'chartjs-adapter-moment'
 import "react-hammerjs"
 
 const Graph = ({ data, style, callback}) => {
@@ -16,31 +17,8 @@ const Graph = ({ data, style, callback}) => {
         if (!data)
             return;
 
-        Chart.defaults.global.legend.labels.usePointStyle = true;
-        Chart.plugins.register(Zoom);
-        Chart.pluginService.register({
-            beforeInit: function(chart) {
-                // We get the chart data
-                const data = chart.config.data;
-
-                // For every dataset ...
-                for (let i = 0; i < data.datasets.length; i++) {
-                    // We get the dataset's function and calculate the value
-                    const fct = data.datasets[i].function;
-                    if (!fct)
-                        continue;
-
-                    data.datasets[i].data = [];
-                    // For every label ...
-                    for (let j = 0; j < data.labels.length; j++) {
-                        const x = Math.round((new Date(data.labels[j]).getTime() - new Date(data.labels[0]).getTime()) / (1000 * 60 * 60 * 24));
-                        const y = fct(x);
-                        // Then we add the value to the dataset data
-                        data.datasets[i].data.push(y);
-                    }
-                }
-            }
-        });
+        Chart.register(...registerables)
+        Chart.register(zoomPlugin);
 
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');

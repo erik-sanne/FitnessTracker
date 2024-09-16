@@ -162,7 +162,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             borderColor: 'rgba(107,166,239,0.35)',
             backgroundColor: 'rgba(107,166,239,0.35)',
             borderWidth: 2,
-            lineTension: 0,
+            tension: 0,
             pointRadius: 4,
             pointHoverRadius: 8,
             showLine: false,
@@ -176,7 +176,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             backgroundColor: 'rgb(239,164,107)',
             borderWidth: 1,
             pointHoverRadius: 0,
-            lineTension: 0,
+            tension: 0,
             data: plottedLine
         }])
 
@@ -188,7 +188,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             borderColor: 'rgba(107,166,239,0.35)',
             backgroundColor: 'rgba(107,166,239,0.35)',
             borderWidth: 2,
-            lineTension: 0,
+            tension: 0,
             data: reps
         }, {
             label: 'Weight',
@@ -197,7 +197,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             borderColor: 'rgba(107,166,239,0.5)',
             backgroundColor: 'rgba(107,166,239,0.35)',
             borderWidth: 2,
-            lineTension: 0,
+            tension: 0,
             data: weights
         }])
     }
@@ -213,7 +213,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             borderColor: 'rgba(239, 115, 107, 0.35)',
             backgroundColor: 'rgba(239, 115, 107, 0.35)',
             borderWidth: 2,
-            lineTension: 0,
+            tension: 0,
             pointRadius: 4,
             pointHoverRadius: 8,
             showLine: false,
@@ -227,7 +227,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             backgroundColor: 'rgb(239, 107, 131, 0.3)',
             borderWidth: 1,
             pointHoverRadius: 0,
-            lineTension: 0,
+            tension: 0,
             data: plottedLine
         }])
 
@@ -239,7 +239,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             borderColor: 'rgba(239, 115, 107, 0.35)',
             backgroundColor: 'rgba(239, 115, 107, 0.35)',
             borderWidth: 2,
-            lineTension: 0,
+            tension: 0,
             data: reps
         }])
     }
@@ -268,46 +268,43 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     right: window.innerWidth < 600 ? -10 : 0
                 }
             },
-            legend: {
-                align: "end",
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             scales: {
-                yAxes: [{
+                left_axis: {
                     type: "linear",
                     display: !mergeAxes,
                     position: "left",
                     id: "left_axis",
+                    mirror: window.innerWidth < 600,
+                    suggestedMin: 0,
                     ticks: {
-                        mirror: window.innerWidth < 600,
-                        suggestedMin: 0,
                         callback: function(value, index, values) {
                             return value;
                         },
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
-                }, {
+                },
+                right_axis: {
                     type: "linear",
                     display: true,
                     position: "right",
                     id: "right_axis",
+                    suggestedMin: 0,
+                    max: mergeAxes ? 100 : maxVal,
                     ticks: {
                         mirror: window.innerWidth < 600,
-                        suggestedMin: 0,
-                        max: mergeAxes ? 100 : maxVal,
                         callback: function(value, index, values) {
                             return value + (mergeAxes ? '%' : 'kg');
                         },
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     time: {
                         unit: 'day'
@@ -316,40 +313,58 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                         maxRotation: window.innerWidth < 600 ? 0 : 50,
                         labelOffset: window.innerWidth < 600 ? 20 : 0,
                         maxTicksLimit: window.innerWidth < 600 ? 5 : 0,
-                        fontSize: 12,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     },
                     afterFit: (axis) => {
                         axis.paddingRight = window.innerWidth < 600 ? -10 : 0;
                         axis.paddingLeft = window.innerWidth < 600 ? -10 : 30;
                     }
-                }]
+                }
             },
             elements: {
                 point:{
                     radius: 0
                 }
             },
-            tooltips: {
+            interaction: {
                 mode: 'nearest',
-                filter: function (tooltipItem) {
-                    return tooltipItem.datasetIndex === 0 || tooltipItem.datasetIndex === 2;
-                },
-                callbacks: {
-                    footer: function (context) {
-                        let pointInfo = context[0];
-                        if (!pointInfo || pointInfo.datasetIndex !== 0 && pointInfo.datasetIndex !== 2)
-                            return '';
-
-
-                        return data[pointInfo.index].sets.map(({id, reps, weight}, index) => `Set ${index + 1}: ${reps} × ${weight > 0 ? weight + 'kg' : 'bw'}`);
+            },
+            plugins: {
+                tooltip: {
+                    filter: function (tooltipItem) {
+                        return tooltipItem.datasetIndex === 0 || tooltipItem.datasetIndex === 2;
                     },
-                    label: function (context) {
-                        let label = context.yLabel || '';
-                        if (label === 100)
-                            return " Best workout to date"
-                        return " " + label + "% relative to best workout";
+                    callbacks: {
+                        footer: function (context) {
+                            let pointInfo = context[0];
+                            if (!pointInfo || pointInfo.datasetIndex !== 0 && pointInfo.datasetIndex !== 2)
+                                return '';
+
+
+                            return data[pointInfo.dataIndex].sets.map(({id, reps, weight}, index) => `Set ${index + 1}: ${reps} × ${weight > 0 ? weight + 'kg' : 'bw'}`);
+                        },
+                        label: function (context) {
+                            let label = context.parsed.y || '';
+                            if (label === 100)
+                                return " Best workout to date"
+                            return " " + label + "% relative to best workout";
+                        }
+                    }
+                },
+                legend: {
+                    align: "end",
+                    pointStyle: 'circle',
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
                 }
             }

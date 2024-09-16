@@ -118,10 +118,7 @@ const SectionUpdates = () => {
                 datasets: datasets
             },
             options: {
-                legend: {
-                    display: true
-                },
-                tooltips: {
+                interaction: {
                     enabled: true
                 },
                 responsive: true,
@@ -132,7 +129,7 @@ const SectionUpdates = () => {
                     }
                 },
                 scales: {
-                    yAxes: [{
+                    delta: {
                         id: "delta",
                         position: 'left',
                         display: true,
@@ -141,15 +138,18 @@ const SectionUpdates = () => {
                             tickMarkLength: 0,
                         },
                         ticks: {
-                            fontSize: 12,
-                            fontFamily: 'Quicksand',
-                            fontStyle: 'bold',
+                            font: {
+                                size: 12,
+                                family: 'Quicksand',
+                                weight: 'bold',
+                            }
                         },
                         scaleLabel: {
                             display: true,
                             labelString: 'Rows / week'
                         }
-                    }, {
+                    },
+                    acc: {
                         id: "acc",
                         position: 'right',
                         display: true,
@@ -158,16 +158,18 @@ const SectionUpdates = () => {
                             tickMarkLength: 0,
                         },
                         ticks: {
-                            fontSize: 12,
-                            fontFamily: 'Quicksand',
-                            fontStyle: 'bold',
+                            font: {
+                                size: 12,
+                                family: 'Quicksand',
+                                weight: 'bold',
+                            }
                         },
                         scaleLabel: {
                             display: true,
                             labelString: 'Rows total'
                         }
-                    }],
-                    xAxes: [{
+                    },
+                    x: {
                         type: 'time',
                         time: {
                             unit: 'month'
@@ -177,20 +179,25 @@ const SectionUpdates = () => {
                             tickMarkLength: 0,
                         },
                         ticks: {
-                            fontSize: 12,
-                            fontFamily: 'Quicksand',
-                            fontStyle: 'bold',
+                            font: {
+                                size: 12,
+                                family: 'Quicksand',
+                                weight: 'bold',
+                            }
                         }
-                    }]
+                    }
                 },
                 plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            usePointStyle: true
+                        }
+                    },
                     zoom: {
                         pan: {
                             enabled: false
                         },
-                        zoom: {
-                            enabled: false
-                        }
                     }
                 }
             }
@@ -205,7 +212,7 @@ const SectionUpdates = () => {
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
             <Module title = "Changelog">
                 {
-                    chartData ? <Graph data={ chartData } /> :<p>Fetching statistics... <Loader /></p>
+                    chartData ? <Graph data={ chartData } /> :<div><p>Fetching statistics...</p> <Loader /></div>
                 }
                 { commits.length > 0 && commits.map((obj, idx) =>
                         <ListRow onClick={ () => { window.open(obj.html_url, '_blank') }} key={idx}>

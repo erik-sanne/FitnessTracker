@@ -333,61 +333,51 @@ const memoryConfig = (metrics) => {
             datasets: [
                 {
                    label: 'Heap',
-                   yAxisID: 'Memory',
+                   yAxisID: 'y',
                    borderWidth: window.innerWidth < 600 ? 1 : 2,
                    pointRadius: 0,
                    borderColor: 'rgb(23, 105, 138)',
                    backgroundColor: 'rgba(23, 105, 138, 0.3)',
-                   lineTension: 0,
+                   tension: 0,
                    data: heapUsage
                 },
                 {
                     label: 'Non-heap',
-                    yAxisID: 'Memory',
+                    yAxisID: 'y',
                     borderWidth: window.innerWidth < 600 ? 1 : 2,
                     pointRadius: 0,
                     borderColor: 'rgb(69, 36, 77)',
                     backgroundColor: 'rgba(69, 36, 77, 0.3)',
-                    lineTension: 0,
+                    tension: 0,
                     data: nonHeapUsage
                 },
                 {
                    label: 'Max Heap',
-                   yAxisID: 'Memory',
+                   yAxisID: 'y',
                    hidden: true,
                    borderDash: [3],
                    borderWidth: window.innerWidth < 600 ? 1 : 2,
                    pointRadius: 0,
                    fill: false,
                    borderColor: 'rgb(23, 105, 138)',
-                   lineTension: 0,
+                   tension: 0,
                    data: heapMax
                 },
                 {
                     label: 'Max Non-heap',
-                    yAxisID: 'Memory',
+                    yAxisID: 'y',
                     hidden: true,
                     borderDash: [3],
                     borderWidth: window.innerWidth < 600 ? 1 : 2,
                     pointRadius: 0,
                     fill: false,
                     borderColor: 'rgb(69, 36, 77)',
-                    lineTension: 0,
+                    tension: 0,
                     data: nonHeapMax
                 }
             ]
         },
         options: {
-            legend: {
-                display: true,
-                position: "top",
-                align: "end",
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             responsive: true,
             aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
@@ -398,16 +388,15 @@ const memoryConfig = (metrics) => {
                 intersect: false
             },
             scales: {
-                yAxes: [{
-                    id: 'Memory',
+                y: {
+                    min: 0,
                     ticks: {
-                        min: 0,
                         callback: function(value, index, values) {
                             return `${(value).toFixed(0)}Mb`
                         }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     time: {
                       displayFormats: {
@@ -417,17 +406,27 @@ const memoryConfig = (metrics) => {
                           hour: 'HH'
                       }
                     }
-                }]
+                }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    position: "top",
+                    align: "end",
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: false,
                         mode: 'x'
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }
@@ -442,27 +441,16 @@ const cpuConfig = (metrics) => {
             datasets: [
                 {
                    label: 'CPU Usage',
-                   yAxisID: 'Cpu',
                    borderWidth: window.innerWidth < 600 ? 1 : 2,
                    pointRadius: 0,
                    borderColor: 'rgb(105, 138, 32)',
                    backgroundColor: 'rgba(105, 138, 32, 0.3)',
-                   lineTension: 0,
+                   tension: 0,
                    data: heapUsage
                 }
             ]
         },
         options: {
-            legend: {
-                display: true,
-                position: "top",
-                align: "end",
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             responsive: true,
             aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
@@ -473,17 +461,16 @@ const cpuConfig = (metrics) => {
                 intersect: false
             },
             scales: {
-                yAxes: [{
-                    id: 'Cpu',
+                y: {
+                    min: 0,
+                    max: 100,
                     ticks: {
-                        min: 0,
-                        max: 100,
                         callback: function(value, index, values) {
                             return `${(value).toFixed(0)}%`
                         }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     time: {
                       displayFormats: {
@@ -493,17 +480,27 @@ const cpuConfig = (metrics) => {
                           hour: 'HH'
                       }
                     }
-                }]
+                }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    position: "top",
+                    align: "end",
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: false,
                         mode: 'x'
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }
@@ -549,7 +546,7 @@ const gcPauseConfig = (metrics) => {
                    barThickness: window.innerWidth < 600 ? 1 : 2,
                    showLine: false,
                    borderColor: getColor(idx),
-                   lineTension: 0,
+                   tension: 0,
                    data: avgGCPause
                 }
     })
@@ -560,17 +557,6 @@ const gcPauseConfig = (metrics) => {
             datasets: datasets
         },
         options: {
-            legend: {
-                display: true,
-                position: "chartArea",
-                align: "start",
-                reverse: false,
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             responsive: true,
             aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
@@ -581,17 +567,17 @@ const gcPauseConfig = (metrics) => {
                 intersect: false
             },
             scales: {
-                yAxes: [{
+                GC: {
                     id: 'GC',
                     position: 'left',
+                    min: 0,
                     ticks: {
-                        min: 0,
                         callback: function(value, index, values) {
                             return `${(value)}ms`
                         }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     time: {
                       displayFormats: {
@@ -601,17 +587,28 @@ const gcPauseConfig = (metrics) => {
                           hour: 'HH'
                       }
                     }
-                }]
+                }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    position: "chartArea",
+                    align: "start",
+                    reverse: false,
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                           size: 12,
+                           family: 'Quicksand',
+                           weight: 'bold'
+                        }
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: false,
                         mode: 'x'
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }
@@ -640,7 +637,7 @@ const dbInvocationsConfig = (metrics) => {
                    borderWidth: window.innerWidth < 600 ? 1 : 2,
                    pointRadius: 0,
                    borderColor: 'rgb(23, 105, 138)',
-                   lineTension: 0,
+                   tension: 0,
                    fill: false,
                    data: dbLatency
                 },
@@ -650,23 +647,13 @@ const dbInvocationsConfig = (metrics) => {
                    borderWidth: window.innerWidth < 600 ? 1 : 2,
                    pointRadius: 0,
                    borderColor: 'rgb(69, 36, 77)',
-                   lineTension: 0,
+                   tension: 0,
                    fill: false,
                    data: dbIO
                 }
             ]
         },
         options: {
-            legend: {
-                display: true,
-                position: "top",
-                align: "end",
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             responsive: true,
             aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
@@ -677,26 +664,27 @@ const dbInvocationsConfig = (metrics) => {
                 intersect: false
             },
             scales: {
-                yAxes: [{
+                DBLatency: {
                     id: 'DBLatency',
                     position: 'left',
+                    min: 0,
                     ticks: {
-                        min: 0,
                         callback: function(value, index, values) {
                             return `${(value)}ms`
                         }
                     }
-                },{
+                },
+                DBIO: {
                       id: 'DBIO',
                       position: 'right',
+                      min: 0,
                       ticks: {
-                          min: 0,
                           callback: function(value, index, values) {
                               return `${(value).toFixed(0)}iops`
                           }
                       }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     time: {
                       displayFormats: {
@@ -706,17 +694,27 @@ const dbInvocationsConfig = (metrics) => {
                           hour: 'HH'
                       }
                     }
-                }]
+                }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    position: "top",
+                    align: "end",
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: false,
                         mode: 'x'
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }
@@ -732,37 +730,25 @@ const serverRequestCountConfig = (metrics) => {
             datasets: [
                 {
                    label: 'GET',
-                   yAxisID: 'Requests',
                    borderWidth: window.innerWidth < 600 ? 1 : 2,
                    pointRadius: 0,
                    borderColor: 'rgb(23, 105, 138)',
-                   lineTension: 0,
+                   tension: 0,
                    fill: false,
                    data: getRequests
                 },
                 {
                     label: 'POST',
-                    yAxisID: 'Requests',
                     borderWidth: window.innerWidth < 600 ? 1 : 2,
                     pointRadius: 0,
                     borderColor: 'rgb(69, 36, 77)',
-                    lineTension: 0,
+                    tension: 0,
                     fill: false,
                     data: postRequests
                 }
             ]
         },
         options: {
-            legend: {
-                display: true,
-                position: "top",
-                align: "end",
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             responsive: true,
             aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
@@ -773,16 +759,15 @@ const serverRequestCountConfig = (metrics) => {
                 intersect: false
             },
             scales: {
-                yAxes: [{
-                    id: 'Requests',
+                y: {
+                    min: 0,
                     ticks: {
-                        min: 0,
                         callback: function(value, index, values) {
                             return `${(value)}rps`
                         }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     time: {
                       displayFormats: {
@@ -792,17 +777,27 @@ const serverRequestCountConfig = (metrics) => {
                           hour: 'HH'
                       }
                     }
-                }]
+                }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    position: "top",
+                    align: "end",
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: false,
                         mode: 'x'
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }
@@ -821,59 +816,45 @@ const serverRequestMaxConfig = (metrics) => {
             datasets: [
                 {
                    label: 'GET Max',
-                   yAxisID: 'Requests',
                    borderWidth: window.innerWidth < 600 ? 1 : 2,
                    pointRadius: 0,
                    borderColor: 'rgba(23, 105, 138, 0.5)',
-                   lineTension: 0,
+                   tension: 0,
                    borderDash: [3],
                    fill: false,
                    data: maxGetRequests
                 },
                 {
                     label: 'POST Max',
-                    yAxisID: 'Requests',
                     borderWidth: window.innerWidth < 600 ? 1 : 2,
                     pointRadius: 0,
                     borderColor: 'rgba(69, 36, 77, 0.5)',
-                    lineTension: 0,
+                    tension: 0,
                     borderDash: [3],
                     fill: false,
                     data: maxPostRequests
                 },
                 {
                     label: 'GET Avg',
-                    yAxisID: 'Requests',
                     borderWidth: window.innerWidth < 600 ? 1 : 2,
                     pointRadius: 0,
                     borderColor: 'rgb(23, 105, 138)',
-                    lineTension: 0,
+                    tension: 0,
                     fill: false,
                     data: avgGetRequests
                 },
                 {
                     label: 'POST Avg',
-                    yAxisID: 'Requests',
                     borderWidth: window.innerWidth < 600 ? 1 : 2,
                     pointRadius: 0,
                     borderColor: 'rgb(69, 36, 77)',
-                    lineTension: 0,
+                    tension: 0,
                     fill: false,
                     data: avgPostRequests
                 }
             ]
         },
         options: {
-            legend: {
-                display: true,
-                position: "top",
-                align: "end",
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             responsive: true,
             aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
@@ -884,16 +865,15 @@ const serverRequestMaxConfig = (metrics) => {
                 intersect: false
             },
             scales: {
-                yAxes: [{
-                    id: 'Requests',
+                y: {
+                    min: 0,
                     ticks: {
-                        min: 0,
                         callback: function(value, index, values) {
                             return `${(value)}ms`
                         }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     time: {
                       displayFormats: {
@@ -903,17 +883,27 @@ const serverRequestMaxConfig = (metrics) => {
                           hour: 'HH'
                       }
                     }
-                }]
+                }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    position: "top",
+                    align: "end",
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: false,
                         mode: 'x'
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }
@@ -929,37 +919,25 @@ const logbackEventsConfig = (metrics) => {
             datasets: [
                 {
                    label: 'Errors',
-                   yAxisID: 'Events',
                    borderWidth: window.innerWidth < 600 ? 1 : 2,
                    pointRadius: 0,
                    borderColor: 'rgb(128, 0, 0)',
-                   lineTension: 0,
+                   tension: 0,
                    fill: false,
                    data: errors
                 },
                 {
                     label: 'Warnings',
-                    yAxisID: 'Events',
                     borderWidth: window.innerWidth < 600 ? 1 : 2,
                     pointRadius: 0,
                     borderColor: 'rgb(179, 71, 0)',
-                    lineTension: 0,
+                    tension: 0,
                     fill: false,
                     data: warnings
                 }
             ]
         },
         options: {
-            legend: {
-                display: true,
-                position: "top",
-                align: "end",
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             responsive: true,
             aspectRatio: window.innerWidth > 1900 ? 8 : window.innerWidth < 600 ? 2 : window.innerWidth < 900 ? 4 : 6,
             animation: {
@@ -970,17 +948,16 @@ const logbackEventsConfig = (metrics) => {
                 intersect: false
             },
             scales: {
-                yAxes: [{
-                    id: 'Events',
+                y: {
+                    min: 0,
+                    stepSize: 1,
                     ticks: {
-                        min: 0,
-                        stepSize: 1,
                         callback: function(value, index, values) {
                             return `${(value)}`
                         }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     time: {
                       displayFormats: {
@@ -990,17 +967,27 @@ const logbackEventsConfig = (metrics) => {
                           hour: 'HH'
                       }
                     }
-                }]
+                }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    position: "top",
+                    align: "end",
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: false,
                         mode: 'x'
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }
@@ -1020,11 +1007,10 @@ const jvmThreadStatesConfig = (metrics) => {
         ).map((metric) => { return { x: metric.time, y: (metric.value)}})
         return {
                    label: state.charAt(0).toUpperCase() + state.slice(1),
-                   yAxisID: 'Threads',
                    borderWidth: window.innerWidth < 600 ? 1 : 2,
                    pointRadius: 0,
                    borderColor: getColor(idx),
-                   lineTension: 0,
+                   tension: 0,
                    borderDash: [1],
                    fill: false,
                    data: threadStates
@@ -1037,16 +1023,6 @@ const jvmThreadStatesConfig = (metrics) => {
             datasets: datasets
         },
         options: {
-            legend: {
-                display: true,
-                position: "top",
-                align: "end",
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             responsive: true,
             aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
@@ -1057,16 +1033,15 @@ const jvmThreadStatesConfig = (metrics) => {
                 intersect: false
             },
             scales: {
-                yAxes: [{
-                    id: 'Threads',
+                y: {
+                    min: 0,
                     ticks: {
-                        min: 0,
                         callback: function(value, index, values) {
                             return `${(value).toFixed(0)}`
                         }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     time: {
                       displayFormats: {
@@ -1076,17 +1051,27 @@ const jvmThreadStatesConfig = (metrics) => {
                           hour: 'HH'
                       }
                     }
-                }]
+                }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    position: "top",
+                    align: "end",
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: false,
                         mode: 'x'
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }

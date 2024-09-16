@@ -25,7 +25,8 @@ const createConfig = (bsds, normalratio) => {
         borderColor: 'rgba(107,166,239,0.5)',
         borderWidth: 2,
         fill: false,
-        data: yValues[0]
+        data: yValues[0],
+        tension: 0.2
     }]
 
     bsds[1] && datasets.push({
@@ -47,45 +48,47 @@ const createConfig = (bsds, normalratio) => {
             datasets: datasets
         },
         options: {
-            legend: {
-                display: false
-            },
-            tooltips: {
+            interaction: {
                 enabled: false
             },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
             hoverMode: 'index',
             scales: {
-                yAxes: [{
+                y: {
                     display: true,
+                    min: 0,
+                    max: maxVal,
                     ticks: {
                         display: false,
-                        min: 0,
-                        max: maxVal,
                     },
                     gridLines: {
                         display: false,
                         tickMarkLength: 0,
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     ticks: {
-                        fontSize: 12,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold',
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold',
+                        },
                         display: false
                     }
-                }]
+                }
             },
             plugins: {
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: true
+                    }
+                },
                 zoom: {
                     pan: {
                         enabled: false
                     },
-                    zoom: {
-                        enabled: false
-                    }
                 }
             }
         }

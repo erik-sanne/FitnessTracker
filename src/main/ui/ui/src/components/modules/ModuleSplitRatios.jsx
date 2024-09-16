@@ -114,7 +114,7 @@ const createConfig = (setdata, ctx) => {
         borderColor: colors[obj.type][0],
         backgroundColor: asGradient(ctx, colors[obj.type]),
         data: obj.values[1],
-        lineTension: 0,
+        tension: 0,
         pointStyle: 'circle'
     }))
 
@@ -125,38 +125,29 @@ const createConfig = (setdata, ctx) => {
             datasets: data
         },
         options: {
-            legend: {
-                display: true,
-                position: "chartArea",
-                align: "center",
-                reverse: true,
-                labels: {
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             layout: {
                 padding: {
                     left: 1,
                     right:  0
                 }
             },
-            tooltips: {
+            interaction: {
                 mode: 'index'
             },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
             scales: {
-                yAxes: [{
+                y: {
                     stacked: true,
                     display: false,
                     ticks: {
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold',
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold',
+                        }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     type: 'time',
                     stacked: true,
                     time: {
@@ -166,19 +157,37 @@ const createConfig = (setdata, ctx) => {
                         maxRotation: window.innerWidth < 600 ? 0 : 50,
                         labelOffset: window.innerWidth < 600 ? 25 : 0,
                         maxTicksLimit: window.innerWidth < 600 ? 4 : 0,
-                        fontSize: 12,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold',
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold',
+                        }
                     },
                     afterFit: (axis) => {
                         axis.paddingRight = window.innerWidth < 600 ? 0 : 0;
                         axis.paddingLeft = window.innerWidth < 600 ? 0 : 40;
                     }
-                }]
+                }
             },
             elements: {
                 point:{
                     radius: 0
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: "chartArea",
+                    align: "center",
+                    reverse: true,
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
                 }
             }
         }

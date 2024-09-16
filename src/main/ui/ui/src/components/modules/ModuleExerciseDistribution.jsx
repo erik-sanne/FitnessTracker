@@ -63,42 +63,51 @@ const createConfig = (setdata={}) => {
             ]
         },
         options: {
-            legend: {
-                display: true,
-                position: "top",
-                align: "end",
-                labels: {
-                    textAlign: "right",
-                    fontSize: 12,
-                    fontFamily: 'Quicksand',
-                    fontStyle: 'bold'
-                }
-            },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
             scales: {
-                yAxes: [{
+                y: {
                     stacked: true,
                     display: false,
                     ticks: {
-                        stepSize: 1,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            stepSize: 1,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
-                }],
-                xAxes: [{
+                },
+                x: {
                     stacked: true,
                     ticks: {
                         display: window.innerWidth > 600,
                         autoSkip: false,
-                        fontFamily: 'Quicksand',
-                        fontStyle: 'bold'
+                        font: {
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
                     }
-                }]
+                }
             },
             elements: {
                 point:{
                     radius: 2
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: "top",
+                    align: "end",
+                    labels: {
+                        textAlign: "right",
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
                 }
             }
         }
