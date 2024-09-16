@@ -39,24 +39,34 @@ const ForgotPassword = () => {
     }
 
     return (
-        <section className={'page-wrapper'} style={{ grid: 'none' }}>
-            <form onSubmit={ onSubmit }>
-                <h2>Reset Password</h2>
-                <p>Enter the email address of the account you wish to reset the password for. A link to reset the password will be sent shortly.</p>
-                <label htmlFor="email">Email:</label>
-                <input name="email" id="email" type="email" autoFocus={ true } value={ state.email } onChange={ onChange }/>
-                <input type={ 'submit' } value={ 'Send reset password link' }/>
-            </form>
-            <ModalLoader
-                visible={ state.status !== NONE }
-                onClose={ () => setState({
-                    email: '',
-                    status: NONE,
-                })}
-                error={ state.status === ERROR && "Could not send reset password link" }
-                success={ state.status === SUCCESS && "An email has been sent with a link to reset your password" }
-            />
-        </section>
+        <>
+            <div className={ 'login-background' } >
+                <div id='stars'></div>
+                <div id='stars2'></div>
+                <div id='stars3'></div>
+            </div>
+            <section className={'page-wrapper login'} style={{ grid: 'none' }}>
+                <form onSubmit={ onSubmit } className={ 'login-form' }>
+                    <h4 style={{ textAlign: 'center' }}>Reset Password</h4>
+                    <p style={{ textAlign: 'center' }}>Enter the email address of the account you wish to reset the password for. A link to reset the password will be sent shortly.</p>
+                    <br/>
+                    <label htmlFor="email">Email:</label>
+                    <input name="email" id="email" type="email" autoFocus={ true } value={ state.email } onChange={ onChange }/>
+                    <br/>
+                    <label><p /></label>
+                    <input type={ 'submit' } value={ 'Send reset password link' }/>
+                </form>
+                <ModalLoader
+                    visible={ state.status !== NONE }
+                    onClose={ () => setState({
+                        email: '',
+                        status: NONE,
+                    })}
+                    error={ state.status === ERROR && "Could not send reset password link" }
+                    success={ state.status === SUCCESS && "An email has been sent with a link to reset your password" }
+                />
+            </section>
+        </>
     );
 
 }

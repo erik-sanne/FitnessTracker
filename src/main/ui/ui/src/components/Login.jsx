@@ -62,25 +62,36 @@ class Login extends React.Component {
 
     render() {
         return (
-            <section className={'page-wrapper'} style={{ grid: 'none' }}>
-                <form onSubmit={ this.onSubmit }>
-                    <h2>Sign in</h2>
-                    <label htmlFor="username">Email</label>
-                    <input name="username" type="email" autoFocus={ true } value={ this.state.username } onChange={ this.onChange }/>
-                    <br/>
-                    <label htmlFor="password">Password</label>
-                    <input name="password" type="password" value={ this.state.password } onChange={ this.onChange }/>
-                    <br/>
-                    <input type="submit" value="Log in" className={'btn-form'}/>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5em 0'}}>
-                        <i><a href="/register">New user? Sign up here!</a></i>
-                        <i><a href="/forgot-password">Forgot password?</a></i>
-                    </div>
-                </form>
-                { this.state.reason && !this.state.msg && <p style={styleStatus}>Your credentials has expired and you need to login again</p>}
-                { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
-                { this.state.loading && <ModalLoader visible={ this.state.loading } />}
-            </section>
+            <>
+                <div className={ 'login-background' } >
+                    <div id='stars'></div>
+                    <div id='stars2'></div>
+                    <div id='stars3'></div>
+                </div>
+                <section className={'page-wrapper login'} style={{ grid: 'none' }}>
+                    <form onSubmit={ this.onSubmit } className={ 'login-form' }>
+                        <div className={ 'login-header' }>
+                            <h4 className={ 'login-header-selected' }>Sign in</h4>
+                            <h4><a href="/register">Sign up</a></h4>
+                        </div>
+                        <label htmlFor="username">Email</label>
+                        <input name="username" type="email" autoFocus={ true } value={ this.state.username } onChange={ this.onChange }/>
+                        <br/>
+                        <label htmlFor="password">Password</label>
+                        <input name="password" type="password" value={ this.state.password } onChange={ this.onChange }/>
+                        <br/>
+                        <label><p /></label>
+                        <input type="submit" value="Log in" className={'btn-form'}/>
+                        <div className={ 'hl' } />
+                        <div style={{ display: 'flex', justifyContent: 'center'}}>
+                            <i><a href="/forgot-password">Forgot password?</a></i>
+                        </div>
+                    </form>
+                    { this.state.reason && !this.state.msg && <p style={styleStatus}>Your credentials has expired and you need to login again</p>}
+                    { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
+                    { this.state.loading && <ModalLoader visible={ this.state.loading } />}
+                </section>
+            </>
         );
     }
 }

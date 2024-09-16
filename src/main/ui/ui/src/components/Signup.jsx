@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import Loader from "./ui_components/Loader";
+import ModalLoader from "./ui_components/ModalLoader";
+import '../styles/stars.css';
 
 const Signup = () => {
 
@@ -66,39 +67,49 @@ const Signup = () => {
     }
 
     return (
-        <section className={'page-wrapper'}>
-            <form onSubmit={ submitHandler }>
-                <h2>Sign up</h2>
-                { errorMessage && <span style={ styleError }> { errorMessage } </span>}
-                { responseMessage && <span style={ styleSuccess }> { responseMessage } </span>}
-                { loading && <Loader  />}
-                <label htmlFor="email">Email</label>
-                <input name="email" type="email" autoFocus={ true } value={ userInfo.email } onChange={ changeHandler } disabled={ loading ? "disabled" : "" }/>
-                <br/>
-                <label htmlFor="password">Password</label>
-                <input name="password" type="password" value={ userInfo.password } onChange={ changeHandler } disabled={ loading ? "disabled" : "" }/>
-                <br/>
-                <label htmlFor="password_verification">Verify password</label>
-                <input name="password_verification" type="password" value={ userInfo.password_verification } onChange={ changeHandler } disabled={ loading ? "disabled" : "" }/>
-                <br/>
-                <input type="submit" value="Register" className={'btn-form'}/>
-
-                <a href="/login">I already have an account!</a>
-            </form>
-        </section>
+        <>
+            <div className={ 'login-background' } >
+                <div id='stars'></div>
+                <div id='stars2'></div>
+                <div id='stars3'></div>
+            </div>
+            <section className={'page-wrapper login'}>
+                <form onSubmit={ submitHandler } className={ 'login-form' }>
+                    <div className={ 'login-header' }>
+                        <h4><a href="/login">Sign in</a></h4>
+                        <h4 className={ 'login-header-selected' }>Sign up</h4>
+                    </div>
+                    <label htmlFor="email">Email</label>
+                    <input name="email" type="email" autoFocus={ true } value={ userInfo.email } onChange={ changeHandler } disabled={ loading ? "disabled" : "" }/>
+                    <br/>
+                    <label htmlFor="password">Password</label>
+                    <input name="password" type="password" value={ userInfo.password } onChange={ changeHandler } disabled={ loading ? "disabled" : "" }/>
+                    <br/>
+                    <label htmlFor="password_verification">Verify password</label>
+                    <input name="password_verification" type="password" value={ userInfo.password_verification } onChange={ changeHandler } disabled={ loading ? "disabled" : "" }/>
+                    <br/>
+                    <label><p /></label>
+                    <input type="submit" value="Register" className={'btn-form'}/>
+                    <p /><p /><p />
+                    { errorMessage && <span style={ styleError }> { errorMessage } </span>}
+                    { responseMessage && <span style={ styleSuccess }> { responseMessage } </span>}
+                    { loading && <ModalLoader visible={ loading } />}
+                </form>
+            </section>
+        </>
     );
 }
 
 const styleError = {
-    background: '#f16b719e',
-    border: '1px solid #f16b719e',
-    padding: '5px'
+    color: '#f16b719e',
+    padding: '5px',
+    textAlign: 'center'
 }
 
 const styleSuccess = {
-    background: 'rgb(157 236 130 / 62%)',
-    border: '1px solid rgb(80 193 59 / 62%)',
-    padding: '5px'
+    color: 'rgb(157 236 130 / 62%)',
+    padding: '5px',
+    textAlign: 'center'
 }
 
 
