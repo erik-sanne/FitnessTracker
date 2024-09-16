@@ -757,10 +757,8 @@ body {
   margin: 0;
 }
 
-
-.module.profile {
-  padding: 0;
-  padding-bottom: 1em;
+.module.profile > module-content {
+  padding: 0 0 1em;
 }
 
 .module.profile .details {
