@@ -134,23 +134,23 @@ const ModuleProfile = ({ myProfile, profile }) => {
             <div className={'score-wrapper'}>
                 <p>
                     <FontAwesomeIcon icon={ faStar } />
-                    { window.innerWidth < 600 ? ": " : " Score: " }
+                    { window.innerWidth < 750 ? ": " : " Score: " }
                     { profile.score }
                 </p>
                 <p>
                     <FontAwesomeIcon icon={ faTrophy } />
-                    { window.innerWidth < 600 ? ": " : " Achievements: " }
+                    { window.innerWidth < 750 ? ": " : " Achievements: " }
                     { !achievements ? <Spinner animation="border" style={{ width: '16px', height: '16px'}}/>  :
                         achievements.filter(a => a.date !== null).length}
                 </p>
                 <p>
                     <FontAwesomeIcon icon={ faUserFriends } />
-                    { window.innerWidth < 600 ? ": " : " Friends: " }
+                    { window.innerWidth < 750 ? ": " : " Friends: " }
                     { profile.friends.length > 0 ? profile.friends.length : profile.friendsCount }
                 </p>
                 <p>
                     <FontAwesomeIcon icon={ faDumbbell } />
-                    { window.innerWidth < 600 ? ": " : " Workouts: " }
+                    { window.innerWidth < 750 ? ": " : " Workouts: " }
                     { !stats ? <Spinner animation="border" style={{ width: '16px', height: '16px'}}/> :
                         stats.workouts }
                 </p>

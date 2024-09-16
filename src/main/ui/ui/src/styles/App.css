@@ -295,10 +295,6 @@ body {
   text-decoration: none;
 }
 
-.page-wrapper h3 {
-  margin: 0px 0px 16px 0px;
-}
-
 .App-link {
   color: #61dafb;
 }
@@ -757,7 +753,7 @@ body {
   margin: 0;
 }
 
-.module.profile > module-content {
+.module.profile .module-content {
   padding: 0 0 1em;
 }
 

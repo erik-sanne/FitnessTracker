@@ -66,6 +66,7 @@ const createConfig = (setdata, selected) => {
             backgroundColor: selected && selected === label ? 'rgb(165,110,39)' : 'rgba(60,96,140,1)',
             borderColor:  index == data.length - 1 ? 'rgba(107,166,239,1)' : 'rgba(0,0,0,0)',
             tension: 0,
+            fill: true,
             pointStyle: 'circle'
     })})
     

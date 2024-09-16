@@ -173,7 +173,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             borderDash: [15, 3],
             fill: false,
             borderColor: 'rgb(239,169,107)',
-            backgroundColor: 'rgb(239,164,107)',
+            backgroundColor: 'rgba(239,164,107, 0.35)',
             borderWidth: 1,
             pointHoverRadius: 0,
             tension: 0,
@@ -256,9 +256,9 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
         options: {
             responsive: true,
             aspectRatio: window.innerWidth < 600 && mergeAxes ? 1 : window.innerWidth > 1500 ? 2.5 : 1.2,
-            hoverMode: 'index',
             stacked: false,
             spanGaps: true,
+            clip: false,
             title:{
                 display: false,
             },
@@ -335,6 +335,8 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             },
             plugins: {
                 tooltip: {
+                    multiKeyBackground: "rgba(0,0,0,0)",
+                    usePointStyle: true,
                     filter: function (tooltipItem) {
                         return tooltipItem.datasetIndex === 0 || tooltipItem.datasetIndex === 2;
                     },

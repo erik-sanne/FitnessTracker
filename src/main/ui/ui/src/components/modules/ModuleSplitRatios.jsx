@@ -112,6 +112,7 @@ const createConfig = (setdata, ctx) => {
         label: Utils.camelCase(obj.type) + ` (${Math.round((sumEx[obj.type] / sumAll) * 100)}%)`,
         borderWidth: 2,
         borderColor: colors[obj.type][0],
+        fill: true,
         backgroundColor: asGradient(ctx, colors[obj.type]),
         data: obj.values[1],
         tension: 0,
@@ -132,7 +133,8 @@ const createConfig = (setdata, ctx) => {
                 }
             },
             interaction: {
-                mode: 'index'
+              intersect: false,
+              mode: 'index',
             },
             responsive: true,
             aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
@@ -178,7 +180,7 @@ const createConfig = (setdata, ctx) => {
                 legend: {
                     display: true,
                     position: "chartArea",
-                    align: "center",
+                    align: "start",
                     reverse: true,
                     labels: {
                         usePointStyle: true,
@@ -186,6 +188,20 @@ const createConfig = (setdata, ctx) => {
                             size: 12,
                             family: 'Quicksand',
                             weight: 'bold'
+                        }
+                    }
+                },
+                tooltip: {
+                    multiKeyBackground: "rgba(0,0,0,0)",
+                    usePointStyle: true,
+                    callbacks: {
+                        title: function (context) {
+                            return "Rated workout frequency:\n(90 days)"
+                        },
+                        label: function (context) {
+                            let label = context.dataset.label.split(' ')[0];
+                            let value = Number(context.parsed.y || "0");
+                            return " " + label + ": "+value.toFixed(0);
                         }
                     }
                 }

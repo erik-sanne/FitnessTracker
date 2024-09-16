@@ -52,6 +52,7 @@ const createConfig = (rawdata=[], goal) => {
             borderColor: idx === 0 ? 'rgba(107,166,239,0.5)' : 'rgba(70,131,58,0.5)',
             borderWidth: 1,
             borderDash: [15, 3],
+            tension: 0.2,
             data: dataset.data.map((workouts, index, arr) => {
                 let firstindex = Math.max(0, index-periodLen);
                 return arr.slice(firstindex, index).reduce((v1, v2) => v1 + v2, 0) / periodLen;
@@ -124,6 +125,10 @@ const createConfig = (rawdata=[], goal) => {
                 }
             },
             plugins: {
+                tooltip: {
+                    multiKeyBackground: "rgba(0,0,0,0)",
+                    usePointStyle: true,
+                },
                 legend: {
                     display: true,
                     position: "chartArea",
@@ -138,6 +143,7 @@ const createConfig = (rawdata=[], goal) => {
                         font: {
                             size: 12,
                             family: 'Quicksand',
+                            weight: 'bold'
                         }
                     }
                 },
