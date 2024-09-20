@@ -130,7 +130,7 @@ const AppContent = ({ logoutCallback }) => {
                     <Switch>
                         <Route path="/general">
                             <Header title={ "My Dashboard" } onClick={ burgerClick } />
-                            <SectionStatistics />
+                            <SectionStatistics userProfile={ currentUserProfile } />
                         </Route>
                         <Route path="/history">
                             <Header title={ "Logbook" } onClick={ burgerClick } />

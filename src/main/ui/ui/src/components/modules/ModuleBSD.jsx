@@ -17,14 +17,17 @@ const createConfig = (bsds, normalratio) => {
         backgroundColor: 'rgba(101,101,101,0.1)',
         borderColor: 'rgba(101,101,101,0.5)',
         borderWidth: 2,
-        data: normalratio
+        data: normalratio,
+        borderRadius: 5,
+        borderSkipped: false,
     },{
         type: 'line',
         label: '',
-        backgroundColor: 'rgba(107,166,239,0.1)',
-        borderColor: 'rgba(107,166,239,0.5)',
-        borderWidth: 2,
+        backgroundColor: 'rgba(107,166,239,0.5)',
+        borderColor: 'rgba(107,166,239,0.8)',
+        borderWidth: 0,
         fill: false,
+        pointRadius: 7,
         data: yValues[0],
         tension: 0.2
     }]
@@ -32,11 +35,13 @@ const createConfig = (bsds, normalratio) => {
     bsds[1] && datasets.push({
         type: 'line',
         label: '',
-        backgroundColor: 'rgba(70,131,58,0.1)',
-        borderColor: 'rgba(70,131,58,0.5)',
-        borderWidth: 2,
+        backgroundColor: 'rgba(70,131,58,0.5)',
+        borderColor: 'rgba(70,131,58,0.8)',
+        borderWidth: 0,
         fill: false,
-        data: yValues[1]
+        pointRadius: 7,
+        data: yValues[0],
+        tension: 0.2
     })
 
     const maxVal = Math.max(Math.max.apply(null, yValues.flat()) + 1, 6);
@@ -52,7 +57,9 @@ const createConfig = (bsds, normalratio) => {
                 enabled: false
             },
             responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
+            clip: false,
             hoverMode: 'index',
             scales: {
                 y: {
@@ -190,20 +197,24 @@ const ModuleBSD = ({ data=[] }) => {
 
     return (
         <>
-            { data.length < 2 && <p onClick={ () => { setUsePredicions(!usePredictions) }} style={{ textAlign: 'right' }}> Actual <Switch color="primary" checked={ usePredictions } /> Predictions </p>}
-
-            <div className={'centerC'}>
+            <div className={'primary-content-wrapper'}>
                 { chartData ? <Graph data={ chartData } style={{ marginTop: '0'}} /> : <Spinner /> }
+                { data.length < 2 &&
+                                <p onClick={ () => { setUsePredicions(!usePredictions) }} style={{
+                                    position: 'absolute',
+                                    top: window.innerWidth < 600 ? '2.5rem' : '3.5rem',
+                                    right: '1.5rem' }}> Actual <Switch color="primary" checked={ usePredictions } /> Predictions </p>}
             </div>
-            <div style={{ display: "flex", justifyContent: 'space-around' }}>
+
+            <div style={{ display: "flex" }}>
                 {
                     mse ? Object.entries(mse).map(([key, value], idx) =>
-                        <DisplayValue key={idx} text={key} value={value + `${ usePredictions ? '*' : '' }`} style={{ textAlign: 'center', width: '215px' }}/>
+                        <DisplayValue key={idx} text={ key == 'Squat' ? 'Conv. Squat' : key } value={value + `${ usePredictions ? '*' : '' }`}/>
                     ) :
                         <>
-                            <DisplayValue key={ 1 } text={ "Bench Press" } value={''} style={{ textAlign: 'center', width: '215px' }}/>
-                            <DisplayValue key={ 2 } text={ "Squat" } value={''} style={{ textAlign: 'center', width: '215px' }}/>
-                            <DisplayValue key={ 3 } text={ "Deadlift" } value={''} style={{ textAlign: 'center', width: '215px' }}/>
+                            <DisplayValue key={ 1 } text={ "Bench Press" } value={''}/>
+                            <DisplayValue key={ 2 } text={ "Conv. Squat" } value={''}/>
+                            <DisplayValue key={ 3 } text={ "Deadlift" } value={''}/>
                         </>
                 }
             </div>

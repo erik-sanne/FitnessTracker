@@ -1,8 +1,7 @@
 .calendar {
   display: flex;
-  border: 1px solid #333;
-  border-radius: 0.5em;
-  margin-bottom: 1em;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
 }
 
 .calendar-view {
@@ -14,7 +13,9 @@
 .day {
   display: flex;
   flex-direction: column;
-  border-left: 1px #333 dotted;
+}
+
+.day:first-child {
 }
 
 .day-header {
@@ -22,7 +23,6 @@
   text-align: center;
   height: 1.5em;
   margin: 0.5em;
-  border-bottom: 1px dashed #333;
 }
 
 .loader {
@@ -30,7 +30,6 @@
 }
 
 .resources {
-  border-right: 1px solid #333;
 }
 
 .resource {
@@ -39,7 +38,10 @@
 
 .resource > span {
   text-align: right;
-  margin-right: 1em;
+  margin-right: 1rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .resource-container {
@@ -51,8 +53,7 @@
 }
 
 .resource-container:has(.event) {
-  border: 1px solid #333;
-  border-radius: 0.5em;
+  border-radius: 1rem;
 }
 
 .resource-container:has(.event.pull) {

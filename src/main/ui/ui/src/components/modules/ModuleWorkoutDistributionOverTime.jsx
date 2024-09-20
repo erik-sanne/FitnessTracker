@@ -28,9 +28,9 @@ const ModuleWorkoutDistributionOverTime = () => {
         return <Loader />
 
     return chartData &&
-                <div style={{ width: '100%', marginBottom: '2em' }}>
+                <>
                     <Graph data={chartData} />
-                    <Select
+                    { false && <Select
                         menuPortalTarget={document.body}
                         menuPosition={'fixed'} 
                         defaultValue={ selected }
@@ -39,8 +39,8 @@ const ModuleWorkoutDistributionOverTime = () => {
                         options={ options }
                         menuPlacement={"top"}
                         className="select-container"
-                        classNamePrefix="select" />
-                </div>
+                        classNamePrefix="select" />}
+                </>
 }
 
 
@@ -86,8 +86,9 @@ const createConfig = (setdata, selected) => {
             interaction: {
                 mode: 'index'
             },
-            responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 2 : 2.5,
+            responsive:true,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth < 600 ? 2 : 2.5,
             scales: {
                 y: {
                     stacked: true,

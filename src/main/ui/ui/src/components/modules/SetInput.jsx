@@ -58,7 +58,7 @@ const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, o
             marginBottom: '8px'
         }}>
             <div style={{...inputWrap, flex: 2}}>
-                <label>Exercise</label>
+                <label className={ 'default-label' }>Exercise</label>
                 <Select
                     menuPosition={'fixed'} 
                     onChange={ (value) => handleInputChange({ target : { name: 'type', value: value.value }}) }
@@ -70,17 +70,18 @@ const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, o
                     classNamePrefix="select" />
             </div>
             <div style={inputWrap}>
-                <label>Reps</label>
+                <label className={ 'default-label' }>Reps</label>
                 <input name="reps"
                        type="number"
                        placeholder={'Reps'}
                        min={1}
                        value={ exerciseState.reps }
                        onChange={ handleInputChange }
+                       className={ 'default-input' }
                        style={{ width: '100%',  background: validationErrors.reps ? 'rgb(240 0 0 / 10%)' : '' }} />
             </div>
             <div style={{...inputWrap, marginRight: '0px'}}>
-                <label>Weight</label>
+                <label className={ 'default-label' }>Weight</label>
                 <input name="weight"
                        type="number"
                        placeholder={'Weight'}
@@ -88,10 +89,11 @@ const SetInput = ({ type, reps, weight, buttonText, exerciseOptions, onSubmit, o
                        max={999.99}
                        value={ exerciseState.weight }
                        onChange={ handleInputChange }
+                       className={ 'default-input' }
                        style={{ width: '100%',  background: validationErrors.weight ? 'rgb(240 0 0 / 10%)' : '' }}/>
             </div>
         </div>
-        <input type="submit" value={buttonText} onClick={ Submit } className={ 'themed' }/>
+        <input type="submit" value={buttonText} onClick={ Submit } className={ 'default-input' }/>
         </>
     );
 }

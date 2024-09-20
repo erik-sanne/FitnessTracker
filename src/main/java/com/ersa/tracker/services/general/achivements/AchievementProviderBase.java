@@ -31,8 +31,8 @@ public abstract class AchievementProviderBase implements AchievementProvider {
         Achievement achievement = null;
         try {
             achievement = achievementRepository.findByUserAndName(user, getName());
-        } catch (NonUniqueResultException ex) {
-            log.error("Multiple achievements found for user {}:{}", user.getId(), getName());
+        } catch (NonUniqueResultException | org.hibernate.NonUniqueResultException ex) {
+            log.warn("Multiple achievements found for user {}:{}", user.getId(), getName());
         }
 
         if (achievement != null)

@@ -62,8 +62,8 @@ const ModuleCalendar = ({profile}) => {
     }
 
     return (
-        <Module title={ "Shared Calendar" } className={ "friends-calendar" }>
-            <div>
+        <Module title={ "Friends Calendar" } className={ "friends-calendar" }>
+            <div style={{ margin: '-1rem -1rem 0rem -1rem' }}>
                 <Calendar resources={ selected } events={ events } days={ pagesLoaded * PAGE_SIZE } scrollCallback={ onMaxScrollLeft }/>
             </div>
             <Multiselect

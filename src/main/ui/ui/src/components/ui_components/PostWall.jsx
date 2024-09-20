@@ -6,7 +6,7 @@ import post from "../../services/Post";
 import doDelete from "../../services/DoDelete";
 import Modal from "../ui_components/Modal";
 
-const PostWall = ({ profile, updateUserProfile, posts, loading, refreshCallback, maxReached=false }) => {
+const PostWall = ({ profile, updateUserProfile, posts, loading, refreshCallback, maxReached=false, style={} }) => {
 
     const [ notices, setNotices ] = useState([])
     const [ confirmDeletePost, setConfirmDeletePost] = useState(-1)
@@ -51,7 +51,7 @@ const PostWall = ({ profile, updateUserProfile, posts, loading, refreshCallback,
         setEditPost({id: editPost.id, text: e.target.value})
     };
 
-    return  <>
+    return  <div style={style}>
         { loading ? <Loader /> : posts.length < 1 ? <p style={noticeStyle}>Nothing new</p> : <>
             { posts.map((post, idx) =>
                             <PostCard key={idx}
@@ -67,15 +67,15 @@ const PostWall = ({ profile, updateUserProfile, posts, loading, refreshCallback,
             { maxReached ? <p style={noticeStyle}> No more posts at this time </p> : <Loader /> }
         </>}
         <Modal visible={ confirmDeletePost !== -1 } title={ "Are you sure you want to delete this post?" } onClose={ () => setConfirmDeletePost(-1) }>
-            <input type={ 'submit' } value={ 'Yes!' } className={ 'themed' } onClick={ () => {
+            <input type={ 'submit' } value={ 'Yes!' } className={ 'default-input' } onClick={ () => {
                 deleteComment();
             }}/>
         </Modal>
         <Modal visible={ editPost.id !== -1 } title={ "Edit post" } onClose={ () => setEditPost({id: -1, text: ""}) }>
             <textarea onChange={ textChanged } style={ taStyle } value={ editPost.text } />
-            <input type={'submit'} value={ 'Save' } onClick={ saveEdit }/>
+            <input type={'submit'} value={ 'Save' } onClick={ saveEdit } className={ 'default-input' }/>
         </Modal>
-    </>
+    </div>
 }
 
 const taStyle = {

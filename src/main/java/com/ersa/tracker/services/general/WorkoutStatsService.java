@@ -11,8 +11,6 @@ import com.ersa.tracker.repositories.WTypeRepository;
 import com.ersa.tracker.utils.DateUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,7 +24,7 @@ public class WorkoutStatsService implements APIService {
     private final TargetRepository targetRepository;
     private final WTypeRepository wTypeRepository;
 
-    private final int DEFAULT_WTC = 30;
+    private final int DEFAULT_WORKOUTS_TO_CONSIDER = 30;
 
     final float SCALE_FACTOR_PRIMARY = 1f;
     final float SCALE_FACTOR_SECONDARY = 0.5f;
@@ -167,7 +165,7 @@ public class WorkoutStatsService implements APIService {
 
     @Override
     public PredictedORM getPredictedORM(User user, String exercise) {
-        List<Workout> workouts = workoutService.getWorkouts(user, DEFAULT_WTC);
+        List<Workout> workouts = workoutService.getWorkouts(user, DEFAULT_WORKOUTS_TO_CONSIDER);
         List<WorkoutSet> sets = workouts.stream().map(Workout::getSets).flatMap(Collection::stream).filter(set -> set.getExercise().equals(exercise)).collect(Collectors.toList());
 
         return new PredictedORM(
@@ -187,7 +185,7 @@ public class WorkoutStatsService implements APIService {
 
     @Override
     public Map<String, Float> getWorkoutDistribution(final User user) {
-        return getWorkoutDistribution(user, DEFAULT_WTC);
+        return getWorkoutDistribution(user, DEFAULT_WORKOUTS_TO_CONSIDER);
     }
 
     @Override

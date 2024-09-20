@@ -15,7 +15,7 @@ const PostSubmit = ({ myProfile, profile, submitCallback }) => {
     }
 
     return  (
-        <div className={"post"}>
+        <div className={"post"} style={{ margin: '-1.5rem -1rem 0rem -1rem', borderRadius: '1rem' }}>
             <div style={{ position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: "space-between", paddingBottom: "1em" }}>
                     <ProfileDisplay profilePicture={ myProfile.profilePicture } /> <p style={{ margin: 'auto' }}>
@@ -24,7 +24,7 @@ const PostSubmit = ({ myProfile, profile, submitCallback }) => {
                 </div>
             </div>
             <div className={"text-area"} style={{ display: 'flex', justifyContent: "space-between" }}>
-                <FormWrap><input type={ 'text' } placeholder={ myProfile.userId === profile.userId ? "What's on your mind?" : `Write something to ${profile.displayName}...` } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/></FormWrap>
+                <FormWrap><input type={ 'text' } placeholder={ myProfile.userId === profile.userId ? "What's on your mind?" : `Write something to ${profile.displayName}...` } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress } className={ 'default-input' }/></FormWrap>
             </div>
         </div>);
 }

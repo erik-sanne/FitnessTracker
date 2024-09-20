@@ -31,7 +31,7 @@ const DataSelect = ({options, value, onSelect, placeholder = "Select something..
                    autoComplete={ "off" }
                    aria-autocomplete={ "none" }
                    style={{...style}}
-                   className={ className }
+                   className={ 'default-input' }
                    placeholder={placeholder}
                    value={ intermediateValue }
                    ref={ ref }

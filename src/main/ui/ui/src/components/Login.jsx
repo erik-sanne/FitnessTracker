@@ -84,12 +84,12 @@ class Login extends React.Component {
                         <input type="submit" value="Log in" className={'btn-form'}/>
                         <div className={ 'hl' } />
                         <div style={{ display: 'flex', justifyContent: 'center'}}>
-                            <i><a href="/forgot-password">Forgot password?</a></i>
+                            <span><a href="/forgot-password">Forgot password?</a></span>
                         </div>
+                        { this.state.reason && !this.state.msg && <p style={styleStatus}>Your credentials has expired and you need to login again</p>}
+                        { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
                     </form>
-                    { this.state.reason && !this.state.msg && <p style={styleStatus}>Your credentials has expired and you need to login again</p>}
-                    { this.state.msg && <span style={ styleError }> { this.state.msg } </span>}
-                    { this.state.loading && <ModalLoader visible={ this.state.loading } />}
+                        { this.state.loading && <ModalLoader visible={ this.state.loading } />}
                 </section>
             </>
         );
@@ -99,19 +99,21 @@ class Login extends React.Component {
 const styleError = {
     background: 'rgb(83 37 37 / 30%)',
     border: '1px solid rgb(91 52 52)',
-    borderRadius: '5px',
+    borderRadius: '1rem',
     color: 'rgb(161 129 129)',
     padding: '0.5em 1em',
-    margin: '0em 1em'
+    margin: '1rem',
+    textAlign: 'center'
 }
 
 const styleStatus = {
     background: 'rgba(255,173,2,0.44)',
     border: '1px solid #f16b719e',
-    borderRadius: '5px',
+    borderRadius: '1rem',
     color: 'rgb(161 129 129)',
     padding: '0.5em 1em',
-    margin: '0em 1em'
+    margin: '1rem',
+    textAlign: 'center'
 }
 
 export default Login;

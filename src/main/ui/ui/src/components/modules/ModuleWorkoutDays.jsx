@@ -19,6 +19,8 @@ const createConfig = (rawdata=[], goal) => {
             backgroundColor: idx === 0 ? 'rgba(107,166,239,0.1)' : 'rgba(70,131,58,0.1)',
             borderColor: idx === 0 ? 'rgba(107,166,239,0.5)' : 'rgba(70,131,58,0.5)',
             borderWidth: 2,
+            borderRadius: 5,
+            borderSkipped: false,
             data: yValues
         }
     })
@@ -90,12 +92,17 @@ const createConfig = (rawdata=[], goal) => {
                     left: -5,
                 }
             },
-            responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.2 : 1.2,
+            responsive:true,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth < 600 ? 1.2 : 1.2,
             scales: {
                 y: {
                     min: 0,
                     max: 7,
+                    display: false,
+                    grid: {
+                        display: false,
+                    },
                     ticks: {
                         stepSize: 1,
                         font: {
@@ -107,6 +114,9 @@ const createConfig = (rawdata=[], goal) => {
                 x: {
                     min: xLabels[xLabels.length - 7],
                     max: xLabels[xLabels.length - 1],
+                    grid: {
+                        display: false,
+                    },
                     ticks: {
                         callback: function(value, index) {
                             const arr = this.getLabelForValue(value).split(" ")
@@ -194,24 +204,9 @@ const ModuleWorkoutDays = ({ data=[] }) => {
 
     return (
         <>
-            { data.length === 1 && 
-            <NavLink to="/goals" style={{
-                
-                position: 'absolute',
-                top:'min(2.5vw, 24px)',
-                right: 'min(4.5vw, 35px)',
-                fontSize: 'min(calc(8px + 3.5vmin), 30px)',
-                cursor: 'pointer',
-                padding: 0,
-                filter: "drop-shadow(0px 0px 2px black)"
-            }}>
-                <FontAwesomeIcon icon={ faMedal } style={{
-                    color: reachedGoal(goal, data[0]) ? "#ffc877" : "rgb(61 65 72)" }}/>
-                </NavLink>}
-
-            { data.length < 1 ? <Spinner /> :
+           { data.length < 1 ? <Spinner /> :
                 <>
-                    <div className={'centerC'}>
+                    <div className={'primary-content-wrapper'}>
                         { chartData && <Graph data={ chartData }/> }
                     </div>
                     {data.length < 2 ?
@@ -222,25 +217,33 @@ const ModuleWorkoutDays = ({ data=[] }) => {
                                           value={data ? computeAverage(10, data[0]).toFixed(1) : "-"}/>
                             <DisplayValue text={'This week'}
                                           value={data ? data[0][0].totalWorkouts.toFixed(0) : "-"}/>
+                            <div style={{ flex: '1', display: 'flex', justifyContent: 'flex-end' }}>
+                                <div>
+                                    <DisplayValue text={ 'My goal' } right={ true }
+                                                  value={
+                                       <div style={{ textAlign: 'center'}}>
+                                          <NavLink to="/goals" style={{ fontSize: '1.5rem', cursor: 'pointer', padding: 0, filter: "drop-shadow(0px 0px 1px black)" }}>
+                                              <FontAwesomeIcon icon={ faMedal } style={{color: reachedGoal(goal, data[0]) ? "#ffc877" : "rgba(107,166,239,0.25)" }}/>
+                                          </NavLink>
+                                       </div>}/>
+                                </div>
+                            </div>
                         </div>
                         :
                         <div style={{display: "flex"}}>
-                            <DisplayValue text={'Avg 1 year'}
-                                          value={
+                            <DisplayValue text={'Avg 1 year'} value={
                                               <>
                                                 <span style={{ color: 'rgba(107,166,239,0.35)'}}> { computeAverage(52, data[0]).toFixed(1) }</span>
                                                 <span style={{ color: 'rgba(70,131,58,0.35)'}}> { computeAverage(52, data[1]).toFixed(1) }</span>
                                               </>
                                           }/>
-                            <DisplayValue text={'Avg 10 weeks'}
-                                          value={
+                            <DisplayValue text={'Avg 10 weeks'} value={
                                               <>
                                                   <span style={{ color: 'rgba(107,166,239,0.35)'}}> { computeAverage(10, data[0]).toFixed(1) }</span>
                                                   <span style={{ color: 'rgba(70,131,58,0.35)'}}> { computeAverage(10, data[1]).toFixed(1) }</span>
                                               </>
                                           }/>
-                            <DisplayValue text={'This week'}
-                                          value={
+                            <DisplayValue text={'This week'} value={
                                               <>
                                                   <span style={{ color: 'rgba(107,166,239,0.35)'}}> { data[0][data[0].length - 1].totalWorkouts.toFixed(0) }</span>
                                                   <span style={{ color: 'rgba(70,131,58,0.35)'}}> { data[1][data[1].length - 1].totalWorkouts.toFixed(0) }</span>

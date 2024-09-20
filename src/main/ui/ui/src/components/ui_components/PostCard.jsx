@@ -69,7 +69,7 @@ const PostCard = ({ myprofile, notices, post, postCallback, deletePostCallback, 
             </div>
             <div className={"text-area"} style={{ display: 'flex' }}>
 
-                <FormWrap><input type={ 'text' } placeholder={ 'Write a comment...' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress }/></FormWrap>
+                <FormWrap><input type={ 'text' } placeholder={ 'Write a comment...' } onKeyPress={ onKeyPress } onKeyUp={ onKeyPress } className={ 'default-input' }/></FormWrap>
             </div>
         </div>
     );

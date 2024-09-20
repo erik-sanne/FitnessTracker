@@ -5,6 +5,7 @@ import useFetch from "../../services/useFetch";
 import Graph from "./Graph";
 import Utils from "../../services/Utils";
 
+const MILLIS_SCAN = 1000 * 60 * 60 * 24 * 45; // 45+45=~3 months
 
 const ModuleSplitRatios = () => {
     const { data, loading } = useFetch('/api/workouts');
@@ -37,15 +38,11 @@ const ModuleSplitRatios = () => {
     if (loading)
         return <Loader />
 
-    return state &&
-                <div style={{ width: '100%', marginBottom: '2em' }}>
-                    <Graph data={state.chartdata} callback={ chart => setCtx(chart.getContext('2d'))}/>
-                </div>
+    return state && <Graph data={state.chartdata} callback={ chart => setCtx(chart.getContext('2d'))}/>
 }
 
 const doStuff = (date, workouts) => {
     const today = new Date();
-    const MILLIS_SCAN = 1000 * 60 * 60 * 24 * 45; // 45+45=~3 months
 
     const values = [];
     const dates = [];
@@ -126,22 +123,20 @@ const createConfig = (setdata, ctx) => {
             datasets: data
         },
         options: {
-            layout: {
-                padding: {
-                    left: 1,
-                    right:  0
-                }
-            },
             interaction: {
               intersect: false,
               mode: 'index',
             },
-            responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
+            responsive:true,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
             scales: {
                 y: {
                     stacked: true,
                     display: false,
+                    grid: {
+                        display: false,
+                    },
                     ticks: {
                         font: {
                             family: 'Quicksand',
@@ -152,6 +147,9 @@ const createConfig = (setdata, ctx) => {
                 x: {
                     type: 'time',
                     stacked: true,
+                    grid: {
+                        display: false,
+                    },
                     time: {
                         unit: 'month'
                     },
@@ -167,7 +165,7 @@ const createConfig = (setdata, ctx) => {
                     },
                     afterFit: (axis) => {
                         axis.paddingRight = window.innerWidth < 600 ? 0 : 0;
-                        axis.paddingLeft = window.innerWidth < 600 ? 0 : 40;
+                        axis.paddingLeft = window.innerWidth < 600 ? 0 : 0;
                     }
                 }
             },
@@ -195,8 +193,12 @@ const createConfig = (setdata, ctx) => {
                     multiKeyBackground: "rgba(0,0,0,0)",
                     usePointStyle: true,
                     callbacks: {
-                        title: function (context) {
-                            return "Rated workout frequency:\n(90 days)"
+                        title: function (contexts) {
+                            const millis = contexts[0].parsed.x;
+                            const from = new Date(millis - MILLIS_SCAN).toISOString().split("T")[0];
+                            const to = new Date(millis + MILLIS_SCAN).toISOString().split("T")[0];
+                            const prediction = new Date(millis + MILLIS_SCAN) > new Date()
+                            return `Number of workouts in range:${ prediction ? '\n(estimated based on recent activity)' : '' }\n${from} - ${to}`
                         },
                         label: function (context) {
                             let label = context.dataset.label.split(' ')[0];

@@ -4,11 +4,18 @@ import ErrorBoundary from "./ErrorBoundary";
 const Module = ({ title, style, substyle, headerStyle, className='', children }) => {
     return (
         <div className={ 'module ' + className } style={{ ...style }}>
-            { title && <h3 className={ 'module-header' } style={ headerStyle }> {title} </h3>}
-            <div className={ 'module-content' } style={{...substyle}}>
-                <ErrorBoundary>
-                    { children }
-                </ErrorBoundary>
+            <div className={ 'module-structure' }>
+            { title &&
+                <div className={ 'module-header' }>
+                    <h3 className={ 'module-header-text' } style={ headerStyle }> {title} </h3>
+                    <div className={ 'divider' }/>
+                </div>
+            }
+                <div className={ 'module-content' } style={{...substyle}}>
+                    <ErrorBoundary>
+                        { children }
+                    </ErrorBoundary>
+                </div>
             </div>
         </div>
     );

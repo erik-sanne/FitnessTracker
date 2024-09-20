@@ -4,13 +4,14 @@ const TextButton = ({ text, style, mini, className, onClick, disabled, children 
 
     const miniStyle = {
         padding: 'min(1vw, 6px) min(1.5vw, 12px)',
-        margin: 'min(1vw, 6px) min(0.7vw, 6px)',
+        margin: '0 0.6rem 0 0 ',
         color: !disabled ? 'rgba(107,166,239,0.7)' : '#aaa',
         borderColor: !disabled ? 'rgba(107,166,239,0.2)': '#aaa',
         width: 'auto',
         display: 'inline',
         flex: 0,
         background: 'transparent',
+        borderRadius: '2rem',
         "&:hover": {
             background: "#efefef"
         }

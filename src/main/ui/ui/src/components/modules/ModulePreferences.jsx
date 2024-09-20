@@ -38,7 +38,7 @@ const ModulePreferences = ({ userProfile }) => {
 
     return (
         <Module title={"UI preferences"}>
-            <div className={'centerC'} style={{ justifyContent: 'start' }}>
+            <div className={'primary-content-wrapper'} style={{ justifyContent: 'start' }}>
                 <p>General UI</p>
                 <div>
                     <Switch color="primary" checked={ highContrast } disabled={ true }/>

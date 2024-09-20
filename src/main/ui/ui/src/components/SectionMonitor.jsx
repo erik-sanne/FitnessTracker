@@ -161,57 +161,57 @@ const SectionMonitor = () => {
             </Module>
             <Module title = "Errors & Warnings" className={ "health-status" }>
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
-                    <div>
-                        <Graph data={ chartConfigs.logbackEvents } style={{ margin: '-1em' }}/>
+                    <div className={ 'primary-content-wrapper' }>
+                        <Graph data={ chartConfigs.logbackEvents } style={{ height: '300px'}} />
                     </div>
                 }
             </Module>
             <Module title = "Reponse time">
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
-                    <div>
-                        <Graph data={ chartConfigs.serverRequestMax } style={{ margin: '-1em' }}/>
+                    <div className={ 'primary-content-wrapper' }>
+                        <Graph data={ chartConfigs.serverRequestMax } style={{ height: '300px'}} />
                     </div>
                 }
             </Module>
             <Module title = "Request rate">
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
-                    <div>
-                        <Graph data={ chartConfigs.serverRequestCounts } style={{ margin: '-1em' }}/>
+                    <div className={ 'primary-content-wrapper' }>
+                        <Graph data={ chartConfigs.serverRequestCounts } style={{ height: '300px'}} />
                     </div>
                 }
             </Module>
             <Module title = "CPU Usage">
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
-                    <div>
-                        <Graph data={ chartConfigs.cpu } style={{ margin: '-1em' }}/>
+                    <div className={ 'primary-content-wrapper' }>
+                        <Graph data={ chartConfigs.cpu } style={{ height: '300px'}} />
                     </div>
                 }
             </Module>
             <Module title = "JVM Memory Usage">
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
-                    <div>
-                        <Graph data={ chartConfigs.memory } style={{ margin: '-1em' }}/>
+                    <div className={ 'primary-content-wrapper' }>
+                        <Graph data={ chartConfigs.memory } style={{ height: '300px'}} />
                     </div>
                 }
             </Module>
             <Module title = "GC Pause">
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
-                    <div>
-                        <Graph data={ chartConfigs.gcPause } style={{ margin: '-1em' }}/>
+                    <div className={ 'primary-content-wrapper' }>
+                        <Graph data={ chartConfigs.gcPause } style={{ height: '300px'}} />
                     </div>
                 }
             </Module>
             <Module title = "Thread States">
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
-                    <div>
-                        <Graph data={ chartConfigs.jvmThreadStates } style={{ margin: '-1em' }}/>
+                    <div className={ 'primary-content-wrapper' }>
+                        <Graph data={ chartConfigs.jvmThreadStates } style={{ height: '300px'}} />
                     </div>
                 }
             </Module>
             <Module title = "Database IO">
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
-                    <div>
-                        <Graph data={ chartConfigs.dbInvocations } style={{ margin: '-1em' }}/>
+                    <div className={ 'primary-content-wrapper' }>
+                        <Graph data={ chartConfigs.dbInvocations } style={{ height: '300px'}} />
                     </div>
                 }
             </Module>
@@ -379,7 +379,8 @@ const memoryConfig = (metrics) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
                 duration: 0
             },
@@ -452,7 +453,8 @@ const cpuConfig = (metrics) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
                 duration: 0
             },
@@ -558,7 +560,8 @@ const gcPauseConfig = (metrics) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
                 duration: 0
             },
@@ -750,7 +753,8 @@ const serverRequestCountConfig = (metrics) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
                 duration: 0
             },
@@ -856,7 +860,8 @@ const serverRequestMaxConfig = (metrics) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
                 duration: 0
             },
@@ -939,7 +944,8 @@ const logbackEventsConfig = (metrics) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth > 1900 ? 8 : window.innerWidth < 600 ? 2 : window.innerWidth < 900 ? 4 : 6,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth > 1900 ? 8 : window.innerWidth < 600 ? 2 : window.innerWidth < 900 ? 4 : 6,
             animation: {
                 duration: 0
             },
@@ -1024,7 +1030,8 @@ const jvmThreadStatesConfig = (metrics) => {
         },
         options: {
             responsive: true,
-            aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
             animation: {
                 duration: 0
             },

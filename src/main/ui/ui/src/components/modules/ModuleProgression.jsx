@@ -254,8 +254,9 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             datasets: mergeAxes ? datasetsProgression : datasets
         },
         options: {
-            responsive: true,
-            aspectRatio: window.innerWidth < 600 && mergeAxes ? 1 : window.innerWidth > 1500 ? 2.5 : 1.2,
+            responsive:true,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth < 600 && mergeAxes ? 1 : window.innerWidth > 1500 ? 2.5 : 1.2,
             stacked: false,
             spanGaps: true,
             clip: false,
@@ -264,7 +265,7 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
             },
             layout: {
                 padding: {
-                    left: -9,
+                    left: 0,
                     right: window.innerWidth < 600 ? -10 : 0
                 }
             },
@@ -276,10 +277,14 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     id: "left_axis",
                     mirror: window.innerWidth < 600,
                     suggestedMin: 0,
+                    grid: {
+                        display: true,
+                    },
                     ticks: {
                         callback: function(value, index, values) {
                             return value;
                         },
+                        precision: 0,
                         font: {
                             family: 'Quicksand',
                             weight: 'bold'
@@ -288,13 +293,17 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                 },
                 right_axis: {
                     type: "linear",
-                    display: true,
                     position: "right",
                     id: "right_axis",
                     suggestedMin: 0,
                     max: mergeAxes ? 100 : maxVal,
+                    display: !mergeAxes,
+                    grid: {
+                        display: false,
+                    },
                     ticks: {
                         mirror: window.innerWidth < 600,
+                        precision: 0,
                         callback: function(value, index, values) {
                             return value + (mergeAxes ? '%' : 'kg');
                         },
@@ -308,6 +317,9 @@ const createConfig = (data, mergeAxes, interpolation=1) => {
                     type: 'time',
                     time: {
                         unit: 'day'
+                    },
+                    grid: {
+                        display: false,
                     },
                     ticks: {
                         maxRotation: window.innerWidth < 600 ? 0 : 50,
@@ -430,31 +442,29 @@ const ModuleProgression = () => {
         <>
             { loadingExercises ? <Loader /> :
                 <>
-                    <div className={'centerC'}>
+                    <div className={'primary-content-wrapper'}>
                         { !loading && chartData && message === "" &&
                         <>
-                            <div className={'centerC'}>
-                                <SwiperWrapper>
-                                    <SwiperSlide>
-                                        <div style={{width: '100%'}}>
-                                            <Graph data={ chartData.data1 } style={{ marginTop: 0 }}/>
-                                        </div>
-                                    </SwiperSlide>
-                                    <SwiperSlide>
-                                        <div style={{ width: '100%'}}>
-                                            <Graph data={ chartData.data2 }/>
-                                            <Slider
-                                                style={{ margin: '0 auto 1em auto', width: '80%' }}
-                                                value={ interpolation }
-                                                onChange={(event, val) => { event.stopPropagation(); setInterpolation(val) }}
-                                                valueLabelDisplay="auto"
-                                                min={1}
-                                                max={10}
-                                            />
-                                        </div>
-                                    </SwiperSlide>
-                                </SwiperWrapper>
-                            </div>
+                            <SwiperWrapper>
+                                <SwiperSlide>
+                                    <div className={ 'swiper-page' }>
+                                        <Graph data={ chartData.data1 } style={{ marginTop: 0 }}/>
+                                    </div>
+                                </SwiperSlide>
+                                <SwiperSlide>
+                                    <div className={ 'swiper-page' }>
+                                        <Graph data={ chartData.data2 }/>
+                                        { false && <Slider
+                                            style={{ margin: '0 auto 1em auto', width: '80%' }}
+                                            value={ interpolation }
+                                            onChange={(event, val) => { event.stopPropagation(); setInterpolation(val) }}
+                                            valueLabelDisplay="auto"
+                                            min={1}
+                                            max={10}
+                                        />}
+                                    </div>
+                                </SwiperSlide>
+                            </SwiperWrapper>
                         </>
                         }
                         { loading && <div style={{textAlign: "center", padding: '10% 0%'}}> <Loader /> </div> }
@@ -463,7 +473,7 @@ const ModuleProgression = () => {
 
 
                     </div>
-
+                    <div style={{ marginTop: '0.8rem' }} />
                     <Select
                         menuPortalTarget={document.body}
                         menuPosition={'fixed'} 

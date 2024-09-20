@@ -30,14 +30,10 @@ const Graph = ({ data, style, callback}) => {
     }, [data]);
 
     return (
-        <div style={{...wrapStyle, ...style}}>
+        <div style={{...style}} className={ 'chart-wrapper' }>
             <canvas ref={ canvasRef } />
         </div>
     )
-}
-
-const wrapStyle = {
-    marginTop: 'min(4vw, 32px)'
 }
 
 export default Graph;

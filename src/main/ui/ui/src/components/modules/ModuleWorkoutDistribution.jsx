@@ -77,8 +77,9 @@ const createConfig = (data=[], usePPL = false, useBody = false) => {
             datasets: datasets
         },
         options: {
-            responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
+            responsive:true,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
             scales: {
                 r: {
                     max: 1,
@@ -215,9 +216,10 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
         <>
             { data.length < 1 || !chartData ? <Spinner /> :
                 <>
-                    <div className={ 'centerC' }>
+                    <div className={ 'primary-content-wrapper' }>
                         <SwiperWrapper>
-                            <SwiperSlide>
+                            <SwiperSlide style={{ background: '#00000030', borderRadius: '1rem 1rem 0 0' }}>
+                                <div className={ 'swiper-page' } style={{ width: 'auto' }}>
                                 { chartData.data.datasets.map((dataset, index) =>
                                     <div key={index} style={{ position: 'relative', height: '100%' }}>
                                         {
@@ -228,13 +230,16 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                                         <img src={body} style={imgStyle} />
                                     </div>
                                 )}
+                                </div>
                             </SwiperSlide>
                             <SwiperSlide>
-                                <Graph data={chartData} style={{ marginTop: '0px', width: '100%'}}/>
+                                <div className={ 'swiper-page radar' }>
+                                    <Graph data={chartData} style={{ padding: '2rem' }}/>
+                                </div>
                             </SwiperSlide>
                         </SwiperWrapper>
                     </div>
-                    <div style={{display: "flex", marginTop: "10px"}}>
+                    <div style={{display: "flex"}}>
                         { data.length > 1 ?
                             <DisplayValue text={"You could both focus on"} value={ bestImprovementMulti(data) } />
                             :
@@ -243,7 +248,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                                 <DisplayValue text={"No data for this period"} value={ null } />
                         }
                     </div>
-                    {data.length > 0 && <>
+                    { data.length > 0 &&  <>
                         <Slider
                             value={range}
                             onChange={(event, val) => setRange([ val[0], val[1] ]) }
@@ -253,7 +258,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                             max={maxRange}
                             />
                             <div style={{ float: 'right' }}>
-                                <TextButton mini onClick={ () => setRange([maxRange - 180, maxRange])}> 180 days </TextButton>
+                                <TextButton style={{ marginLeft: '0 !important' }} mini onClick={ () => setRange([maxRange - 180, maxRange])}> 180 days </TextButton>
                                 <TextButton mini onClick={ () => setRange([maxRange - 90, maxRange])}> 90 days </TextButton>
                                 <TextButton mini onClick={ () => setRange([maxRange - 30, maxRange])}> 30 days </TextButton>
                             </div>

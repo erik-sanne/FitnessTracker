@@ -96,48 +96,50 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
             <Module title = "Friends list" className={ "friends-list" }>
-                { !loading && friendRequests && friendRequests.length > 0 &&friendRequests.map((request, key) =>
-                    <div key={key} style={{
-                        border: '1px solid #333',
-                        background: 'rgb(76 102 76)',
-                        display: 'flex',
-                        borderRadius: '0.5em'
-                    }}> <span style={{
-                        flex: 1,
-                        padding: '1em', }}><strong> { request.from.displayName } </strong> sent a friend request</span>
-                        <span style={{ float: 'right', fontSize: '1em', margin: 'auto 1em' }}>
-                                    <span onClick={ () => accept(request.id) } style={{
-                                        color: '#fff', border: '1px solid #fff', padding: '0.5em 1em', marginRight: '1em', borderRadius: '0.5em', background: '#325f3a'
-                                    }}>
-                                        Accept <FontAwesomeIcon icon={ faCheck } style={{ cursor: "pointer" }} />
+                <div style={{ }}>
+                    { !loading && friendRequests && friendRequests.length > 0 && friendRequests.map((request, key) =>
+                        <div key={key} style={{
+                            border: '1px solid #333',
+                            background: 'rgb(76 102 76)',
+                            display: 'flex',
+                            borderRadius: '1em'
+                        }}> <span style={{
+                            flex: 1,
+                            padding: '1em', }}><strong> { request.from.displayName } </strong> sent a friend request</span>
+                            <span style={{ float: 'right', fontSize: '1em', margin: 'auto 1em' }}>
+                                        <span onClick={ () => accept(request.id) } style={{
+                                            color: '#fff', border: '1px solid #fff', padding: '0.5em 1em', marginRight: '1em', borderRadius: '2em', background: '#325f3a'
+                                        }}>
+                                            Accept <FontAwesomeIcon icon={ faCheck } style={{ cursor: "pointer" }} />
+                                        </span>
+                                        <span>
+                                            <FontAwesomeIcon icon={ faTimes } style={{ cursor: "pointer", color: '#fff' }} onClick={ () => reject(request.id) }  />
+                                        </span>
                                     </span>
-                                    <span>
-                                        <FontAwesomeIcon icon={ faTimes } style={{ cursor: "pointer", color: '#fff' }} onClick={ () => reject(request.id) }  />
-                                    </span>
-                                </span>
-                    </div>
-                ) }
-                { userProfile.friends && userProfile.friends.length > 0 && userProfile.friends.map((profile, key) =>
-                    <ListRow key={key} onClick={ () => {
-                        setRedirect(`/profile/${profile.userId}`)
-                    }}>
-                        <ProfileDisplay displayName={profile.displayName} title={ profile.title } userId={ profile.userId } profilePicture={ profile.profilePicture } permissionLevel={ profile.permissionLevel } style={{ flex: 1}}/>
-                        <span style={{ margin: 'auto 1em', display:'none'}}> <FontAwesomeIcon icon={faIdBadge} /> View profile </span>
-                        <span style={{ margin: 'auto 1em', display:'none'}}> <FontAwesomeIcon icon={faPeopleArrows} /> Compare stats </span>
-                    </ListRow>
-                )}
-                <div style={{padding: '0.5em 1em'}}>
-                    <div>
-                        <FontAwesomeIcon icon={ faUserPlus } onClick={ () => setModVisible(true) } style={{
-                            color: '#fff',
-                            fontSize: '48px',
-                            cursor: 'pointer',
-                            width: '48px',
-                            height: '48px',
-                            margin: '5px 0px',
-                            filter: 'drop-shadow(0px 0px 5px black)',
+                        </div>
+                    ) }
+                    { userProfile.friends && userProfile.friends.length > 0 && userProfile.friends.map((profile, key) =>
+                        <ListRow key={key} onClick={ () => {
+                            setRedirect(`/profile/${profile.userId}`)
+                        }}>
+                            <ProfileDisplay displayName={profile.displayName} title={ profile.title } userId={ profile.userId } profilePicture={ profile.profilePicture } permissionLevel={ profile.permissionLevel } style={{ flex: 1}}/>
+                            <span style={{ margin: 'auto 1em', display:'none'}}> <FontAwesomeIcon icon={faIdBadge} /> View profile </span>
+                            <span style={{ margin: 'auto 1em', display:'none'}}> <FontAwesomeIcon icon={faPeopleArrows} /> Compare stats </span>
+                        </ListRow>
+                    )}
+                    <div style={{padding: '0.5em 1em'}}>
+                        <div>
+                            <FontAwesomeIcon icon={ faUserPlus } onClick={ () => setModVisible(true) } style={{
+                                color: '#fff',
+                                fontSize: '48px',
+                                cursor: 'pointer',
+                                width: '48px',
+                                height: '48px',
+                                margin: '5px 0px',
+                                filter: 'drop-shadow(0px 0px 5px black)',
 
-                        }} />
+                            }} />
+                        </div>
                     </div>
                 </div>
             </Module>

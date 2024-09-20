@@ -27,7 +27,7 @@ const ModuleHardStats = () => {
     }
 
     return state && <Module title={ "fallback_coverstatistics" } style={{ gridRow: '2' }}>
-                <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
+                <div style={{height: 'min(65vw, 500px)'}} className={'primary-content-wrapper'}>
                     <p> You registered your first workout on {data.firstWorkout.split("T")[0]}. Since then you've achieved the following:</p>
                     <span>Total number of registered workouts: <b>{data.workouts}</b></span>
                     <p>Total number of registered sets: <b>{data.sets}</b></p>
@@ -79,8 +79,9 @@ const createConfig = (setdata={}) => {
             ]
         },
         options: {
-            responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
+            responsive:true,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth < 600 ? 1.5 : 1.5,
             scales: {
                 y: {
                     stacked: true,

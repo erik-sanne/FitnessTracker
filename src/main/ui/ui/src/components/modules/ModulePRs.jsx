@@ -18,8 +18,8 @@ const ModulePRs = ({ data=[] }) => {
         <>
             { !data ? <Spinner /> :
                 <>
-                    <div className={'centerC'}>
-                        <div style={{ height: 'min(65vw, 500px)', overflowY: 'auto' }}>
+                    <div className={'primary-content-wrapper'}>
+                        <div style={{ height: 'min(65vw, 500px)', overflowY: 'auto', padding: '1rem' }}>
                             <table>
                                 <tbody>
                                     { viewedExercies.map((pr, idx) =>
@@ -33,7 +33,7 @@ const ModulePRs = ({ data=[] }) => {
                             </table>
                         </div>
                     </div>
-                    <input type={'search'} placeholder={ 'Filter...' } onChange={ (e) => onSearch(e) } value={ searchText } style={{ marginTop: '1rem' }}/>
+                    <input type={'search'} placeholder={ 'Filter...' } onChange={ (e) => onSearch(e) } value={ searchText } style={{ marginTop: '1rem' }} className={ 'default-input' }/>
                 </>
             }
         </>

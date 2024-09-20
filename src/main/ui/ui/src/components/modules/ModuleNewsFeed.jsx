@@ -48,8 +48,8 @@ const ModuleNewsFeed = ({ profile, updateUserProfile }) => {
     }
 
     return  (
-        <Module title={ "Social Feed" } className={ "news-feed" }>
-        <PostWall
+        <Module title={ "What's new?" } className={ "news-feed" }>
+        <PostWall style={{ margin: '-1.5rem -1rem' }}
             profile={ profile }
             updateUserProfile={ updateUserProfile }
             posts={ posts }

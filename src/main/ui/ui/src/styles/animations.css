@@ -10,7 +10,7 @@
     }
 }
 
-.fade-out-image {
+.splash-fade-out {
     animation: fadeOut 3s;
     -webkit-animation: fadeOut 3s;
     -moz-animation: fadeOut 3s;
@@ -22,11 +22,11 @@
 
 @keyframes fadeOut {
     0% {
-        background: #18191c;
+        background: #12151C;
         color: rgba(255,255,255,1);
     }
     70% {
-        background: #18191c;
+        background: #12151C;
         color: rgba(255,255,255,1);
     }
     80% {
@@ -37,11 +37,11 @@
 
 @-moz-keyframes fadeOut {
     0% {
-        background: #18191c;
+        background: #12151C;
         color: rgba(255,255,255,1);
     }
     70% {
-        background: #18191c;
+        background: #12151C;
         color: rgba(255,255,255,1);
     }
     80% {
@@ -52,11 +52,11 @@
 
 @-webkit-keyframes fadeOut {
     0% {
-        background: #18191c;
+        background: #12151C;
         color: rgba(255,255,255,1);
     }
     70% {
-        background: #18191c;
+        background: #12151C;
         color: rgba(255,255,255,1);
     }
     80% {
@@ -67,11 +67,11 @@
 
 @-o-keyframes fadeOut {
     0% {
-        background: #18191c;
+        background: #12151C;
         color: rgba(255,255,255,1);
     }
     70% {
-        background: #18191c;
+        background: #12151C;
         color: rgba(255,255,255,1);
     }
     80% {
@@ -82,11 +82,11 @@
 
 @-ms-keyframes fadeOut {
     0% {
-        background: #18191c;
+        background: #12151C;
         color: rgba(255,255,255,1);
     }
     70% {
-        background: #18191c;
+        background: #12151C;
         color: rgba(255,255,255,1);
     }
     80% {
@@ -95,7 +95,7 @@
     }
 }
 
-.zoom-in {
+.splash-zoom-in {
     animation: zoomIn 3s;
     -webkit-animation: zoomIn 3s;
     -moz-animation: zoomIn 3s;
@@ -106,136 +106,61 @@
 
 @keyframes zoomIn {
     0% {
-        transform: scale(1) rotate(-5deg);
+        transform: scale(1);
     }
-    5% {
-        transform: scale(1) rotate(1deg);
-    }
-    7.5% {
-        transform: scale(1.1) rotate(2deg);
-    }
-    10% {
-        transform: scale(1) rotate(1deg);
-    }
-    12.5% {
-        transform: scale(1.1) rotate(2deg);
-    }
-    20% {
-        transform: scale(1) rotate(1deg);
-    }
-    90% {
-        transform: scale(0.95) rotate(0deg);
+    98% {
+        transform: scale(0.90);
     }
     100% {
-        transform: scale(0) rotate(-180deg);
+        transform: scale(2, 0);
     }
 }
 
 @-moz-keyframes zoomIn {
     0% {
-        transform: scale(1) rotate(0deg);
+        transform: scale(1);
     }
-    5% {
-        transform: scale(1) rotate(0deg);
-    }
-    7.5% {
-        transform: scale(1.05) rotate(1deg);
-    }
-    10% {
-        transform: scale(1) rotate(1deg);
-    }
-    12.5% {
-        transform: scale(1.05) rotate(1deg);
-    }
-    20% {
-        transform: scale(1) rotate(1deg);
-    }
-    90% {
-        transform: scale(0.95) rotate(0deg);
+    98% {
+        transform: scale(0.90);
     }
     100% {
-        transform: scale(0) rotate(-180deg);
+        transform: scale(2, 0);
     }
 }
 
 @-webkit-keyframes zoomIn {
     0% {
-        transform: scale(1) rotate(0deg);
+        transform: scale(1);
     }
-    5% {
-        transform: scale(1) rotate(0deg);
-    }
-    7.5% {
-        transform: scale(1.05) rotate(1deg);
-    }
-    10% {
-        transform: scale(1) rotate(1deg);
-    }
-    12.5% {
-        transform: scale(1.05) rotate(1deg);
-    }
-    20% {
-        transform: scale(1) rotate(1deg);
-    }
-    90% {
-        transform: scale(0.95) rotate(0deg);
+    98% {
+        transform: scale(0.90);
     }
     100% {
-        transform: scale(0) rotate(-180deg);
+        transform: scale(2, 0);
     }
 }
 
 @-o-keyframes zoomIn {
     0% {
-        transform: scale(1) rotate(0deg);
+        transform: scale(1);
     }
-    5% {
-        transform: scale(1) rotate(0deg);
-    }
-    7.5% {
-        transform: scale(1.05) rotate(1deg);
-    }
-    10% {
-        transform: scale(1) rotate(1deg);
-    }
-    12.5% {
-        transform: scale(1.05) rotate(1deg);
-    }
-    20% {
-        transform: scale(1) rotate(1deg);
-    }
-    90% {
-        transform: scale(0.95) rotate(0deg);
+    98% {
+        transform: scale(0.90);
     }
     100% {
-        transform: scale(0) rotate(-180deg);
+        transform: scale(2, 0);
     }
 }
 
 @-ms-keyframes zoomIn {
     0% {
-        transform: scale(1) rotate(0deg);
+        transform: scale(1);
     }
-    5% {
-        transform: scale(1) rotate(0deg);
-    }
-    7.5% {
-        transform: scale(1.05) rotate(1deg);
-    }
-    10% {
-        transform: scale(1) rotate(1deg);
-    }
-    12.5% {
-        transform: scale(1.05) rotate(1deg);
-    }
-    20% {
-        transform: scale(1) rotate(1deg);
-    }
-    90% {
-        transform: scale(0.95) rotate(0deg);
+    98% {
+        transform: scale(0.90);
     }
     100% {
-        transform: scale(0) rotate(-180deg);
+        transform: scale(2, 0);
     }
 }
 

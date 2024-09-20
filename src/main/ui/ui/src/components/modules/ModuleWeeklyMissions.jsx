@@ -15,7 +15,7 @@ const ModuleWeeklyMissions = () => {
         </div>
 
 
-    return (<div>
+    return (<div style={{ margin: window.innerWidth < 600 ? '-1.5rem -1rem -1.4rem -1rem' : '' }}>
         {
             data.map((mission, key) =>
                 <Mission key={key} name={mission.name} description={mission.description} progress={mission.progress} goal={mission.goal} completed={ mission.completed } reward={ mission.reward } />

@@ -154,9 +154,9 @@ const SectionHistory = ({ userProfile }) => {
         <>
             <div className={ 'page-wrapper' } style={{ justifyContent: 'normal'}}>
                 <Module title = "My Workouts">
-                        <>
+                        <div style={{ margin: '-1.5rem -1rem'}}>
                             { summaries.map(( summary ) =>
-                                <Accordion square key={summary.workout_id} expanded={ expanded === summary.workout_id } onChange={ () => { onToggle(summary.workout_id) } }  style={{ background: '#282c3400', color: 'inherit', boxShadow: '0px 0px 10px #00000060', border: '1px solid #cccccc10' }}>
+                                <Accordion square key={summary.workout_id} expanded={ expanded === summary.workout_id } onChange={ () => { onToggle(summary.workout_id) } } className={ 'accordion' }>
                                     <AccordionSummary aria-controls={`${summary.workout_id}-content`} id={`${summary.workout_id}-header`} style={{ padding: '.75rem 1.25rem' }}>
                                         <span style={{ margin: 'auto' }}>{ summary.date.split('T')[0] }</span>
                                         <span style={{ margin: 'auto', flex: '1', paddingLeft: '10px'}}>{ loadingStatus === summary.workout_id && <Spinner animation="border" style={{ width: '16px', height: '16px', top: 'calc(50% - 8px)', position: 'absolute'}}/> }</span>
@@ -178,11 +178,18 @@ const SectionHistory = ({ userProfile }) => {
                                                     sets.map((set, index, arr) =>
                                                         <>
                                                             {isNewExercise(arr, set, index)?
+                                                                <>
                                                                 <tr>
-                                                                    <td colSpan={6} style={{borderBottom: '1px solid #333', fontWeight: 'bold'}}>
-                                                                        {camelCase(set.exercise.replace(/_/g, ' '))}
+                                                                    <td colSpan={6} style={{fontWeight: 'bold'}}>
+                                                                        { camelCase(set.exercise.replace(/_/g, ' ')) }
                                                                     </td>
                                                                 </tr>
+                                                                <tr>
+                                                                    <td colSpan={6}>
+                                                                        <div style={{background: 'linear-gradient(90deg, rgb(85, 85, 85), transparent)', border: '0px', height: '1px', padding: '0 0.5rem' }} />
+                                                                    </td>
+                                                                </tr>
+                                                                </>
                                                                 : <></>}
 
                                                             <tr key={index}>
@@ -223,10 +230,12 @@ const SectionHistory = ({ userProfile }) => {
                                     </AccordionDetails>
                                 </Accordion>)
                        }
-                       </>
-                    { fetchStatus === FetchStatus.LOADING ? <Loader /> : fetchStatus === FetchStatus.MAX_REACHED && summaries.length > 30 ?
+                       </div>
+                       <div style={{ marginTop: '3rem' }}>
+                            { fetchStatus === FetchStatus.LOADING ? <Loader /> : fetchStatus === FetchStatus.MAX_REACHED && summaries.length > 30 ?
                             <p style={ maxReachedStyle }> You've reached the end of time as we know it. You are a different person now </p> : fetchStatus === FetchStatus.MAX_REACHED ?
                             <p style={ maxReachedStyle }> No{summaries.length > 0 ? ' more ' : ' ' }registered workouts</p> : <span></span>}
+                        </div>
                 </Module>
             </div>
             <Modal visible={ toRemove && removeStatus !== RemoveStatus.LOADING } title={ "Remove workout" } onClose={ () => setToRemove(null) } >

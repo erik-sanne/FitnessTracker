@@ -1,17 +1,25 @@
-import React from 'react';
+import React, {useState, useEffect}  from 'react';
 import {NavLink} from "react-router-dom";
 
 const Header = ({ title }) => {
+    const [ getScroll, setScroll ] = useState(window.scrollY);
+    useEffect(()=>{
+        const onScroll = () => setScroll(window.scrollY);
+        // clean up code
+        window.removeEventListener('scroll', onScroll);
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    },[])
 
     const { text, color } = getCelebrationText();
     return (
-        <header>
-                <h2 className={ 'header' }>
-                    <NavLink to="/general" style={{ color: 'inherit', textDecoration: 'none'}}>
+        <div className={ 'header' }>
+                <h2 className={ window.innerWidth < 600 && getScroll > 25 ? 'header-text header-text-shrunk' : 'header-text' }>
+                    <NavLink to="/general" style={{ color: 'inherit', textDecoration: 'none', position: 'relative'}}>
                        { title } { text && <span className={'pulsate'} style={{...celebrationStyle, color: color}}>{text}</span> }
                     </NavLink>
                 </h2>
-        </header>
+        </div>
     );
 }
 
@@ -46,8 +54,8 @@ const celebrationStyle = {
     fontSize: '0.4em',
     color: '#ffd200',
     position: 'absolute',
-    left: '2em',
-    bottom: '1em',
+    right: '0em',
+    bottom: '0em',
     filter: 'drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 2px black)'
 }
 

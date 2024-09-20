@@ -158,13 +158,14 @@ const ModuleProfile = ({ myProfile, profile }) => {
         </Module>
         <Module substyle={{ height: 'inherit' }} className={ 'profile-wall' }>
             <PostSubmit myProfile={ myProfile } profile={ profile } submitCallback={ postNewComment } />
-            <div className={"post"} style={{ padding: '0px' }} />
+            <div style={{ padding: '0px', margin: '2rem 0', borderBottom: '1px solid hsla(0,0%,80%,.063)' }} />
             <PostWall profile={ myProfile }
                       posts={ wall.posts }
                       loading={ wall.loading }
                       refreshCallback={ getComments }
                       updateUserProfile={ () => {} }
-                      maxReached={ wall.maxReached } />
+                      maxReached={ wall.maxReached }
+                      style={{ margin: '0rem -1rem' }} />
         </Module>
     </>)
 }

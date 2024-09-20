@@ -25,10 +25,7 @@ const ModuleExerciseDistribution = () => {
         })
     }
 
-    return state &&
-                <div style={{ width: '100%', marginBottom: '2em' }}>
-                    <Graph data={state.chartdata}/>
-                </div>
+    return state && <Graph data={state.chartdata}/>
 }
 
 const createConfig = (setdata={}) => {
@@ -63,8 +60,13 @@ const createConfig = (setdata={}) => {
             ]
         },
         options: {
-            responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
+            responsive:true,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
+            interaction: {
+              intersect: false,
+              mode: 'index',
+            },
             scales: {
                 y: {
                     stacked: true,
@@ -80,7 +82,7 @@ const createConfig = (setdata={}) => {
                 x: {
                     stacked: true,
                     ticks: {
-                        display: window.innerWidth > 600,
+                        display: window.innerWidth > 800,
                         autoSkip: false,
                         font: {
                             family: 'Quicksand',
@@ -108,6 +110,10 @@ const createConfig = (setdata={}) => {
                             weight: 'bold'
                         }
                     }
+                },
+                tooltip: {
+                     multiKeyBackground: "rgba(0,0,0,0)",
+                     usePointStyle: true
                 }
             }
         }

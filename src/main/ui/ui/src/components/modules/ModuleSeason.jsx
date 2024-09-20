@@ -29,7 +29,7 @@ const ModuleSeason = () => {
         </div>
 
     return (
-        <div>
+        <div className={ 'primary-content-wrapper' }>
             <Graph data={ chartData } />
             <div className={ "leaderboard" }>
                 {
@@ -48,7 +48,7 @@ const ModuleSeason = () => {
                         </div>
                     )
                 }
-                <hr/>
+                <div />
                 <div className={ 'leaderboard-row my-position' }>
                     <div>
                         <span> <FontAwesomeIcon icon={ faTrophy } className={ 'trophy' }/> <span className={ 'rank' }>{ data.myScore.position }</span> </span>
@@ -126,8 +126,9 @@ const createChartData = (data) => {
             interaction: {
                 mode: 'index'
             },
-            responsive: true,
-            aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
+            responsive:true,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth < 600 ? 1.5 : 2.5,
             scales: {
                 y: {
                     position: "right",

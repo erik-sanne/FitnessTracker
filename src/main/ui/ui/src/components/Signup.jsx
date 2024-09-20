@@ -93,8 +93,8 @@ const Signup = () => {
                     <p /><p /><p />
                     { errorMessage && <span style={ styleError }> { errorMessage } </span>}
                     { responseMessage && <span style={ styleSuccess }> { responseMessage } </span>}
-                    { loading && <ModalLoader visible={ loading } />}
                 </form>
+                { loading && <ModalLoader visible={ loading } />}
             </section>
         </>
     );

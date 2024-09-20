@@ -183,7 +183,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
             <div className={ 'page-wrapper' } style={{ minHeight: '0vh', paddingBottom: '30vh'}}>
                 <Module title={"Workout details"}>
                     <label>Date</label>
-                    <input type={'date'} value={ date } max={ todaysDate } onChange={ e => setDate(e.target.value) } style={{ width: '100%' }}/>
+                    <input type={'date'} value={ date } max={ todaysDate } onChange={ e => setDate(e.target.value) } style={{ width: '100%' }} className={ 'default-input' } />
                     { sets.length !== 0 &&
                     <>
                         { !collapseSets ? <table>
@@ -252,12 +252,12 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                                 </div>
                             </>
                         }
-                    <input type="submit" value={ workoutId ? "Update" : "Submit workout"} onClick={ () => setModalVisible(true) }/>
+                    <input type="submit" value={ workoutId ? "Update" : "Submit workout"} onClick={ () => setModalVisible(true) } className={ 'default-input' } />
                     </>
                     }
                     <span ref={bottomRef} />
                 </Module>
-                <Module title={""} className={ 'bottom-panel' }>
+                <div title={""} className={ 'bottom-panel' }>
                     <SetInput
                         type={ currentSet.type }
                         reps={ currentSet.reps }
@@ -266,7 +266,7 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                         exerciseOptions={ exerciseOptions }
                         onSubmit={ submitSet }
                         onEdit={ onEditingSet }/>
-                </Module>
+                </div>
             </div>
             <Modal visible={ modalVisible } title={ "Submit workout?" } onClose={ () => setModalVisible(false) }>
                 <input type={ 'submit' } value={ 'Yes!' } className={ 'themed' } onClick={ () => {

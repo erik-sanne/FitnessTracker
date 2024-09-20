@@ -13,14 +13,13 @@ const Modal = ({ visible=false, title="", children, onClose }) => {
             <Module title={ title } style={{ width: 'min(90vw, 1000px)'}} className="modal-content">
                 <FontAwesomeIcon
                     icon={faTimes}
-                    style={{ position: 'absolute', right: 'min(4.5vw, 35px)', top: 'min(4vw, 32px)', fontSize: 'min(calc(8px + 3.5vmin), 30px)', cursor: "pointer" }}
+                    style={{ position: 'absolute', right: '1rem', top: '0.5rem', fontSize: '1.5rem', cursor: "pointer" }}
                     onClick={ onClose }/>
                 { children }
             </Module>
         </div>
     );
 }
-
 const wrapperStyle = {
     position: 'fixed',
     top: '0px',

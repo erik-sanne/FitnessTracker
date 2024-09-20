@@ -122,7 +122,8 @@ const SectionUpdates = () => {
                     enabled: true
                 },
                 responsive: true,
-                aspectRatio: window.innerWidth < 600 ? 1.5 : 6.5,
+                maintainAspectRatio: false,
+                //aspectRatio: window.innerWidth < 600 ? 1.5 : 6.5,
                 elements: {
                     point:{
                         radius: 0
@@ -211,9 +212,11 @@ const SectionUpdates = () => {
     return (
         <div className={ 'page-wrapper' } style={{ justifyContent: 'normal' }}>
             <Module title = "Changelog">
+                <div className={ 'primary-content-wrapper' }>
                 {
                     chartData ? <Graph data={ chartData } /> :<div><p>Fetching statistics...</p> <Loader /></div>
                 }
+                </div>
                 { commits.length > 0 && commits.map((obj, idx) =>
                         <ListRow onClick={ () => { window.open(obj.html_url, '_blank') }} key={idx}>
                             <div>

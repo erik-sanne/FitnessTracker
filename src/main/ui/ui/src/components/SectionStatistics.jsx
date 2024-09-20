@@ -23,17 +23,12 @@ const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
     const [ workoutDistribution, setWorkoutDistribution ] = useState([]);
     const { data: selfRecords, loading: loadingRecords  } = useFetch(`/api/records`);
-    const [ , setDimensions ] = useState([])
 
     useEffect(()=>{
         let from = new Date();
         from.setDate(from.getDate() - 30)
         let to = new Date();
         updateDistRange(from, to);
-        window.addEventListener('resize', () => setDimensions({
-            height: window.innerHeight,
-            width: window.innerWidth
-        }))
     }, [])
 
     const updateDistRange = (fromDate, toDate) => {
@@ -56,16 +51,22 @@ const SectionStatistics = () => {
                 <ModuleSetAverages />
             </Module>
             <Module title="General statistics" className={ "exercise-distribution" } style={{ paddingBottom: '0em'}}>
-                <div style={{height: 'min(65vw, 500px)'}} className={'centerC'}>
+                <div style={{height: 'min(65vw, 500px)', margin: '-1.5rem -1rem -1.5rem -1rem', borderRadius: '1rem' }} className={'primary-content-wrapper'}>
                     <SwiperWrapper touchStartPreventDefault={false}>
                         <SwiperSlide>
-                            <ModuleSplitRatios />
+                            <div className={ 'swiper-page' }>
+                                <ModuleSplitRatios />
+                            </div>
                         </SwiperSlide>
                         <SwiperSlide>
-                            <ModuleExerciseDistribution />
+                            <div className={ 'swiper-page' }>
+                                <ModuleExerciseDistribution />
+                            </div>
                         </SwiperSlide>
                         <SwiperSlide>
-                            <ModuleWorkoutDistributionOverTime />
+                            <div className={ 'swiper-page' }>
+                                <ModuleWorkoutDistributionOverTime />
+                            </div>
                         </SwiperSlide>
                     </SwiperWrapper>
                 </div>

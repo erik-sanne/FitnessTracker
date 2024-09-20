@@ -1,14 +1,15 @@
 import '../../styles/Module.css';
 import React, {useEffect, useState} from "react";
-import DataSelect from "../ui_components/DataSelect";
 import useFetch from "../../services/useFetch";
 import {getCookie} from "react-use-cookie";
 import Loader from "../ui_components/Loader";
-import body from "../../resources/bodyparts/body.png";
+import body from "../../resources/bodyparts/svg/body.svg";
+import Select from "react-select";
 
 const ModuleExerciseInfo = () => {
     const { data: exercises, loading } = useFetch('/api/exercises');
     const [ selectedExercise, setSelectedExercise ] = useState(null);
+    const [ data, setData ] = useState(null);
     const [ isLoading, setLoading ] = useState(true);
 
     useEffect(() => {
@@ -16,10 +17,19 @@ const ModuleExerciseInfo = () => {
             setLoading(false);
     }, [loading])
 
-    const getExercise = async (ex) => {
+    useEffect(() => {
+        getExercise()
+    }, [selectedExercise])
+
+    const getExercise = async () => {
         setLoading(true);
         const token = getCookie('session_token');
-        const response = await fetch( process.env.REACT_APP_API_BASE + `/exerciseinfo/${ex.replace(/ /g, '_')}`, {
+        const ex = selectedExercise;
+        if (!ex) {
+            return;
+        }
+
+        const response = await fetch( process.env.REACT_APP_API_BASE + `/exerciseinfo/${ex.value}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -29,14 +39,15 @@ const ModuleExerciseInfo = () => {
         });
 
         const data = await response.json();
-        setSelectedExercise(data)
+        setData(data)
 
         setLoading(false);
     }
 
     const getImage = (name) => {
         try {
-            return require(`../../resources/bodyparts/${name}.png`);
+            const img = require(`../../resources/bodyparts/svg/${name.toUpperCase().replace(" ", "_")}.svg`);
+            return img;
         } catch (e) {
             return '';
         }
@@ -47,54 +58,67 @@ const ModuleExerciseInfo = () => {
 
     return (
         <>
-            <div className={ 'centerC' }>
+            <div className={ 'primary-content-wrapper' } style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                }}>
 
                 {
-                    !selectedExercise && <p style={{ textAlign: 'center'}}> Check which muscle groups your exercises target </p>
+                    !data && <p style={{ textAlign: 'center', marginTop: '0.8rem', padding: '32% 0%'}}> Check which muscle groups your exercises target </p>
                 }
 
                 <div style={ wrapperStyle }>
                     {
-                        selectedExercise &&
-                        <div style={{ paddingTop: '1rem'}}>
-                            <p> <strong> Name: </strong> <br />{ camelCase(selectedExercise.name.replace(/_/g, ' ')) } </p>
-                            <p> <strong> Primarily targets: </strong> <br />{ selectedExercise.primaryTargets.map(muscle =>
+                        data &&
+                        <div style={{ padding: '1rem 0rem 0px 1rem'}}>
+                            <p> <strong> Name: </strong> <br />{ camelCase(data.name.replace(/_/g, ' ')) } </p>
+                            <p> <strong> Primarily targets: </strong> <br />{ data.primaryTargets.map(muscle =>
                                 camelCase(muscle.name.replace(/_/g, ' '))
                             ).join(", ") } </p>
                             {
-                                selectedExercise.secondaryTargets.length > 0 &&
-                                <p><strong> Also targets: </strong> <br />{selectedExercise.secondaryTargets.map(muscle =>
+                                data.secondaryTargets.length > 0 &&
+                                <p><strong> Also targets: </strong> <br />{data.secondaryTargets.map(muscle =>
                                 camelCase(muscle.name.replace(/_/g, ' '))
                                 ).join(", ")} </p>
                             }
                             {
-                                <p><strong> Associated splits: </strong> <br />{ [...new Set([ ...selectedExercise.primaryTargets, ...selectedExercise.secondaryTargets].flatMap(muscle =>
+                                <p><strong> Associated splits: </strong> <br />{ [...new Set([ ...data.primaryTargets, ...data.secondaryTargets].flatMap(muscle =>
                                     muscle.wtypes.map((type) => camelCase(type.name.replace(/_/g, ' ')) )
                                 ))].join(", ")}
                                 </p>
                             }
                         </div>
                     }
-                    <div style={{ position: 'relative' }}>
+                    <div style={{ position: 'relative', margin: '0 -2rem'}}>
                         {
-                            selectedExercise && selectedExercise.secondaryTargets.map(muscle => {
+                            data && data.secondaryTargets.map(muscle => {
                                 return <img src={ getImage(muscle.name) } style={imgSecStyle}/>
                             })
                         }
 
 
                         {
-                            selectedExercise && selectedExercise.primaryTargets.map(muscle => {
+                            data && data.primaryTargets.map(muscle => {
                                 return <img src={ getImage(muscle.name) } style={ imgPrimStyle }/>
                             })
                         }
-
-                        <img src={ body } style={ imgStyle } />
+                        {
+                            data && <img src={ body } style={ imgStyle } />
+                        }
                     </div>
                 </div>
             </div>
+            <Select
+                menuPortalTarget={document.body}
+                menuPosition={'fixed'}
+                defaultValue={ selectedExercise }
+                onChange={ setSelectedExercise }
+                options={ exercises.map(e =>{ return {value: e, label: camelCase(e.replace(/_/g, ' '))}}) }
+                menuPlacement={"top"}
+                className="select-container"
+                classNamePrefix="select" />
 
-            <DataSelect value={ selectedExercise ? selectedExercise.name.replace(/_/g, ' ') : null } onSelect={ (ex) => ex && getExercise(ex) } options={ exercises.map(e => e.replace(/_/g, ' ')) } />
         </>
     );
 }
@@ -105,7 +129,7 @@ const camelCase = (text) => {
 }
 
 const wrapperStyle = {
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     display: 'flex'
 }
 
@@ -114,14 +138,14 @@ const imgStyle = {
 }
 
 const imgPrimStyle = {
-    filter: 'brightness(0.5)',
+    filter: `invert(0.35) sepia(1) contrast(5) hue-rotate(328deg) opacity(0.9) drop-shadow(black 0px 0px 1px)`,
     position: 'absolute',
     top: 0,
     left: 0
 }
 
 const imgSecStyle = {
-    filter: 'hue-rotate(45deg)',
+    filter: `invert(0.4) sepia(1) contrast(5) hue-rotate(359deg) opacity(0.9) drop-shadow(black 0px 0px 1px)`,
     position: 'absolute',
     top: 0,
     left: 0,
