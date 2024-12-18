@@ -136,11 +136,6 @@ public class WorkoutStatsService implements APIService {
             Long milli = workout.getDate().toInstant().toEpochMilli();
             res.get(DATES).set(index, milli);
 
-            res.forEach((key, arr) -> {
-                if (!DATES.equalsIgnoreCase(key) && index > 0)
-                    arr.set(index, arr.get(index-1));
-            });
-
             exercises.stream()
                     .map(Exercise::getPrimaryTargets)
                     .flatMap(Collection::stream)

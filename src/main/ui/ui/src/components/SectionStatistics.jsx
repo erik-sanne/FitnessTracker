@@ -13,11 +13,7 @@ import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {NavLink} from "react-router-dom";
 import LocalStorage from "../services/LocalStorage";
-import ModuleExerciseDistribution from "./modules/ModuleExerciseDistribution";
-import ModuleSplitRatios from "./modules/ModuleSplitRatios";
-import SwiperWrapper from "./ui_components/swiper/SwiperWrapper";
-import {SwiperSlide} from "swiper/react";
-import ModuleWorkoutDistributionOverTime from "./modules/ModuleWorkoutDistributionOverTime";
+import ModuleGeneralStats from "./modules/ModuleGeneralStats";
 
 const SectionStatistics = () => {
     const { data: selfWorkoutsPerWeek, loading: loadingWorkouts  } = useFetch(`/api/workoutsPerWeek`);
@@ -51,25 +47,7 @@ const SectionStatistics = () => {
                 <ModuleSetAverages />
             </Module>
             <Module title="General statistics" className={ "exercise-distribution" } style={{ paddingBottom: '0em'}}>
-                <div style={{height: 'min(65vw, 500px)', margin: '-1.5rem -1rem -1.5rem -1rem', borderRadius: '1rem' }} className={'primary-content-wrapper'}>
-                    <SwiperWrapper touchStartPreventDefault={false}>
-                        <SwiperSlide>
-                            <div className={ 'swiper-page' }>
-                                <ModuleSplitRatios />
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className={ 'swiper-page' }>
-                                <ModuleExerciseDistribution />
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className={ 'swiper-page' }>
-                                <ModuleWorkoutDistributionOverTime />
-                            </div>
-                        </SwiperSlide>
-                    </SwiperWrapper>
-                </div>
+                <ModuleGeneralStats />
             </Module>
             {
                 !loadingRecords &&
