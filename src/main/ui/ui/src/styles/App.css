@@ -406,9 +406,6 @@ body {
   .swiper-page.radar > .chart-wrapper {
     height: 100% !important;
   }
-  .exercise-distribution .chart-wrapper {
-    border-radius: 1rem !important;
-  }
 }
 
 .exercise-distribution .chart-wrapper {
@@ -427,7 +424,6 @@ body {
 
 .swiper {
   width: 100%;
-  height: min(100%, 500px);
   --swiper-theme-color: rgba(107,166,239,0.5);
   --swiper-navigation-size: 2rem;
 }

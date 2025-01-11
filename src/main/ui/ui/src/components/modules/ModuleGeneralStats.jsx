@@ -32,7 +32,7 @@ const ModuleGeneralStats = () => {
                 </SwiperWrapper>
                 {
                     loading ? <Loader /> :
-                    <div style={{ display: "flex", padding: "0.8rem 1rem" }}>
+                    <div style={{ display: "flex", padding: "0.5rem 0 1.5rem 1rem" }}>
                         <DisplayValue text={'Push'} value={ data.filter(s => s.description === "PUSH").length } style={{ width: "4rem" }}/>
                         <DisplayValue text={'Pull'} value={ data.filter(s => s.description === "PULL").length } style={{ width: "4rem" }}/>
                         <DisplayValue text={'Legs'} value={ data.filter(s => s.description === "LEGS").length } style={{ width: "4rem" }}/>

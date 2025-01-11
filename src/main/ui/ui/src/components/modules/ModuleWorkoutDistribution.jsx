@@ -217,7 +217,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
             { data.length < 1 || !chartData ? <Spinner /> :
                 <>
                     <div className={ 'primary-content-wrapper' }>
-                        <SwiperWrapper>
+                        <SwiperWrapper style={{ height: 'min(100%, 500px)'}}>
                             <SwiperSlide style={{ background: '#00000030', borderRadius: '1rem 1rem 0 0' }}>
                                 <div className={ 'swiper-page' } style={{ width: 'auto' }}>
                                 { chartData.data.datasets.map((dataset, index) =>
