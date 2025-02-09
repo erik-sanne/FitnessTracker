@@ -112,7 +112,8 @@ const createConfig = (setdata, ctx) => {
         fill: true,
         backgroundColor: asGradient(ctx, colors[obj.type]),
         data: obj.values[1],
-        tension: 0,
+        tension: 0.4,
+        cubicInterpolationMode: 'monotone',
         pointStyle: 'circle'
     }))
 
