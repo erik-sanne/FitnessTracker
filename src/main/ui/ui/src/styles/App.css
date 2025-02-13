@@ -436,7 +436,7 @@ body {
 .swiper-slide {
   text-align: center;
   font-size: 18px;
-
+  height: auto !important;
   /* Center slide text vertically */
   display: -webkit-box;
   display: -ms-flexbox;
