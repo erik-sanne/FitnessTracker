@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Log4j2
 public class WorkoutStatsService implements APIService {
@@ -264,11 +265,20 @@ public class WorkoutStatsService implements APIService {
                 });
             });
 
+            var prioTypes = List.of("BACK", "CHEST", "SHOULDERS", "ARMS");
+
             Map.Entry<WType, Float> bestEntry = null;
             for (Map.Entry<WType, Float> entry : new ArrayList<>(setsPerType.entrySet())) {
                 if (bestEntry == null)
                     bestEntry = entry;
                 else {
+                    if (Objects.equals(entry.getValue(), bestEntry.getValue())) {
+                        if (prioTypes.stream().anyMatch(type -> type.equals(entry.getKey().getName()))) {
+                            bestEntry = entry;
+                        }
+                        continue;
+                    }
+
                     if (entry.getValue() > bestEntry.getValue()) {
                         bestEntry = entry;
                     }
