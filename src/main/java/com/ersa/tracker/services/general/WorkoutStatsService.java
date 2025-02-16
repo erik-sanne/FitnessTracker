@@ -253,14 +253,12 @@ public class WorkoutStatsService implements APIService {
                 Exercise exercise = exerciseService.getExerciseByName(set.getExercise());
                 exercise.getPrimaryTargets().forEach(target -> {
                     target.getWtypes().forEach(type -> {
-                        Float prevVal = setsPerType.get(type);
-                        setsPerType.put(type, prevVal + 1.5f);
+                        setsPerType.compute(type, (k, prevVal) -> prevVal + SCALE_FACTOR_PRIMARY);
                     });
                 });
                 exercise.getSecondaryTargets().forEach(target -> {
                     target.getWtypes().forEach(type -> {
-                        Float prevVal = setsPerType.get(type);
-                        setsPerType.put(type, prevVal + 1f);
+                        setsPerType.compute(type, (k, prevVal) -> prevVal + SCALE_FACTOR_SECONDARY);
                     });
                 });
             });
