@@ -22,7 +22,9 @@ const Metrics = {
     GC_PAUSE_COUNT: "jvm_gc_pause_seconds_count",
     GC_PAUSE_SUM: "jvm_gc_pause_seconds_sum",
     LOGBACK_EVENTS: "logback_events_total",
-    JVM_THREAD_STATES: "jvm_threads_states_threads"
+    JVM_THREAD_STATES: "jvm_threads_states_threads",
+    DISK_FREE_BYTES: "disk_free_bytes",
+    DISK_TOTAL_BYTES: "disk_total_bytes"
 }
 const Aggs = {
     AVG: "avg",
@@ -61,7 +63,8 @@ const SectionMonitor = () => {
             dbInvocations: dbInvocationsConfig(metrics),
             gcPause: gcPauseConfig(metrics),
             logbackEvents: logbackEventsConfig(metrics),
-            jvmThreadStates: jvmThreadStatesConfig(metrics)
+            jvmThreadStates: jvmThreadStatesConfig(metrics),
+            disk: diskConfig(metrics)
         })
     }, [metrics])
 
@@ -212,6 +215,13 @@ const SectionMonitor = () => {
                 { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
                     <div className={ 'primary-content-wrapper' }>
                         <Graph data={ chartConfigs.dbInvocations } style={{ height: '300px'}} />
+                    </div>
+                }
+            </Module>
+            <Module title = "Disk">
+                { metrics.length === 0 ? <h4><Loader animation={"grow"}/></h4> :
+                    <div className={ 'primary-content-wrapper' }>
+                        <Graph data={ chartConfigs.disk } style={{ height: '300px'}} />
                     </div>
                 }
             </Module>
@@ -1045,6 +1055,91 @@ const jvmThreadStatesConfig = (metrics) => {
                     ticks: {
                         callback: function(value, index, values) {
                             return `${(value).toFixed(0)}`
+                        }
+                    }
+                },
+                x: {
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                          millisecond: 'HH:mm:ss',
+                          second: 'HH:mm:ss',
+                          minute: 'HH:mm',
+                          hour: 'HH'
+                      }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: "top",
+                    align: "end",
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            family: 'Quicksand',
+                            weight: 'bold'
+                        }
+                    }
+                },
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'x'
+                    },
+                }
+            }
+        }
+    }
+}
+
+const diskConfig = (metrics) => {
+    const disk_free_bytes = pad(aggMetric(metrics, Aggs.SUM, Metrics.DISK_FREE_BYTES)).map((metric) => { return { x: metric.time, y: (metric.value / 1024 / 1024 / 1024 )}})
+    const disk_total_bytes = pad(aggMetric(metrics, Aggs.SUM, Metrics.DISK_TOTAL_BYTES)).map((metric) => { return { x: metric.time, y: (metric.value / 1024 / 1024 / 1024 )}})
+    return {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                   label: 'Free',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
+                   borderColor: 'rgb(200, 138, 32)',
+                   backgroundColor: 'rgba(200, 138, 32, 0.3)',
+                   tension: 0,
+                   data: disk_free_bytes
+                },
+                {
+                   label: 'Total',
+                   borderWidth: window.innerWidth < 600 ? 1 : 2,
+                   pointRadius: 0,
+                   borderColor: 'rgb(120, 100, 70)',
+                   backgroundColor: 'rgba(120, 100, 70, 0.3)',
+                   borderDash: [3],
+                   tension: 0,
+                   data: disk_total_bytes
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            //aspectRatio: window.innerWidth > 1900 ? 2 : window.innerWidth < 600 ? 1.5 : 2.5,
+            animation: {
+                duration: 0
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                y: {
+                    min: 0,
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return `${(value).toFixed(2)}Gb`
                         }
                     }
                 },
