@@ -1,5 +1,6 @@
 import '../../styles/Module.css';
 import React, {useEffect, useState} from "react";
+import ContentPlaceholder from "../ui_components/ContentPlaceholder";
 import Loader from "../ui_components/Loader";
 import useFetch from "../../services/useFetch";
 import Graph from "./Graph";
@@ -36,7 +37,7 @@ const ModuleSplitRatios = () => {
 
 
     if (loading)
-        return <Loader />
+        return <ContentPlaceholder> <Loader /> </ContentPlaceholder>
 
     return state && <Graph data={state.chartdata} callback={ chart => setCtx(chart.getContext('2d'))}/>
 }

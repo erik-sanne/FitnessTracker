@@ -1,5 +1,6 @@
 import '../../styles/Module.css';
 import React, {useEffect, useState} from "react";
+import ContentPlaceholder from "../ui_components/ContentPlaceholder";
 import Loader from "../ui_components/Loader";
 import useFetch from "../../services/useFetch";
 import Graph from "./Graph";
@@ -26,7 +27,7 @@ const ModuleWorkoutDistributionOverTime = () => {
 
 
     if (loading)
-        return <Loader />
+        return <ContentPlaceholder> <Loader /> </ContentPlaceholder>
 
     return chartData &&
                 <>

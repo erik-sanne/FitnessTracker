@@ -1,5 +1,6 @@
 import '../../styles/Module.css';
 import React, {useState} from "react";
+import ContentPlaceholder from "../ui_components/ContentPlaceholder";
 import Loader from "../ui_components/Loader";
 import useFetch from "../../services/useFetch";
 import Graph from "./Graph";
@@ -10,7 +11,7 @@ const ModuleExerciseDistribution = () => {
     const [ state, setState ] = useState(null);
 
     if (loading)
-        return <Loader />
+        return <ContentPlaceholder> <Loader /> </ContentPlaceholder>
 
     if (!state && data) {
         const setdata = Object.keys(data.setTypes).map(key => {

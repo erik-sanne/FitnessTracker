@@ -1,6 +1,7 @@
 import '../../styles/Module.css';
 import 'chartjs-plugin-zoom' //It says that its not used, but it is
-import Spinner from "../ui_components/Loader";
+import ContentPlaceholder from "../ui_components/ContentPlaceholder";
+import Loader from "../ui_components/Loader";
 import DisplayValue from "./DisplayValue";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
@@ -133,6 +134,7 @@ const calculateImpr = (mapping) => {
 }
 
 const bestImprovement = (data) => {
+    if (!data) return "";
     const mapping = manualOrderingPass(data);
     return calculateImpr(mapping);
 }
@@ -214,41 +216,41 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
 
     return (
         <>
-            { data.length < 1 || !chartData ? <Spinner /> :
                 <>
-                    <div className={ 'primary-content-wrapper' }>
-                        <SwiperWrapper style={{ height: 'min(100%, 500px)'}}>
-                            <SwiperSlide style={{ background: '#00000030', borderRadius: '1rem 1rem 0 0' }}>
-                                <div className={ 'swiper-page' } style={{ width: 'auto' }}>
-                                { chartData.data.datasets.map((dataset, index) =>
-                                    <div key={index} style={{ position: 'relative', height: '100%' }}>
-                                        {
-                                            dataset.data.map((val, idx) => {
-                                                return <img key={idx} src={getImage(chartData.data.labels[idx])} style={ getImgCss(val, index, fullColorManikin && chartData.data.datasets.length < 2) }/>
-                                            })
-                                        }
-                                        <img src={body} style={imgStyle} />
+                    { data.length < 1 || !chartData ? <ContentPlaceholder> <Loader /> </ ContentPlaceholder> :
+                        <div className={ 'primary-content-wrapper' }>
+                            <SwiperWrapper style={{ height: 'min(100%, 500px)'}}>
+                                <SwiperSlide style={{ background: '#00000030', borderRadius: '1rem 1rem 0 0' }}>
+                                    <div className={ 'swiper-page' } style={{ width: 'auto' }}>
+                                    { chartData.data.datasets.map((dataset, index) =>
+                                        <div key={index} style={{ position: 'relative', height: '100%' }}>
+                                            {
+                                                dataset.data.map((val, idx) => {
+                                                    return <img key={idx} src={getImage(chartData.data.labels[idx])} style={ getImgCss(val, index, fullColorManikin && chartData.data.datasets.length < 2) }/>
+                                                })
+                                            }
+                                            <img src={body} style={imgStyle} />
+                                        </div>
+                                    )}
                                     </div>
-                                )}
-                                </div>
-                            </SwiperSlide>
-                            <SwiperSlide>
-                                <div className={ 'swiper-page radar' }>
-                                    <Graph data={chartData} style={{ padding: '2rem' }}/>
-                                </div>
-                            </SwiperSlide>
-                        </SwiperWrapper>
-                    </div>
+                                </SwiperSlide>
+                                <SwiperSlide>
+                                    <div className={ 'swiper-page radar' }>
+                                        <Graph data={chartData} style={{ padding: '2rem' }}/>
+                                    </div>
+                                </SwiperSlide>
+                            </SwiperWrapper>
+                        </div>
+                    }
                     <div style={{display: "flex"}}>
-                        { data.length > 1 ?
-                            <DisplayValue text={"You could both focus on"} value={ bestImprovementMulti(data) } />
-                            :
-                            bestImprovement(data[0]) ?
-                                <DisplayValue text={"You could focus more on"} value={bestImprovement(data[0])} /> :
-                                <DisplayValue text={"No data for this period"} value={ null } />
+                        {
+                            data == undefined || data.length == 0 ? <DisplayValue text={"Loading"} value={ "..." } /> :
+                            data && data.length > 1 ? <DisplayValue text={"You could both focus on"} value={ bestImprovementMulti(data) } />  :
+                            bestImprovement(data[0]) ? <DisplayValue text={"You could focus more on"} value={ bestImprovement(data[0]) } /> :
+                                <DisplayValue text={"No data for this period"} value={ '' } />
                         }
                     </div>
-                    { data.length > 0 &&  <>
+                     <>
                         <Slider
                             value={range}
                             onChange={(event, val) => setRange([ val[0], val[1] ]) }
@@ -262,10 +264,8 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
                                 <TextButton mini onClick={ () => setRange([maxRange - 90, maxRange])}> 90 days </TextButton>
                                 <TextButton mini onClick={ () => setRange([maxRange - 30, maxRange])}> 30 days </TextButton>
                             </div>
-                        </>
-                    }
+                      </>
                 </>
-            }
         </>
     );
 }

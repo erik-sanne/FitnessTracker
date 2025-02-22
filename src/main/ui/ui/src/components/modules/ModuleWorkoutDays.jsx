@@ -1,7 +1,8 @@
 import '../../styles/Module.css';
 import get from "../../services/Get";
 import {NavLink} from 'react-router-dom'
-import Spinner from "../ui_components/Loader";
+import ContentPlaceholder from "../ui_components/ContentPlaceholder";
+import Loader from "../ui_components/Loader";
 import DisplayValue from "./DisplayValue";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faMedal} from '@fortawesome/free-solid-svg-icons'
@@ -204,7 +205,7 @@ const ModuleWorkoutDays = ({ data=[] }) => {
 
     return (
         <>
-           { data.length < 1 ? <Spinner /> :
+           { data.length < 1 ? <ContentPlaceholder> <Loader /> </ContentPlaceholder> :
                 <>
                     <div className={'primary-content-wrapper'}>
                         { chartData && <Graph data={ chartData }/> }

@@ -8,6 +8,7 @@ import DisplayValue from "./DisplayValue";
 import regression from 'regression';
 import LocalStorage from "../../services/LocalStorage";
 import Loader from "../ui_components/Loader";
+import ContentPlaceholder from "../ui_components/ContentPlaceholder";
 import SwiperWrapper from "../ui_components/swiper/SwiperWrapper";
 import {SwiperSlide} from "swiper/react";
 import Select from "react-select";
@@ -440,7 +441,7 @@ const ModuleProgression = () => {
 
     return (
         <>
-            { loadingExercises ? <Loader /> :
+            { loadingExercises ? <ContentPlaceholder> <Loader /> </ContentPlaceholder> :
                 <>
                     <div className={'primary-content-wrapper'}>
                         { !loading && chartData && message === "" &&
@@ -467,24 +468,24 @@ const ModuleProgression = () => {
                             </SwiperWrapper>
                         </>
                         }
-                        { loading && <div style={{textAlign: "center", padding: '10% 0%'}}> <Loader /> </div> }
-                        { !loading && message !== "" && <DisplayValue text={ message } value={""}
-                                                          style={{textAlign: "center", padding: '10% 0%'}}/> }
+                        { loading && <ContentPlaceholder> <Loader /> </ContentPlaceholder> }
+                        { !loading && message !== "" && <ContentPlaceholder><DisplayValue text={ message } value={""}
+                                                          style={ messageStyle }/></ContentPlaceholder> }
 
 
                     </div>
-                    <div style={{ marginTop: '0.8rem' }} />
-                    <Select
-                        menuPortalTarget={document.body}
-                        menuPosition={'fixed'} 
-                        defaultValue={ selectedExercise }
-                        onChange={ setSelectedExercise }
-                        options={ exercises.map(e =>{ return {value: e, label: camelCase(e.replace(/_/g, ' '))}}) }
-                        menuPlacement={"top"}
-                        className="select-container"
-                        classNamePrefix="select" />
                 </>
             }
+            <div style={{ marginTop: '0.8rem' }} />
+                <Select
+                    menuPortalTarget={document.body}
+                    menuPosition={'fixed'}
+                    defaultValue={ selectedExercise || "" }
+                    onChange={ setSelectedExercise }
+                    options={ loadingExercises ? [] :exercises.map(e =>{ return {value: e, label: camelCase(e.replace(/_/g, ' '))}}) }
+                    menuPlacement={"top"}
+                    className="select-container"
+                    classNamePrefix="select" />
         </>
     );
 }
@@ -492,6 +493,10 @@ const ModuleProgression = () => {
 const camelCase = (text) => {
     text = text.toLowerCase();
     return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
+const messageStyle = {
+        textAlign: 'center'
 }
 
 export default ModuleProgression;
