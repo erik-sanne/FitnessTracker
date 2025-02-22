@@ -239,58 +239,45 @@ public class WorkoutStatsService implements APIService {
     public List<WorkoutSummary> getWorkoutSummaries(final User user, int from, int to) {
         List<WorkoutSummary> summaries = new ArrayList<>();
 
-        Iterable<WType> types = wTypeRepository.findAll();
         List<Workout> workouts = workoutService.getWorkouts(user);
         to = Math.min(to, workouts.size());
         if (to <= from)
             return summaries;
         workouts = workouts.subList(from, to);
-        workouts.forEach(workout -> {
-            Map<WType, Float> setsPerType = new HashMap<>();
-            types.forEach(type -> setsPerType.put(type, 0f));
 
-            workout.getSets().forEach(set -> {
-                Exercise exercise = exerciseService.getExerciseByName(set.getExercise());
-                exercise.getPrimaryTargets().forEach(target -> {
-                    target.getWtypes().forEach(type -> {
-                        setsPerType.compute(type, (k, prevVal) -> prevVal + SCALE_FACTOR_PRIMARY);
-                    });
-                });
-                exercise.getSecondaryTargets().forEach(target -> {
-                    target.getWtypes().forEach(type -> {
-                        setsPerType.compute(type, (k, prevVal) -> prevVal + SCALE_FACTOR_SECONDARY);
-                    });
-                });
-            });
+        Map<String, Exercise> exerciseMap = exerciseService.getAllExerciseNames().stream().map(exerciseService::getExerciseByName).collect(Collectors.toMap(Exercise::getName, e -> e));
 
-            var prioTypes = List.of("BACK", "CHEST", "SHOULDERS", "ARMS");
+        return workouts.stream().map( workout ->
+                new WorkoutSummary(workout.getId(),
+                        workout.getDate(),
+                        classifySplitType(workout, exerciseMap))).toList();
+    }
 
-            Map.Entry<WType, Float> bestEntry = null;
-            for (Map.Entry<WType, Float> entry : new ArrayList<>(setsPerType.entrySet())) {
-                if (bestEntry == null)
-                    bestEntry = entry;
-                else {
-                    if (Objects.equals(entry.getValue(), bestEntry.getValue())) {
-                        if (prioTypes.stream().anyMatch(type -> type.equals(entry.getKey().getName()))) {
-                            bestEntry = entry;
-                        }
-                        continue;
-                    }
+    private String classifySplitType(Workout workout, Map<String, Exercise> exerciseMap) {
+        Map<String, Float> splitTypeWeights = new HashMap<>();
+        Stream<WType> primary = workout.getSets().stream().map(set -> exerciseMap.get(set.getExercise())).flatMap(exercise -> exercise.getPrimaryTargets().stream()).flatMap(target -> target.getWtypes().stream());
+        Stream<WType> secondary = workout.getSets().stream().map(set -> exerciseMap.get(set.getExercise())).flatMap(exercise -> exercise.getSecondaryTargets().stream()).flatMap(target -> target.getWtypes().stream());
+        primary.forEach(target -> splitTypeWeights.compute(target.getName(), (k, accumulated) -> accumulated == null ? SCALE_FACTOR_PRIMARY : accumulated + SCALE_FACTOR_PRIMARY));
+        secondary.forEach(target -> splitTypeWeights.compute(target.getName(), (k, accumulated) -> accumulated == null ? SCALE_FACTOR_SECONDARY : accumulated + SCALE_FACTOR_SECONDARY));
 
-                    if (entry.getValue() > bestEntry.getValue()) {
-                        bestEntry = entry;
-                    }
-                }
+        if (splitTypeWeights.isEmpty()) {
+            return "CUSTOM";
+        }
+
+        var prioTypes = List.of("BACK", "CHEST", "SHOULDERS", "ARMS");
+        Map.Entry<String, Float> bestEntry = splitTypeWeights.entrySet().stream().findAny().get();
+        for (Map.Entry<String, Float> entry : splitTypeWeights.entrySet()) {
+            if (bestEntry.getValue().equals(entry.getValue()) && prioTypes.contains(entry.getKey())) {
+                bestEntry = entry;
             }
 
-            WorkoutSummary summary = new WorkoutSummary();
-            summary.setWorkoutId(workout.getId());
-            summary.setDate(workout.getDate());
-            summary.setDescription(bestEntry.getValue() > 0 ? bestEntry.getKey().getName() : "CUSTOM");
-            summaries.add(summary);
-        });
-        return summaries;
+            if (entry.getValue() > bestEntry.getValue()) {
+                bestEntry = entry;
+            }
+        }
+        return bestEntry.getKey();
     }
+
 
     @Override
     public List<SetAverage> getSetAverages(final User user, final String exercise) {

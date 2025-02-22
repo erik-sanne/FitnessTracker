@@ -1,9 +1,13 @@
 package com.ersa.tracker.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public final class WorkoutSummary {
 
     @JsonProperty("workout_id")
