@@ -292,12 +292,15 @@ public class WorkoutStatsService implements APIService {
         List<WorkoutSet> sets = workout.getSets().stream().filter(set ->
                 set.getExercise().equals(exercise)).collect(Collectors.toList());
 
-        if (sets.size() == 0)
+        if (sets.isEmpty())
             return null;
+
+        // from ~3 sets and up, count a diminishing increase for each additional set in combined score
+        float setScale = (float)Math.max(1, Math.sqrt(Math.log(sets.size())));
 
         float weightAvg = (float) sets.stream().mapToDouble(WorkoutSet::getWeight).reduce(0, Double::sum) / sets.size();
         float repsAvg = (float) sets.stream().mapToInt(WorkoutSet::getReps).reduce(0, Integer::sum) / sets.size();
-        float combined = sets.stream().map(this::epley).reduce(0f, Float::sum) / (float)Math.max(1, Math.log(sets.size()));
+        float combined = sets.stream().map(this::epley).reduce(0f, Float::sum) / setScale;
 
         List<SetAverage.Set> mappedSets = sets.stream().map(set -> new SetAverage.Set(set.getId(), set.getReps(), set.getWeight())).collect(Collectors.toList());
 
