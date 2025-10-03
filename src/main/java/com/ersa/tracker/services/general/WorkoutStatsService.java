@@ -275,6 +275,23 @@ public class WorkoutStatsService implements APIService {
                 bestEntry = entry;
             }
         }
+
+        var generalTypes = List.of("PUSH", "PULL", "LEGS", "BACK");
+        if (generalTypes.contains(bestEntry.getKey())) {
+            var push = splitTypeWeights.getOrDefault("PUSH", 0f);
+            var pull = splitTypeWeights.getOrDefault("PULL", 0f);
+            var legs = splitTypeWeights.getOrDefault("LEGS", 0f);
+            var comb = push + pull + legs;
+            if (push / comb > 0.15f && pull / comb > 0.15f && legs / comb > 0.15f) {
+                return "FULL BODY";
+            }
+
+            comb = push + pull;
+            if (push / comb > 0.4f && pull / comb > 0.4f) {
+                return "UPPER BODY";
+            }
+        }
+
         return bestEntry.getKey();
     }
 
