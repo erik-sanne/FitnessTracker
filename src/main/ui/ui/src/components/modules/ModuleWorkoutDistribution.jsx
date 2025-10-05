@@ -218,7 +218,7 @@ const ModuleWorkoutDistribution = ({ data=[], rangeCallback }) => {
         <>
                 <>
                     { data.length < 1 || !chartData ? <ContentPlaceholder> <Loader /> </ ContentPlaceholder> :
-                        <div className={ 'primary-content-wrapper' }>
+                        <div className={ 'primary-content-wrapper' }  style={{ height: '100%', maxHeight: '500px'}}>
                             <SwiperWrapper style={{ height: 'min(100%, 500px)'}}>
                                 <SwiperSlide style={{ background: '#00000030', borderRadius: '1rem 1rem 0 0' }}>
                                     <div className={ 'swiper-page' } style={{ width: 'auto' }}>
