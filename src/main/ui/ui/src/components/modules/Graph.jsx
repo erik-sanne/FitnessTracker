@@ -27,7 +27,7 @@ const Graph = ({ data, style, callback}) => {
             chart.destroy();
 
         setChart(new Chart(ctx, data))
-    }, [data, chart]);
+    }, [data]);
 
     return (
         <div style={{...style}} className={ 'chart-wrapper' }>
