@@ -3,7 +3,7 @@ import Spinner from "../ui_components/Loader";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
 import DisplayValue from "./DisplayValue";
-import Switch from "@material-ui/core/Switch";
+import Switch from "@mui/material/Switch";
 import {getCookie} from "react-use-cookie";
 
 const createConfig = (bsds, normalratio) => {

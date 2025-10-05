@@ -36,7 +36,7 @@ const Menu = ({ open, logoutCallback, onNavigate, userProfile }) => {
                     </div>
                   </div>
             </NavLink>
-            <hr />
+            <hr style={{ borderTop: '1px solid rgba(0,0,0,.1)' }} />
             <div>
                 <ul>
                     <li>

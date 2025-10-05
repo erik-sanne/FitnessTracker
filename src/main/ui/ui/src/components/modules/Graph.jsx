@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import { Chart, registerables } from "chart.js";
 import zoomPlugin from 'chartjs-plugin-zoom'
 import 'chartjs-adapter-moment'
-import "react-hammerjs"
+//import "react-hammerjs"
 
 const Graph = ({ data, style, callback}) => {
     const canvasRef = useRef(null);
