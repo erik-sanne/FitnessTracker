@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Module from "./Module";
-import {Switch} from "@material-ui/core";
+import {Switch} from "@mui/material";
 import LocalStorage from "../../services/LocalStorage";
 
 const ModulePreferences = ({ userProfile }) => {

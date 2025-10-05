@@ -5,7 +5,7 @@ import Loader from "../ui_components/Loader";
 import DisplayValue from "./DisplayValue";
 import Graph from "./Graph";
 import React, {useEffect, useState} from "react";
-import Slider from "@material-ui/core/Slider";
+import Slider from "@mui/material/Slider";
 import TextButton from "../ui_components/TextButton";
 import body from "../../resources/bodyparts/svg/body.svg";
 import SwiperWrapper from "../ui_components/swiper/SwiperWrapper";

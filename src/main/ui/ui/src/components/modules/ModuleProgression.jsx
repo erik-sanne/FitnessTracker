@@ -12,7 +12,7 @@ import ContentPlaceholder from "../ui_components/ContentPlaceholder";
 import SwiperWrapper from "../ui_components/swiper/SwiperWrapper";
 import {SwiperSlide} from "swiper/react";
 import Select from "react-select";
-import Slider from "@material-ui/core/Slider";
+import Slider from "@mui/material/Slider";
 
 const getDates = (startDate, stopDate) => {
     let dateArray = [];

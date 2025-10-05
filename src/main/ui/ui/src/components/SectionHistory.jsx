@@ -10,9 +10,9 @@ import ModalLoader from "./ui_components/ModalLoader";
 import {faStar} from "@fortawesome/free-solid-svg-icons";
 import {faEdit} from "@fortawesome/free-regular-svg-icons";
 import {Redirect} from "react-router-dom";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Accordion from "@mui/material/Accordion";
 import Loader from "./ui_components/Loader";
 import GetCache from "../services/GetCache";
 
