@@ -134,6 +134,11 @@ public class CachedWorkoutStatsService implements APIService, ApplicationListene
     }
 
     @Override
+    public List<WorkoutSummary> getWorkoutSummaries(User user, boolean groupPPL, int from, int to) {
+        return delegatee.getWorkoutSummaries(user, groupPPL, from, to);
+    }
+
+    @Override
     public List<SetAverage> getSetAverages(User user, String exercise) {
         return progressionCache.get(new SetAvgKey(user.getId(), exercise));
     }

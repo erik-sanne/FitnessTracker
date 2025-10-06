@@ -21,5 +21,6 @@ public interface APIService {
     PredictedORM getPredictedORM(User user, String exercise);
     List<WorkoutSummary> getWorkoutSummaries(User user);
     List<WorkoutSummary> getWorkoutSummaries(User user, int from, int to);
+    List<WorkoutSummary> getWorkoutSummaries(User user, boolean groupPPL, int from, int to);
     List<SetAverage> getSetAverages(User user, String exercise);
 }

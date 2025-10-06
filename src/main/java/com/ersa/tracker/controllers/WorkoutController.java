@@ -38,13 +38,16 @@ public class WorkoutController {
     private final SeasonService seasonService;
 
     @GetMapping("api/workouts")
-    public List<WorkoutSummary> getWorkouts(final Principal principal, @RequestParam(name = "from", defaultValue = "0") Integer from, @RequestParam(name = "to", defaultValue = "999999") Integer to) {
+    public List<WorkoutSummary> getWorkouts(final Principal principal,
+                                            @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                            @RequestParam(name = "to", defaultValue = "999999") Integer to,
+                                            @RequestParam(name = "group-ppl", defaultValue = "false") Boolean groupPPL) {
         User currentUser = accountService.getUserByPrincipal(principal);
         from = Math.max(0, from);
         if (to <= from)
             throw new IllegalArgumentException();
 
-        return apiService.getWorkoutSummaries(currentUser, from, to);
+        return apiService.getWorkoutSummaries(currentUser, groupPPL, from, to);
     }
 
     @GetMapping("api/workouts/{userId}")

@@ -2,19 +2,34 @@ import '../../styles/Module.css';
 import React, {useEffect, useState} from "react";
 import ContentPlaceholder from "../ui_components/ContentPlaceholder";
 import Loader from "../ui_components/Loader";
-import useFetch from "../../services/useFetch";
+import {Switch} from "@mui/material";
+import get from "../../services/Get";
 import Graph from "./Graph";
 import Utils from "../../services/Utils";
 
 const MILLIS_SCAN = 1000 * 60 * 60 * 24 * 45; // 45+45=~3 months
 
 const ModuleSplitRatios = () => {
-    const { data, loading } = useFetch('/api/workouts');
+    const [ data, setData ] = useState([])
+    const [ loading, setLoading] = useState(true);
+    const [ groupPPL, setGroupPPL ] = useState(false);
     const [ state, setState ] = useState(null);
     const [ ctx, setCtx ] = useState(null);
 
+    const reFetch = (group) => {
+        setLoading(true);
+        get(`/api/workouts?group-ppl=${group}`).then((value) => {
+            setData(value)
+            setLoading(false);
+        });
+    }
+
     useEffect(() => {
-        if (!data)
+        reFetch(groupPPL);
+    }, [groupPPL])
+
+    useEffect(() => {
+        if (!data || data.length == 0)
             return
         const tmp = new Date(data[data.length - 1].date)
         const firstDate = new Date(tmp.getFullYear(), tmp.getMonth(), 1);
@@ -39,7 +54,19 @@ const ModuleSplitRatios = () => {
     if (loading)
         return <ContentPlaceholder> <Loader /> </ContentPlaceholder>
 
-    return state && <Graph data={state.chartdata} callback={ chart => setCtx(chart.getContext('2d'))}/>
+    return state && <div>
+            <p style={{ position: 'absolute', right: '0px', fontSize: '0.8rem', color: '#aaa', margin: '0' }}>
+                <span>
+                    Group by PPL
+                </span>
+                <Switch
+                  checked={ groupPPL }
+                  onChange={ () => { setGroupPPL(prev => !prev) } }
+                  slotProps={{ input: { 'aria-label': 'controlled' } }}
+                />
+            </p>
+            <Graph data={state.chartdata} callback={ chart => setCtx(chart.getContext('2d'))}/>
+        </div>
 }
 
 const doStuff = (date, workouts) => {

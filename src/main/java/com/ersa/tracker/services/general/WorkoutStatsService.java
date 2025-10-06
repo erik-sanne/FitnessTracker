@@ -237,6 +237,11 @@ public class WorkoutStatsService implements APIService {
 
     @Override
     public List<WorkoutSummary> getWorkoutSummaries(final User user, int from, int to) {
+        return this.getWorkoutSummaries(user, false, from, to);
+    }
+
+    @Override
+    public List<WorkoutSummary> getWorkoutSummaries(User user, boolean groupPPL, int from, int to) {
         List<WorkoutSummary> summaries = new ArrayList<>();
 
         List<Workout> workouts = workoutService.getWorkouts(user);
@@ -250,10 +255,10 @@ public class WorkoutStatsService implements APIService {
         return workouts.stream().map( workout ->
                 new WorkoutSummary(workout.getId(),
                         workout.getDate(),
-                        classifySplitType(workout, exerciseMap))).toList();
+                        classifySplitType(workout, exerciseMap, groupPPL))).toList();
     }
 
-    private String classifySplitType(Workout workout, Map<String, Exercise> exerciseMap) {
+    private String classifySplitType(Workout workout, Map<String, Exercise> exerciseMap, boolean groupPPL) {
         Map<String, Float> splitTypeWeights = new HashMap<>();
         Stream<WType> primary = workout.getSets().stream().map(set -> exerciseMap.get(set.getExercise())).flatMap(exercise -> exercise.getPrimaryTargets().stream()).flatMap(target -> target.getWtypes().stream());
         Stream<WType> secondary = workout.getSets().stream().map(set -> exerciseMap.get(set.getExercise())).flatMap(exercise -> exercise.getSecondaryTargets().stream()).flatMap(target -> target.getWtypes().stream());
@@ -264,7 +269,7 @@ public class WorkoutStatsService implements APIService {
             return "CUSTOM";
         }
 
-        var prioTypes = List.of("BACK", "CHEST", "SHOULDERS", "ARMS");
+        var prioTypes = groupPPL ? List.of("PUSH", "PULL", "LEGS") : List.of("BACK", "CHEST", "SHOULDERS", "ARMS");
         Map.Entry<String, Float> bestEntry = splitTypeWeights.entrySet().stream().findAny().get();
         for (Map.Entry<String, Float> entry : splitTypeWeights.entrySet()) {
             if (bestEntry.getValue().equals(entry.getValue()) && prioTypes.contains(entry.getKey())) {
@@ -276,19 +281,21 @@ public class WorkoutStatsService implements APIService {
             }
         }
 
-        var generalTypes = List.of("PUSH", "PULL", "LEGS", "BACK");
-        if (generalTypes.contains(bestEntry.getKey())) {
-            var push = splitTypeWeights.getOrDefault("PUSH", 0f);
-            var pull = splitTypeWeights.getOrDefault("PULL", 0f);
-            var legs = splitTypeWeights.getOrDefault("LEGS", 0f);
-            var comb = push + pull + legs;
-            if (push / comb > 0.15f && pull / comb > 0.15f && legs / comb > 0.15f) {
-                return "FULL BODY";
-            }
+        if (!groupPPL) {
+            var generalTypes = List.of("PUSH", "PULL", "LEGS", "BACK");
+            if (generalTypes.contains(bestEntry.getKey())) {
+                var push = splitTypeWeights.getOrDefault("PUSH", 0f);
+                var pull = splitTypeWeights.getOrDefault("PULL", 0f);
+                var legs = splitTypeWeights.getOrDefault("LEGS", 0f);
+                var comb = push + pull + legs;
+                if (push / comb > 0.15f && pull / comb > 0.15f && legs / comb > 0.15f) {
+                    return "FULL BODY";
+                }
 
-            comb = push + pull;
-            if (push / comb > 0.4f && pull / comb > 0.4f) {
-                return "UPPER BODY";
+                comb = push + pull;
+                if (push / comb > 0.4f && pull / comb > 0.4f) {
+                    return "UPPER BODY";
+                }
             }
         }
 
