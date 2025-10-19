@@ -319,15 +319,20 @@ public class WorkoutStatsService implements APIService {
         if (sets.isEmpty())
             return null;
 
-        // from ~3 sets and up, count a diminishing increase for each additional set in combined score
-        float setScale = (float)Math.max(1, Math.sqrt(Math.log(sets.size())));
-
         float weightAvg = (float) sets.stream().mapToDouble(WorkoutSet::getWeight).reduce(0, Double::sum) / sets.size();
         float repsAvg = (float) sets.stream().mapToInt(WorkoutSet::getReps).reduce(0, Integer::sum) / sets.size();
-        float combined = sets.stream().map(this::epley).reduce(0f, Float::sum) / setScale;
+
+        float effortA = sets.stream().map(this::epley).reduce(0f, Float::sum) / sets.size();
+
+        var top3Sets = sets.stream().map(this::epley).sorted().limit(3).toList();
+        float effortB = top3Sets.stream().reduce(0f, Float::sum) / Math.max(1, top3Sets.size());
+
+        float setSacleFactor = (float) Math.sqrt(3 * Math.sqrt(3 * sets.size()));
+
+        float effort = setSacleFactor * ((effortA + effortB) / 2);
 
         List<SetAverage.Set> mappedSets = sets.stream().map(set -> new SetAverage.Set(set.getId(), set.getReps(), set.getWeight())).collect(Collectors.toList());
 
-        return new SetAverage(workout.getDate(), repsAvg, weightAvg, combined, mappedSets);
+        return new SetAverage(workout.getDate(), repsAvg, weightAvg, effort, mappedSets);
     }
 }
