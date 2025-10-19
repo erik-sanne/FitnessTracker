@@ -27,6 +27,7 @@ public class CachedWorkoutStatsService implements APIService, ApplicationListene
     private final LoadingCache<Long, Map<String, List<Number>>> bodyPartDistributionOverTimeCache;
     private final LoadingCache<WorkoutDistributionKey, Map<String, Float>> workoutDistributionCache;
     private final LoadingCache<SetAvgKey, List<SetAverage>> progressionCache;
+    private final LoadingCache<SummariesKey, List<WorkoutSummary>> summariesCache;
 
     public CachedWorkoutStatsService(APIService delegatee, UserRepository userRepository) {
         this.delegatee = delegatee;
@@ -53,6 +54,10 @@ public class CachedWorkoutStatsService implements APIService, ApplicationListene
                 .expireAfterWrite(24, TimeUnit.HOURS)
                 .maximumSize(1000)
                 .build((key) -> delegatee.getSetAverages(asUser(key.userId), key.exercise));
+        summariesCache = Caffeine.newBuilder()
+                .expireAfterWrite(24, TimeUnit.HOURS)
+                .maximumSize(1000)
+                .build((key) -> delegatee.getWorkoutSummaries(asUser(key.userId), key.groupPP, 0, Integer.MAX_VALUE));
     }
 
     @Override
@@ -62,6 +67,7 @@ public class CachedWorkoutStatsService implements APIService, ApplicationListene
         bodyPartDistributionOverTimeCache.invalidateAll();
         workoutDistributionCache.invalidateAll();
         progressionCache.invalidateAll();
+        summariesCache.invalidateAll();
     }
 
     private static class SetAvgKey {
@@ -85,6 +91,8 @@ public class CachedWorkoutStatsService implements APIService, ApplicationListene
             this.end = end;
         }
     }
+
+    private static record SummariesKey(long userId, boolean groupPP) {}
 
     private User asUser(Long id) {
         return userRepository.findById(id).orElseThrow();
@@ -135,6 +143,10 @@ public class CachedWorkoutStatsService implements APIService, ApplicationListene
 
     @Override
     public List<WorkoutSummary> getWorkoutSummaries(User user, boolean groupPPL, int from, int to) {
+        if (from == 0 && to == Integer.MAX_VALUE) {
+            return summariesCache.get(new SummariesKey(user.getId(), groupPPL));
+        }
+
         return delegatee.getWorkoutSummaries(user, groupPPL, from, to);
     }
 

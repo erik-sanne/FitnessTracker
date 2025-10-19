@@ -40,9 +40,13 @@ public class WorkoutController {
     @GetMapping("api/workouts")
     public List<WorkoutSummary> getWorkouts(final Principal principal,
                                             @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                            @RequestParam(name = "to", defaultValue = "999999") Integer to,
+                                            @RequestParam(name = "to", defaultValue = "-1") Integer to,
                                             @RequestParam(name = "group-ppl", defaultValue = "false") Boolean groupPPL) {
         User currentUser = accountService.getUserByPrincipal(principal);
+        if (to < 0) {
+            to = Integer.MAX_VALUE;
+        }
+
         from = Math.max(0, from);
         if (to <= from)
             throw new IllegalArgumentException();
