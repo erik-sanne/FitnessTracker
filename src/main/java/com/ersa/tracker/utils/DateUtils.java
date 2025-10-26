@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class DateUtils {
-    public static Locale LOCALE_SWE = new Locale("sv","SE");
+    public static Locale LOCALE_SWE = Locale.of("sv","SE");
     public static TimeZone TZ_SWE = TimeZone.getTimeZone("Europe/Berlin");
     public static SimpleDateFormat FORMAT_YYYYww = new SimpleDateFormat("YYYYww", LOCALE_SWE);
     public static SimpleDateFormat FORMAT_yyyyMMddHHmm = new SimpleDateFormat("yyyy-MM-dd HH:mm", LOCALE_SWE);
