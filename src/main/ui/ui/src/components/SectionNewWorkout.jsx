@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
 import SetInput from "./modules/SetInput";
-import useFetch from "../services/useFetch";
 import Module from "./modules/Module";
 import {getCookie} from "react-use-cookie";
 import {Redirect} from "react-router-dom";
@@ -10,10 +9,10 @@ import Modal from "./ui_components/Modal";
 import ModalLoader from "./ui_components/ModalLoader";
 import {useParams} from "react-router";
 import get from "../services/Get";
+import GetCache from "../services/GetCache";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Accordion from "@mui/material/Accordion";
-import GetCache from "../services/GetCache";
 import Utils from "../services/Utils";
 
 const SectionNewWorkout = ({updateUserProfile}) => {
@@ -34,7 +33,6 @@ const SectionNewWorkout = ({updateUserProfile}) => {
 
     const todaysDate = new Date().toISOString().split('T')[0];
 
-    const { data: names, loading } = useFetch('/api/exercises');
     const [ collapseSets, setCollapseSets ] = useState(false);
     const [ exerciseOptions, setExerciseOptions ] = useState([]);
     const [ date, setDate] = useState(todaysDate);
@@ -159,12 +157,11 @@ const SectionNewWorkout = ({updateUserProfile}) => {
     }, [ sets, date ])
 
     useEffect(() => {
-        if (!loading) {
+        GetCache.get(`/api/exercises`).then(names => {
             const options = names.map(name => name.replace(/_/g, ' '));
-            setExerciseOptions(options)
-        }
-
-    }, [names, loading])
+            setExerciseOptions(options);
+        });
+    }, [])
 
     if (submitStatus === SubmitStatus.SUBMITTED) {
         setTimeout(() => {
