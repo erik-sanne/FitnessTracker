@@ -102,7 +102,7 @@ public class WorkoutManager implements WorkoutService {
         workoutRepository.save(workout);
         log.info("User with id {} published new workout", user.getId());
         personalRecordService.updatePersonalRecords(user);
-        applicationEventPublisher.publishEvent(new NewWorkoutEvent(this));
+        applicationEventPublisher.publishEvent(new NewWorkoutEvent(this, user.getId()));
     }
 
     @Override
@@ -128,7 +128,7 @@ public class WorkoutManager implements WorkoutService {
         persistedWorkout.setDate(submittedWorkout.getDate());
         persistedWorkout = workoutRepository.save(persistedWorkout);
         personalRecordService.updatePersonalRecords(user);
-        applicationEventPublisher.publishEvent(new NewWorkoutEvent(this));
+        applicationEventPublisher.publishEvent(new NewWorkoutEvent(this, user.getId()));
         log.info("User with id {} edited workout {}", user.getId(), persistedWorkout.getId());
     }
 
@@ -136,7 +136,7 @@ public class WorkoutManager implements WorkoutService {
     public void deleteWorkout(final User user, final long workoutId) {
         workoutRepository.deleteById(workoutId);
         personalRecordService.updatePersonalRecords(user);
-        applicationEventPublisher.publishEvent(new NewWorkoutEvent(this));
+        applicationEventPublisher.publishEvent(new NewWorkoutEvent(this, user.getId()));
         log.info("Workout with id {} removed by user with id {}", workoutId, user.getId());
     }
 

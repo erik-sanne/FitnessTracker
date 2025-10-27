@@ -63,8 +63,8 @@ public class CachedWorkoutStatsService implements APIService, ApplicationListene
     @Override
     public void onApplicationEvent(@NotNull NewWorkoutEvent event) {
         log.info("Received event to evict all workout caches");
-        workoutsPerWeekCache.invalidateAll();
-        bodyPartDistributionOverTimeCache.invalidateAll();
+        workoutsPerWeekCache.invalidate(event.getUserId());
+        bodyPartDistributionOverTimeCache.invalidate(event.getUserId());
         workoutDistributionCache.invalidateAll();
         progressionCache.invalidateAll();
         summariesCache.invalidateAll();
@@ -92,7 +92,7 @@ public class CachedWorkoutStatsService implements APIService, ApplicationListene
         }
     }
 
-    private static record SummariesKey(long userId, boolean groupPP) {}
+    private record SummariesKey(long userId, boolean groupPP) {}
 
     private User asUser(Long id) {
         return userRepository.findById(id).orElseThrow();
