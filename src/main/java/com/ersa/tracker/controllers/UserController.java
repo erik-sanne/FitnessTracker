@@ -1,7 +1,10 @@
 package com.ersa.tracker.controllers;
 
+import com.ersa.tracker.controllers.models.UserProfileDto;
+import com.ersa.tracker.models.Achievement;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.user.FriendRequest;
+import com.ersa.tracker.models.user.Notice;
 import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
 import com.ersa.tracker.services.authentication.AccountService;
@@ -17,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -40,18 +43,19 @@ public class UserController {
     }
 
     @GetMapping("/users/profile")
-    public UserProfile getMyProfile(final Principal principal) {
+    public ResponseEntity<UserProfileDto> getMyProfile(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
-        return profileService.getProfile(currentUser);
+        var profile = profileService.getProfile(currentUser);
+        return toProfileDto(profile).map(ResponseEntity::ok).orElse(ResponseEntity.noContent().build());
     }
 
     @PostMapping("/users/saveProfile")
-    public UserProfile saveProfile(@RequestBody final ProfileEdit profileEdit,
+    public ResponseEntity<UserProfileDto> saveProfile(@RequestBody final ProfileEdit profileEdit,
                             final Principal principal) throws IOException {
         User currentUser = accountService.getUserByPrincipal(principal);
         profileService.saveProfile(profileEdit.getDisplayName(), profileEdit.getProfilePicture(), currentUser);
         currentUser = accountService.getUserByPrincipal(principal);
-        return profileService.getProfile(currentUser);
+        return toProfileDto(profileService.getProfile(currentUser)).map(ResponseEntity::ok).orElse(ResponseEntity.noContent().build());
     }
 
     @GetMapping(path = "/users/profile/cover", produces = MediaType.IMAGE_PNG_VALUE)
@@ -110,6 +114,34 @@ public class UserController {
     public void setTitle(@RequestBody final String title, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         achievementService.setActive(currentUser, title);
+    }
+
+    private Optional<UserProfileDto> toProfileDto(UserProfile profile) {
+        if (profile == null) {
+            return Optional.empty();
+        }
+
+        List<UserProfile> friends = Optional.ofNullable(profile.getFriends()).orElse(Collections.emptyList());
+        List<Notice> notices = Optional.ofNullable(profile.getNotices()).orElse(Collections.emptyList());
+
+        return Optional.of(UserProfileDto.builder()
+                .userId(profile.getUser().getId())
+                .displayName(profile.getDisplayName())
+                .title(Optional.ofNullable(profile.getTitle()).map(Achievement::getName).orElse(null))
+                .profilePicture(Optional.ofNullable(profile.getProfilePicture()).map(String::new).orElse(null))
+                .permissionLevel(profile.getUser().getPermissionLevel())
+                .score(profile.getScore())
+                .friends(friends.stream().map(friend -> UserProfileDto.FriendDto.builder()
+                        .userId(friend.getUser().getId())
+                        .displayName(friend.getDisplayName())
+                        .title(Optional.ofNullable(friend.getTitle()).map(Achievement::getName).orElse(null))
+                        .profilePicture(Optional.ofNullable(friend.getProfilePicture()).map(String::new).orElse(null))
+                        .permissionLevel(friend.getUser().getPermissionLevel())
+                        .build()).toList())
+                .notices(notices.stream().map(notice -> UserProfileDto.NoticeDto.builder()
+                        .postId(notice.getSource().getId())
+                        .build()).toList())
+                .build());
     }
 
     public static class ProfileEdit {
