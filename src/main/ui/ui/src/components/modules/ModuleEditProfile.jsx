@@ -33,7 +33,7 @@ const ModuleEditProfile = ({ userProfile, required=false, updateUserProfile }) =
     }
 
     const save = () => {
-        if (!displayName || displayName.length <= 4) {
+        if (!displayName || displayName.length < 4) {
             setMessage("Please use a name with at least 4 characters");
             return;
         }
@@ -139,7 +139,8 @@ const skipButton = {
 const styleError = {
     background: '#f16b719e',
     border: '1px solid #f16b719e',
-    padding: '5px'
+    padding: '0.5rem 1rem',
+    borderRadius: '1rem'
 }
 
 
