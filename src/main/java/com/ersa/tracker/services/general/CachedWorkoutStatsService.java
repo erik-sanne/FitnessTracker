@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -70,25 +71,20 @@ public class CachedWorkoutStatsService implements APIService, ApplicationListene
         summariesCache.invalidateAll();
     }
 
-    private static class SetAvgKey {
-        private final long userId;
-        private final String exercise;
-
-        private SetAvgKey(long userId, String exercise) {
-            this.userId = userId;
-            this.exercise = exercise;
-        }
+    private record SetAvgKey(long userId, String exercise) {
     }
 
-    private static class WorkoutDistributionKey {
-        private final long userId;
-        private final Date start;
-        private final Date end;
+    private record WorkoutDistributionKey(long userId, Date start, Date end) {
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            WorkoutDistributionKey that = (WorkoutDistributionKey) o;
+            return userId == that.userId && Objects.equals(end.getTime(), that.end.getTime()) && Objects.equals(start.getTime(), that.start.getTime());
+        }
 
-        public WorkoutDistributionKey(long userId, Date start, Date end) {
-            this.userId = userId;
-            this.start = start;
-            this.end = end;
+        @Override
+        public int hashCode() {
+            return Objects.hash(userId, start.getTime(), end.getTime());
         }
     }
 
