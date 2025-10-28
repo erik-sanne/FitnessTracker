@@ -1,5 +1,5 @@
 .has-cover{
-    animation: fadeIn 0.5s;
+    animation: fadeIn 0.1s;
 }
 @keyframes fadeIn {
     0% {

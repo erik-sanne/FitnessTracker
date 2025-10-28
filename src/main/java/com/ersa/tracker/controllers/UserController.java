@@ -62,7 +62,7 @@ public class UserController {
     public ResponseEntity<byte[]> getCover(@RequestParam long userId, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(3600, TimeUnit.SECONDS))
+                .cacheControl(CacheControl.maxAge(1, TimeUnit.SECONDS))
                 .body(profileService.getCover(currentUser, userId));
     }
 
