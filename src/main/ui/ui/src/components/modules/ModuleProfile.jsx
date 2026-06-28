@@ -146,7 +146,7 @@ const ModuleProfile = ({ myProfile, profile }) => {
                 <p>
                     <FontAwesomeIcon icon={ faUserFriends } />
                     { window.innerWidth < 750 ? ": " : " Friends: " }
-                    { profile.friends.length > 0 ? profile.friends.length : profile.friendsCount }
+                    { profile.friends }
                 </p>
                 <p>
                     <FontAwesomeIcon icon={ faDumbbell } />

@@ -50,5 +50,6 @@ public class UserProfileDto {
         private final String title;
         private final String profilePicture; //Base64 encoded
         private final String permissionLevel;
+        private final Integer friends;
     }
 }

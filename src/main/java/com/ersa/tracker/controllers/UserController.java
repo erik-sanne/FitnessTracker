@@ -136,6 +136,7 @@ public class UserController {
                         .displayName(friend.getDisplayName())
                         .title(Optional.ofNullable(friend.getTitle()).map(Achievement::getName).orElse(null))
                         .profilePicture(Optional.ofNullable(friend.getProfilePicture()).map(String::new).orElse(null))
+                        .friends(friend.getFriends().size())
                         .permissionLevel(friend.getUser().getPermissionLevel())
                         .build()).toList())
                 .notices(notices.stream().map(notice -> UserProfileDto.NoticeDto.builder()
