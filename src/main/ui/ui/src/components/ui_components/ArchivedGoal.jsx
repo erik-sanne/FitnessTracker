@@ -43,10 +43,14 @@ const ArchivedGoal = ({ id, type, name, startDate, endDate, progress, target, co
             <>
                 <div style={{ display: "flex"}}>
                     <div style={{ maxWidth: "5em"}}>
-                        <CircularProgressbar value={ progressPercent } text={ progress + "/"+target }/>
+                        <CircularProgressbar 
+                            value={ progressPercent } 
+                            text={ `${progress.toFixed(2)}/${target}` }
+                            color={ progressPercent < 75 ? "#ffff00" : "rgba(2, 160, 2, 0.7)" }
+                        />
                     </div>
                     <div>
-                        <p style={{ padding: '1em'}}> You registered on average {progress} workout per week between {startDate} - {endDate}.</p>
+                        <p style={{ padding: '1em'}}> You registered on average {progress.toFixed(2)} workout per week between {startDate} - {endDate}.</p>
                     </div>
                 </div>
             </>
