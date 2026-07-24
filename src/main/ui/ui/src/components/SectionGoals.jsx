@@ -9,6 +9,7 @@ import TextButton from "./ui_components/TextButton";
 import Modal from "./ui_components/Modal";
 import ModalLoader from "./ui_components/ModalLoader";
 import GoalProgression from "./ui_components/GoalProgression";
+import ArchivedGoal from "./ui_components/ArchivedGoal";
 
 const SectionGoals = () => {
     const currentDate = () => {
@@ -28,6 +29,7 @@ const SectionGoals = () => {
 
     const [ loading, setLoading ] = useState(false);
     const [ goals, setGoals ] = useState([]);
+    const [ archivedGoals, setArchivedGoals ] = useState([]);
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ newGoal, setNewGoal ] = useState(goalTemplate)
     const [ isEditMode, setEditMode ] = useState(false)
@@ -42,6 +44,7 @@ const SectionGoals = () => {
 
     useEffect(() => {
         fetchGoals();
+        fetchArchivedGoals();
     }, [])
 
     const fetchGoals = () => {
@@ -49,6 +52,12 @@ const SectionGoals = () => {
         get(`/goal/progress`).then(resp => {
             setLoading(false)
             setGoals(resp)
+        })
+    }
+
+    const fetchArchivedGoals = () => {
+        get(`/goal/archived`).then(resp => {
+            setArchivedGoals(resp)
         })
     }
 
@@ -116,6 +125,13 @@ const SectionGoals = () => {
                 <br />
                 <TextButton onClick={ () => { setModalVisible(true) }}>Create Goal</TextButton>
             </Module>
+            { archivedGoals.length > 0 && (
+                <Module title = "Archived Goals" className={ "archived-goals" }>
+                    { archivedGoals.map((goal, idx) => 
+                        <ArchivedGoal key={idx} id={ goal.id } type={ goal.type } name={ goal.name } startDate={ goal.startDate } endDate={ goal.endDate } progress={ goal.currentValue } target={ goal.targetValue } completed={ goal.completed }/>
+                    ) }
+                </Module>
+            )}
             <Modal title={ isEditMode ? "Update goal" : "Create goal" } visible={modalVisible} onClose={ () => { setModalVisible(false); setEditMode(false); setNewGoal(goalTemplate); }}>
                 <label htmlFor="type">Type of goal:</label>
                 <Select

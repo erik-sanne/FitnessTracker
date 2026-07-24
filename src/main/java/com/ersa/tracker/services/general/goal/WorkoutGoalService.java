@@ -100,7 +100,8 @@ public class WorkoutGoalService implements GoalService {
 
     @Override
     public List<GoalController.GoalProgress> getArchived(UserProfile profile) {
-        return null;
+        List<Goal> ongoing = repository.findByUserProfile(profile).stream().filter(Goal::isComplete).toList();
+        return ongoing.stream().map(this::evaluateArchived).peek(g -> g.setTracked(false)).toList();
     }
 
     private GoalController.GoalProgress evaluateProgress(Goal goal) {
@@ -121,6 +122,14 @@ public class WorkoutGoalService implements GoalService {
         };
     }
 
+    private GoalController.GoalProgress evaluateArchived(Goal goal) {
+        GoalController.GoalProgress goalArchived = evaluateProgress(goal);
+        if (Goal.Type.WORKOUTS_WEEKLY.equals(goal.getType())) {
+            evaluateWorkoutsWeeklyArchived(goal, goalArchived);
+        }
+        return goalArchived;
+    }
+
     private GoalController.GoalProgress evaluateWorkoutsTotal(Goal goal, GoalController.GoalProgress goalProgress) {
         var current = workoutRepository.countByUserAndDateGreaterThanEqualAndDateLessThanEqual(goal.getUserProfile().getUser(), goal.getStartDate(), goal.getEndDate());
         goalProgress.setCurrentValue(current);
@@ -136,9 +145,21 @@ public class WorkoutGoalService implements GoalService {
 
     private GoalController.GoalProgress evaluateWorkoutsWeekly(Goal goal, GoalController.GoalProgress goalProgress) {
         var now = Instant.now().atZone(DateUtils.TZ_SWE.toZoneId());
-        var startOfWeek = now.with(ChronoField.DAY_OF_WEEK, 1);
+        var startOfWeek = now.with(ChronoField.DAY_OF_WEEK, 1).withHour(0);
         var current = workoutRepository.countByUserAndDateGreaterThanEqualAndDateLessThanEqual(goal.getUserProfile().getUser(), Date.from(startOfWeek.toInstant()), Date.from(now.toInstant()));
         goalProgress.setCurrentValue(current);
+        goalProgress.setWeeklyTarget(goal.getTarget());
+        return goalProgress;
+    }
+
+    private GoalController.GoalProgress evaluateWorkoutsWeeklyArchived(Goal goal, GoalController.GoalProgress goalProgress) {
+        var start = goal.getStartDate().toInstant().atZone(DateUtils.TZ_SWE.toZoneId()).with(ChronoField.DAY_OF_WEEK, 1).withHour(0);
+        var end = goal.getEndDate().toInstant().atZone(DateUtils.TZ_SWE.toZoneId()).with(ChronoField.DAY_OF_WEEK, 7).withHour(23);
+        var total = workoutRepository.countByUserAndDateGreaterThanEqualAndDateLessThanEqual(goal.getUserProfile().getUser(), Date.from(start.toInstant()), Date.from(end.toInstant()));
+        var weeksTotal = ChronoUnit.WEEKS.between(start, end);
+        float avg = (float) total / weeksTotal;
+
+        goalProgress.setCurrentValue(avg);
         goalProgress.setWeeklyTarget(goal.getTarget());
         return goalProgress;
     }

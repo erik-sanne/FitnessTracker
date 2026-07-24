@@ -63,6 +63,14 @@ public class GoalController {
         return new ArrayList<>();
     }
 
+    @GetMapping("/goal/archived")
+    public List<GoalProgress> getArchived(final Principal principal) {
+        User user = accountService.getUserByPrincipal(principal);
+        if (user.getUserProfile() != null)
+            return goalService.getArchived(user.getUserProfile());
+        return new ArrayList<>();
+    }
+
     private void validate(CreateGoal goal) {
         if (goal.start == null || goal.end == null || goal.end.before(goal.start))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad interval");

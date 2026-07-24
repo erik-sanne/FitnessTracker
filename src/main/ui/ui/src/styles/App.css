@@ -771,6 +771,11 @@ body {
   animation: fadeIn 1s;
 }
 
+.goal-container.archived {
+  filter: contrast(0.5);
+  background: rgba(1, 1, 1, 0.2);
+}
+
 .goal-container .progress {
   height: 0.5em;
   background-color: #424242;
