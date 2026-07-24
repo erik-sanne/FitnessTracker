@@ -6,6 +6,7 @@ import 'react-circular-progressbar/dist/styles.css';
 const ArchivedGoal = ({ id, type, name, startDate, endDate, progress, target, completed }) => {
 
     const progressPercent = (progress / target) * 100;
+    const formattedProgress = Number(progress.toFixed(2));
 
     const renderProgressbar = () => {
         if (progressPercent >= 100) {
@@ -45,12 +46,12 @@ const ArchivedGoal = ({ id, type, name, startDate, endDate, progress, target, co
                     <div style={{ maxWidth: "5em"}}>
                         <CircularProgressbar 
                             value={ progressPercent } 
-                            text={ `${progress.toFixed(2)}/${target}` }
+                            text={ `${formattedProgress}/${target}` }
                             className={ progressPercent < 75 ? "notreached" : "surplus" }
                         />
                     </div>
                     <div>
-                        <p style={{ padding: '1em'}}> You registered on average {progress.toFixed(2)} workout per week between {startDate} - {endDate}.</p>
+                        <p style={{ padding: '1em'}}> You registered on average {formattedProgress} workout per week between {startDate} - {endDate}.</p>
                     </div>
                 </div>
             </>
