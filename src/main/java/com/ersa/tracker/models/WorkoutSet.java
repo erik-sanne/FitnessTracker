@@ -1,6 +1,5 @@
 package com.ersa.tracker.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 
@@ -9,7 +8,6 @@ public final class WorkoutSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private long id;
 
     /*
@@ -29,7 +27,6 @@ public final class WorkoutSet {
     private int reps;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "workout_id")
     private Workout workout;
 

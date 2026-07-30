@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -80,9 +81,14 @@ public class WorkoutController {
     }
 
     @GetMapping("api/setsForWorkout/{id}")
-    public Collection<WorkoutSet> getSetsForWorkout(@PathVariable final long id, final Principal principal) {
+    public Collection<WorkoutSetDto> getSetsForWorkout(@PathVariable final long id, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
-        return workoutService.getSetsForWorkout(currentUser, id);
+        Collection<WorkoutSet> sets = workoutService.getSetsForWorkout(currentUser, id);
+        return sets.stream().map(set -> new WorkoutSetDto(
+                set.getExercise(),
+                set.getWeight(),
+                set.getReps()
+        )).collect(Collectors.toList());
     }
 
     @DeleteMapping("api/removeWorkout/{id}")
