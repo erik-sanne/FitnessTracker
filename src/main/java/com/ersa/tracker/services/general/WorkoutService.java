@@ -1,6 +1,7 @@
 package com.ersa.tracker.services.general;
 
 import com.ersa.tracker.dto.StatsDto;
+import com.ersa.tracker.dto.WorkoutSetDto;
 import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
@@ -18,6 +19,7 @@ public interface WorkoutService {
     Workout getWorkout(User user, long workoutId);
     Collection<WorkoutSet> getSetsForWorkout(User user, long workoutId);
     StatsDto getStats(User user);
+    Collection<WorkoutSetDto> getLatestSets(User user, String exercise);
 
     @Transactional
     void saveWorkout(User user, Workout workout);

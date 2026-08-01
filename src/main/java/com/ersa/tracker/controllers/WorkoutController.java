@@ -244,4 +244,10 @@ public class WorkoutController {
         User friend = profileService.getFriend(currentUser, userId);
         return workoutService.getStats(friend);
     }
+
+    @GetMapping("api/latest-sets/{exercise}")
+    public Collection<WorkoutSetDto> getLatestSets(@PathVariable String exercise, final Principal principal) {
+        User currentUser = accountService.getUserByPrincipal(principal);
+        return workoutService.getLatestSets(currentUser, exercise);
+    }
 }

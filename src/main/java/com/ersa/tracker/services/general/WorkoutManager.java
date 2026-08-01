@@ -1,6 +1,7 @@
 package com.ersa.tracker.services.general;
 
 import com.ersa.tracker.dto.StatsDto;
+import com.ersa.tracker.dto.WorkoutSetDto;
 import com.ersa.tracker.models.Exercise;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
@@ -164,5 +165,19 @@ public class WorkoutManager implements WorkoutService {
         dto.setSetWorkouts(new HashMap<>());
         workouts.forEach((key, value) -> dto.getSetWorkouts().put(key, value.size()));
         return dto;
+    }
+
+    @Override
+    public Collection<WorkoutSetDto> getLatestSets(User user, String exercise) {
+        var sets = workoutSetRepository.findByWorkoutUserAndExercise(user, exercise);
+        var latestWorkout = sets.stream().max(Comparator.comparing(x -> x.getWorkout().getDate())).map(WorkoutSet::getWorkout);
+
+        if (latestWorkout.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return latestWorkout.get().getSets().stream()
+                .filter(x -> exercise.equals(x.getExercise()))
+                .map(x -> new WorkoutSetDto(x.getExercise(), x.getWeight(), x.getReps())).toList();
     }
 }
