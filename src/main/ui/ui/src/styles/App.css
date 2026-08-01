@@ -827,6 +827,46 @@ body {
   fill: green !important;
 }
 
+.previous-sets-popup {
+  position: absolute;
+  bottom: 13rem;
+  transform: translateX(50%);
+  right: 50%;
+  background: #1C2430;
+  border: 1px solid #333;
+  border-radius: 1rem;
+  padding: 1rem;
+  z-index: 1000;
+  max-width: 500px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.previous-sets-popup.show {
+  opacity: 0.8;
+  visibility: visible;
+}
+
+.previous-sets-popup.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.previous-sets-popup table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.previous-sets-popup thead th {
+  text-align: right;
+  font-weight: 100;
+}
+
+.previous-sets-popup tbody td {
+  text-align: right;
+  padding: 0;
+}
+
 .modal-content {
     background-color: rgba(40, 44, 52, 0.2);
     border-radius: 1rem;

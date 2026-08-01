@@ -46,6 +46,10 @@ const SectionNewWorkout = ({updateUserProfile}) => {
         type: ''
     });
 
+    const [previousSets, setPreviousSets] = useState([]);
+    const [showPreviousSets, setShowPreviousSets] = useState(false);
+    const fadeTimeoutRef = useRef(null);
+
     const postWorkout = () => {
         setSubmitStatus(SubmitStatus.SUBMITTING)
 
@@ -106,6 +110,9 @@ const SectionNewWorkout = ({updateUserProfile}) => {
     }
 
     const onEditingSet = (set) => {
+        if (!currentSet || set.type !== currentSet.type) {
+            fetchPreviousSets(set.type);
+        }
         setCurrentSet({...set});
     }
 
@@ -123,6 +130,30 @@ const SectionNewWorkout = ({updateUserProfile}) => {
         setCurrentEdit(null)
         setCurrentSet({...sets[sets.length - 1]});
     }
+
+    const fetchPreviousSets = (exercise) => {
+        if (!exercise) return;
+
+        setPreviousSets([]);
+        setShowPreviousSets(false);
+        
+        get(`/api/latest-sets/${exercise.replace(/ /g, '_')}`)
+            .then(sets => {
+                setPreviousSets(sets);
+                setShowPreviousSets(true);
+
+                if (fadeTimeoutRef.current) {
+                    clearTimeout(fadeTimeoutRef.current);
+                }
+
+                fadeTimeoutRef.current = setTimeout(() => {
+                    setShowPreviousSets(false);
+                }, 5000);
+            })
+            .catch(() => {
+
+            });
+    };
 
     useEffect(() => {
         if (workoutId) {
@@ -162,6 +193,14 @@ const SectionNewWorkout = ({updateUserProfile}) => {
             setExerciseOptions(options);
         });
     }, [])
+
+    useEffect(() => {
+        return () => {
+            if (fadeTimeoutRef.current) {
+                clearTimeout(fadeTimeoutRef.current);
+            }
+        };
+    }, []);
 
     if (submitStatus === SubmitStatus.SUBMITTED) {
         setTimeout(() => {
@@ -263,8 +302,33 @@ const SectionNewWorkout = ({updateUserProfile}) => {
                         exerciseOptions={ exerciseOptions }
                         onSubmit={ submitSet }
                         onEdit={ onEditingSet }/>
+
+
+                    <div className={`previous-sets-popup ${showPreviousSets ? 'show' : 'fade-out'}`}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px'}}>
+                            <h3 style={{margin: 0, fontSize: '1rem'}}>Last workout</h3>
+                        </div>
+
+                        { previousSets.length > 0 && <table style={{width: '100%', borderCollapse: 'collapse'}}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ fontWeight: 100 }}>Reps</th>
+                                        <th style={{ fontWeight: 100 }}>Weight</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {previousSets.map((set, index) => (
+                                        <tr key={index}>
+                                            <td>{set.reps}</td>
+                                            <td>{set.weight}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                        </table> }
+                    </div>
                 </div>
             </div>
+            
             <Modal visible={ modalVisible } title={ "Submit workout?" } onClose={ () => setModalVisible(false) }>
                 <input type={ 'submit' } value={ 'Yes!' } className={ 'themed' } onClick={ () => {
                         setModalVisible(false);
