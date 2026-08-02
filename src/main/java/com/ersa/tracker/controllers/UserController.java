@@ -1,9 +1,9 @@
 package com.ersa.tracker.controllers;
 
-import com.ersa.tracker.controllers.models.UserProfileDto;
+import com.ersa.tracker.dto.UserProfileDto;
+import com.ersa.tracker.dto.FriendRequestDto;
 import com.ersa.tracker.models.Achievement;
 import com.ersa.tracker.models.authentication.User;
-import com.ersa.tracker.models.user.FriendRequest;
 import com.ersa.tracker.models.user.Notice;
 import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.security.exceptions.ResourceNotFoundException;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -93,9 +94,13 @@ public class UserController {
     }
 
     @GetMapping("/users/getFriendRequests")
-    public Collection<FriendRequest> incomingFriendRequests(final Principal principal) {
+    public List<FriendRequestDto> incomingFriendRequests(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
-        return friendsService.getFriendRequests(currentUser);
+        return friendsService.getFriendRequests(currentUser).stream().map(fr -> new FriendRequestDto(
+            fr.getId(),
+            fr.getFrom().getDisplayName(),
+            fr.getTo().getDisplayName()
+        )).collect(Collectors.toList());
     }
 
     @PostMapping("/users/acceptFriend/{requestId}")

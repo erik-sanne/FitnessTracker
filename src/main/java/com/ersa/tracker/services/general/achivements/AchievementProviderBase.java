@@ -1,5 +1,6 @@
 package com.ersa.tracker.services.general.achivements;
 
+import com.ersa.tracker.dto.AchievementDto;
 import com.ersa.tracker.models.Achievement;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.repositories.AchievementRepository;
@@ -27,7 +28,7 @@ public abstract class AchievementProviderBase implements AchievementProvider {
     public abstract String getType();
 
     @Override
-    public com.ersa.tracker.dto.Achievement getAchievement(User user) {
+    public AchievementDto getAchievement(User user) {
         Achievement achievement = null;
         try {
             achievement = achievementRepository.findByUserAndName(user, getName());
@@ -36,7 +37,7 @@ public abstract class AchievementProviderBase implements AchievementProvider {
         }
 
         if (achievement != null)
-            return new com.ersa.tracker.dto.Achievement(getName(), getDescription(), getType(), achievement.getDate());
+            return new AchievementDto(getName(), getDescription(), getType(), achievement.getDate());
 
 
         if (evaluate(user)) {
@@ -48,7 +49,7 @@ public abstract class AchievementProviderBase implements AchievementProvider {
             postService.createPost(user, "New Achievement", String.format("%s unlocked the achievement %s", PostService.DISPLAY_NAME, getName()));
         }
 
-        return new com.ersa.tracker.dto.Achievement(getName(), getDescription(), getType(), achievement != null ? achievement.getDate() : null);
+        return new AchievementDto(getName(), getDescription(), getType(), achievement != null ? achievement.getDate() : null);
     }
 
     public abstract boolean evaluate(User user);

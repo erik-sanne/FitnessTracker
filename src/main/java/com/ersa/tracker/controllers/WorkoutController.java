@@ -1,7 +1,6 @@
 package com.ersa.tracker.controllers;
 
 import com.ersa.tracker.dto.*;
-import com.ersa.tracker.models.PersonalRecord;
 import com.ersa.tracker.models.Workout;
 import com.ersa.tracker.models.WorkoutSet;
 import com.ersa.tracker.models.authentication.User;
@@ -75,9 +74,14 @@ public class WorkoutController {
     }
 
     @GetMapping("api/workout/{id}")
-    public Workout getWorkouts(@PathVariable final long id, final Principal principal) {
+    public WorkoutDto getWorkouts(@PathVariable final long id, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
-        return workoutService.getWorkout(currentUser, id);
+        Workout workout = workoutService.getWorkout(currentUser, id);
+        return new WorkoutDto(
+            workout.getId(),
+            workout.getDate(),
+            workout.getSets().stream().map(set -> new WorkoutSetDto(set.getExercise(), set.getWeight(), set.getReps())).collect(Collectors.toList())
+        );
     }
 
     @GetMapping("api/setsForWorkout/{id}")
@@ -189,20 +193,28 @@ public class WorkoutController {
     }
 
     @GetMapping("api/records")
-    public List<PersonalRecord> getRecords(final Principal principal) {
+    public List<PersonalRecordDto> getRecords(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
-        return recordService.getRecords(currentUser);
+        return recordService.getRecords(currentUser).stream().map(pr -> new PersonalRecordDto(
+            pr.getExercise().getName(),
+            pr.getWeight(),
+            pr.getDate()
+        )).collect(Collectors.toList());
     }
 
     @GetMapping("api/records/{userId}")
-    public List<PersonalRecord> getRecordsForFriend(@PathVariable final long userId, final Principal principal) {
+    public List<PersonalRecordDto> getRecordsForFriend(@PathVariable final long userId, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         User friend = profileService.getFriend(currentUser, userId);
-        return recordService.getRecordsObfuscated(friend);
+        return recordService.getRecordsObfuscated(friend).stream().map(pr -> new PersonalRecordDto(
+            pr.getExercise().getName(),
+            pr.getWeight(),
+            pr.getDate()
+        )).collect(Collectors.toList());
     }
 
     @GetMapping("api/achievements")
-    public List<Achievement> getAchievements(final Principal principal) {
+    public List<AchievementDto> getAchievements(final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         if (currentUser.getUserProfile() == null)
             return Collections.emptyList();
@@ -210,7 +222,7 @@ public class WorkoutController {
     }
 
     @GetMapping("api/achievements/{userId}")
-    public List<Achievement> getAchievements(@PathVariable long userId, final Principal principal) {
+    public List<AchievementDto> getAchievements(@PathVariable long userId, final Principal principal) {
         User currentUser = accountService.getUserByPrincipal(principal);
         if (userId == currentUser.getId())
             return getAchievements(principal);

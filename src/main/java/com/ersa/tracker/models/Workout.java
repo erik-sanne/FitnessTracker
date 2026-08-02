@@ -1,7 +1,6 @@
 package com.ersa.tracker.models;
 
 import com.ersa.tracker.models.authentication.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,7 +15,6 @@ public final class Workout {
     @Id
     private long id;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 

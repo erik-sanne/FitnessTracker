@@ -1,6 +1,6 @@
 package com.ersa.tracker.services.general.achivements;
 
-import com.ersa.tracker.dto.Achievement;
+import com.ersa.tracker.dto.AchievementDto;
 import com.ersa.tracker.models.authentication.User;
 import com.ersa.tracker.models.user.UserProfile;
 import com.ersa.tracker.repositories.AchievementRepository;
@@ -11,7 +11,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
@@ -30,12 +29,12 @@ public class UserAchievementService implements AchievementService, ApplicationLi
     private final UserProfileRepository userProfileRepository;
     private final UserRepository userRepository;
 
-    private LoadingCache<Long, List<Achievement>> cache = Caffeine.newBuilder()
+    private LoadingCache<Long, List<AchievementDto>> cache = Caffeine.newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES)
             .build(this::load);
 
     @Override
-    public List<Achievement> getAchievements(User user) {
+    public List<AchievementDto> getAchievements(User user) {
         return cache.get(user.getId());
     }
 
@@ -57,7 +56,7 @@ public class UserAchievementService implements AchievementService, ApplicationLi
 
     }
 
-    private List<Achievement> load(Long userId) {
+    private List<AchievementDto> load(Long userId) {
         return userRepository.findById(userId).map(user ->
                 providers.stream().map(provider -> provider.getAchievement(user)).collect(Collectors.toList())
         ).orElse(Collections.emptyList());

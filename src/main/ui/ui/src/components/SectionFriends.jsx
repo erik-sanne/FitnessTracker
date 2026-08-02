@@ -105,7 +105,7 @@ const SectionFriends = ({ userProfile, updateUserProfile }) => {
                             borderRadius: '1em'
                         }}> <span style={{
                             flex: 1,
-                            padding: '1em', }}><strong> { request.from.displayName } </strong> sent a friend request</span>
+                            padding: '1em', }}><strong> { request.fromDisplayName } </strong> sent a friend request</span>
                             <span style={{ float: 'right', fontSize: '1em', margin: 'auto 1em' }}>
                                         <span onClick={ () => accept(request.id) } style={{
                                             color: '#fff', border: '1px solid #fff', padding: '0.5em 1em', marginRight: '1em', borderRadius: '2em', background: '#325f3a'

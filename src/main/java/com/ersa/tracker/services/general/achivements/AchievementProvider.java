@@ -1,13 +1,13 @@
 package com.ersa.tracker.services.general.achivements;
 
-import com.ersa.tracker.dto.Achievement;
+import com.ersa.tracker.dto.AchievementDto;
 import com.ersa.tracker.models.authentication.User;
 
 public interface AchievementProvider {
     String getName();
     String getDescription();
     String getType();
-    Achievement getAchievement(User user);
+    AchievementDto getAchievement(User user);
 
     enum Type {
         WORKOUT_COUNT("Dedication to the Cause"), SETS_AND_EXERCISES("Sets & Exercises"), FREQUENCY("Frequency & Consistency"), MISC("Miscellaneous"), SEASONS_AND_EVENTS("Seasons & events");

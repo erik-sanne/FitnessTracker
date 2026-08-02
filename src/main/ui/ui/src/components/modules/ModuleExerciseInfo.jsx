@@ -84,7 +84,7 @@ const ModuleExerciseInfo = () => {
                             }
                             {
                                 <p><strong> Associated splits: </strong> <br />{ [...new Set([ ...data.primaryTargets, ...data.secondaryTargets].flatMap(muscle =>
-                                    muscle.wtypes.map((type) => camelCase(type.name.replace(/_/g, ' ')) )
+                                    muscle.splitAssociation.map((split) => camelCase(split.replace(/_/g, ' ')) )
                                 ))].join(", ")}
                                 </p>
                             }

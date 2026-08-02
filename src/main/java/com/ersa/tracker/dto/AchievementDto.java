@@ -2,13 +2,13 @@ package com.ersa.tracker.dto;
 
 import java.util.Date;
 
-public class Achievement {
+public class AchievementDto {
     private String name;
     private String description;
     private String type;
     private Date date;
 
-    public Achievement(String name, String description, String type, Date date) {
+    public AchievementDto(String name, String description, String type, Date date) {
         this.name = name;
         this.description = description;
         this.type = type;
